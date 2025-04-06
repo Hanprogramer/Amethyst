@@ -1,6 +1,9 @@
 #include "minecraft/src/common/world/item/ItemStackBase.hpp"
 #include "minecraft/src/common/world/item/Item.hpp"
 #include <amethyst/Memory.hpp>
+#include "registry/ItemRegistryManager.hpp"
+#include "registry/ItemRegistry.hpp"
+#include "minecraft/src-deps/core/string/StringHash.hpp"
 
 //std::string ItemStackBase::getRawNameId() const
 //{
@@ -169,6 +172,25 @@ bool ItemStackBase::shouldInteractionWithBlockBypassLiquid(const Block& block) c
 {
     return mItem && mItem->shouldInteractionWithBlockBypassLiquid(block);
 }
+
+bool ItemStackBase::isInstance(const HashedString& itemName, bool useItemLookup) const
+{
+    if (useItemLookup) {
+        return this->_isInstance(itemName.getString());
+    }
+    else {
+        if (!mItem) return false;
+        return mItem->mFullName == itemName;
+    }
+}
+
+bool ItemStackBase::_isInstance(std::string_view itemName) const
+{
+    if (!mItem) return false;
+    Assert("Too lazy to implement this, if needed write impl here");
+}
+
+
 
 const Item* ItemStackBase::getItem() const {
     return mItem.get();

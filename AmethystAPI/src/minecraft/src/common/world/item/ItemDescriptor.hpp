@@ -24,7 +24,12 @@ public:
 
     ItemDescriptor(const ItemDescriptor& other)
     {
-        mImpl = other.mImpl->clone();
+        if (other.mImpl) {
+            mImpl = other.mImpl->clone();
+        }
+        else {
+            mImpl.reset();
+        }
     }
 
     ItemDescriptor& operator=(const ItemDescriptor& other)

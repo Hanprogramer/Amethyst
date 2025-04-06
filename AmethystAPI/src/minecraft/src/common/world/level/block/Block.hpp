@@ -3,6 +3,8 @@
 #include "minecraft/src/common/world/level/block/components/BlockComponentStorage.hpp"
 #include <minecraft/src/common/world/level/block/BlockState.hpp>
 #include <minecraft/src/common/CommonTypes.hpp>
+#include <minecraft/src/common/nbt/CompoundTag.hpp>
+#include <minecraft/src-deps/core/utility/optional_ref.hpp>
 
 //is_virtual = True
 //hide_vtable = False
@@ -20,11 +22,63 @@ class BlockSource;
 class BlockPos;
 using DataID = unsigned short;
 
+enum class BlockOcclusionType : int32_t {
+    Unk1
+};
+
+class CachedComponentData {
+    Brightness mEmissiveBrightness;
+    bool mIsSolid;
+    BlockOcclusionType mOcclusionType;
+};
+
+class BlockTransformationComponent;
+class BlockCollisionBoxComponent;
+class BlockSelectionBoxComponent;
+class BlockGeometryComponent;
+class BlockBakedMaterialDataComponent;
+class AABB;
+class IConstBlockSource;
+class GetCollisionShapeInterface;
+class Material;
+
+class BlockComponentDirectData {
+public:
+    enum class LayerBitMask {
+        NONE,
+        INIT,
+        RENDERING
+    };
+
+    const BlockTransformationComponent* mBlockTransformationComponent;
+    const BlockCollisionBoxComponent* mBlockCollisionBoxComponent;
+    const BlockSelectionBoxComponent* mBlockSelectionBoxComponent;
+    const BlockGeometryComponent* mBlockGeometryComponent;
+    const BlockBakedMaterialDataComponent* mBlockBakedMaterialDataComponent;
+    bool mIsFullBlock;
+    bool mUseNewTessellation;
+    bool mNeedsLegacyTopRotation;
+    bool mIsOpaqueFullBlock;
+    Brightness mLightEmission;
+    Brightness mLight;
+    float mExplosionResistance;
+    int mBurnOdds;
+    int mFlameOdds;
+    float mFriction;
+    float mDestroySpeed;
+    BlockComponentDirectData::LayerBitMask mFinalized;
+};
+
 class Block : public BlockComponentStorage {
 public:
     /* this + 40  */ const uint16_t mData;
     /* this + 48  */ gsl::not_null<class BlockLegacy*> mLegacyBlock;
-    /* this + 56  */ std::byte padding56[140];
+    /* this + 56  */ CachedComponentData mCachedComponentData;
+    /* this + 64  */ BlockComponentDirectData mDirectData;
+    /* this + 136 */ std::vector<HashedString> mTags;
+    /* this + 160 */ CompoundTag mSerializationId;
+    /* this + 184 */ uint64_t mSerializationIdHash;
+    /* this + 192 */ uint32_t mSerializationIdHashForNetwork;
     /* this + 196 */ BlockRuntimeId mNetworkId;
     /* this + 204 */ bool mHasRuntimeId;
 
@@ -52,6 +106,10 @@ public:
     }
 
     bool isFenceBlock() const;
+                                                             
+    bool getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const;
+
+    const Material& getMaterial() const;
 };
 
 static_assert(sizeof(Block) == 208);

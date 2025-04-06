@@ -63,4 +63,10 @@ public:
     virtual void ukn10();
     virtual void ukn11();
     virtual InteractionResult useItemOn(ItemStack& item, const BlockPos& pos, FacingID face, const Vec3& clickPos, const Block* block);
+
+    InteractionResult _sendUseItemOnEvents(ItemStack& item, const BlockPos& pos, FacingID face, const Vec3& clickPos) const {
+        using function = decltype(&GameMode::_sendUseItemOnEvents);
+        static auto func = std::bit_cast<function>(SigScan("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4D 8B F9 4D 8B E0 48 8B F2 4C 8B F1 4C 8B AD"));
+        return (this->*func)(item, pos, face, clickPos);
+    }
 };

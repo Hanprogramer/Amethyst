@@ -17,3 +17,7 @@ AABB::AABB(Vec3 min, Vec3 max)
 
 AABB::AABB(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 	: min(minX, minY, minZ), max(maxX, maxY, maxZ) {}
+
+AABB AABB::BLOCK_SHAPE = AABB(
+    Vec3(0.0f, 0.0f, 0.0f),
+    Vec3(1.0f, 1.0f, 1.0f));

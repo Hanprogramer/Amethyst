@@ -37,5 +37,6 @@ public:
     virtual void unkn28();
     virtual void unkn29();
     virtual void unkn30();
+    virtual void unkn31();
     virtual EventResult onPlayerItemUseInteraction(Player& player, const ItemInstance& item);
 };

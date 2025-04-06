@@ -1,5 +1,6 @@
 #include "minecraft/src/common/world/level/block/Block.hpp"
 #include "minecraft/src/common/world/level/block/BlockLegacy.hpp"
+#include "minecraft/src/common/world/phys/AABB.hpp"
 
 template <typename T>
 inline T Block::getState(const BlockState& blockState) const
@@ -59,3 +60,15 @@ bool Block::isFenceBlock() const
 {
     return mLegacyBlock->isFenceBlock();
 }
+
+bool Block::getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const
+{
+    outAABB = this->mLegacyBlock->getCollisionShape(*this, region, pos, entity);
+    return outAABB.min.x < outAABB.max.x && outAABB.min.y < outAABB.max.y && outAABB.min.z < outAABB.max.z;
+}
+
+const Material& Block::getMaterial() const
+{
+    return mLegacyBlock->mMaterial;
+}
+

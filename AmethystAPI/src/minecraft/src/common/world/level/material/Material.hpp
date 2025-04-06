@@ -12,4 +12,9 @@ public:
     bool mBlocksPrecipitation;
     bool mSolid;
     bool mSuperHot;
+
+    bool isLiquid() const
+    {
+        return mLiquid;
+    }
 };

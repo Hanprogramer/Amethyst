@@ -12,6 +12,7 @@ class CompoundTag;
 class BlockLegacy;
 class Block;
 class ItemInstance;
+class HashedString;
 
 //is_virtual = True
 //    hide_vtable = True
@@ -74,11 +75,14 @@ public:
     const Item* getItem() const;
 
     bool isNull() const;
-
     void setUserData(std::unique_ptr<CompoundTag> userData);
-
     bool isLiquidClipItem() const;
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
+
+    bool isInstance(const HashedString& itemName, bool useItemLookup) const;
+
+private:
+    bool _isInstance(std::string_view itemName) const;
 };
 
 static_assert(sizeof(ItemStackBase) == 0x88);

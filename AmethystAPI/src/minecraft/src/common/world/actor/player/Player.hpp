@@ -12,6 +12,7 @@ class PlayerEventCoordinator;
 class InventoryTransaction;
 class ComplexInventoryTransaction;
 class GameMode;
+class LayeredAbilities;
 
 #pragma pack(push, 1)
 class Player : public Mob {
@@ -36,6 +37,8 @@ public:
 
     void sendInventoryTransaction(const InventoryTransaction& transaction); 
     void sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction>) const; 
+
+    const LayeredAbilities& getAbilities() const;
 };
 #pragma pack(pop)
 

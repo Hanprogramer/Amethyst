@@ -4,7 +4,7 @@
 #include "minecraft/src/common/world/level/BlockPos.hpp"
 #include "minecraft/src/common/world/phys/Vec3.hpp"
 
-enum class HitResultType : __int32 {
+enum class HitResultType : int {
     TILE = 0x0,
     ENTITY = 0x1,
     ENTITY_OUT_OF_RANGE = 0x2,
