@@ -51,8 +51,10 @@ namespace Log {
     }
 
     template <typename... T>
-    [[noreturn]] inline void _Assert(const char* function, int line, fmt::format_string<T...> fmt, T&&... args)
+    inline void _Assert(bool condition, const char* function, int line, fmt::format_string<T...> fmt, T&&... args)
     {
+        if (condition) return;
+
         std::string formatted_string = fmt::format(fmt, std::forward<T>(args)...);
         formatted_string += fmt::format("\n\tin: {}, line: {}", function, line);
         Log::Error("{}", formatted_string);
@@ -60,4 +62,4 @@ namespace Log {
     }
 }; // namespace Log
 
-#define Assert(...) Log::_Assert(__FUNCTION__, __LINE__, __VA_ARGS__)
+#define Assert(condition, ...) Log::_Assert(condition, __FUNCTION__, __LINE__, __VA_ARGS__)

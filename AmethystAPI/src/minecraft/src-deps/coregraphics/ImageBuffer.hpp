@@ -34,7 +34,7 @@ namespace cg {
                 return blobSize == v6 * v8;
             }
 
-            Assert("checking not implemented for compressed images");
+            Assert(false, "checking not implemented for compressed images");
         }
     };
 };

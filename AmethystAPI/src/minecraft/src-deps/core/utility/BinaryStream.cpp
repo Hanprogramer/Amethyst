@@ -7,7 +7,7 @@ Bedrock::Result<T> ReadOnlyBinaryStream::get()
     T data{};
 
     auto result = read(&data, sizeof(T));
-    if (!result) Assert("this->read<T>() had an exception.");
+    Assert(result.has_value(), "this->read<T>() had an exception.");
 
     return Bedrock::Result<T>(data);
 }
@@ -26,12 +26,13 @@ Bedrock::Result<uint32_t> ReadOnlyBinaryStream::getUnsignedVarInt32()
     while (true) {
         unsigned char byte;
         auto result = this->read(&byte, 1);
-        if (!result) Assert("read failed");
+        Assert(result.has_value(), "read failed");
 
         value |= (byte & 0x7F) << shift;
         if (!(byte & 0x80)) break;
         shift += 7;
-        if (shift >= 32) Assert("out of range");
+
+        Assert(!(shift >= 32), "out of range");
     }
 
     return Bedrock::Result<uint32_t>(value);
@@ -40,7 +41,7 @@ Bedrock::Result<uint32_t> ReadOnlyBinaryStream::getUnsignedVarInt32()
 Bedrock::Result<int32_t> ReadOnlyBinaryStream::getSignedVarInt32()
 {
     auto result = getUnsignedVarInt32();
-    if (!result) Assert("Issue with reading unsigned var int");
+    Assert(result.has_value(), "Issue with reading unsigned var int");
 
     uint32_t value = result.value();
     return Bedrock::Result<int32_t>((value >> 1) ^ -static_cast<int32_t>(value & 1));
@@ -49,13 +50,13 @@ Bedrock::Result<int32_t> ReadOnlyBinaryStream::getSignedVarInt32()
 Bedrock::Result<std::string> ReadOnlyBinaryStream::getString()
 {
     auto length = getUnsignedVarInt32();
-    if (!length) Assert("Issue with reading string length");
+    Assert(length.has_value(), "Issue with reading string length");
 
     std::string value;
     value.resize(length.value());
 
     auto result = read(&value[0], length.value());
-    if (!result) Assert("Issue with reading string");
+    Assert(result.has_value(), "Issue with reading string");
 
     return Bedrock::Result<std::string>(value);
 }

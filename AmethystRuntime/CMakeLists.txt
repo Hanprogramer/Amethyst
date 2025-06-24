@@ -53,6 +53,8 @@ target_compile_options(AmethystRuntime PRIVATE
     $<$<COMPILE_LANGUAGE:CXX>:/MP> 
 )
 
+target_compile_definitions(AmethystRuntime PRIVATE AMETHYST_EXPORTS)
+
 # EnTT Config Options
 target_compile_definitions(AmethystRuntime PUBLIC ENTT_PACKED_PAGE=128)
 

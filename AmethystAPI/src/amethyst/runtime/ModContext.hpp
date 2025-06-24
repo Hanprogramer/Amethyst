@@ -16,6 +16,7 @@ namespace Amethyst {
 	Amethyst::HookManager& GetHookManager();
 	Amethyst::PatchManager& GetPatchManager();
 	Amethyst::EnumAllocator& GetEnumAllocator();
+    Amethyst::SymbolLoader& GetSymbolLoader();
 
 	Minecraft* GetMinecraft();
 	Level* GetLevel();

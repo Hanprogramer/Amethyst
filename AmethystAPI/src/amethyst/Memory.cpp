@@ -29,9 +29,7 @@ uintptr_t SlideAddress(uintptr_t offset)
 std::optional<uintptr_t> SigScanSafe(std::string_view signature)
 {
     const auto parsed = hat::parse_signature(signature);
-    if (!parsed.has_value()) {
-        Assert("Invalid signature! {:s}", signature);
-    }
+    Assert(parsed.has_value(), "Invalid signature! {:s}", signature);
 
     const auto begin = reinterpret_cast<std::byte*>(GetMinecraftBaseAddress());
     const auto end = begin + GetMinecraftSize();
@@ -43,10 +41,7 @@ std::optional<uintptr_t> SigScanSafe(std::string_view signature)
 
 uintptr_t SigScan(std::string_view signature) {
     auto result = SigScanSafe(signature);
-
-    if (!result.has_value()) {
-        Assert("Failed to find signature \"{:s}\"", signature);
-    }
+    Assert(result.has_value(), "Failed to find signature \"{:s}\"", signature);
 
     return result.value();
 }
@@ -74,18 +69,15 @@ void ProtectMemory(uintptr_t address, size_t size, DWORD protectionData, DWORD* 
     DWORD oldProtect;
     if (oldProtection != nullptr) oldProtect = *oldProtection;
 	else oldProtect = DWORD();
-    if (!VirtualProtect(reinterpret_cast<void*>(address), size, protectionData, &oldProtect)) {
-        Assert("Failed to reprotect memory at 0x{:X}! Error: {}", address, GetLastError());
-	}
+
+    Assert(VirtualProtect(reinterpret_cast<void*>(address), size, protectionData, &oldProtect), "Failed to reprotect memory at 0x{:X}! Error: {}", address, GetLastError());
 
 	if (oldProtection != nullptr) *oldProtection = oldProtect;
 }
 
 uintptr_t AddressFromLeaInstruction(uintptr_t leaInstructionAddress)
 {
-    if (IsBadReadPtr((void*)leaInstructionAddress, 7)) {
-        Assert("Bad Ptr to lea instruction");
-    }
+    Assert(!IsBadReadPtr((void*)leaInstructionAddress, 7), "Bad Ptr to lea instruction");
 
     // lea is 7 bytes long
     // - first 3 is the opcode

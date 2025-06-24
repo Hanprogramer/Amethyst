@@ -29,6 +29,9 @@ void AmethystRuntime::Start()
     // read the config file and load in any mods
     ReadLauncherConfig();
 
+    // Load symbols
+    getSymbolLoader()->Start(mLauncherConfig);
+
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger) PromptDebugger();
 
@@ -161,4 +164,9 @@ void AmethystRuntime::PauseGameThread()
     typedef NTSTATUS(NTAPI * NtSuspendThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
     static NtSuspendThreadPtr NtSuspendThread = (NtSuspendThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSuspendThread");
     NtSuspendThread(gMcThreadHandle, NULL);
+}
+
+extern "C" __declspec(dllexport) AmethystContext* GetContextInstance()
+{
+    return AmethystRuntime::getContext();
 }

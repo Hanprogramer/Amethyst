@@ -10,12 +10,12 @@ FetchContent_Declare(
     GIT_REPOSITORY  https://github.com/BasedInc/libhat.git
     GIT_TAG         3321c66b7e699e5585948bdb663c105efa48c680
 )
-FetchContent_MakeAvailable(libhat)                       
+FetchContent_MakeAvailable(libhat)                         
      
-file(GLOB_RECURSE AmethystAPI_All           
+file(GLOB_RECURSE AmethystAPI_All            
     "src/*.cpp"       
-    "src/*.c"       
-    "src/*.asm"     
+    "src/*.c"        
+    "src/*.asm"      
     "src/*.hpp"       
     "src/*.h" 
     amethyst/MinecraftVtables.asm  
@@ -31,7 +31,7 @@ file(GLOB_RECURSE AmethystAPI_All
     minecraft/src/common/world/level/chunk/ChunkSource.asm
     minecraft/src/common/world/level/levelgen/WorldGenerator.asm
     minecraft/src/common/world/level/levelgen/structure/StructureFeatureRegistry.asm
-)                   
+)                    
  
 add_library(AmethystAPI STATIC ${AmethystAPI_All})
 

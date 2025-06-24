@@ -20,9 +20,8 @@ void Amethyst::InputManager::RegisterNewInput(
         bool allowRemapping
 ){
     Options* opt = mAmethyst->mOptions;
-    if (!opt) {
-        Assert("AmethystContext->mOptions was null, ensure that RegisterNewInput is being called in the RegisterInputs event.");
-    }
+    Assert(opt, "AmethystContext->mOptions was null, ensure that RegisterNewInput is being called in the RegisterInputs event.");
+    
 
     for (auto& layout : opt->mKeyboardRemappings)
     {
@@ -63,9 +62,8 @@ void Amethyst::InputManager::AddButtonDownHandler(
         bool suspendable)
 {
     ClientInputHandler* clientInput = mAmethyst->mClientInstance->inputHandler;
-    if (clientInput == nullptr) {
-        Assert("ButtonHandlers cannot be created in amethyst event RegisterInputs, consider using OnStartJoinGame.");
-    }
+    Assert(clientInput != nullptr, "ButtonHandlers cannot be created in amethyst event RegisterInputs, consider using OnStartJoinGame.");
+    
 
     InputHandler* inputHandler = clientInput->mInputHandler;
     inputHandler->registerButtonDownHandler("button." + actionName, std::move(handler), suspendable);
@@ -77,9 +75,7 @@ void Amethyst::InputManager::AddButtonUpHandler(
         bool suspendable)
 {
     ClientInputHandler* clientInput = mAmethyst->mClientInstance->inputHandler;
-    if (clientInput == nullptr) {
-        Assert("ButtonHandlers cannot be created in amethyst event RegisterInputs, consider using OnStartJoinGame.");
-    }
+    Assert(clientInput != nullptr, "ButtonHandlers cannot be created in amethyst event RegisterInputs, consider using OnStartJoinGame.");
 
     InputHandler* inputHandler = clientInput->mInputHandler;
     inputHandler->registerButtonUpHandler("button." + actionName, std::move(handler), suspendable);

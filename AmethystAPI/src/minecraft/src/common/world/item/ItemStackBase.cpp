@@ -187,7 +187,7 @@ bool ItemStackBase::isInstance(const HashedString& itemName, bool useItemLookup)
 bool ItemStackBase::_isInstance(std::string_view itemName) const
 {
     if (!mItem) return false;
-    Assert("Too lazy to implement this, if needed write impl here");
+    Assert(false, "Too lazy to implement this, if needed write impl here");
 }
 
 

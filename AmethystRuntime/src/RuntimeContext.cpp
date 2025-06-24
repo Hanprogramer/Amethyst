@@ -11,10 +11,12 @@ void RuntimeContext::Start()
     mPatchManager = std::make_unique<Amethyst::PatchManager>();
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
     mFeatures = std::make_unique<Amethyst::RuntimeFeatures>();
+    mSymbolLoader = std::make_unique<Amethyst::SymbolLoader>();
 }
 
 void RuntimeContext::Shutdown()
 {
+    mSymbolLoader.reset();
     mHookManager.reset();
     mEventBus.reset();
     mInputManager.reset();
