@@ -53,3 +53,5 @@ target("AmethystAPI")
 
     add_includedirs("C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
     add_includedirs("include", "src", {public = true})
+
+    add_headerfiles("src/**.hpp", "include/**.hpp", "include/**.h")

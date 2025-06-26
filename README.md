@@ -58,3 +58,22 @@ $destination = Join-Path $env:USERPROFILE "Documents/Amethyst"
 git clone https://github.com/FrederoxDev/Amethyst.git $destination
 [System.Environment]::SetEnvironmentVariable("amethyst_src", $destination, "User")
 ```
+
+### Building
+
+Required tools: [Xmake](https://xmake.io/#/getting_started?id=installation), Visual Studio 2022 (for MSVC), Ninja (Optional)
+
+### Visual Studio
+
+To generate a `.sln` file, run these two commands:
+```
+cd AmethystAPI
+xmake project -k vsxmake -a x64
+```
+
+### CMD
+To build directly from the command line:
+```
+cd AmethystAPI
+xmake
+```
