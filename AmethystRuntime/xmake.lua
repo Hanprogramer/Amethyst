@@ -1,8 +1,11 @@
 -- Mod Options
 local mod_name = "AmethystRuntime"
-local major = 2
-local minor = 0
-local patch = 0
+local mod_version = "2.0.0"
+
+-- Minecraft version
+local major = 1
+local minor = 21
+local patch = 3
 
 set_languages("c++23")
 set_project(mod_name)
@@ -39,13 +42,9 @@ package("libhat")
         table.insert(configs, "-DLIBHAT_STATIC_C_LIB=OFF")
         table.insert(configs, "-DLIBHAT_SHARED_C_LIB=OFF")
         table.insert(configs, "-DLIBHAT_INSTALL_TARGET=ON")
-        table.insert(configs, "-DCMAKE_CXX_FLAGS=/GL")
-        table.insert(configs, "-DCMAKE_EXE_LINKER_FLAGS=/LTCG")
-        table.insert(configs, "-DCMAKE_SHARED_LINKER_FLAGS=/LTCG")
-        table.insert(configs, "-DCMAKE_STATIC_LINKER_FLAGS=/LTCG")
+        table.insert(configs, "-DCMAKE_CXX_FLAGS=/O2 /Zi /DNDEBUG /MD /EHsc /FS")
 
         import("package.tools.cmake").install(package, configs)
-
         os.cp("include", package:installdir())
     end)
 package_end()
@@ -62,16 +61,22 @@ local amethystFolder = path.join(
     "amethyst"
 )
 
-set_targetdir(path.join(
+local modFolder = path.join(
     amethystFolder,
     "mods",
-    string.format("%s@%d.%d.%d", mod_name, major, minor, patch)
-))
+    string.format("%s@%s", mod_name, mod_version)
+)
+
+set_targetdir(modFolder)
 
 target("AmethystRuntime")
     set_kind("shared")
     set_toolchains("nasm")
     add_deps("AmethystAPI")
+    
+    -- Force rebuild when any source file changes
+    set_policy("build.optimization.lto", false)
+    set_policy("build.across_targets_in_parallel", false)
 
     add_files(
         "src/**.cpp"
@@ -89,7 +94,7 @@ target("AmethystRuntime")
     -- Deps
     add_linkdirs("../AmethystAPI/lib")
     add_packages("AmethystAPI", "libhat")
-    add_links("fmt")
+    add_links("fmt", "user32", "oleaut32", "windowsapp", "C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/lib/libhat")
 
     add_includedirs("C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
-    add_includedirs("include", "src", {public = true})
+    add_includedirs("src", {public = true})

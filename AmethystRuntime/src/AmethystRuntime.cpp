@@ -2,6 +2,7 @@
 #include "debug/AmethystDebugging.hpp"
 #include <amethyst/runtime/events/ModEvents.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>
+#include <amethyst/Log.hpp>
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HANDLE gMcThreadHandle;
@@ -9,7 +10,8 @@ extern DWORD gMcThreadId;
 
 void AmethystRuntime::Start()
 {
-    getContext()->Start();
+    PauseGameThread();
+    getContext()->Start(); 
     Log::Info("[AmethystRuntime] Using 'AmethystRuntime@{}'", MOD_VERSION);
 
     SemVersion version = getMinecraftPackageInfo()->mVersion;
@@ -157,6 +159,8 @@ void AmethystRuntime::ResumeGameThread()
     typedef NTSTATUS(NTAPI * NtResumeThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
     static NtResumeThreadPtr NtResumeThread = (NtResumeThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread");
     NtResumeThread(gMcThreadHandle, NULL);
+
+    Log::Info("[AmethystRuntime] Resumed game thread (0x{:x})", gMcThreadId);
 }
 
 void AmethystRuntime::PauseGameThread()
@@ -164,6 +168,8 @@ void AmethystRuntime::PauseGameThread()
     typedef NTSTATUS(NTAPI * NtSuspendThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
     static NtSuspendThreadPtr NtSuspendThread = (NtSuspendThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSuspendThread");
     NtSuspendThread(gMcThreadHandle, NULL);
+
+    Log::Info("[AmethystRuntime] Paused game thread (0x{:x})", gMcThreadId);
 }
 
 extern "C" __declspec(dllexport) AmethystContext* GetContextInstance()
