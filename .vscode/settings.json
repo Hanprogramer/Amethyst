@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
+        ".gitattributes": true,
+        "**/.xmake": true,
+        "**/vc140.pdb": true,
+        "**/vsxmake2022": true,
+        "**/build": true,
+        ".clang-format": true,
+    }
+}

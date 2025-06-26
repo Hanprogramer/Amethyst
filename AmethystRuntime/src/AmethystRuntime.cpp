@@ -10,7 +10,6 @@ extern DWORD gMcThreadId;
 
 void AmethystRuntime::Start()
 {
-    PauseGameThread();
     getContext()->Start(); 
     Log::Info("[AmethystRuntime] Using 'AmethystRuntime@{}'", MOD_VERSION);
 
@@ -160,7 +159,7 @@ void AmethystRuntime::ResumeGameThread()
     static NtResumeThreadPtr NtResumeThread = (NtResumeThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread");
     NtResumeThread(gMcThreadHandle, NULL);
 
-    Log::Info("[AmethystRuntime] Resumed game thread (0x{:x})", gMcThreadId);
+    Log::Info("[AmethystRuntime] Resumed game thread (0x{:x}) 0x{:x}", gMcThreadId, (uint64_t)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread"));
 }
 
 void AmethystRuntime::PauseGameThread()

@@ -41,8 +41,6 @@ DWORD WINAPI Main()
     // Create an instance of AmethystRuntime and invoke it to start
     AmethystRuntime* runtime = AmethystRuntime::getInstance();
 
-    Log::Info("test");
-
     try {
         runtime->Start();
     }

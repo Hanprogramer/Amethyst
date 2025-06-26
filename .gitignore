@@ -4,9 +4,8 @@
 *\build
 *\.vs
 */packages
-.vscode/settings.json
 *.env
 dist
-*/.xmake
-*/vc140.pdb
-*/vsxmake2022
+**/.xmake
+**/vc140.pdb
+**/vsxmake2022
