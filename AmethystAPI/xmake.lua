@@ -2,7 +2,6 @@ set_languages("c++23")
 
 add_cxxflags("/O2", "/Zi", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
 add_ldflags("/DEBUG", "/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
-add_linkdirs("lib")
 
 toolchain("nasm")
     set_kind("standalone")
@@ -49,7 +48,6 @@ target("AmethystAPI")
 
     -- Deps
     add_packages("libhat")
-    add_links("fmt")
 
     add_includedirs("C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
     add_includedirs("include", "src", {public = true})

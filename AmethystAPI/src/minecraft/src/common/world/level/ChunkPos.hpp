@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include <fmt/core.h>
+#include <format>
 
 class ChunkPos {
 public:
@@ -32,12 +32,13 @@ public:
 };
 
 template <>
-struct fmt::formatter<ChunkPos> {
-    constexpr auto parse(fmt::format_parse_context& ctx) { return ctx.begin(); }
+struct std::formatter<ChunkPos> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin(); // No custom format specifiers
+    }
 
     template <typename FormatContext>
-    auto format(const ChunkPos& pos, FormatContext& ctx)
-    {
-        return fmt::format_to(ctx.out(), "ChunkPos(x: {}, z: {})", pos.x, pos.z);
+    auto format(const ChunkPos& pos, FormatContext& ctx) const {
+        return std::format_to(ctx.out(), "ChunkPos(x: {}, z: {})", pos.x, pos.z);
     }
 };

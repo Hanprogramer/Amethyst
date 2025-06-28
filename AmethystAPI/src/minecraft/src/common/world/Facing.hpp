@@ -1,4 +1,5 @@
 #pragma once
+#include <format>
 
 class Facing {
 public:
@@ -20,30 +21,25 @@ public:
 
 typedef Facing::Name FacingID;
 
-#include <fmt/core.h>
 
 template <>
-struct fmt::formatter<FacingID> {
-    constexpr auto parse(fmt::format_parse_context& ctx) { return ctx.begin(); }
+struct std::formatter<FacingID> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin(); // No custom specifiers
+    }
 
     template <typename FormatContext>
-    auto format(const FacingID& face, FormatContext& ctx)
-    {
+    auto format(const FacingID& face, FormatContext& ctx) const {
+        std::string_view name;
         switch (face) {
-            case FacingID::DOWN:
-                return fmt::format_to(ctx.out(), "down");
-            case FacingID::UP:
-                return fmt::format_to(ctx.out(), "up");
-            case FacingID::NORTH:
-                return fmt::format_to(ctx.out(), "north");
-            case FacingID::SOUTH:
-                return fmt::format_to(ctx.out(), "south");
-            case FacingID::WEST:
-                return fmt::format_to(ctx.out(), "west");
-            case FacingID::EAST:
-                return fmt::format_to(ctx.out(), "east");
-            default:
-                return fmt::format_to(ctx.out(), "unknown");
+            case FacingID::DOWN:  name = "down";  break;
+            case FacingID::UP:    name = "up";    break;
+            case FacingID::NORTH: name = "north"; break;
+            case FacingID::SOUTH: name = "south"; break;
+            case FacingID::WEST:  name = "west";  break;
+            case FacingID::EAST:  name = "east";  break;
+            default:              name = "unknown"; break;
         }
+        return std::format_to(ctx.out(), "{}", name);
     }
 };

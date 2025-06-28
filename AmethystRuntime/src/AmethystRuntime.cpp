@@ -3,6 +3,7 @@
 #include <amethyst/runtime/events/ModEvents.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <amethyst/Log.hpp>
+#include <format>
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HANDLE gMcThreadHandle;
@@ -100,7 +101,7 @@ void AmethystRuntime::_LoadModFunc(std::vector<T>* vector, Mod& mod, const char*
 void AmethystRuntime::PromptDebugger()
 {
     Log::Info("[AmethystRuntime] Minecraft's Base: 0x{:x}", GetMinecraftBaseAddress());
-    std::string command = fmt::format("vsjitdebugger -p {:d}", GetCurrentProcessId());
+    std::string command = std::format("vsjitdebugger -p {:d}", GetCurrentProcessId());
     system(command.c_str());
 }
 

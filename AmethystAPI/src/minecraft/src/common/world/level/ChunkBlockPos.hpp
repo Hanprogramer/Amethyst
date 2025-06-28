@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #include <functional>
+#include <format>
 
 #include <amethyst/Log.hpp>
 #include "minecraft/src/common/world/level/BlockPos.hpp"
@@ -56,12 +57,13 @@ template <>
 }
 
 template <>
-struct fmt::formatter<ChunkBlockPos> {
-    constexpr auto parse(fmt::format_parse_context& ctx) { return ctx.begin(); }
+struct std::formatter<ChunkBlockPos> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin(); // No custom format specifiers
+    }
 
     template <typename FormatContext>
-    auto format(const ChunkBlockPos& pos, FormatContext& ctx)
-    {
-        return fmt::format_to(ctx.out(), "ChunkBlockPos(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
+    auto format(const ChunkBlockPos& pos, FormatContext& ctx) const {
+        return std::format_to(ctx.out(), "ChunkBlockPos(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
     }
 };
