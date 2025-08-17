@@ -195,3 +195,22 @@ bool ItemStackBase::_isInstance(std::string_view itemName) const
 const Item* ItemStackBase::getItem() const {
     return mItem.get();
 }
+
+ItemStackBase::operator bool() const
+{
+    return mValid && mItem && !isNull() && mCount > 0;
+}
+
+bool ItemStackBase::isBlock() const
+{
+    return mItem && mItem->mLegacyBlock;
+}
+
+WeakPtr<BlockLegacy> ItemStackBase::getLegacyBlock() const
+{
+    if (mItem && mItem->mLegacyBlock) {
+        return mItem->mLegacyBlock;
+    }
+
+    return WeakPtr<BlockLegacy>();
+}

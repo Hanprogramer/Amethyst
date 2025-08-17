@@ -25,3 +25,9 @@ BlockPos GameMode::_calculatePlacePos(ItemStack& heldStack, const BlockPos& pos,
     
     return pos.neighbor(face);
 }
+
+bool GameMode::_canUseBlock(const Block& block) const
+{
+    Log::Info("todo: properly impl GameMode::_canUseBlock");
+    return true;
+}

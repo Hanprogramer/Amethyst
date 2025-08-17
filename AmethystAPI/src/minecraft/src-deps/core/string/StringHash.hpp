@@ -42,6 +42,9 @@ public:
         return *this;
     }
 
+    constexpr HashedString(const char* str)
+        : HashedString(str ? computeHash(str) : 0, str ? std::string(str) : std::string{}) {}
+
     constexpr HashedString(std::string str) : HashedString(computeHash(str), str) {}
 
     constexpr HashedString(const HashType64 hash, std::string str) : mStrHash(hash), mStr(std::move(str)) {}

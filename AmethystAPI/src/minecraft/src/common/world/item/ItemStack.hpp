@@ -1,4 +1,5 @@
 #pragma once
+#include <format>
 #include "minecraft/src/common/world/item/ItemStackBase.hpp"
 #include "minecraft/src/common/world/inventory/network/ItemStackNetIdVariant.hpp"
 

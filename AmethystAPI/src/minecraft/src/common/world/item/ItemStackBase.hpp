@@ -80,6 +80,10 @@ public:
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
 
     bool isInstance(const HashedString& itemName, bool useItemLookup) const;
+    bool isBlock() const;
+    WeakPtr<BlockLegacy> getLegacyBlock() const;
+
+    operator bool() const;
 
 private:
     bool _isInstance(std::string_view itemName) const;

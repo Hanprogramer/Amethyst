@@ -8,14 +8,14 @@ class HudContainerManagerModel;
 
 // This is probably wrong in some way or outdated, from china
 enum class ContainerID : unsigned char {
-    CONTAINER_ID_NONE = 0xff,
-    CONTAINER_ID_INVENTORY = 0x0000,
-    CONTAINER_ID_FIRST = 0x0001,
-    CONTAINER_ID_LAST = 0x0064,
-    CONTAINER_ID_OFFHAND = 0x0077,
-    CONTAINER_ID_ARMOR = 0x0078,
-    CONTAINER_ID_SELECTION_SLOTS = 0x007a,
-    CONTAINER_ID_PLAYER_ONLY_UI = 0x007c,
+  CONTAINER_ID_NONE = 0xFF,
+  CONTAINER_ID_INVENTORY = 0x0,
+  CONTAINER_ID_FIRST = 0x1,
+  CONTAINER_ID_LAST = 0x64,
+  CONTAINER_ID_OFFHAND = 0x77,
+  CONTAINER_ID_ARMOR = 0x78,
+  CONTAINER_ID_SELECTION_SLOTS = 0x7A,
+  CONTAINER_ID_PLAYER_ONLY_UI = 0x7C,
 };
 
 // yes these two funcs come before the destructors
