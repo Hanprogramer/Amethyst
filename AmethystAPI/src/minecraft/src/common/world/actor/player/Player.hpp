@@ -38,7 +38,9 @@ public:
     void sendInventoryTransaction(const InventoryTransaction& transaction); 
     void sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction>) const; 
 
+    // non virtuals
     const LayeredAbilities& getAbilities() const;
+    GameMode& getGameMode() const;
 };
 #pragma pack(pop)
 

@@ -44,3 +44,8 @@ const LayeredAbilities& Player::getAbilities() const
 {
     return this->tryGetComponent<AbilitiesComponent>()->mAbilities;
 }
+
+GameMode& Player::getGameMode() const
+{
+    return *this->mGameMode.get();
+}

@@ -116,6 +116,7 @@ class WeakEntityRef;
 class Dimension;
 class TickingAreaList;
 enum class ParticleType : int {};
+class BlockPalette;
 
 class ILevel : public Bedrock::EnableNonOwnerReferences {
 public:
@@ -333,7 +334,7 @@ public:
     virtual void _unknown_69();
 
     /**@vIndex {70}*/
-    virtual void _unknown_70();
+    virtual BlockPalette& getBlockPalette() const;
 
     /**@vIndex {71}*/
     virtual void _unknown_71();

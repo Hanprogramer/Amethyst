@@ -81,6 +81,7 @@ public:
     void reload();
 
     bool isClientSide() const;
+    bool isCreative() const;
 };
 #pragma pack(pop)   
 
