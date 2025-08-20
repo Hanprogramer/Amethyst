@@ -67,6 +67,7 @@ local modFolder = path.join(
     string.format("%s@%s", mod_name, mod_version)
 )
 
+set_symbols("debug")
 set_targetdir(modFolder)
 
 target("AmethystRuntime")

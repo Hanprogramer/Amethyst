@@ -81,6 +81,7 @@ public:
 
     bool isInstance(const HashedString& itemName, bool useItemLookup) const;
     bool isBlock() const;
+    bool isOffhandItem() const;
     WeakPtr<BlockLegacy> getLegacyBlock() const;
 
     operator bool() const;

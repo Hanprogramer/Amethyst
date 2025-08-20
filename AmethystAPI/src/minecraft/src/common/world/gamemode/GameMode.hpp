@@ -76,4 +76,8 @@ public:
     float getMaxPickRange() const;
 
     bool baseUseItem(ItemStack& stack);
+
+    bool isLastBuildBlockInteractive() const {
+        return mBuildContext.mLastBuildBlockWasInteractive;
+    }
 };

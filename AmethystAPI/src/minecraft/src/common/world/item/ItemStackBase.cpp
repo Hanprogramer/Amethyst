@@ -214,3 +214,9 @@ WeakPtr<BlockLegacy> ItemStackBase::getLegacyBlock() const
 
     return WeakPtr<BlockLegacy>();
 }
+
+bool ItemStackBase::isOffhandItem() const
+{
+    if (!mItem) return false;
+    return mItem->mAllowOffhand;
+}
