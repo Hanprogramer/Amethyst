@@ -107,14 +107,14 @@ void AmethystRuntime::PromptDebugger()
 
 void AmethystRuntime::CreateOwnHooks()
 {
-    auto& featureFlags = AmethystRuntime::getContext()->mFeatures;
-
-    if (featureFlags->enableInputSystem) CreateInputHooks();
+    CreateInputHooks();
     CreateModFunctionHooks();
 }
 
 void AmethystRuntime::RunMods()
 {
+    Log::Info("mOptions {}", AmethystRuntime::getContext()->mOptions == nullptr ? "nullptr" : "exists");
+
     // If we have hot-reloaded this will be true, so prompt mods to create their inputs.
     if (AmethystRuntime::getContext()->mOptions != nullptr) {
         RegisterInputsEvent event(*AmethystRuntime::getInputManager());

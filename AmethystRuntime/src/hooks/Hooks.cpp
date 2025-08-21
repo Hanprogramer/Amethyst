@@ -31,6 +31,7 @@ int64_t ClientInstance_onStartJoinGame(ClientInstance* self, int64_t a2, int64_t
 {
     OnStartJoinGameEvent event(*self);
     AmethystRuntime::getEventBus()->Invoke(event);
+    AmethystRuntime::getContext()->mIsInWorldOrLoading = true;
     return _ClientInstance_onStartJoinGame.call<int64_t, ClientInstance*, int64_t, int64_t, uint64_t>(self, a2, a3, a4);
 }
 
@@ -38,6 +39,7 @@ void ClientInstance_requestLeaveGame(ClientInstance* self, char switchScreen, ch
 {
     OnRequestLeaveGameEvent event(*self);
     AmethystRuntime::getEventBus()->Invoke(event);
+    AmethystRuntime::getContext()->mIsInWorldOrLoading = false;
     _ClientInstance_requestLeaveGame.thiscall(self, switchScreen, sync);
 }
 

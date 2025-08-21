@@ -1,6 +1,7 @@
 #include "hooks/InputHooks.hpp"
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <minecraft/src-deps/input/MouseDevice.hpp>
+#include <amethyst/Log.hpp>
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
 SafetyHookInline _createInputMappingTemplates;
@@ -8,17 +9,21 @@ SafetyHookInline _MouseDevice_feed;
 
 void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboard, MouseInputMapping* mouse)
 {
-    Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
-   _addFullKeyboardGamePlayControls.call(self, keyboard, mouse);
+    _addFullKeyboardGamePlayControls.call(self, keyboard, mouse);
 
-   for (auto& actionName : inputManager->mRegisteredInputs) {
-       std::string keyName = "key." + actionName;
-       std::string buttonName = "button." + actionName;
-       self->createKeyboardAndMouseBinding(keyboard, mouse, &buttonName, &keyName);
-   }
+    Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
+    //if (!AmethystRuntime::getContext()->mIsInWorldOrLoading) return;
+    Log::Info("addFullKeyboardGamePlayControls");
+
+    for (auto& actionName : inputManager->mRegisteredInputs) {
+        std::string keyName = "key." + actionName;
+        std::string buttonName = "button." + actionName;
+        self->createKeyboardAndMouseBinding(keyboard, mouse, &buttonName, &keyName);
+    }
 }
 
 void createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
+    Log::Info("createInputMappingTemplates");
     _createInputMappingTemplates.call(self, opt);
 
     // This function is called once at the very start of the game
