@@ -24,22 +24,27 @@ public:
         IntArray = 0x000b,
     };
 
-public:
-    uintptr_t** vtable;
+    static const std::string NullString;
+    static const int TAGERR_OUT_OF_BOUNDS;
+    static const int TAGERR_BAD_TYPE;
 
-public:
+    virtual ~Tag() = default;
+    virtual void deleteChildren() {};
+    virtual void write(IDataOutput&) const = 0;
+    virtual void load(IDataInput&) = 0;
+    virtual std::string toString() const = 0;
+    virtual Tag::Type getId() const = 0;
+    virtual bool equals(const Tag&) const;
+    virtual void print(PrintStream&) const;
+    virtual void print(const std::string&, PrintStream&) const;
+    virtual std::unique_ptr<Tag> copy() const = 0;
+    virtual size_t hash() const = 0;
+
+    static std::unique_ptr<Tag> readNamedTag(IDataInput&, std::string&);
+    static void writeNamedTag(const std::string&, const Tag&, IDataOutput&);
+    static std::unique_ptr<Tag> newTag(Type);
+    static std::string getTagName(Type);
+
+protected:
     Tag();
-
-    /* Tag::vfuncs */
-    ~Tag();
-    void deleteChildren();
-    void write(IDataOutput&) const;
-    void load(IDataInput&);
-    std::string toString() const;
-    Tag::Type getId() const;
-    bool equals(const Tag&) const;
-    void print(PrintStream&) const;
-    void print(const std::string&, PrintStream&) const;
-    std::unique_ptr<Tag> copy() const;
-    size_t hash() const;
 };
