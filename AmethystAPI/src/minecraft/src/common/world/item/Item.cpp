@@ -29,6 +29,17 @@ void Item::addCreativeItem(ItemRegistryRef* a1, const Block* a2)
     func(a1, a2);
 }
 
+bool Item::hasTag(const HashedString& tag) const
+{
+    for (const ItemTag& itemTag : mTags) {
+        if (itemTag.getHash() == tag.getHash()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 const std::string& Item::getRawNameId() const {
     return mRawNameId.getString();
 }

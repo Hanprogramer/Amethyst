@@ -83,8 +83,8 @@ public:
     bool isBlock() const;
     bool isOffhandItem() const;
     WeakPtr<BlockLegacy> getLegacyBlock() const;
-
     operator bool() const;
+    bool hasTag(const HashedString& tag) const;
 
 private:
     bool _isInstance(std::string_view itemName) const;

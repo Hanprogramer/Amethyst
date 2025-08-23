@@ -220,3 +220,8 @@ bool ItemStackBase::isOffhandItem() const
     if (!mItem) return false;
     return mItem->mAllowOffhand;
 }
+
+bool ItemStackBase::hasTag(const HashedString& tag) const
+{
+    return mItem && mItem->hasTag(tag);
+}

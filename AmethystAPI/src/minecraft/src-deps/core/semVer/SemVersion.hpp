@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <string>
 
-class SemVersion {
+class __declspec(align(8)) SemVersion {
 public:
     uint16_t mMajor;
     uint16_t mMinor;

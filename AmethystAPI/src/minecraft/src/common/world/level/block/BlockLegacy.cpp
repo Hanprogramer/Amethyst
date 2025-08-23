@@ -55,6 +55,28 @@ void BlockLegacy::addState(const BlockState& blockState)
     (this->*func)(blockState);
 }
 
+bool BlockLegacy::isAir() const
+{
+    return mNameInfo.mFullName == HashedString("minecraft:air");
+}
+
+bool BlockLegacy::hasProperty(BlockProperty prop) const
+{
+    return (mProperties & (uint64_t)prop) != 0;
+}
+
+bool BlockLegacy::isSnappableBlock() const
+{
+    if (hasProperty(BlockProperty::Unknown21)) return true;
+    if (hasProperty(BlockProperty::Unknown1)) return true;
+    if (hasProperty(BlockProperty::Unknown2)) return true;
+    if (isFenceBlock()) return true;
+    if (isFenceGateBlock()) return true;
+    if (isWallBlock()) return true;
+
+    return false;
+}
+
 
 std::optional<int> BlockLegacy::_tryLookupAlteredStateCollection(uint64_t stateId, uint16_t blockData)
 {

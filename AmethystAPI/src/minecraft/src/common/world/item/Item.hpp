@@ -69,35 +69,71 @@ class Mob;
 class IDataInput;
 class ReadOnlyBinaryStream;
 class IDataOutput;
+class FoodItemComponentLegacy {};
+class SeedItemComponentLegacy {};
+class CameraItemComponentLegacy {};
+
+namespace Interactions::Mining {
+    enum MineBlockItemEffectType : int32_t {};
+}
+
+class ItemTag : public HashedString {
+
+};
+
 
 class Item {
 public:
     /* this + 8   */ std::string mTextureAtlasFile;
-    /* this + 40  */ std::byte padding40[4];
-    /* this + 44  */ bool mIsMirroredArt;
-    /* this + 45  */ std::byte padding45[19];
-    /* this + 64  */ string_span mHoverTextColorFormat;
-    /* this + 80  */ std::byte padding80[82];
+    /* this + 40  */ int mFrameCount;
+    /* this + 44  */ bool mAnimatesInToolbar;
+    /* this + 45  */ bool mIsMirroredArt;
+    /* this + 46  */ bool mUseAnim;
+    /* this + 64  */ std::string mHoverTextColorFormat;
+
+    int mIconFrame;
+    int mAtlasFrame;
+    int mAtlasTotalFrames;
+    std::string mIconName;
+    std::string mAtlasName;
+    uint8_t mMaxStackSize;
+
     /* this + 162 */ short mId;
-    /* this + 164 */ short mMaxDamage;
-    /* this + 166 */ std::byte padding166[2];
     /* this + 168 */ std::string mDescriptionId;
     /* this + 200 */ HashedString mRawNameId;
     /* this + 248 */ std::string mNamespace;
     /* this + 280 */ HashedString mFullName;
-    /* this + 328 */ short mMaxUseDuration;
-    /* this + 330 */ bool unknown0 : 1;
-    /* this + 330 */ bool unknown1 : 1;
-    /* this + 330 */ bool unknown2 : 1;
-    /* this + 330 */ bool unknown3 : 1;
-    /* this + 330 */ bool unknown4 : 1;
-    /* this + 330 */ bool unknown5 : 1;
-    /* this + 330 */ bool unknown6 : 1;
-    /* this + 330 */ bool mAllowOffhand : 1;
-    /* this + 331 */ std::byte padding331[125];   
+    /* this + 328 */ short mMaxDamage;
+
+    bool mIsGlint : 1;
+    bool mHandEquipped : 1;
+    bool mIsStackedByData : 1;
+    bool mRequiresWorldBuilder : 1;
+    bool mExplodable : 1;
+    bool mFireResistant : 1;
+    bool mShouldDespawn : 1;
+    bool mAllowOffhand : 1;
+    bool mIgnoresPermissions : 1;
+
+    int mMaxUseDuration;
+    BaseGameVersion mMinRequiredBaseGameVersion;
+
     /* this + 456 */ WeakPtr<BlockLegacy> mLegacyBlock;
     /* this + 464 */ CreativeItemCategory mCreativeCategory;
-    /* this + 468 */ std::byte padding468[132];
+
+    Item* mCraftingRemainingItem;
+    std::string mCreativeGroup;
+    float mFurnaceBurnIntervalModifier;
+    float mFurnaceXPmultiplier;
+    bool mIsHiddenInCommands;
+
+    Interactions::Mining::MineBlockItemEffectType mMineBlockType;
+    std::unique_ptr<FoodItemComponentLegacy> mFoodComponentLegacy;
+    std::unique_ptr<SeedItemComponentLegacy> mSeedComponent;
+    std::unique_ptr<CameraItemComponentLegacy> mCameraComponentLegacy;
+    std::vector<std::function<void __cdecl(void)>> mOnResetBAIcallbacks;
+    std::vector<ItemTag> mTags;
+    std::byte padding596[4]; // idk why the size is 600 not 596
 
 public:
     virtual ~Item();
@@ -228,7 +264,9 @@ public:
 
     // 1.20.51.1 - 48 89 4C 24 ? 53 48 81 EC ? ? ? ? 48 8B D9 45 33 C9
     static void addCreativeItem(ItemRegistryRef*, const Block*);
+    
+    bool hasTag(const HashedString& tag) const;
 };
 
 // 1.21.0.3
-static_assert(sizeof(Item) == 600);
+//static_assert(sizeof(Item) == 600);

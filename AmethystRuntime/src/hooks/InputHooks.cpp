@@ -13,7 +13,7 @@ void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, Key
 
     Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
     //if (!AmethystRuntime::getContext()->mIsInWorldOrLoading) return;
-    Log::Info("addFullKeyboardGamePlayControls");
+    //Log::Info("addFullKeyboardGamePlayControls");
 
     for (auto& actionName : inputManager->mRegisteredInputs) {
         std::string keyName = "key." + actionName;
@@ -23,7 +23,7 @@ void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, Key
 }
 
 void createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
-    Log::Info("createInputMappingTemplates");
+    //Log::Info("createInputMappingTemplates");
     _createInputMappingTemplates.call(self, opt);
 
     // This function is called once at the very start of the game

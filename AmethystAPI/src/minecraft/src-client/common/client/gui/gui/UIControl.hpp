@@ -35,6 +35,9 @@ public:
 
     template <typename T>
     T* getComponent();
+
+    template <typename T>
+    void setComponent(std::unique_ptr<T> component);
 };
 
 static_assert(offsetof(UIControl, mChildren) == 160);
