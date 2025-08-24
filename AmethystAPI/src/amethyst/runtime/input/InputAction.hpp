@@ -12,6 +12,7 @@ namespace Amethyst {
  * E.g. `exampleKeybindContext::Gameplay | KeybindContext::Screen`
  */
 enum class KeybindContext {
+    None = 0,
     Gameplay = 1 << 0,
     Screen = 1 << 1,
 };
@@ -29,6 +30,25 @@ inline KeybindContext operator&(KeybindContext lhs, KeybindContext rhs)
     return static_cast<KeybindContext>(
         static_cast<T>(lhs) & static_cast<T>(rhs));
 }
+
+class InputActionOptions {
+public:
+    std::string mActionName;
+    std::vector<int> mDefaultKeys;
+    bool mAllowRemapping;
+    KeybindContext mContexts;
+
+    InputActionOptions(
+        const std::string& actionName, 
+        std::vector<int> defaultKeys,
+        bool allowRemapping = true,
+        KeybindContext contexts = KeybindContext::Gameplay
+    )
+        : mActionName(actionName),
+          mDefaultKeys(std::move(defaultKeys)),
+          mAllowRemapping(allowRemapping),
+          mContexts(contexts) {}
+};
 
 class InputAction {
 private:

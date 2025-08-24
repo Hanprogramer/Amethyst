@@ -114,8 +114,12 @@ void AmethystRuntime::CreateOwnHooks()
 void AmethystRuntime::RunMods()
 {
     // Register mod inputs
-    RegisterInputsEvent event(*AmethystRuntime::getInputManager());
-    AmethystRuntime::getEventBus()->Invoke(event);
+    // On game start mOptions will be nullptr, but the register inputs event gets called when options is created.
+    // When hot-reloading we will have options already so we can register inputs here.
+    if (AmethystRuntime::getContext()->mOptions != nullptr) {
+        RegisterInputsEvent event(*AmethystRuntime::getInputManager());
+        AmethystRuntime::getEventBus()->Invoke(event);
+    }
 
     ResumeGameThread();
 

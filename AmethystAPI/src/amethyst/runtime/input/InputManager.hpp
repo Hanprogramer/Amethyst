@@ -6,25 +6,31 @@
 #include "amethyst/runtime/input/InputAction.hpp"
 #include <minecraft/src-deps/input/InputHandler.hpp>
 
+class VanillaClientInputMappingFactory;
+class KeyboardInputMapping;
+class MouseInputMapping;
 class AmethystContext;
 
 namespace Amethyst {
-    class InputManager {
-    public:
-        InputManager(AmethystContext* amethyst);
-        ~InputManager();
+class InputManager {
+public:
+    InputManager(AmethystContext* amethyst);
+    ~InputManager();
 
-        InputAction& RegisterNewInput(const std::string& actionName, std::vector<int> defaultKeys, bool allowRemapping = true, KeybindContext context = KeybindContext::Gameplay);
-        InputAction& GetVanillaInput(const std::string& actionName);
+    InputAction& RegisterNewInput(const std::string& actionName, std::vector<int> defaultKeys, bool allowRemapping = true, KeybindContext context = KeybindContext::Gameplay);
+    InputAction& GetVanillaInput(const std::string& actionName);
 
-    private:
-        std::unordered_map<uint32_t, std::unique_ptr<InputAction>> mActions;
+private:
+    std::unordered_map<uint32_t, std::unique_ptr<InputAction>> mActions;
+    std::vector<InputActionOptions> mCustomInputs;
 
-    private:
-        AmethystContext* mAmethyst;
-        friend class AmethystRuntime;
+private:
+    AmethystContext* mAmethyst;
+    friend class AmethystRuntime;
 
-    public:
-        void _handleButtonEvent(InputHandler* handler, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId) const;
-    };
+public:
+    void _handleButtonEvent(InputHandler* handler, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId) const;
+    void _registerKeyboardInputs(VanillaClientInputMappingFactory* inputs, KeyboardInputMapping* keyboard, MouseInputMapping* mouse, Amethyst::KeybindContext context);
+};
+
 }
