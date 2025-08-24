@@ -1,7 +1,10 @@
 #pragma once
 #include <vector>
+#include <map>
 #include "minecraft/src-client/common/client/options/Options.hpp"
 #include <minecraft/src-client/common/client/input/ClientInputHandler.hpp>
+#include "amethyst/runtime/input/InputAction.hpp"
+#include <minecraft/src-deps/input/InputHandler.hpp>
 
 class AmethystContext;
 
@@ -10,19 +13,18 @@ namespace Amethyst {
     public:
         InputManager(AmethystContext* amethyst);
         ~InputManager();
-        void RegisterNewInput(std::string actionName, std::vector<int> keys, bool allowRemapping = true);
-        void AddButtonDownHandler(const std::string& actionName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable);
-        void AddButtonUpHandler(const std::string& actionName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable);
+
+        InputAction& RegisterNewInput(const std::string& actionName, std::vector<int> defaultKeys, bool allowRemapping = true, KeybindContext context = KeybindContext::Gameplay);
+        InputAction& GetVanillaInput(const std::string& actionName);
 
     private:
-        void RemoveButtonHandlers();
-
-    public:
-        std::vector<std::string> mRegisteredInputs;
+        std::unordered_map<uint32_t, std::unique_ptr<InputAction>> mActions;
 
     private:
         AmethystContext* mAmethyst;
-
         friend class AmethystRuntime;
+
+    public:
+        void _handleButtonEvent(InputHandler* handler, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId) const;
     };
 }

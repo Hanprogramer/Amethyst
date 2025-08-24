@@ -73,7 +73,8 @@ set_targetdir(modFolder)
 target("AmethystRuntime")
     set_kind("shared")
     set_toolchains("nasm")
-    add_deps("AmethystAPI")
+    add_deps("AmethystAPI", {public = true})
+    set_default(true)
     
     -- Force rebuild when any source file changes
     set_policy("build.optimization.lto", false)

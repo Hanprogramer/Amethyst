@@ -12,12 +12,12 @@ int StringToNameId(const std::string& str) {
     return hashed;
 }
 
-void InputHandler::registerButtonDownHandler(std::string buttonName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable)
+void InputHandler::RegisterButtonDownHandler(std::string buttonName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable)
 {
     this->mButtonDownHandlerMap.emplace(StringToNameId(buttonName), std::make_pair(suspendable, std::move(handler)));
 }
 
-void InputHandler::registerButtonUpHandler(std::string buttonName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable)
+void InputHandler::RegisterButtonUpHandler(std::string buttonName, std::function<void(FocusImpact, IClientInstance&)> handler, bool suspendable)
 {
     this->mButtonUpHandlerMap.emplace(StringToNameId(buttonName), std::make_pair(suspendable, std::move(handler)));
 }
