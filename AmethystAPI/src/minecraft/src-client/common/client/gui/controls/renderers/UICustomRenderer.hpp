@@ -46,15 +46,8 @@ public:
     virtual void preRenderSetup(UIRenderContext&) {};
     virtual std::shared_ptr<UICustomRenderer> clone() const = 0;
     virtual bool update(IClientInstance&, UIControl&, const UIScene&) { return true; }
-
-    virtual void frameUpdate(UIFrameUpdateContext& frameCtx, UIControl& control) { 
-        //calls some virtual func by default 128
-    };
-
-    virtual void render(UIRenderContext& renderCtx, IClientInstance& client, UIControl& control, int32_t unkn, RectangleArea& area) {
-        // calls the virtual that comes after frameUpdate
-    }
-
+    virtual void frameUpdate(UIFrameUpdateContext& frameCtx, UIControl& control) {}
+    virtual void render(UIRenderContext& renderCtx, IClientInstance& client, UIControl& control, int32_t unkn, RectangleArea& area) {}
     virtual UIBatchType getBatchType() const { return UIBatchType::Default; }
     virtual int32_t getCustomId() const { return 0; };
     virtual int32_t getNumRenderPasses() const { return 1; };
@@ -67,8 +60,3 @@ public:
 
     void setPropagatedAlpha(float newVal) { mPropagatedAlpha = newVal; };
 };
-
-// extra things in MinecraftUICustomRenderer 
-// virtual void frameUpdate(MinecratUIFrameUpdate&, UIControl&);
-// virtual void render(MinecraftUIRenderContext&, IClientInstance&, UIControl&, int32_t, RectangleArea&);
-// virtual void preRenderSetup(MinecraftUIRenderContext&) {};
