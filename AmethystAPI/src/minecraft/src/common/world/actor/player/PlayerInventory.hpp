@@ -53,6 +53,7 @@ public:
     );
 
     const ItemStack& getSelectedItem() const;
+    void setSelectedItem(const ItemStack& item);
 };
 
 //static_assert(offsetof(PlayerInventory, mInventory) == 224);

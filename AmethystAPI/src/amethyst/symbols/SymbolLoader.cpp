@@ -7,7 +7,9 @@ void Amethyst::SymbolLoader::Start(const Config& config)
     // Load the runtime's symbols (required to have them)
     fs::path runtimeSymbolsPath = GetAmethystFolder() / "mods" / config.injectedMod / "symbols.json";
     std::string runtimeSymbols = ReadTextFile(runtimeSymbolsPath);
-    LoadDefinitions(runtimeSymbols);
+
+    // Load symbols provided by the runtime
+    if (fs::exists(runtimeSymbolsPath)) LoadDefinitions(runtimeSymbols);
 
     // Load definitions provided by mods
     for (const auto& mod : config.mods) {

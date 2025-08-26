@@ -99,7 +99,5 @@ target("AmethystRuntime")
     -- need to figure out how to fix this shit lmao
     add_links("user32", "oleaut32", "windowsapp", "C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/lib/libhat")
     add_includedirs("C:/Users/blake/AppData/Local/.xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
-    
     add_includedirs("src", {public = true})
-
     add_headerfiles("src/**.hpp", "include/**.hpp", "include/**.h")
