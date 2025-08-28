@@ -22,3 +22,8 @@ ItemStack ItemStack::fromDescriptor(const NetworkItemStackDescriptor& descriptor
     func(descriptor, &stack, palette, isClientSide);
     return stack;
 }
+
+int ItemStack::getMaxUseDuration() const
+{
+    return mItem && mItem->getMaxUseDuration(this);
+}

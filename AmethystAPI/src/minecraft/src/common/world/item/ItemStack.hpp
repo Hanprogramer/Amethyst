@@ -28,6 +28,8 @@ public:
     InteractionResult useOn(Actor&, int, int, int, FacingID, const Vec3&);
 
     static ItemStack fromDescriptor(const NetworkItemStackDescriptor& descriptor, BlockPalette& palette, bool isClientSide );
+
+    int getMaxUseDuration() const;
 };
 
 static_assert(sizeof(ItemStack) == 0xA0);

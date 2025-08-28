@@ -225,3 +225,9 @@ bool ItemStackBase::hasTag(const HashedString& tag) const
 {
     return mItem && mItem->hasTag(tag);
 }
+
+UseAnim ItemStackBase::getUseAnimation() const
+{
+    if (!mItem) return UseAnim::None;
+    else return mItem->getUseAnim();
+}

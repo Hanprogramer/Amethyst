@@ -8,5 +8,5 @@ class Packet;
 class IPacketHandlerDispatcher {
 public:
     virtual ~IPacketHandlerDispatcher() = default;
-    virtual void handle(const NetworkIdentifier&, NetEventCallback&, std::shared_ptr<Packet>) const = 0;
+    virtual void handle(const NetworkIdentifier&, NetEventCallback&, std::shared_ptr<Packet>&) const = 0;
 };

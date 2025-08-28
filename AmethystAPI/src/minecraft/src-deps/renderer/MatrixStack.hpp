@@ -26,6 +26,19 @@ public:
             return *mat;
         }
     };
+
+    Matrix& getTop() {
+        return stack.top();
+    }
+
+    const Matrix& getTop() const {
+        return stack.top();
+    }
+
+    MatrixStackRef push(const Matrix& matrix) {
+        stack.push(matrix);
+        _isDirty = true;
+    }
 };
 
 static_assert(sizeof(MatrixStack) == 64);

@@ -49,3 +49,10 @@ GameMode& Player::getGameMode() const
 {
     return *this->mGameMode.get();
 }
+
+int Player::getItemUseDuration() const
+{
+    using function = decltype(&Player::getItemUseDuration);
+    auto func = std::bit_cast<function>(this->vtable[162]);
+    return (this->*func)();
+}

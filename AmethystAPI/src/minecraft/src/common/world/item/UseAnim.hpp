@@ -1,6 +1,6 @@
 #pragma once
 
-enum class UseAnimation : unsigned char {
+enum class UseAnim : unsigned char {
     None,
     Eat,
     Drink,

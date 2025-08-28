@@ -15,6 +15,7 @@
 #include <minecraft/src/common/CommonTypes.hpp>
 #include <minecraft/src/common/world/level/block/BlockShape.hpp>
 #include <minecraft/src/common/world/item/ResolvedItemIconInfo.hpp>
+#include <minecraft/src/common/world/item/UseAnim.hpp>
 
 // Auto-generated: Unknown complete types
 enum ItemColor {};
@@ -81,14 +82,13 @@ class ItemTag : public HashedString {
 
 };
 
-
 class Item {
 public:
     /* this + 8   */ std::string mTextureAtlasFile;
     /* this + 40  */ int mFrameCount;
     /* this + 44  */ bool mAnimatesInToolbar;
     /* this + 45  */ bool mIsMirroredArt;
-    /* this + 46  */ bool mUseAnim;
+    /* this + 46  */ UseAnim mUseAnim;
     /* this + 64  */ std::string mHoverTextColorFormat;
 
     int mIconFrame;
@@ -240,7 +240,7 @@ public:
     virtual bool hasSameRelevantUserData(const ItemStackBase&, const ItemStackBase&) const;
     virtual void initClient(const Json::Value&, const SemVersion&, bool, const Experiments&);
     virtual Item& setIconInfo(const std::string& name, int index);
-    virtual ResolvedItemIconInfo getIconInfo(const ItemStackBase& a3, int a4, bool a5) const;
+    virtual ResolvedItemIconInfo getIconInfo(const ItemStackBase& a3, int newAnimationFrame, bool inInventoryPane) const;
     virtual std::string getInteractText(const Player&) const;
     virtual int getAnimationFrameFor(Mob* holder, bool asItemEntity, const ItemStack* item, bool shouldAnimate) const;
     virtual bool isEmissive(int auxValue) const;
@@ -266,6 +266,7 @@ public:
     static void addCreativeItem(ItemRegistryRef*, const Block*);
     
     bool hasTag(const HashedString& tag) const;
+    UseAnim getUseAnim() const;
 };
 
 // 1.21.0.3

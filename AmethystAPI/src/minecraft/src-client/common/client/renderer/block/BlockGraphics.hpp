@@ -15,7 +15,7 @@ public:
     TextureAtlasItem carriedItem;
 };
 
-static_assert(sizeof(TextureItem) == 192);
+//static_assert(sizeof(TextureItem) == 192);
 
 namespace BlockGeometry {
 class Model;

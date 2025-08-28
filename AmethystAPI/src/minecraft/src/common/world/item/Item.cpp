@@ -40,6 +40,11 @@ bool Item::hasTag(const HashedString& tag) const
     return false;
 }
 
+UseAnim Item::getUseAnim() const
+{
+    return mUseAnim;
+}
+
 const std::string& Item::getRawNameId() const {
     return mRawNameId.getString();
 }
