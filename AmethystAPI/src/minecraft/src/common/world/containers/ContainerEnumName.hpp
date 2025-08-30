@@ -1,6 +1,5 @@
 #pragma once
 
-// idk if this is the right place for this, if not we can move it later
 enum class ContainerEnumName : int {
     AnvilInputContainer = 0,
     AnvilMaterialContainer = 1,
@@ -63,7 +62,6 @@ enum class ContainerEnumName : int {
     BarrelContainer = 58,
     CursorContainer = 59,
     CreatedOutputContainer = 60,
-    SmithingTableTemplateItems = 61,
-    // Something that uses the same string "container_items" but idk what it is yet
-    SomethingContainerItems = 62
+    SmithingTableTemplateContainer = 61,
+    CrafterLevelEntityContainer = 62
 };
