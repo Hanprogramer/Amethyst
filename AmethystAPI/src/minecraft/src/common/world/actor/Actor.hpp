@@ -77,6 +77,21 @@ public:
         return registry.try_get<T>(mEntityContext.mEntity);
     }
 
+    template <typename T>
+    bool hasComponent() const
+    {
+        const auto& registry = mEntityContext.getRegistry();
+        return registry.all_of<T>(mEntityContext.mEntity);
+    }
+
+    template <typename T, typename... Args>
+    T& addComponent(Args&&... args)
+    {
+        auto& registry = mEntityContext.getRegistry();
+        Assert(!registry.all_of<T>(mEntityContext.mEntity), "Entity already has component");
+        return registry.emplace<T>(mEntityContext.mEntity, std::forward<Args>(args)...);
+    }
+
     int load(const CompoundTag&, DefaultDataLoadHelper&);
     void reload();
 

@@ -14,7 +14,7 @@ struct std::formatter<ItemStack> {
     template <typename FormatContext>
     auto format(const ItemStack& stack, FormatContext& ctx) const
     {
-        if (stack.isNull()) {
+        if (stack.isNull() || !stack.mItem) {
             return std::format_to(ctx.out(), "ItemStack(Null)");
         }
 

@@ -116,6 +116,8 @@ public:
     const Material& getMaterial() const;
 
     bool use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const;
+
+    bool isInteractiveBlock() const;
 };
 
 static_assert(sizeof(Block) == 208);

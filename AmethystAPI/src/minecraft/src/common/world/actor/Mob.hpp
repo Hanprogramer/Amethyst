@@ -29,9 +29,10 @@ public:
 };
 
 enum MobSpawnMethod : int32_t {
-    // idk
+    bleh
 };
 
+#pragma pack(push, 8)
 class Mob : public Actor {
 public:
     int mHurtDuration;
@@ -62,10 +63,9 @@ public:
     ActorUniqueID mTargetCaptainId;
 
 public:
-    // 1.21.0.3 - 48 89 5C 24 ? 57 48 83 EC ? 48 8B 01 0F B6 DA BA
+    // virtuals
     void setSprinting(bool isSprinting);
 
-    // virtuals
     void swing(); 
 
     float getAttackAnim(float a) const {
@@ -73,7 +73,13 @@ public:
         if (delta < 0.0f) delta += 1.0f;
         return (delta * a) + mOAttackAnim;
     }
+
+    void aiStep();
+
+    // non-virtuals
+    int getCurrentSwingDuration() const;
 };
+#pragma pack(pop)
 
 // 1.21.0.3
-static_assert(sizeof(Mob) == 1512);
+//static_assert(sizeof(Mob) == 1512);

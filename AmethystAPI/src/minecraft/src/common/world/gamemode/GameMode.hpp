@@ -71,6 +71,8 @@ public:
         return (this->*func)(item, pos, face, clickPos);
     }
 
+    void _sendPlayerInteractWithBlockAfterEvent(Player& player, const BlockPos& pos, FacingID face, const Vec3& at);
+
     bool _canUseBlock(const Block& block) const;
 
     float getMaxPickRange() const;

@@ -79,3 +79,10 @@ bool Block::use(Player& player, const BlockPos& at, FacingID face, std::optional
     return (this->*func)(player, at, face, hit);
 }
 
+bool Block::isInteractiveBlock() const
+{
+    using function = decltype(&Block::isInteractiveBlock);
+    static auto func = std::bit_cast<function>(SigScan("40 53 48 83 EC ? 48 8B D9 48 8B 49 ? 48 85 C9 74 ? F6 81"));
+    return (this->*func)();
+}
+
