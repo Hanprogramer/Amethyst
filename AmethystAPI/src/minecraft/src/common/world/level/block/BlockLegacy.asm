@@ -189,26 +189,26 @@ global ?isWaterBlocking@BlockLegacy@@UEBA_NXZ
 	jmp [rax + 264]
 
 ; BlockLegacy_vtable[34] is unknown
-global ?isFenceBlock@BlockLegacy@@UEAA_NXZ
-?isFenceBlock@BlockLegacy@@UEAA_NXZ:
+global ?isFenceBlock@BlockLegacy@@UEBA_NXZ
+?isFenceBlock@BlockLegacy@@UEBA_NXZ:
 	mov rax, [rel BlockLegacy_vtable]
 	jmp [rax + 272]
 
 ; BlockLegacy_vtable[35] is unknown
-global ?_unknown_35@BlockLegacy@@UEAAXXZ
-?_unknown_35@BlockLegacy@@UEAAXXZ:
+global ?isFenceGateBlock@BlockLegacy@@UEBA_NXZ
+?isFenceGateBlock@BlockLegacy@@UEBA_NXZ:
 	mov rax, [rel BlockLegacy_vtable]
 	jmp [rax + 280]
 
 ; BlockLegacy_vtable[36] is unknown
-global ?_unknown_36@BlockLegacy@@UEAAXXZ
-?_unknown_36@BlockLegacy@@UEAAXXZ:
+global ?isThinFenceBlock@BlockLegacy@@UEBA_NXZ
+?isThinFenceBlock@BlockLegacy@@UEBA_NXZ:
 	mov rax, [rel BlockLegacy_vtable]
 	jmp [rax + 288]
 
 ; BlockLegacy_vtable[37] is unknown
-global ?_unknown_37@BlockLegacy@@UEAAXXZ
-?_unknown_37@BlockLegacy@@UEAAXXZ:
+global ?isWallBlock@BlockLegacy@@UEBA_NXZ
+?isWallBlock@BlockLegacy@@UEBA_NXZ:
 	mov rax, [rel BlockLegacy_vtable]
 	jmp [rax + 296]
 

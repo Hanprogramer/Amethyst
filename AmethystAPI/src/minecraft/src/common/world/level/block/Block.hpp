@@ -5,6 +5,9 @@
 #include <minecraft/src/common/CommonTypes.hpp>
 #include <minecraft/src/common/nbt/CompoundTag.hpp>
 #include <minecraft/src-deps/core/utility/optional_ref.hpp>
+#include <minecraft/src/common/world/Facing.hpp>
+#include <optional>
+#include <minecraft/src/common/world/phys/Vec3.hpp>
 
 //is_virtual = True
 //hide_vtable = False
@@ -41,6 +44,7 @@ class AABB;
 class IConstBlockSource;
 class GetCollisionShapeInterface;
 class Material;
+class Player;
 
 class BlockComponentDirectData {
 public:
@@ -110,6 +114,10 @@ public:
     bool getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const;
 
     const Material& getMaterial() const;
+
+    bool use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const;
+
+    bool isInteractiveBlock() const;
 };
 
 static_assert(sizeof(Block) == 208);

@@ -16,6 +16,7 @@ class ActorRenderDispatcher;
 class ItemInHandRenderer;
 struct ActorBlockRenderer;
 struct ParticleSystemEngine;
+class MatrixStack;
 
 class BaseActorRenderContext {
 public:
@@ -46,6 +47,7 @@ public:
 
 public:
     BaseActorRenderContext(ScreenContext* screenContext, IClientInstance* clientInstance, IMinecraftGame* minecraftGame);
+    MatrixStack& getWorldMatrix();
 };
 
 static_assert(sizeof(BaseActorRenderContext) == 0x298);

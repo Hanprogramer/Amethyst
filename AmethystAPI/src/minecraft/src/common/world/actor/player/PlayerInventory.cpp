@@ -9,3 +9,10 @@ const ItemStack& PlayerInventory::getSelectedItem() const
 
     return mInventory->getItem(mSelected);
 }
+
+void PlayerInventory::setSelectedItem(const ItemStack& item)
+{
+    if (mSelectedContainerId == ContainerID::CONTAINER_ID_INVENTORY) {
+        mInventory->setItem(mSelected, item);
+    }
+}

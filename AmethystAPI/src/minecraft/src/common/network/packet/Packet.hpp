@@ -238,7 +238,7 @@ public:
     Compressibility mCompressible;
 
 public:
-    virtual ~Packet() {};
+    virtual ~Packet() = default;
     virtual MinecraftPacketIds getId() const = 0;
     virtual std::string getName() const = 0;
     virtual Bedrock::Result<void, std::error_code> checkSize(uint64_t packetSize, bool receiverIsServer) const;

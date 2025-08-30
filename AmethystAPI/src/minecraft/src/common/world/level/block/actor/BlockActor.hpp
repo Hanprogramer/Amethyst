@@ -11,6 +11,9 @@
 #include <minecraft/src/common/world/level/block/actor/BlockActorRendererId.hpp>
 #include <minecraft/src/common/network/packet/BlockActorDataPacket.hpp>
 #include <gsl/gsl>
+#include <amethyst/ModApi.hpp>
+
+//#include <amethyst/ModApi.hpp>
 
 // Auto-generated: Unknown complete types
 class UIProfanityContext {}; 
@@ -26,7 +29,7 @@ class IConstBlockSource;
 class Player; 
 class BlockLegacy;
 
-class BlockActor {
+class MC_API BlockActor {
 public:
     /* this + 8   */ int mTickCount;
     /* this + 16  */ const Block* mBlock;
@@ -104,12 +107,12 @@ protected:
 public:
 	// 1.20.71.1 - 48 83 EC ? 45 33 C9 0F 29 34 24
 	BlockActor(BlockActorType type, const BlockPos& pos, const std::string& id);
-        void moveTo(const BlockPos& pos);
+    void moveTo(const BlockPos& pos);
 };
 
 static_assert(sizeof(BlockActor) == 200);
 
 class BlockActorFactory {
 public:
-    static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
+    MC_API static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
 };

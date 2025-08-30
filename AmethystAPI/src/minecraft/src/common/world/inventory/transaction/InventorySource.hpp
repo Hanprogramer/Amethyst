@@ -1,7 +1,7 @@
 #pragma once
 #include "minecraft/src/common/world/actor/player/PlayerInventory.hpp"
 
-enum class InventorySourceType : int32_t {
+enum class InventorySourceType : uint32_t {
     InvalidInventory = 0xFFFFFFFF,
     ContainerInventory = 0x0,
     GlobalInventory = 0x1,
@@ -12,7 +12,7 @@ enum class InventorySourceType : int32_t {
 
 class InventorySource {
 public:
-    enum class InventorySourceFlags {
+    enum class InventorySourceFlags : int32_t {
         NoFlag = 0x0,
         WorldInteraction_Random = 0x1,
     };

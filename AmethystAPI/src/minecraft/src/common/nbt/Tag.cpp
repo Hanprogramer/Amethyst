@@ -1,75 +1,150 @@
 #include "minecraft/src/common/nbt/Tag.hpp"
-#include <bit>
+#include "amethyst/Log.hpp"
+#include "minecraft/src/common/util/DataIO.hpp"
+#include "minecraft/src/common/nbt/EndTag.hpp"
+#include "minecraft/src/common/nbt/CompoundTag.hpp"
+#include "minecraft/src/common/nbt/CompoundTagVariant.hpp"
+#include "minecraft/src/common/nbt/ShortTag.hpp"
+#include "minecraft/src/common/nbt/Int64Tag.hpp"
+#include "minecraft/src/common/nbt/FloatTag.hpp"
+#include "minecraft/src/common/nbt/DoubleTag.hpp"
+#include "minecraft/src/common/nbt/ByteArrayTag.hpp"
+#include "minecraft/src/common/nbt/IntArrayTag.hpp"
+#include "minecraft/src/common/nbt/ByteTag.hpp"
+#include "minecraft/src/common/nbt/IntTag.hpp"
+#include "minecraft/src/common/nbt/StringTag.hpp"
+#include "minecraft/src/common/nbt/ListTag.hpp"
 
-Tag::Tag()
+void Tag::writeNamedTag(const std::string& name, const Tag& tag, IDataOutput& dos)
 {
-    // We should be calling the in game ctor for the tag...
-    vtable = nullptr;
+    dos.writeByte((char)tag.getId());
+
+    if (tag.getId() != Type::End) {
+        dos.writeString(name);
+        tag.write(dos);
+    }
 }
 
-Tag::~Tag()
+std::unique_ptr<Tag> Tag::newTag(Type type)
 {
-    using function = void(__thiscall*)(Tag*);
-    reinterpret_cast<function>(this->vtable[0])(this);
+    switch (type) {
+    case Type::End:
+        return std::make_unique<EndTag>();
+
+    case Type::Byte:
+        return std::make_unique<ByteTag>();
+
+    case Type::Short:
+        return std::make_unique<ShortTag>();
+
+    case Type::Int:
+        return std::make_unique<IntTag>();
+
+    case Type::Int64:
+        return std::make_unique<Int64Tag>();
+
+    case Type::Float:
+        return std::make_unique<FloatTag>();
+
+    case Type::Double:
+        return std::make_unique<DoubleTag>();
+
+    case Type::ByteArray:
+        return std::make_unique<ByteArrayTag>();
+
+    case Type::String:
+        return std::make_unique<StringTag>();
+
+    case Type::List:
+        return std::make_unique<ListTag>();
+
+    case Type::Compound:
+        return std::make_unique<CompoundTag>();
+
+    case Type::IntArray:
+        return std::make_unique<IntArrayTag>();
+
+    default:
+        return nullptr;
+    }
 }
 
-void Tag::deleteChildren()
-{
-    using function = void(__thiscall*)(Tag*);
-    return reinterpret_cast<function>(this->vtable[1])(this);
+Tag::Tag() {}
+
+bool Tag::equals(const Tag& rhs) const {
+	return getId() == rhs.getId();
 }
 
-void Tag::write(IDataOutput& a1) const
+void Tag::print(PrintStream&) const
 {
-    using function = void(__thiscall*)(const Tag*, IDataOutput&);
-    return reinterpret_cast<function>(this->vtable[2])(this, a1);
+    Log::Info("Tag::print not implemented");
 }
 
-void Tag::load(IDataInput& a1)
+void Tag::print(const std::string&, PrintStream&) const
 {
-    using function = void(__thiscall*)(Tag*, IDataInput&);
-    return reinterpret_cast<function>(this->vtable[3])(this, a1);
+	Log::Info("Tag::print not implemented");
 }
 
-std::string Tag::toString() const
+std::string Tag::getTagName(Type type)
 {
-    using function = decltype(&Tag::toString);
-    auto func = std::bit_cast<function>(vtable[4]);
-    return (this->*func)();
+    switch (type) {
+    case Type::End:
+        return "TAG_End";
+
+    case Type::Byte:
+        return "TAG_Byte";
+
+    case Type::Short:
+        return "TAG_Short";
+
+    case Type::Int:
+        return "TAG_Int";
+
+    case Type::Int64:
+        return "TAG_Long";
+
+    case Type::Float:
+        return "TAG_Float";
+
+    case Type::Double:
+        return "TAG_Double";
+
+    case Type::ByteArray:
+        return "TAG_Byte_Array";
+
+    case Type::String:
+        return "TAG_String";
+
+    case Type::List:
+        return "TAG_List";
+
+    case Type::Compound:
+        return "TAG_Compound";
+
+    case Type::IntArray:
+        return "TAG_Int_Array";
+
+    default:
+        return "UNKNOWN";
+    }
 }
 
-Tag::Type Tag::getId() const
+std::unique_ptr<Tag> Tag::readNamedTag(IDataInput& dis, std::string& name)
 {
-    using function = Tag::Type(__thiscall*)(const Tag*);
-    return reinterpret_cast<function>(this->vtable[5])(this);
-}
+    Type type = static_cast<Type>(dis.readByte());
+    if (type == Type::End) {
+        return std::make_unique<EndTag>();
+    }
+    else {
+        name = dis.readString();
 
-bool Tag::equals(const Tag& a1) const
-{
-    using function = bool(__thiscall*)(const Tag*, const Tag&);
-    return reinterpret_cast<function>(this->vtable[6])(this, a1);
-}
-
-void Tag::print(PrintStream& a1) const
-{
-    using function = void(__thiscall*)(const Tag*, PrintStream&);
-    return reinterpret_cast<function>(this->vtable[7])(this, a1);
-}
-
-void Tag::print(const std::string& a1, PrintStream& a2) const
-{
-    using function = void(__thiscall*)(const Tag*, const std::string&, PrintStream&);
-    return reinterpret_cast<function>(this->vtable[8])(this, a1, a2);
-}
-
-std::unique_ptr<Tag> Tag::copy() const
-{
-    using function = std::unique_ptr<Tag>(__thiscall*)(const Tag*);
-    return reinterpret_cast<function>(this->vtable[9])(this);
-}
-
-size_t Tag::hash() const
-{
-    using function = size_t(__thiscall*)(const Tag*);
-    return reinterpret_cast<function>(this->vtable[10])(this);
+        std::unique_ptr<Tag> tag = newTag(type);
+        if (tag) {
+            tag->load(dis);
+            return tag;
+        }
+        else {
+            return nullptr;
+        }
+    }
 }

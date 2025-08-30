@@ -38,8 +38,11 @@ class ChunkPos;
 class ItemStackBase; 
 class Dimension;
 
+class IConstBlockSource {
+};
+
 #pragma pack(push, 8)
-class BlockSource  {
+class BlockSource : public IConstBlockSource {
 public:
     std::byte padding8_enableSharedPadding[16]; // std::bit_cast not working with inheriting from std::enable_shared_from_this
     const std::thread::id mOwnerThreadID;
@@ -56,11 +59,11 @@ public:
 public:
     virtual ~BlockSource();
     virtual const Block& getBlock(int x, int y, int z) const;
-    virtual const Block& getBlock(const BlockPos& pos) const;
+    virtual const Block& getBlock(const BlockPos& pos) const; // 16
     virtual const Block& getBlock(const BlockPos& pos, unsigned int layer) const;
     virtual const BlockActor* getBlockEntity(const BlockPos& pos) const;
     virtual const Block& getExtraBlock(const BlockPos& p) const;
-    virtual const Block& getLiquidBlock(const BlockPos& p) const;
+    virtual const Block& getLiquidBlock(const BlockPos& p) const; // 48
     virtual bool hasBlock(const BlockPos& pos) const;
     virtual bool removeBlock(const BlockPos& pos);
     virtual bool containsAnyLiquid(const AABB& box) const;

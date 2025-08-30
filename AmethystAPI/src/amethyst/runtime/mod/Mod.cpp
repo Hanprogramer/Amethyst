@@ -13,11 +13,11 @@ Mod::Mod(std::string modName)
 
         switch (error) {
             case ERROR_ACCESS_DENIED:
-                Assert("[AmethystRuntime] '{}' does not have the required privileges!", dllPath.string());
+                Assert(false, "[AmethystRuntime] '{}' does not have the required privileges!", dllPath.string());
             case ERROR_MOD_NOT_FOUND:
-                Assert("[AmethystRuntime] Failed to find '{}'", dllPath.string());
+                Assert(false, "[AmethystRuntime] Failed to find '{}'", dllPath.string());
             default:
-                Assert("[AmethystRuntime] Failed to load '{}.dll', error code: 0x{:x}", modName, error);
+                Assert(false, "[AmethystRuntime] Failed to load '{}.dll', error code: 0x{:x}", modName, error);
         }
     }
 
@@ -39,16 +39,13 @@ Mod::Metadata Mod::GetMetadata(std::string modName)
 {
     // Ensure the mod exists
     fs::path modConfigPath = GetAmethystFolder() / L"mods" / modName / L"mod.json";
-
-    if (!fs::exists(modConfigPath)) {
-        Assert("[AmethystRuntime] mod.json could not be found, for {}!", modName);
-    }
+    Assert(fs::exists(modConfigPath), "[AmethystRuntime] mod.json could not be found, for {}!", modName);
 
     // Try to read it to a std::string
     std::ifstream modConfigFile(modConfigPath);
-    if (!modConfigFile.is_open()) {
-        Assert("[AmethystRuntime] Failed to open mod.json, for {}!", modName);
-    }
+
+    Assert(modConfigFile.is_open(), "[AmethystRuntime] Failed to open mod.json, for {}!", modName);
+    
 
     // Read into a std::string
     std::stringstream buffer;
@@ -73,13 +70,9 @@ Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
     }
 
     // Verify all fields are correct in config.json
-    if (!data["meta"].is_object()) {
-        Assert("[AmethystRuntime] Required field \"meta\" should be of type \"object\" in mod.json, for {}", modName);
-    }
+    Assert(data["meta"].is_object(), "[AmethystRuntime] Required field \"meta\" should be of type \"object\" in mod.json, for {}", modName);
+    Assert(data["meta"]["name"].is_string(), "[AmethystRuntime] Required field \"name\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
 
-    if (!data["meta"]["name"].is_string()) {
-        Assert("[AmethystRuntime] Required field \"name\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-    }
 
     std::vector<std::string> authors = {};
 
@@ -88,18 +81,12 @@ Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
     }
     else if (data["meta"]["author"].is_array()) {
         for (const auto& element : data["meta"]["author"]) {
-            if (!element.is_string()) {
-                Assert("[AmethystRuntime] Array \"author\" in \"meta\" should only contain fields of type \"string\" in mod.json, for {}", modName);
-            }
-            else {
-                authors.push_back(element);
-            }
+            Assert(element.is_string(), "[AmethystRuntime] Array \"author\" in \"meta\" should only contain fields of type \"string\" in mod.json, for {}", modName);
+            authors.push_back(element);
         }
     }
 
-    if (!data["meta"]["version"].is_string()) {
-        Assert("[AmethystRuntime] Required field \"version\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-    }
+    Assert(data["meta"]["version"].is_string(), "[AmethystRuntime] Required field \"version\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
 
     // Set values
     Metadata meta;
@@ -125,17 +112,15 @@ fs::path Mod::GetTempDll()
     if (!fs::exists(tempDir)) fs::create_directories(tempDir);
 
     fs::path originalDll = GetAmethystFolder() / L"Mods" / modName / std::string(modShortened + ".dll");
-    if (!fs::exists(originalDll)) {
-        Assert("[AmethystRuntime] Could not find '{}.dll'", modShortened);
-    }
-
+    Assert(fs::exists(originalDll), "[AmethystRuntime] Could not find '{}.dll'", modShortened);
+    
     fs::path tempDll = tempDir.string() + modShortened + ".dll";
 
     try {
         fs::copy_file(originalDll, tempDll, fs::copy_options::overwrite_existing);
     }
     catch (const std::filesystem::filesystem_error& e) {
-        Assert("[AmethystRuntime] {} (Error code: {})", e.what(), e.code().value());
+        Assert(false, "[AmethystRuntime] {} (Error code: {})", e.what(), e.code().value());
     }
 
     return tempDll;

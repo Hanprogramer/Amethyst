@@ -26,9 +26,7 @@ const Block& LevelChunk::getBlock(const ChunkBlockPos& pos) const
 std::shared_ptr<BlockActor> LevelChunk::getAndRemoveBlockActor(const ChunkBlockPos& pos)
 {
     auto it = mBlockEntities.find(pos);
-    if (it == mBlockEntities.end()) {
-        Assert("LevelChunk::moveBlockEntity failed to find the actor at position {}", pos);
-    }
+    Assert(it != mBlockEntities.end(), "LevelChunk::moveBlockEntity failed to find the actor at position {}", pos);
 
     std::shared_ptr<BlockActor> result = std::move(it->second);
     mBlockEntities.erase(it);

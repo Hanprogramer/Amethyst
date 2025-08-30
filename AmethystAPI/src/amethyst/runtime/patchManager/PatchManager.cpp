@@ -25,8 +25,8 @@ namespace Amethyst {
         Patch ptch;
 		OriginalMemory original;
 		uint8_t* originalMemory = (uint8_t*)malloc(size);
-        if (!originalMemory) 
-			Assert("Failed to allocate memory for original bytes at address: 0x{0:x}", address);
+        Assert(originalMemory, "Failed to allocate memory for original bytes at address: 0x{0:x}", address);
+
         memcpy(originalMemory, reinterpret_cast<void*>(address), size);
 		original.original = originalMemory;
         original.size = size;
