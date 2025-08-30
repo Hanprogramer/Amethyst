@@ -11,7 +11,6 @@
 #include "minecraft/src-client/common/client/input/MinecraftInputHandler.hpp"
 #include "minecraft/src-client/common/client/options/Options.hpp"
 #include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
-#include "amethyst/symbols/SymbolLoader.hpp"
 
 class AmethystContext {
 public:
@@ -21,7 +20,6 @@ public:
     std::unique_ptr<Amethyst::InputManager> mInputManager;
     std::unique_ptr<Amethyst::PatchManager> mPatchManager;
     std::unique_ptr<Amethyst::EnumAllocator> mEnumAllocator;
-    std::unique_ptr<Amethyst::SymbolLoader> mSymbolLoader;
     std::vector<Mod> mMods;
 
     // Non-volatile

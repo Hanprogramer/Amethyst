@@ -11,7 +11,6 @@
 #include <minecraft/src/common/world/item/Item.hpp>
 #include <vector>
 #include <RuntimeContext.hpp>
-#include <amethyst/symbols/SymbolLoader.hpp>
 
 namespace fs = std::filesystem;
 
@@ -81,11 +80,6 @@ public:
     static Amethyst::MinecraftPackageInfo* getMinecraftPackageInfo()
     {
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
-    }
-
-    static Amethyst::SymbolLoader* getSymbolLoader()
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mSymbolLoader.get();
     }
 
     void Start();

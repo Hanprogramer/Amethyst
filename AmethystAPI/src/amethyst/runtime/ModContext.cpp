@@ -38,26 +38,6 @@ Amethyst::EnumAllocator& Amethyst::GetEnumAllocator()
     return *_AmethystContextInstance->mEnumAllocator.get();
 }
 
-Amethyst::SymbolLoader& Amethyst::GetSymbolLoader()
-{
-    if (_AmethystContextInstance == nullptr) {
-        HMODULE runtimeDll = GetModuleHandleA("AmethystRuntime.dll");
-        Log::Info("runtime was missing, dll {}", std::bit_cast<uint64_t>(runtimeDll));
-
-        Assert(runtimeDll, "[Amethyst] Failed to find AmethystRuntime.dll, make sure it is loaded before calling this function.");
-
-        using GetContextLoader = AmethystContext*(*)();
-        GetContextLoader func = reinterpret_cast<GetContextLoader>(GetProcAddress(runtimeDll, "GetContextInstance"));
-
-        Assert(func != nullptr, "[Amethyst] Failed to find GetContextInstance function in AmethystRuntime.dll");        
-
-        _AmethystContextInstance = func();
-        Assert(_AmethystContextInstance, "[Amethyst] Failed to load AmethystContext instance from AmethystRuntime.dll");
-    }
-
-    return *_AmethystContextInstance->mSymbolLoader.get();
-}
-
 Minecraft* Amethyst::GetMinecraft()
 {
     return _AmethystContextInstance->mClientInstance->minecraft;

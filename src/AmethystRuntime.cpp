@@ -31,9 +31,6 @@ void AmethystRuntime::Start()
     // read the config file and load in any mods
     ReadLauncherConfig();
 
-    // Load symbols
-    getSymbolLoader()->Start(mLauncherConfig);
-
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger) PromptDebugger();
 

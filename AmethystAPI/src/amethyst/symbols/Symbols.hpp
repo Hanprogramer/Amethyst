@@ -1,2 +1,0 @@
-#pragma once
-#define DELAYIMP_INSECURE_WRITABLE_HOOKS

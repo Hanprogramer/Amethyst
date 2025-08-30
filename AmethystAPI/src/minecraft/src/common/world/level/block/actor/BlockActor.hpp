@@ -29,8 +29,6 @@ class IConstBlockSource;
 class Player; 
 class BlockLegacy;
 
-// #pragma comment(lib, "MinecraftSymbols.lib")
-
 class MC_API BlockActor {
 public:
     /* this + 8   */ int mTickCount;
