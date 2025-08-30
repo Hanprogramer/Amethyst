@@ -75,10 +75,6 @@ target("AmethystRuntime")
     set_toolchains("nasm")
     add_deps("AmethystAPI", {public = true})
     set_default(true)
-    
-    -- Force rebuild when any source file changes
-    set_policy("build.optimization.lto", false)
-    set_policy("build.across_targets_in_parallel", false)
 
     add_files(
         "src/**.cpp"
@@ -104,4 +100,14 @@ target("AmethystRuntime")
     add_includedirs(
         path.join(localAppData, ".xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include"))
     add_includedirs("src", {public = true})
-    add_headerfiles("src/**.hpp", "include/**.hpp", "include/**.h")
+
+    add_headerfiles("src/**.hpp")
+
+    after_build(function (target)
+        local src_json = path.join(os.curdir(), "mod.json")
+        local dst_json = path.join(modFolder, "mod.json")
+        if not os.isdir(modFolder) then
+            os.mkdir(modFolder)
+        end
+        os.cp(src_json, dst_json)
+    end)

@@ -1,0 +1,8 @@
+{
+  "meta": {
+    "name": "AmethystRuntime",
+    "version": "2.0.0",
+    "author": "FrederoxDev",
+    "is_runtime": true
+  }
+}
