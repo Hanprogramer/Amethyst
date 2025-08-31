@@ -7,3 +7,5 @@
 .vscode/settings.json
 *.env
 dist
+/vsxmake2022
+/.xmake

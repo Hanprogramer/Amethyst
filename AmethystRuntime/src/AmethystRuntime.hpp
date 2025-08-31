@@ -1,6 +1,7 @@
 #pragma once
 #include "hooks/Hooks.hpp"
 #include "hooks/InputHooks.hpp"
+#include "hooks/ResourceHooks.hpp"
 #include <amethyst/Config.hpp>
 #include <amethyst/Log.hpp>
 #include <amethyst/MinecraftVtables.hpp>
