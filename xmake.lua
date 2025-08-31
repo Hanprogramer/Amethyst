@@ -1,6 +1,8 @@
 -- Mod Options
 local mod_name = "AmethystRuntime"
-local mod_version = "2.0.0"
+local modMajor = 2
+local modMinor = 0
+local modPatch = 0
 
 -- Minecraft version
 local major = 1
@@ -9,7 +11,7 @@ local patch = 3
 
 set_languages("c++23")
 set_project(mod_name)
-set_version(string.format("%d.%d.%d", major, minor, patch))
+set_version(string.format("%d.%d.%d", modMajor, modMinor, modPatch))
 
 -- RelWithDebInfo flags
 add_cxxflags("/O2", "/Zi", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
@@ -64,7 +66,7 @@ local amethystFolder = path.join(
 local modFolder = path.join(
     amethystFolder,
     "mods",
-    string.format("%s@%s", mod_name, mod_version)
+    string.format("%s@%d.%d.%d", mod_name, modMajor, modMinor, modPatch)
 )
 
 set_symbols("debug")
@@ -81,7 +83,7 @@ target("AmethystRuntime")
     )
 
     add_defines(
-        string.format('MOD_VERSION="%d.%d.%d"', major, minor, patch),
+        string.format('MOD_VERSION="%d.%d.%d"', modMajor, modMinor, modPatch),
         string.format('MOD_TARGET_VERSION_MAJOR=%d', major),
         string.format('MOD_TARGET_VERSION_MINOR=%d', minor),
         string.format('MOD_TARGET_VERSION_PATCH=%d', patch),

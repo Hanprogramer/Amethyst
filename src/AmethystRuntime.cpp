@@ -34,6 +34,8 @@ void AmethystRuntime::Start()
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger) PromptDebugger();
 
+    // Add our resources before loading mods
+    AddOwnResources();
     LoadModDlls(); 
 
     // Create our hooks then run the mods
@@ -111,10 +113,18 @@ void AmethystRuntime::PromptDebugger()
     system(command.c_str());
 }
 
+void AmethystRuntime::AddOwnResources()
+{
+    // Add our own resource pack
+    auto modName = std::format("AmethystRuntime@{}", MOD_VERSION);
+    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, modName + "/resource_pack", PackType::Resources);
+}
+
 void AmethystRuntime::CreateOwnHooks()
 {
     CreateInputHooks();
     CreateResourceHooks();
+    CreateStartScreenHooks();
     CreateModFunctionHooks();
 }
 

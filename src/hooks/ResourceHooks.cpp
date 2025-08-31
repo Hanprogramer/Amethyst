@@ -19,7 +19,7 @@ void VanillaInPackagePacks_getPacks(VanillaInPackagePacks* self, std::vector<IIn
         for (auto& [path, pack] : packs) {
             if (pack.type == packType) {
                 // Add the pack to the list
-                result.emplace_back(Core::Path((localForPackage / path).string()), false, PackCategory::Standard);
+                result.emplace_back(Core::Path((localForPackage / path).string()), true, PackCategory::Standard);
             }
         }
     }
