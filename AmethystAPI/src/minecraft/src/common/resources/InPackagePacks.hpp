@@ -17,6 +17,6 @@ public:
         }
     };
 
-    virtual ~IInPackagePacks();
-    virtual std::vector<IInPackagePacks::MetaData> getPacks(PackType packType) const;
+    virtual ~IInPackagePacks() = 0;
+    virtual std::vector<IInPackagePacks::MetaData> getPacks(PackType packType) const = 0;
 };

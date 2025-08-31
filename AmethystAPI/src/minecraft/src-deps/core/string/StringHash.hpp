@@ -5,6 +5,11 @@
 
 typedef uint64_t HashType64;
 
+class StringHash {
+public:
+    int mHash;
+};
+
 class HashedString {
 public:
     static HashedString defaultErrorValue;

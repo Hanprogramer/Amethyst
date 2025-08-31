@@ -1,6 +1,8 @@
 #pragma once
 #include "hooks/Hooks.hpp"
 #include "hooks/InputHooks.hpp"
+#include "hooks/ResourceHooks.hpp"
+#include "hooks/ui/StartScreenHooks.hpp"
 #include <amethyst/Config.hpp>
 #include <amethyst/Log.hpp>
 #include <amethyst/MinecraftVtables.hpp>
@@ -89,6 +91,7 @@ private:
     void ReadLauncherConfig();
     void LoadModDlls();
     void PromptDebugger();
+    void AddOwnResources();
     void CreateOwnHooks();
     void RunMods();
     void ResumeGameThread();
