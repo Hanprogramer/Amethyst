@@ -3,12 +3,12 @@
 #include <minecraft/src/common/world/inventory/transaction/ComplexInventoryTransaction.hpp>
 #include <minecraft/src/common/world/entity/components/AbilitiesComponent.hpp>
 
-void Player::prepareRegion(ChunkSource& cs)
-{
-    using function = decltype(&Player::prepareRegion);
-    static auto func = std::bit_cast<function>(this->vtable[190]);
-    return (this->*func)(cs);
-}
+// void Player::prepareRegion(ChunkSource& cs)
+// {
+//     using function = decltype(&Player::prepareRegion);
+//     static auto func = std::bit_cast<function>(this->vtable[190]);
+//     return (this->*func)(cs);
+// }
 
 const PlayerInventory& Player::getSupplies() const
 {
@@ -20,25 +20,25 @@ const ItemStack& Player::getSelectedItem() const
     return playerInventory->getSelectedItem();
 }
 
-PlayerEventCoordinator& Player::getPlayerEventCoordinator() {
-    using function = decltype(&Player::getPlayerEventCoordinator);
-    auto func = std::bit_cast<function>(this->vtable[244]);
-    return (this->*func)();
-}
+// PlayerEventCoordinator& Player::getPlayerEventCoordinator() {
+//     using function = decltype(&Player::getPlayerEventCoordinator);
+//     auto func = std::bit_cast<function>(this->vtable[244]);
+//     return (this->*func)();
+// }
 
-void Player::sendInventoryTransaction(const InventoryTransaction& transaction)
-{
-    using function = decltype(&Player::sendInventoryTransaction);
-    auto func = std::bit_cast<function>(this->vtable[241]);
-    return (this->*func)(transaction);
-}
+// void Player::sendInventoryTransaction(const InventoryTransaction& transaction)
+// {
+//     using function = decltype(&Player::sendInventoryTransaction);
+//     auto func = std::bit_cast<function>(this->vtable[241]);
+//     return (this->*func)(transaction);
+// }
 
-void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
-{
-    using function = decltype(&Player::sendComplexInventoryTransaction);
-    auto func = std::bit_cast<function>(this->vtable[242]);
-    return (this->*func)(std::move(transaction));
-}
+// void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
+// {
+//     using function = decltype(&Player::sendComplexInventoryTransaction);
+//     auto func = std::bit_cast<function>(this->vtable[242]);
+//     return (this->*func)(std::move(transaction));
+// }
 
 const LayeredAbilities& Player::getAbilities() const
 {
@@ -50,9 +50,9 @@ GameMode& Player::getGameMode() const
     return *this->mGameMode.get();
 }
 
-int Player::getItemUseDuration() const
-{
-    using function = decltype(&Player::getItemUseDuration);
-    auto func = std::bit_cast<function>(this->vtable[162]);
-    return (this->*func)();
-}
+// int Player::getItemUseDuration() const
+// {
+//     using function = decltype(&Player::getItemUseDuration);
+//     auto func = std::bit_cast<function>(this->vtable[162]);
+//     return (this->*func)();
+// }

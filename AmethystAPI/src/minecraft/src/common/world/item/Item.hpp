@@ -16,6 +16,7 @@
 #include <minecraft/src/common/world/level/block/BlockShape.hpp>
 #include <minecraft/src/common/world/item/ResolvedItemIconInfo.hpp>
 #include <minecraft/src/common/world/item/UseAnim.hpp>
+#include <minecraft/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
 
 // Auto-generated: Unknown complete types
 enum ItemColor {};
@@ -23,11 +24,6 @@ struct ActorDefinitionIdentifier {};
 enum ItemUseMethod {};
 enum InHandUpdateType {};
 enum ActorLocation {};
-namespace Puv {
-namespace Legacy {
-enum LevelSoundEvent {};
-}
-} // namespace Puv
 
 class InteractionResult {
 public:
