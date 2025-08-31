@@ -7,11 +7,6 @@
 
 class RemappingLayout;
 
-class InputMapping {
-public:
-    KeyboardInputMapping keyboardMapping;
-};
-
 // Todo fill out this class if we want to support controller
 class GamePadRemappingLayout {
     std::byte padding[0x58];

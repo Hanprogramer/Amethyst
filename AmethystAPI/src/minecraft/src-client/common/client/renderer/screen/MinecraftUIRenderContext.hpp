@@ -5,7 +5,8 @@
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include <cstdint>
 #include <string>
-
+#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIMeasureStrategy.hpp>
+#include <minecraft/src-client/common/client/gui/gui/FontHandle.hpp>
 
 namespace mce {
 class Color;
@@ -37,7 +38,7 @@ enum TextAlignment : uint8_t {
 #pragma pack(push, 4)
 struct TextMeasureData {
     float fontSize;
-    int linePadding;
+    float linePadding;
     bool renderShadow;
     bool showColorSymbol;
     bool hideHyphen;
@@ -65,15 +66,21 @@ class UIScene;
 class ComponentRenderBatch;
 class CustomRenderComponent;
 class HashedString;
+class UIRepository;
 
 class MinecraftUIRenderContext {
 public:
     /* this + 8   */ IClientInstance* mClient;
     /* this + 16  */ ScreenContext* mScreenContext;
-    /* this + 24  */ std::byte padding24[64];
+    /* this + 24  */ MinecraftUIMeasureStrategy mMeasureStrategy;
+    /* this + 40  */ float mTextAlpha;
+    /* this + 48  */ UIRepository& mUIRepository;
+    std::byte padding56[32];
     /* this + 88  */ Bedrock::NonOwnerPointer<mce::TextureGroup> mTextures;
-    /* this + 104  */ std::byte padding80[248 - 104];
-    /* this + 248 */ const UIScene* mCurrentScene;
+    /* this + 104  */ std::byte padding80[184 - 104];
+    ///* this + 184 */ const gsl::not_null<Bedrock::NonOwnerPointer<const FontHandle>>& mDebugTextFontHandle;
+    /* this + 184 */ FontHandle mDebugTextFontHandle;
+    /* this + 248 */ const UIScene* mCurrentScene; // offset broken fron font handle above. todo fix.
 
 public:
     MinecraftUIRenderContext(IClientInstance& client, ScreenContext& screenContext, const UIScene& currentScene);

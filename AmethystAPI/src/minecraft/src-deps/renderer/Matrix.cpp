@@ -14,8 +14,9 @@ void Matrix::scale(float scaleX, float scaleY, float scaleZ)
     _m = _m * scaleMatrix;
 }
 
-void Matrix::rotate(float angleDeg, float x, float y, float z)
+void Matrix::rotate(float angle, float x, float y, float z)
 {
-    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angleDeg), glm::vec3(x, y, z));
+    // note: it IS accurate that mc takes angle in degrees, not radians
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(x, y, z));
     _m = _m * rotationMatrix;
 }

@@ -67,3 +67,9 @@ bool Actor::isClientSide() const
 {
     return mLevel->isClientSide();
 }
+
+bool Actor::isCreative() const
+{
+    Log::Info("todo: properly implement Actor::isCreative");
+    return false;
+}

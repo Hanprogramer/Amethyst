@@ -34,9 +34,7 @@ namespace Amethyst {
         {
             constexpr size_t hash = function_id::hash_code<OriginalFn>();
 
-            if (!mFuncHashToOriginalAddress.contains(hash)) {
-                Assert("[AmethystAPI] '{}' has not registered!", function_id::name<OriginalFn>());
-            }
+            Assert(mFuncHashToOriginalAddress.contains(hash), "[AmethystAPI] '{}' has not registered!", function_id::name<OriginalFn>());
 
             uintptr_t original_addr = mFuncHashToOriginalAddress[hash];
             CreateHookAbsolute(trampoline, original_addr, hook);
@@ -62,9 +60,7 @@ namespace Amethyst {
             if (!mFuncHashToOriginalAddress.contains(hash)) {
                 auto result = SigScanSafe(signature);
 
-                if (!result.has_value()) {
-                    Assert("Failed to find function: \"{}\"\nUsing signature: \"{}\"", function_id::name<Func>(), signature);
-                }
+                Assert(result.has_value(), "Failed to find function: \"{}\"\nUsing signature: \"{}\"", function_id::name<Func>(), signature);
 
                 mFuncHashToOriginalAddress[hash] = result.value();
             }

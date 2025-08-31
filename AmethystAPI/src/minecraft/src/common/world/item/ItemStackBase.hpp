@@ -5,6 +5,7 @@
 #include <optional>
 #include <chrono>
 #include "minecraft/src/common/SharedPtr.hpp"
+#include "minecraft/src/common/world/item/UseAnim.hpp"
 #include "minecraft/src/common/world/level/Tick.hpp"
 
 class Item;
@@ -80,6 +81,12 @@ public:
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
 
     bool isInstance(const HashedString& itemName, bool useItemLookup) const;
+    bool isBlock() const;
+    bool isOffhandItem() const;
+    WeakPtr<BlockLegacy> getLegacyBlock() const;
+    operator bool() const;
+    bool hasTag(const HashedString& tag) const;
+    UseAnim getUseAnimation() const;
 
 private:
     bool _isInstance(std::string_view itemName) const;

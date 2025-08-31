@@ -1,6 +1,5 @@
 #pragma once
-#include <fmt/core.h>
-#include <fmt/format.h>
+#include <format>
 
 class BlockPos;
 
@@ -46,12 +45,13 @@ template <>
 void BinaryStream::write(Vec3);
 
 template <>
-struct fmt::formatter<Vec3> {
-    constexpr auto parse(fmt::format_parse_context& ctx) { return ctx.begin(); }
+struct std::formatter<Vec3> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin();
+    }
 
     template <typename FormatContext>
-    auto format(const Vec3& pos, FormatContext& ctx)
-    {
-        return fmt::format_to(ctx.out(), "Vec3(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
+    auto format(const Vec3& pos, FormatContext& ctx) const {
+        return std::format_to(ctx.out(), "Vec3(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
     }
 };

@@ -10,11 +10,11 @@ public:
         explicit ControlBlock(EnableNonOwnerReferences* ptr) : ptr(ptr) {}
     };
 
-private:
-    std::shared_ptr<ControlBlock> controlBlock;
+public:
+    std::shared_ptr<ControlBlock> mControlBlock;
 
 public:
-    EnableNonOwnerReferences() : controlBlock(std::make_shared<ControlBlock>(this)) {}
+    EnableNonOwnerReferences() : mControlBlock(std::make_shared<ControlBlock>(this)) {}
 
     EnableNonOwnerReferences(const EnableNonOwnerReferences& other) = default;
 
@@ -25,31 +25,31 @@ public:
 
 template <typename T = EnableNonOwnerReferences>
 class NonOwnerPointer {
-private:
-    std::shared_ptr<EnableNonOwnerReferences::ControlBlock> controlBlock;
+public:
+    std::shared_ptr<EnableNonOwnerReferences::ControlBlock> mControlBlock;
 
 public:
-    NonOwnerPointer() : controlBlock(nullptr) {}
+    NonOwnerPointer() : mControlBlock(nullptr) {}
 
-    explicit NonOwnerPointer(T* ptr) : controlBlock(ptr->controlBlock) {}
+    explicit NonOwnerPointer(T* ptr) : mControlBlock(ptr->controlBlock) {}
 
-    NonOwnerPointer(const NonOwnerPointer<T>& other) : controlBlock(other.controlBlock) {}
+    NonOwnerPointer(const NonOwnerPointer<T>& other) : mControlBlock(other.mControlBlock) {}
 
     NonOwnerPointer& operator=(const NonOwnerPointer<T>& other)
     {
-        this->controlBlock = other.controlBlock;
+        this->mControlBlock = other.mControlBlock;
         return *this;
     }
 
     NonOwnerPointer& operator=(T* ptr)
     {
-        this->controlBlock = ptr->controlBlock;
+        this->mControlBlock = ptr->controlBlock;
         return *this;
     }
 
     T* operator->() const
     {
-        return static_cast<T*>(this->controlBlock.get()->ptr);
+        return static_cast<T*>(this->mControlBlock.get()->ptr);
     }
 
     T& operator*() const
@@ -59,19 +59,19 @@ public:
 
     bool operator==(void*) const
     {
-        return this->controlBlock == nullptr;
+        return this->mControlBlock == nullptr;
     }
 
     bool operator!=(void*) const
     {
-        return this->controlBlock != nullptr;
+        return this->mControlBlock != nullptr;
     }
 
     T* get() const
     {
         // Ensure T is derived from EnableNonOwnerReferences
         static_assert(std::is_base_of<EnableNonOwnerReferences, T>::value, "T must derive from EnableNonOwnerReferences");
-        return static_cast<T*>(this->controlBlock ? this->controlBlock->ptr : nullptr);
+        return static_cast<T*>(this->mControlBlock ? this->mControlBlock->ptr : nullptr);
     }
 };
 

@@ -187,11 +187,47 @@ bool ItemStackBase::isInstance(const HashedString& itemName, bool useItemLookup)
 bool ItemStackBase::_isInstance(std::string_view itemName) const
 {
     if (!mItem) return false;
-    Assert("Too lazy to implement this, if needed write impl here");
+    Assert(false, "Too lazy to implement this, if needed write impl here");
 }
 
 
 
 const Item* ItemStackBase::getItem() const {
     return mItem.get();
+}
+
+ItemStackBase::operator bool() const
+{
+    return mValid && mItem && !isNull() && mCount > 0;
+}
+
+bool ItemStackBase::isBlock() const
+{
+    return mItem && mItem->mLegacyBlock;
+}
+
+WeakPtr<BlockLegacy> ItemStackBase::getLegacyBlock() const
+{
+    if (mItem && mItem->mLegacyBlock) {
+        return mItem->mLegacyBlock;
+    }
+
+    return WeakPtr<BlockLegacy>();
+}
+
+bool ItemStackBase::isOffhandItem() const
+{
+    if (!mItem) return false;
+    return mItem->mAllowOffhand;
+}
+
+bool ItemStackBase::hasTag(const HashedString& tag) const
+{
+    return mItem && mItem->hasTag(tag);
+}
+
+UseAnim ItemStackBase::getUseAnimation() const
+{
+    if (!mItem) return UseAnim::None;
+    else return mItem->getUseAnim();
 }

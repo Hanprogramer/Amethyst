@@ -30,7 +30,12 @@ enum BlockSupportType {};
 namespace Direction {
 enum Type {};
 }
-enum BlockProperty {};
+enum class BlockProperty {
+    Unknown1 = 1 << 0,
+    Unknown2 = 1 << 1,
+    Unknown8 = 1 << 8,
+    Unknown21 = 1 << 21
+};
 enum FertilizerType {};
 enum Flip {};
 
@@ -110,7 +115,10 @@ public:
 public:
     /* this + 40  */ std::string mDescriptionId;
     /* this + 72  */ BlockLegacy::NameInfo mNameInfo;
-    /* this + 248 */ std::byte padding248[20];
+    /* this + 248 */ uint64_t mProperties;
+    /* this + 256 */ bool mFancy;
+    /* this + 260 */ BlockRenderLayer mRenderLayer;
+    /* this + 264 */ bool mRenderLayerCanRenderAsOpaque;
     /* this + 268 */ BlockActorType mBlockEntityType;
     /* this + 272 */ std::byte padding272[24];
     /* this + 296 */ const Material& mMaterial;
@@ -172,10 +180,10 @@ public:
     virtual bool isContainerBlock() const;
     virtual void _unknown_32();
     virtual bool isWaterBlocking() const;
-    virtual bool isFenceBlock();
-    virtual void _unknown_35();
-    virtual void _unknown_36();
-    virtual void _unknown_37();
+    virtual bool isFenceBlock() const;
+    virtual bool isFenceGateBlock() const; 
+    virtual bool isThinFenceBlock() const; 
+    virtual bool isWallBlock() const; 
     virtual bool isStairBlock() const;
     virtual bool isSlabBlock() const;
     virtual bool isDoubleSlabBlock() const;
@@ -324,7 +332,10 @@ public:
 
     void setDestroyTime(float destroyTime, float explosionResistance);
     void addState(const BlockState& blockState);
-    
+    bool isAir() const;
+    bool hasProperty(BlockProperty prop) const;
+    bool isSnappableBlock() const;
+     
 private: 
     std::optional<int> _tryLookupAlteredStateCollection(uint64_t stateId, uint16_t blockData);
 };

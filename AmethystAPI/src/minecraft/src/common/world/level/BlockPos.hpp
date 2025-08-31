@@ -1,6 +1,5 @@
 #pragma once
 #include <functional>
-#include <fmt/core.h>
 #include <minecraft/src-deps/core/math/Math.hpp>
 #include <minecraft/src-deps/core/utility/BinaryStream.hpp>
 #include <minecraft/src/common/world/Facing.hpp>
@@ -112,13 +111,16 @@ struct hash<BlockPos> {
 };
 }
 
+#include <format>
+
 template <>
-struct fmt::formatter<BlockPos> {
-    constexpr auto parse(fmt::format_parse_context& ctx) { return ctx.begin(); }
+struct std::formatter<BlockPos> {
+    constexpr auto parse(std::format_parse_context& ctx) {
+        return ctx.begin(); // No format specifiers
+    }
 
     template <typename FormatContext>
-    auto format(const BlockPos& pos, FormatContext& ctx)
-    {
-        return fmt::format_to(ctx.out(), "BlockPos(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
+    auto format(const BlockPos& pos, FormatContext& ctx) const {
+        return std::format_to(ctx.out(), "BlockPos(x: {}, y: {}, z: {})", pos.x, pos.y, pos.z);
     }
 };

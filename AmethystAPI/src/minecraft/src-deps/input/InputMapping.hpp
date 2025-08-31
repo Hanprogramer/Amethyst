@@ -2,6 +2,8 @@
 #include "minecraft/src-deps/input/InputMapping.hpp"
 #include <string>
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
 struct KeyboardKeyBinding {
 public:
@@ -37,4 +39,12 @@ public:
 class MouseInputMapping {
 public:
     std::vector<MouseButtonBinding> buttonBindings;
+};
+
+struct InputMapping {
+public:
+    KeyboardInputMapping keyboardMapping;
+    std::unordered_map<std::string, std::unordered_set<int>> unknown24;
+    MouseInputMapping mouseMapping;
+    // there r a bunch more
 };

@@ -1,4 +1,5 @@
 #include <minecraft/src-deps/core/threading/SpinLock.hpp>
+#include <system_error>
 
 SpinLock::SpinLock() : mNoThreadId(mThreadHasher({})),
                        mOwnerRefCount(0)

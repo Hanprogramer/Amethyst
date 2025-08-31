@@ -16,6 +16,10 @@ public:
     TagMap mTags;
 
 public:
+    CompoundTag();
+    CompoundTag(CompoundTag&&) noexcept;
+    CompoundTag& operator=(CompoundTag&&) noexcept;
+
     const Tag* get(std::string_view name) const;
     Tag* get(std::string_view);
 
@@ -42,6 +46,18 @@ public:
     const IntTag* getIntTag(std::string_view name) const;
     IntTag* getIntTag(std::string_view name);
     int getInt(std::string_view name) const;
+
+    Tag& put(std::string, Tag&&);
+    Tag* put(std::string, std::unique_ptr<Tag>);
+
+    virtual void write(IDataOutput& output) const override;
+    virtual void load(IDataInput& input) override;
+    virtual std::string toString() const override;
+    virtual Tag::Type getId() const override;
+    virtual std::unique_ptr<Tag> copy() const override;
+    virtual void print(const std::string&, PrintStream&) const override;
+    virtual size_t hash() const override;
+    virtual bool equals(const Tag&) const override;
 
 private:
     template <typename T>

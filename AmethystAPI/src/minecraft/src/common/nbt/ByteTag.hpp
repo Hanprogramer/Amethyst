@@ -3,9 +3,17 @@
 
 class ByteTag : public Tag {
 public:
-    unsigned char data;
+    uint8_t data;
 
-    ByteTag(unsigned char data) {
-        this->data = data;
-    }
+    ByteTag();
+    ByteTag(uint8_t data);
+
+    virtual void write(IDataOutput&) const override;
+    virtual void load(IDataInput&) override;
+    virtual Type getId() const override;
+    virtual std::string toString() const override;
+    virtual bool equals(const Tag&) const override;
+    virtual std::unique_ptr<Tag> copy() const override;
+    virtual size_t hash() const override;
 };
+

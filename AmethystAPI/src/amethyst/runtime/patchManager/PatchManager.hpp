@@ -6,11 +6,6 @@
 namespace Amethyst {
 	class PatchManager {
 	public:		
-		template<typename T>
-        void ApplyPatch(uintptr_t address, T patch){
-			return ApplyPatch(address, (uint8_t*)&patch, sizeof(T));
-		}
-
         void ApplyPatch(uintptr_t address, uint8_t* patch, size_t size);
         ~PatchManager();
 
