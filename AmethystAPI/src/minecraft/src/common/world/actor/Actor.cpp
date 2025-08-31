@@ -49,12 +49,12 @@ void Actor::setDimension(WeakRef<Dimension> dimension)
     return (this->*func)(dimension);
 }
 
-int Actor::load(const CompoundTag& actorData, DefaultDataLoadHelper& dataLoadHelper)
-{
-    using function = decltype(&Actor::load);
-    static auto func = std::bit_cast<function>(this->vtable[88]);
-    return (this->*func)(actorData, dataLoadHelper);
-}
+//int Actor::load(const CompoundTag& actorData, DefaultDataLoadHelper& dataLoadHelper)
+//{
+//    using function = decltype(&Actor::load);
+//    static auto func = std::bit_cast<function>(this->vtable[88]);
+//    return (this->*func)(actorData, dataLoadHelper);
+//}
 
 void Actor::reload()
 {

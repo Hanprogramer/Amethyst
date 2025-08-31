@@ -1,4 +1,7 @@
 #pragma once
+#include <optional>
+#include <bitset>
+#include <memory>
 #include "minecraft/src/common/world/actor/Actor.hpp"
 #include "minecraft/src/common/world/level/BlockPos.hpp"
 #include "minecraft/src/common/ActorUniqueID.hpp"
@@ -14,6 +17,7 @@ public:
 
 class MobAnimationComponent;
 class MobHurtTimeComponent;
+class BodyControl;
 
 class BuiltInMobComponents {
 public:
@@ -31,32 +35,6 @@ public:
 enum MobSpawnMethod : int32_t {
     bleh
 };
-
-enum ActorFlags {};
-enum ActorType {};
-class ActorDamageSource {};
-class AddActorBasePacket {};
-enum InputMode {};
-enum NewInteractionModel {};
-enum ActorDamageCause {};
-namespace Puv {
-namespace Legacy {
-enum LevelSoundEvent {};
-}
-} // namespace Puv
-enum ArmorSlot {};
-enum ArmorMaterialType {};
-namespace Puv {
-namespace Legacy {
-enum EquipmentSlot {};
-}
-} // namespace Puv
-enum CommandPermissionLevel {};
-enum HandSlot {};
-namespace std {
-class bitset {};
-} // namespace std
-class BodyControl {};
 
 #pragma pack(push, 8)
 class Mob : public Actor {
@@ -101,7 +79,7 @@ public:
     }
 
     void aiStep();*/
-
+    
     /**@vIndex {2}*/
     virtual bool hasComponent(const HashedString& unk0) const override;
 
@@ -286,10 +264,10 @@ public:
     virtual int getItemUseDuration() const;
 
     /**@vIndex {163}*/
-    virtual void _unknown_163();
+    virtual float getItemUseStartupProgress() const;
 
     /**@vIndex {164}*/
-    virtual void _unknown_164();
+    virtual float getItemUseIntervalProgress() const;
 
     /**@vIndex {165}*/
     virtual float getMaxHeadXRot();
@@ -304,7 +282,7 @@ public:
     virtual int getArmorValue() const;
 
     /**@vIndex {169}*/
-    virtual void hurtArmorSlots(const ActorDamageSource& unk0, int unk1, std::bitset unk2);
+    virtual void hurtArmorSlots(const ActorDamageSource& unk0, int unk1, std::bitset<4> unk2);
 
     /**@vIndex {170}*/
     virtual void setDamagedArmor(ArmorSlot unk0, const ItemStack& unk1);
@@ -313,7 +291,7 @@ public:
     virtual void _unknown_171();
 
     /**@vIndex {172}*/
-    virtual void sendArmor(std::bitset unk0);
+    virtual void sendArmor(std::bitset<4> unk0);
 
     /**@vIndex {173}*/
     virtual std::vector<const ItemStack*> getAllHand() const;
@@ -349,7 +327,7 @@ public:
     virtual void setTransitioningSitting(bool unk0);
 
     /**@vIndex {184}*/
-    virtual void _unknown_184();
+    virtual float _getWalkTargetValue(const BlockPos& unk0);
 
     /**@vIndex {185}*/
     virtual bool canExistWhenDisallowMob() const;

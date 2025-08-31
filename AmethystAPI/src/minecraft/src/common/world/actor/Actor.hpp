@@ -1,12 +1,12 @@
 #pragma once
 #include <gsl/gsl>
-#include "minecraft/src/common/world/entity/EntityContext.hpp"
-#include <minecraft/src/common/gamerefs/WeakRef.hpp>
-
 #include <vector>
 #include <memory>
 #include <string>
 #include <optional>
+
+#include "minecraft/src/common/world/entity/EntityContext.hpp"
+#include <minecraft/src/common/gamerefs/WeakRef.hpp>
 #include <minecraft/src/common/world/actor/Actor.hpp>
 #include <minecraft/src/common/world/phys/Vec3.hpp>
 #include <minecraft/src-deps/core/math/Color.hpp>
@@ -17,15 +17,12 @@
 #include <minecraft/src/common/world/level/dimension/Dimension.hpp>
 #include <minecraft/src-deps/core/utility/AutomaticID.hpp>
 #include <minecraft/src/common/world/item/Item.hpp>
+#include <minecraft/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
+#include <minecraft/src/common/world/actor/ActorFlags.hpp>
+#include <minecraft/src/common/world/actor/ActorType.hpp>
+#include <minecraft/src/common/world/actor/player/Abilities.hpp>
 
-struct BuiltInActorComponents {
-    gsl::not_null<StateVectorComponent*> mStateVectorComponent;
-    gsl::not_null<AABBShapeComponent*> mAABBShapeComponent;
-    gsl::not_null<ActorRotationComponent*> mActorRotationComponent;
-    gsl::not_null<ActorWalkAnimationComponent*> mWalkAnimationComponent;
-};
-
-enum ActorInitializationMethod : __int8 {
+enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
     LOADED = 0x1,
     SPAWNED = 0x2,
@@ -36,23 +33,25 @@ enum ActorInitializationMethod : __int8 {
     LEGACY = 0x7,
 };
 
+class AddActorBasePacket;
+
 // Auto-generated: Unknown complete types
-enum ActorFlags {};
-enum ActorType {};
-class AddActorBasePacket {};
 enum InputMode {};
 enum NewInteractionModel {};
 enum ActorDamageCause {};
+
 namespace Puv {
-namespace Legacy {
-enum LevelSoundEvent {};
-}
+    namespace Legacy {
+        enum EquipmentSlot {};
+    } // namespace Legacy
 } // namespace Puv
+
 enum ArmorSlot {};
-enum CommandPermissionLevel {};
 enum HandSlot {};
+enum ArmorMaterialType {};
 
 // Auto-generated: Forward declarations
+class AABBShapeComponent;
 class HashedString;
 class VariantParameterList;
 class ActorDamageSource;
@@ -69,13 +68,23 @@ class Player;
 class ItemStackBase;
 class ActorInteraction;
 class EntityContext;
+class DefaultDataLoadHelper;
+class ActorWalkAnimationComponent;
+class StateVectorComponent;
+class ActorRotationComponent;
+class Vec2;
+class Vec3;
 
-
+struct BuiltInActorComponents {
+    gsl::not_null<StateVectorComponent*> mStateVectorComponent;
+    gsl::not_null<AABBShapeComponent*> mAABBShapeComponent;
+    gsl::not_null<ActorRotationComponent*> mActorRotationComponent;
+    gsl::not_null<ActorWalkAnimationComponent*> mWalkAnimationComponent;
+};
 
 #pragma pack(push, 1)
 class Actor {
 public:
-    /* this + 0   */ uintptr_t** vtable;
     /* this + 8   */ EntityContext mEntityContext;
     /* this + 32  */ ActorInitializationMethod mInitMethod;
     /* this + 33  */ std::byte padding33[576 - 33];
@@ -150,7 +159,7 @@ public:
     virtual void outOfWorld();
 
     /**@vIndex {4}*/
-    virtual void _unknown_4();
+    virtual void reloadHardcoded(ActorInitializationMethod unk0, const VariantParameterList& unk1);
 
     /**@vIndex {5}*/
     virtual void reloadHardcodedClient(ActorInitializationMethod unk0, const VariantParameterList& unk1);
@@ -186,10 +195,10 @@ public:
     virtual float getInterpolatedBodyRot(float unk0) const;
 
     /**@vIndex {16}*/
-    virtual void _unknown_16();
+    virtual float getInterpolatedHeadRot(float unk0) const;
 
     /**@vIndex {17}*/
-    virtual void _unknown_17();
+    virtual float getInterpolatedBodyYaw(float unk0) const;
 
     /**@vIndex {18}*/
     virtual float getYawSpeedInDegreesPerSecond() const;
@@ -264,7 +273,7 @@ public:
     virtual float getBrightness(float unk0, const IConstBlockSource& unk1) const;
 
     /**@vIndex {42}*/
-    virtual void _unknown_42();
+    virtual void playerTouch(Player& unk0);
 
     /**@vIndex {43}*/
     virtual bool isImmobile() const;
@@ -273,16 +282,16 @@ public:
     virtual void _unknown_44();
 
     /**@vIndex {45}*/
-    virtual void _unknown_45();
+    virtual bool isSleeping() const;
 
     /**@vIndex {46}*/
-    virtual void _unknown_46();
+    virtual void setSleeping(bool unk0);
 
     /**@vIndex {47}*/
     virtual void setSneaking(bool unk0);
 
     /**@vIndex {48}*/
-    virtual void _unknown_48();
+    virtual bool isBlocking() const;
 
     /**@vIndex {49}*/
     virtual void _unknown_49();
@@ -294,7 +303,7 @@ public:
     virtual bool isOnFire() const;
 
     /**@vIndex {52}*/
-    virtual void _unknown_52();
+    virtual bool isSurfaceMob() const;
 
     /**@vIndex {53}*/
     virtual void _unknown_53();
@@ -372,16 +381,16 @@ public:
     virtual void setArmor(ArmorSlot unk0, const ItemStack& unk1);
 
     /**@vIndex {78}*/
-    virtual void _unknown_78();
+    virtual ArmorMaterialType getArmorMaterialTypeInSlot(ArmorSlot unk0) const;
 
     /**@vIndex {79}*/
-    virtual void _unknown_79();
+    virtual int getArmorTextureIndexInSlot(ArmorSlot unk0) const;
 
     /**@vIndex {80}*/
     virtual float getArmorColorInSlot(ArmorSlot unk0, int unk1) const;
 
     /**@vIndex {81}*/
-    virtual void _unknown_81();
+    virtual void setEquippedSlot(Puv::Legacy::EquipmentSlot unk0, const ItemStack& unk1);
 
     /**@vIndex {82}*/
     virtual void setCarriedItem(const ItemStack& unk0);
@@ -408,10 +417,10 @@ public:
     virtual const HashedString& queryEntityRenderer() const;
 
     /**@vIndex {90}*/
-    virtual void _unknown_90();
+    virtual ActorUniqueID getSourceUniqueID() const;
 
     /**@vIndex {91}*/
-    virtual void _unknown_91();
+    virtual bool canFreeze() const;
 
     /**@vIndex {92}*/
     virtual AABB getLiquidAABB(MaterialType unk0) const;
@@ -420,7 +429,7 @@ public:
     virtual void handleInsidePortal(const BlockPos& unk0);
 
     /**@vIndex {94}*/
-    virtual void _unknown_94();
+    virtual bool canChangeDimensionsUsingPortal() const;
 
     /**@vIndex {95}*/
     virtual void _unknown_95();
@@ -429,10 +438,10 @@ public:
     virtual void changeDimension(AutomaticID<Dimension, int> unk0);
 
     /**@vIndex {97}*/
-    virtual void _unknown_97();
+    virtual ActorUniqueID getControllingPlayer() const;
 
     /**@vIndex {98}*/
-    virtual void _unknown_98();
+    virtual float causeFallDamageToActor(float unk0, float unk1, ActorDamageSource unk2);
 
     /**@vIndex {99}*/
     virtual void onSynchedDataUpdate(int unk0);
@@ -444,16 +453,16 @@ public:
     virtual void _unknown_101();
 
     /**@vIndex {102}*/
-    virtual void _unknown_102();
+    virtual bool canBePulledIntoVehicle() const;
 
     /**@vIndex {103}*/
-    virtual void _unknown_103();
+    virtual bool inCaravan() const;
 
     /**@vIndex {104}*/
     virtual void sendMotionPacketIfNeeded(const PlayerMovementSettings& unk0);
 
     /**@vIndex {105}*/
-    virtual void _unknown_105();
+    virtual bool canSynchronizeNewEntity() const;
 
     /**@vIndex {106}*/
     virtual void startSwimming();
@@ -462,7 +471,7 @@ public:
     virtual void stopSwimming();
 
     /**@vIndex {108}*/
-    virtual void _unknown_108();
+    virtual void buildDebugInfo(std::string& unk0) const;
 
     /**@vIndex {109}*/
     virtual CommandPermissionLevel getCommandPermissionLevel() const;
@@ -489,7 +498,7 @@ public:
     virtual void openContainerComponent(Player& unk0);
 
     /**@vIndex {117}*/
-    virtual void _unknown_117();
+    virtual void swing();
 
     /**@vIndex {118}*/
     virtual void useItem(ItemStackBase& unk0, ItemUseMethod unk1, bool unk2);
@@ -570,7 +579,7 @@ public:
     virtual bool _shouldProvideFeedbackOnArmorSet(ArmorSlot unk0, const ItemStack& unk1) const;
 
     /**@vIndex {144}*/
-    virtual void _unknown_144();
+    virtual void updateEntitySpecificMolangVariables(RenderParams& unk0);
 
     /**@vIndex {145}*/
     virtual bool shouldTryMakeStepSound();
