@@ -10,6 +10,7 @@
 #include <minecraft/src/common/world/level/block/LevelEvent.hpp>
 #include <minecraft/src/common/gamerefs/OwnerPtr.hpp>
 #include <minecraft/src/common/world/phys/Vec3.hpp>
+#include <minecraft/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
 
 // Auto-generated: Forward declarations
 namespace PlayerCapabilities { struct ISharedController; }
@@ -17,7 +18,6 @@ namespace PositionTrackingDB { class PositionTrackingDBClient; }
 namespace cg { class ImageBuffer; }
 namespace mce {class UUID; class Color; }
 namespace Social { class GamePublishSetting; }
-namespace Puv::Legacy { enum LevelSoundEvent; }
 class EntityContext;
 struct ActorUniqueID;
 class LevelSettings;
