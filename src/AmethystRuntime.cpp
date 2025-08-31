@@ -72,9 +72,18 @@ void AmethystRuntime::LoadModDlls()
         mAmethystContext.mMods.emplace_back(modName);
     }
 
-    // Load all mod functions
+    // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
         Log::Info("[AmethystRuntime] Loading '{}'", mod.modName);
+
+        // Check if the mod has a resource pack and register it if it does
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "resource_pack")))
+            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, mod.modName + "/resource_pack", PackType::Resources);
+        
+        // Check if the mod has a behavior pack and register it if it does
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_pack")))
+            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, mod.modName + "/behavior_pack", PackType::Behavior);
+        
         _LoadModFunc(&mModInitialize, mod, "Initialize");
     }
 

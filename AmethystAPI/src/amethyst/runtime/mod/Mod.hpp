@@ -20,6 +20,10 @@ public:
         std::string name;
         std::string version;
         std::vector<std::string> author;
+
+        std::string GetNameVersion() const {
+            return name + "@" + version;
+        }
     };
 
 public:

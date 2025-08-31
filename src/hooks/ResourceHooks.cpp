@@ -10,7 +10,31 @@ SafetyHookInline _VanillaGameModuleServer_initializeBehaviorStack;
 void VanillaInPackagePacks_getPacks(VanillaInPackagePacks* self, std::vector<IInPackagePacks::MetaData>& result, PackType packType)
 {
     _VanillaInPackagePacks_getPacks.thiscall<void, VanillaInPackagePacks*, std::vector<IInPackagePacks::MetaData>&, PackType>(self, result, packType);
-    // TODO: Add more packs
+    
+    auto& context = *AmethystRuntime::getContext();
+
+    // Relative path from the game install directory to the local app data for the package
+    // Tried to use fs::relative but it didn't work so for now it's okay to hardcode this
+    static auto localForPackage = 
+        fs::path("../../../../../") / 
+        "Local" /
+        "Packages" /
+        context.mPackageInfo.mFamilyName / 
+        "LocalState" /
+        "games" /
+        "com.mojang" /
+        "amethyst" /
+        "mods";
+
+    // Iterate over all registered packs
+    for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
+        for (auto& [path, pack] : packs) {
+            if (pack.type == packType) {
+                // Add the pack to the list
+                result.emplace_back(Core::Path((localForPackage / path).string()), false, PackCategory::Standard);
+            }
+        }
+    }
 }
 
 void VanillaGameModuleClient_initializeResourceStack(VanillaGameModuleClient* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
