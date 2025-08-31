@@ -3,8 +3,7 @@
 	"author": "FrederoxDev",
 	"name": "AmethystRuntime",
 	"packs": {
-		"resourcePack": "./packs/RP",
-		"behaviorPack": "./packs/BP"
+		"resourcePack": "./packs/RP"
 	},
 	"regolith": {
 		"dataPath": "./packs/data",
