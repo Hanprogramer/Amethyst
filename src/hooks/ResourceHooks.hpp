@@ -3,6 +3,9 @@
 #include "AmethystRuntime.hpp"
 #include "amethyst/runtime/HookManager.hpp"
 
+class IResourcePackRepository;
+class ResourcePackStack;
+
 namespace lambda {
 // The lambda capture structure used in initializeResourceStack
 struct Pack {

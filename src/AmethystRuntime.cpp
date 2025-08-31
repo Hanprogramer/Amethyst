@@ -104,8 +104,7 @@ void AmethystRuntime::PromptDebugger()
 
 void AmethystRuntime::CreateOwnHooks()
 {
-    auto& featureFlags = AmethystRuntime::getContext()->mFeatures;
-    if (featureFlags->enableInputSystem) CreateInputHooks();
+    CreateInputHooks();
     CreateResourceHooks();
     CreateModFunctionHooks();
 }
