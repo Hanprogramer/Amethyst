@@ -21,7 +21,7 @@ public:
         std::string version;
         std::vector<std::string> author;
 
-        std::string GetNameVersion() const {
+        std::string GetVersionedName() const {
             return name + "@" + version;
         }
     };
