@@ -11,7 +11,7 @@ Amethyst::PackManager::~PackManager() {}
 
 void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type)
 {
-	std::string key = metadata.GetNameVersion();
+	std::string key = metadata.GetVersionedName();
 
 	// Check if the mod is on the list of packs, if not add it
 	if (!mPacks.contains(key)) {
@@ -40,8 +40,10 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 
     // Try to parse the manifest.json
     auto manifestJson = json::parse(manifestContents);
-    if (!manifestJson.is_object())
+    if (!manifestJson.is_object()) {
         Log::Warning("[PackManager] manifest.json for pack '{}' of '{}' is not a valid json object, skipping.", path, key);
+        return;
+    }
 
     // Ensure it has a header object
     auto& header = manifestJson["header"];
@@ -65,7 +67,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
     }
 
     mce::UUID packUuid = mce::UUID::fromString(uuid.get<std::string>());
-    SemVersion semVersion = { version[0].get<uint32_t>(), version[1].get<uint32_t>(), version[2].get<uint32_t>() };
+    SemVersion semVersion = {version[0].get<uint16_t>(), version[1].get<uint16_t>(), version[2].get<uint16_t>()};
 
 	// Insert the new pack
     mPacks[key].insert({path, Pack{metadata, path, packUuid, semVersion, type}});
@@ -91,5 +93,6 @@ const fs::path& Amethyst::PackManager::GetModsFolderRelativeToPackage()
         "com.mojang" /
         "amethyst" /
         "mods";
+
     return localForPackage;
 }
