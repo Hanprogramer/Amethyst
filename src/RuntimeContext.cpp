@@ -10,7 +10,7 @@ void RuntimeContext::Start()
     mInputManager = std::make_unique<Amethyst::InputManager>(this);
     mPatchManager = std::make_unique<Amethyst::PatchManager>();
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
-    mPackManager = std::make_unique<Amethyst::PackManager>();
+    mPackManager = std::make_unique<Amethyst::PackManager>(this);
 }
 
 void RuntimeContext::Shutdown()

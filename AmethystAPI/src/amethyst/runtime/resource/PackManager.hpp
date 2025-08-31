@@ -2,22 +2,27 @@
 #include "minecraft/src-deps/core/resource/ResourceHelper.hpp"
 #include "amethyst/runtime/mod/Mod.hpp"
 
+class AmethystContext;
 namespace Amethyst {
 struct Pack {
     Mod::Metadata metadata;
     std::string path;
+    mce::UUID uuid;
+    SemVersion version;
     PackType type;
 };
 
 class PackManager {
 public:
-    PackManager();
+    PackManager(AmethystContext* amethyst);
     ~PackManager();
 
     void RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type);
     const std::unordered_map<std::string, std::unordered_map<std::string, Pack>>& GetPacks() const;
+    const fs::path& GetModsFolderRelativeToPackage();
 
 private:
+    AmethystContext* mAmethyst;
     friend class AmethystContext;
 
 private:

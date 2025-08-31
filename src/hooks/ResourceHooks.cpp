@@ -12,20 +12,8 @@ void VanillaInPackagePacks_getPacks(VanillaInPackagePacks* self, std::vector<IIn
     _VanillaInPackagePacks_getPacks.thiscall<void, VanillaInPackagePacks*, std::vector<IInPackagePacks::MetaData>&, PackType>(self, result, packType);
     
     auto& context = *AmethystRuntime::getContext();
-
-    // Relative path from the game install directory to the local app data for the package
-    // Tried to use fs::relative but it didn't work so for now it's okay to hardcode this
-    static auto localForPackage = 
-        fs::path("../../../../../") / 
-        "Local" /
-        "Packages" /
-        context.mPackageInfo.mFamilyName / 
-        "LocalState" /
-        "games" /
-        "com.mojang" /
-        "amethyst" /
-        "mods";
-
+    auto& localForPackage = context.mPackManager->GetModsFolderRelativeToPackage();
+    
     // Iterate over all registered packs
     for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
         for (auto& [path, pack] : packs) {
@@ -39,13 +27,39 @@ void VanillaInPackagePacks_getPacks(VanillaInPackagePacks* self, std::vector<IIn
 
 void VanillaGameModuleClient_initializeResourceStack(VanillaGameModuleClient* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
-    // TODO: Add resource packs to stack
+    auto& context = *AmethystRuntime::getContext();
+
+    // Iterate over all registered packs
+    for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
+        for (auto& [path, pack] : packs) {
+            if (pack.type != PackType::Resources)
+                continue;
+            // Add the pack to the stack
+            // Workaround for lambda capture
+            lambda::Pack lambdaPack{repository, stack};
+            lambdaPack.addFromUUID({ pack.uuid, pack.version });
+        }
+    }
+
     _VanillaGameModuleClient_initializeResourceStack.thiscall<void, VanillaGameModuleClient*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
 void VanillaGameModuleServer_initializeBehaviorStack(VanillaGameModuleServer* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
-    // TODO: Add behavior packs to stack
+    auto& context = *AmethystRuntime::getContext();
+
+    // Iterate over all registered packs
+    for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
+        for (auto& [path, pack] : packs) {
+            if (pack.type != PackType::Behavior)
+                continue;
+            // Add the pack to the stack
+            // Workaround for lambda capture
+            lambda::Pack lambdaPack{repository, stack};
+            lambdaPack.addFromUUID({pack.uuid, pack.version});
+        }
+    }
+
     _VanillaGameModuleServer_initializeBehaviorStack.thiscall<void, VanillaGameModuleServer*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
