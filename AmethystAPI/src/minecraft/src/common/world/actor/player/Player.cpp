@@ -33,12 +33,12 @@ const ItemStack& Player::getSelectedItem() const
 //     return (this->*func)(transaction);
 // }
 
-// void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
-// {
-//     using function = decltype(&Player::sendComplexInventoryTransaction);
-//     auto func = std::bit_cast<function>(this->vtable[242]);
-//     return (this->*func)(std::move(transaction));
-// }
+ void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
+ {
+     using function = decltype(&Player::sendComplexInventoryTransaction);
+     auto func = std::bit_cast<function>(this->vtable[242]);
+     return (this->*func)(std::move(transaction));
+ }
 
 const LayeredAbilities& Player::getAbilities() const
 {

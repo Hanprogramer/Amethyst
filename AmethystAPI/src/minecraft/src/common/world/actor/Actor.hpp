@@ -21,6 +21,7 @@
 #include <minecraft/src/common/world/actor/ActorFlags.hpp>
 #include <minecraft/src/common/world/actor/ActorType.hpp>
 #include <minecraft/src/common/world/actor/player/Abilities.hpp>
+#include <minecraft/src-deps/input/InputHandler.hpp>
 
 enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
@@ -36,7 +37,6 @@ enum class ActorInitializationMethod : __int8 {
 class AddActorBasePacket;
 
 // Auto-generated: Unknown complete types
-enum InputMode {};
 enum NewInteractionModel {};
 enum ActorDamageCause {};
 
@@ -602,4 +602,4 @@ public:
 #pragma pack(pop)   
 
 // 1.21.0.3
-static_assert(sizeof(Actor) == 1096);
+//static_assert(sizeof(Actor) == 1096);

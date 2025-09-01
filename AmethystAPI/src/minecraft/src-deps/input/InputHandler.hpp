@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <vector>
 #include <set>
+#include <cstdint>
 #include <minecraft/src-deps/core/utility/StringUtils.hpp>
 
 enum class FocusImpact : char {
