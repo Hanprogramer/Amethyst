@@ -20,25 +20,28 @@ const ItemStack& Player::getSelectedItem() const
     return playerInventory->getSelectedItem();
 }
 
-// PlayerEventCoordinator& Player::getPlayerEventCoordinator() {
-//     using function = decltype(&Player::getPlayerEventCoordinator);
-//     auto func = std::bit_cast<function>(this->vtable[244]);
-//     return (this->*func)();
-// }
+ PlayerEventCoordinator& Player::getPlayerEventCoordinator() {
+     using function = decltype(&Player::getPlayerEventCoordinator);
+     uintptr_t** vtable = *(uintptr_t***)this;
+     auto func = std::bit_cast<function>(vtable[244]);
+     return (this->*func)();
+ }
 
-// void Player::sendInventoryTransaction(const InventoryTransaction& transaction)
-// {
-//     using function = decltype(&Player::sendInventoryTransaction);
-//     auto func = std::bit_cast<function>(this->vtable[241]);
-//     return (this->*func)(transaction);
-// }
+ void Player::sendInventoryTransaction(const InventoryTransaction& transaction)
+ {
+     using function = decltype(&Player::sendInventoryTransaction);
+     uintptr_t** vtable = *(uintptr_t***)this;
+     auto func = std::bit_cast<function>(vtable[241]);
+     return (this->*func)(transaction);
+ }
 
-// void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
-// {
-//     using function = decltype(&Player::sendComplexInventoryTransaction);
-//     auto func = std::bit_cast<function>(this->vtable[242]);
-//     return (this->*func)(std::move(transaction));
-// }
+ void Player::sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction> transaction) const
+ {
+     using function = decltype(&Player::sendComplexInventoryTransaction);
+     uintptr_t** vtable = *(uintptr_t***)this;
+     auto func = std::bit_cast<function>(vtable[242]);
+     return (this->*func)(std::move(transaction));
+ }
 
 const LayeredAbilities& Player::getAbilities() const
 {
@@ -50,9 +53,9 @@ GameMode& Player::getGameMode() const
     return *this->mGameMode.get();
 }
 
-// int Player::getItemUseDuration() const
-// {
-//     using function = decltype(&Player::getItemUseDuration);
-//     auto func = std::bit_cast<function>(this->vtable[162]);
-//     return (this->*func)();
-// }
+ //int Player::getItemUseDuration() const
+ //{
+ //    using function = decltype(&Player::getItemUseDuration);
+ //    auto func = std::bit_cast<function>(this->vtable[162]);
+ //    return (this->*func)();
+ //}

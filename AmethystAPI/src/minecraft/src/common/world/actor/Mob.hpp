@@ -98,9 +98,6 @@ public:
     /**@vIndex {9}*/
     virtual void _doInitialMove() override;
 
-    /**@vIndex {10}*/
-    virtual void _unknown_10();
-
     /**@vIndex {15}*/
     virtual float getInterpolatedBodyRot(float unk0) const override;
 
