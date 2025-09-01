@@ -67,9 +67,9 @@ bool BlockLegacy::hasProperty(BlockProperty prop) const
 
 bool BlockLegacy::isSnappableBlock() const
 {
-    if (hasProperty(BlockProperty::Unknown21)) return true;
-    if (hasProperty(BlockProperty::Unknown1)) return true;
-    if (hasProperty(BlockProperty::Unknown2)) return true;
+    if (hasProperty(BlockProperty::CubeShaped)) return true;
+    if (hasProperty(BlockProperty::Stair)) return true;
+    if (hasProperty(BlockProperty::HalfSlab)) return true;
     if (isFenceBlock()) return true;
     if (isFenceGateBlock()) return true;
     if (isWallBlock()) return true;

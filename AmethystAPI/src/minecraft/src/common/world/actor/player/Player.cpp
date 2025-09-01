@@ -53,6 +53,13 @@ GameMode& Player::getGameMode() const
     return *this->mGameMode.get();
 }
 
+bool Player::canUseOperatorBlocks() const
+{
+    const LayeredAbilities& abilities = this->getAbilities();
+    if (!abilities.getBool(11)) return false;
+    return abilities.getBool(6);
+}
+
  //int Player::getItemUseDuration() const
  //{
  //    using function = decltype(&Player::getItemUseDuration);

@@ -8,6 +8,7 @@
 #include <minecraft/src/common/world/Facing.hpp>
 #include <optional>
 #include <minecraft/src/common/world/phys/Vec3.hpp>
+#include <minecraft/src/common/world/level/block/BlockProperty.hpp>
 
 //is_virtual = True
 //hide_vtable = False
@@ -118,6 +119,8 @@ public:
     bool use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const;
 
     bool isInteractiveBlock() const;
+
+    bool hasProperty(BlockProperty property) const;
 };
 
 static_assert(sizeof(Block) == 208);

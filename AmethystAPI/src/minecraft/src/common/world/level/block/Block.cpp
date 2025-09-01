@@ -86,3 +86,7 @@ bool Block::isInteractiveBlock() const
     return (this->*func)();
 }
 
+bool Block::hasProperty(BlockProperty property) const
+{
+    return mLegacyBlock->hasProperty(property);
+}

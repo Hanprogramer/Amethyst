@@ -42,6 +42,7 @@ public:
     // non virtuals
     const LayeredAbilities& getAbilities() const;
     GameMode& getGameMode() const;
+    bool canUseOperatorBlocks() const;
 };
 #pragma pack(pop)
 
