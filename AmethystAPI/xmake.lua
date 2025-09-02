@@ -51,9 +51,13 @@ target("AmethystAPI")
     -- Deps
     add_packages("libhat")
 
-    local localAppData = os.getenv("LOCALAPPDATA")
+    -- local localAppData = os.getenv("LOCALAPPDATA")
+    -- add_includedirs(
+    --     path.join(localAppData, ".xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
+    -- )
+
     add_includedirs(
-        path.join(localAppData, ".xmake/packages/l/libhat/@default/3c332be551f6485e8d17e1830ee49789/include")
+        path.join(os.projectdir(), "packages", ".xmake", "packages", "l", "libhat", "@default", "3c332be551f6485e8d17e1830ee49789", "include")
     )
     
     add_includedirs("include", "src", {public = true})
