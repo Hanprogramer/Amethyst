@@ -3,7 +3,6 @@
 */.vscode/
 *\build
 *\.vs
-*/packages
 *.env
 dist
 **/.xmake
