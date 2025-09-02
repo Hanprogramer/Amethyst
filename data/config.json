@@ -3,8 +3,7 @@
 	"author": "FrederoxDev",
 	"name": "AmethystRuntime",
 	"packs": {
-		"resourcePack": "./packs/RP",
-		"behaviorPack": "./packs/BP"
+		"resourcePack": "./packs/RP"
 	},
 	"regolith": {
 		"dataPath": "./packs/data",
@@ -16,8 +15,8 @@
 					"build": "standard",
 					"readOnly": false,
 					"target": "exact",
-					"rpPath": "%localappdata%/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/amethyst/mods/AmethystRuntime@2.0.0/resource_pack",
-					"bpPath": "%localappdata%/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/amethyst/mods/AmethystRuntime@2.0.0/behavior_pack"
+					"rpPath": "%localappdata%/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/amethyst/mods/AmethystRuntime@2.0.0/resource_packs/main_rp",
+					"bpPath": "%localappdata%/Packages/Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.mojang/amethyst/mods/AmethystRuntime@2.0.0/behavior_packs/main_bp"
 				},
 				"filters": []
 			}

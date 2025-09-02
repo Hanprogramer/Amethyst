@@ -26,6 +26,19 @@ enum class PackType : char {
     Count
 };
 
+enum class PackOrigin : char {
+    _Unknown,
+    _RealmsUnknown,
+    Package,
+    Treatment,
+    Dev,
+    World,
+    User,
+    TempCache,
+    PremiumCache,
+    PremiumTempCache
+};
+
 struct PackIdVersion {
     mce::UUID mId;
     SemVersion mVersion;

@@ -37,7 +37,6 @@ enum class ActorInitializationMethod : __int8 {
 class AddActorBasePacket;
 
 // Auto-generated: Unknown complete types
-
 enum NewInteractionModel {};
 enum ActorDamageCause {};
 

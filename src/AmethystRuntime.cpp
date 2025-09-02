@@ -41,6 +41,7 @@ void AmethystRuntime::Start()
     // Create our hooks then run the mods
     CreateOwnHooks();
     RunMods();
+
 } 
 
 void AmethystRuntime::ReadLauncherConfig()
@@ -79,12 +80,12 @@ void AmethystRuntime::LoadModDlls()
         Log::Info("[AmethystRuntime] Loading '{}'", mod.modName);
 
         // Check if the mod has a resource pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "resource_pack")))
-            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, mod.modName + "/resource_pack", PackType::Resources);
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "resource_packs" / "main_rp" / "manifest.json")))
+            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_rp", PackType::Resources);
         
         // Check if the mod has a behavior pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_pack")))
-            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, mod.modName + "/behavior_pack", PackType::Behavior);
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_packs" / "main_bp" / "manifest.json")))
+            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_bp", PackType::Behavior);
         
         _LoadModFunc(&mModInitialize, mod, "Initialize");
     }
@@ -116,8 +117,7 @@ void AmethystRuntime::PromptDebugger()
 void AmethystRuntime::AddOwnResources()
 {
     // Add our own resource pack
-    auto modName = std::format("AmethystRuntime@{}", MOD_VERSION);
-    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, modName + "/resource_pack", PackType::Resources);
+    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, "main_rp", PackType::Resources);
 }
 
 void AmethystRuntime::CreateOwnHooks()
