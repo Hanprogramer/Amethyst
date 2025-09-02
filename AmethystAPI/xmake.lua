@@ -9,7 +9,6 @@ set_toolchains("msvc", {asm = "nasm"})
 
 target("AmethystAPI")
     set_kind("static")
-    set_toolchains("nasm")
     set_default(false)
 
     add_files("src/**.cpp", "src/**.c")
