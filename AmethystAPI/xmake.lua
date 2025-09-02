@@ -5,6 +5,8 @@ add_ldflags("/DEBUG", "/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
 
 includes("packages/libhat")
 
+set_toolchains("msvc", {asm = "nasm"})
+
 target("AmethystAPI")
     set_kind("static")
     set_toolchains("nasm")
