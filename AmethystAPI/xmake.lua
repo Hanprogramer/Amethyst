@@ -43,7 +43,7 @@ target("AmethystAPI")
 
     add_files(
         "src/**.cpp",
-        "src/**.c",
+        "src/**.c"
     )
 
     add_files("src/**.asm", { languages = "nasm" })
