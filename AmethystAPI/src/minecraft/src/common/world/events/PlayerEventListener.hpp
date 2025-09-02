@@ -3,6 +3,7 @@
 
 class Player;
 class ItemInstance;
+class EntityContext;
 
 class PlayerEventListener {
 public:
@@ -13,7 +14,7 @@ public:
     virtual void unkn4();
     virtual void unkn5();
     virtual void unkn6();
-    virtual void unkn7();
+    virtual EventResult onPlayerInput(EntityContext*);
     virtual void unkn8();
     virtual void unkn9();
     virtual void unkn10();

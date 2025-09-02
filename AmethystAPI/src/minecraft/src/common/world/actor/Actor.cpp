@@ -4,6 +4,7 @@
 #include "minecraft/src/common/world/entity/components/ActorHeadRotationComponent.hpp"
 #include "minecraft/src/common/world/entity/components/ActorRotationComponent.hpp"
 #include "minecraft/src/common/world/entity/components/StateVectorComponent.hpp"
+#include "minecraft/src/common/world/entity/components/ActorGameTypeComponent.hpp"
 
 Vec3* Actor::getPosition() const
 {
@@ -20,6 +21,11 @@ void Actor::moveTo(const Vec3& a1, const Vec2& a2)
     using function = decltype(&Actor::moveTo);
     static auto func = std::bit_cast<function>(SigScan("48 89 74 24 ? 48 89 7C 24 ? 41 56 48 83 EC ? 4C 8B B1 ? ? ? ? 48 8B FA"));
     return (this->*func)(a1, a2);
+}
+
+float Actor::distanceTo(const Vec3& other) const
+{
+    return other.distance(*getPosition());
 }
 
 const Dimension& Actor::getDimensionConst() const
@@ -70,6 +76,12 @@ bool Actor::isClientSide() const
 
 bool Actor::isCreative() const
 {
-    Log::Info("todo: properly implement Actor::isCreative");
-    return false;
+    const ActorGameTypeComponent* gameTypeComp = tryGetComponent<ActorGameTypeComponent>();
+    GameType ownType = gameTypeComp->mGameType;
+
+    if (ownType == (GameType)-1) return false;
+    GameType defaultType = mLevel->getDefaultGameType();
+
+    //return PlayerGameTypeUtility::isCreative(UnmappedGameType, v3);
+    return ownType == GameType::Creative || (ownType == GameType::Default && defaultType == GameType::Creative);
 }

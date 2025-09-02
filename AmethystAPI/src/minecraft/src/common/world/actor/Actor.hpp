@@ -21,7 +21,7 @@
 #include <minecraft/src/common/world/actor/ActorFlags.hpp>
 #include <minecraft/src/common/world/actor/ActorType.hpp>
 #include <minecraft/src/common/world/actor/player/Abilities.hpp>
-#include <minecraft/src-deps/input/InputHandler.hpp>
+#include <minecraft/src-deps/input/InputMode.hpp>
 
 enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
@@ -98,6 +98,7 @@ public:
     Vec3* getPosition() const;
     Vec2* getHeadRot() const;
     void moveTo(const Vec3&, const Vec2&);
+    float distanceTo(const Vec3& other) const;
 
     const Dimension& getDimensionConst() const;
     const BlockSource& getDimensionBlockSourceConst() const;
@@ -140,7 +141,7 @@ public:
         return registry.emplace<T>(mEntityContext.mEntity, std::forward<Args>(args)...);
     }
 
-    int load(const CompoundTag&, DefaultDataLoadHelper&);
+    //int load(const CompoundTag&, DefaultDataLoadHelper&);
     void reload();
 
     bool isClientSide() const;
@@ -177,10 +178,10 @@ public:
     virtual void _doInitialMove();
 
     /**@vIndex {10}*/
-    virtual void _unknown_10();
+    virtual ~Actor();
 
     /**@vIndex {11}*/
-    virtual void _unknown_11();
+    virtual void _unknown_11(); // resetUserPos
 
     /**@vIndex {12}*/
     virtual ActorType getOwnerEntityType();

@@ -24,18 +24,13 @@
 #include <minecraft/src/common/world/phys/HitResult.hpp>
 #include <minecraft/src/common/world/level/block/GetCollisionShapeInterface.hpp>
 #include <minecraft/src/common/world/phys/ShapeType.hpp>
+#include <minecraft/src/common/world/level/block/BlockProperty.hpp>
 
 // Auto-generated: Unknown complete types
 enum BlockSupportType {};
 namespace Direction {
 enum Type {};
 }
-enum class BlockProperty {
-    Unknown1 = 1 << 0,
-    Unknown2 = 1 << 1,
-    Unknown8 = 1 << 8,
-    Unknown21 = 1 << 21
-};
 enum FertilizerType {};
 enum Flip {};
 

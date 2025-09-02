@@ -1,6 +1,6 @@
 #pragma once
 
-enum EventResult {
+enum class EventResult {
     StopProcessing,
     KeepGoing
 };

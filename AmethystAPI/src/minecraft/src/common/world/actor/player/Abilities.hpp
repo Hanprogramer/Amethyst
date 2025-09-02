@@ -18,6 +18,7 @@ class PermissionsHandler
 };
 
 class Ability {
+public:
   enum class Type : unsigned char {Invalid, Unset, Bool, Float};
   enum class Options : unsigned char {None, NoSave, CommandExposed, PermissionsInterfaceExposed = 4};
 
@@ -32,10 +33,30 @@ class Ability {
 };
 
 class Abilities {
+public:
   std::array<Ability,19> mAbilities;
 };
 
 const class LayeredAbilities {
-  PermissionsHandler mPermissions;
-  std::array<Abilities,5> mLayers;
+public:
+    PermissionsHandler mPermissions;
+    std::array<Abilities,5> mLayers;
+
+    bool getBool(uint8_t abilityIndex) const {
+        // Chatgpt impl, might be wrong xD
+
+        // Walk layers from top (last) to bottom (first)
+        for (auto it = mLayers.rbegin(); it != mLayers.rend(); ++it) {
+            if (abilityIndex >= it->mAbilities.size())
+                continue;
+
+            const Ability& ab = it->mAbilities[abilityIndex];
+            if (ab.mType == Ability::Type::Bool) {
+                return ab.mValue.mBoolVal;
+            }
+        }
+
+        // If not found, return default
+        return false;
+    }
 };

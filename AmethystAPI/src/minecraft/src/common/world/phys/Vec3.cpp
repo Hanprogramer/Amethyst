@@ -164,6 +164,14 @@ Vec3 Vec3::lerp(const Vec3& start, const Vec3& end, float t)
     return start + (end - start) * t;
 }
 
+float Vec3::distance(const Vec3& other) const
+{
+    float dx = this->x - other.x;
+    float dy = this->y - other.y;
+    float dz = this->z - other.z;
+    return std::sqrt(dx * dx + dy * dy + dz * dz);
+}
+
 template <>
 Bedrock::Result<Vec3> ReadOnlyBinaryStream::get<Vec3>() {
     auto x = get<float>().value();

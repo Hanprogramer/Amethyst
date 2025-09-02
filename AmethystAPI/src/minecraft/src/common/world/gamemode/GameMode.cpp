@@ -35,8 +35,7 @@ void GameMode::_sendPlayerInteractWithBlockAfterEvent(Player& player, const Bloc
 
 bool GameMode::_canUseBlock(const Block& block) const
 {
-    Log::Info("todo: properly impl GameMode::_canUseBlock");
-    return true;
+    return mPlayer.canUseOperatorBlocks() || !block.hasProperty(BlockProperty::OperatorBlock);
 }
 
 float GameMode::getMaxPickRange() const

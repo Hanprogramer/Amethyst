@@ -11,6 +11,7 @@
 #include <minecraft/src/common/gamerefs/OwnerPtr.hpp>
 #include <minecraft/src/common/world/phys/Vec3.hpp>
 #include <minecraft/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
+#include <minecraft/src/common/world/level/GameType.hpp>
 
 // Auto-generated: Forward declarations
 namespace PlayerCapabilities { struct ISharedController; }
@@ -103,7 +104,6 @@ class ActorRuntimeID;
 class StructureManager;
 class Path;
 class PlayerSleepStatus;
-class GameType;
 class EducationLevelSettings;
 class ActorEvent;
 class IUnknownBlockTypeRegistry;
