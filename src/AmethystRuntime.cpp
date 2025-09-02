@@ -41,6 +41,7 @@ void AmethystRuntime::Start()
     // Create our hooks then run the mods
     CreateOwnHooks();
     RunMods();
+
 } 
 
 void AmethystRuntime::ReadLauncherConfig()

@@ -8,48 +8,24 @@ SafetyHookInline _VanillaGameModuleClient_initializeResourceStack;
 SafetyHookInline _VanillaGameModuleServer_initializeBehaviorStack;
 SafetyHookInline _ResourcePackRepository_initializePackSource;
 
-void VanillaGameModuleClient_initializeResourceStack(VanillaGameModuleClient* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
+void VanillaGameModuleClient_initializeResourceStack(VanillaGameModuleClient* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
     auto& context = *AmethystRuntime::getContext();
-
-    // Iterate over all registered packs
-    for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
-        for (auto& [path, pack] : packs) {
-            if (pack.type != PackType::Resources)
-                continue;
-            // Add the pack to the stack
-            // Workaround for lambda capture
-            lambda::Pack lambdaPack{repository, stack};
-            lambdaPack.addFromUUID({ pack.uuid, pack.version });
-        }
-    }
-
-    _VanillaGameModuleClient_initializeResourceStack.thiscall<void, VanillaGameModuleClient*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
+    context.mPackManager->AddResourcePacksToStack(repository, stack);
+    _VanillaGameModuleClient_initializeResourceStack.thiscall<void, VanillaGameModuleClient*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
-void VanillaGameModuleServer_initializeBehaviorStack(VanillaGameModuleServer* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
+void VanillaGameModuleServer_initializeBehaviorStack(VanillaGameModuleServer* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
     auto& context = *AmethystRuntime::getContext();
-
-    // Iterate over all registered packs
-    for (auto& [nameVer, packs] : context.mPackManager->GetPacks()) {
-        for (auto& [path, pack] : packs) {
-            if (pack.type != PackType::Behavior)
-                continue;
-            // Add the pack to the stack
-            // Workaround for lambda capture
-            lambda::Pack lambdaPack{repository, stack};
-            lambdaPack.addFromUUID({pack.uuid, pack.version});
-        }
-    }
-
-    _VanillaGameModuleServer_initializeBehaviorStack.thiscall<void, VanillaGameModuleServer*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
+    context.mPackManager->AddBehaviorPacksToStack(repository, stack);
+    _VanillaGameModuleServer_initializeBehaviorStack.thiscall<void, VanillaGameModuleServer*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
 void ResourcePackRepository_initializePackSource(ResourcePackRepository* self) 
 {
     _ResourcePackRepository_initializePackSource.thiscall<void, ResourcePackRepository*>(self);
-    
+    Log::Info("[AmethystRuntime] Initializing mod resource and behavior pack sources...");
     auto& context = *AmethystRuntime::getContext();
     auto& packManager = *context.mPackManager;
 

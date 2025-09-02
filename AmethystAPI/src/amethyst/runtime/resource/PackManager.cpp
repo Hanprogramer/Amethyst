@@ -1,5 +1,7 @@
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/AmethystContext.hpp"
+#include "minecraft/src-client/common/client/game/MinecraftGame.hpp"
+#include "minecraft/src/common/resources/ResourcePackRepository.hpp"
 #include <winrt/Windows.Storage.h>
 #include <fstream>
 
@@ -77,4 +79,34 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 const std::unordered_map<std::string, std::unordered_map<std::string, Amethyst::Pack>>& Amethyst::PackManager::GetPacks() const
 {
 	return mPacks;
+}
+
+void Amethyst::PackManager::AddResourcePacksToStack(const Bedrock::NonOwnerPointer<ResourcePackRepository>& repository, ResourcePackStack& stack)
+{
+    // Iterate over all registered packs
+    for (auto& [nameVer, packs] : mPacks) {
+        for (auto& [path, pack] : packs) {
+            if (pack.type != PackType::Resources)
+                continue;
+            // Add the pack to the stack
+            // Workaround for lambda capture
+            lambda::Pack lambdaPack{repository, stack};
+            lambdaPack.addFromUUID({pack.uuid, pack.version});
+        }
+    }
+}
+
+void Amethyst::PackManager::AddBehaviorPacksToStack(const Bedrock::NonOwnerPointer<ResourcePackRepository>& repository, ResourcePackStack& stack)
+{
+    // Iterate over all registered packs
+    for (auto& [nameVer, packs] : mPacks) {
+        for (auto& [path, pack] : packs) {
+            if (pack.type != PackType::Behavior)
+                continue;
+            // Add the pack to the stack
+            // Workaround for lambda capture
+            lambda::Pack lambdaPack{repository, stack};
+            lambdaPack.addFromUUID({pack.uuid, pack.version});
+        }
+    }
 }
