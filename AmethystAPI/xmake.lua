@@ -12,7 +12,10 @@ target("AmethystAPI")
     set_default(false)
 
     add_files("src/**.cpp", "src/**.c")
+
     add_files("src/**.asm")
+        set_toolset("as", "nasm")
+        add_asflags("-f win64", { force = true })
 
     -- Deps
     add_deps("libhat")
