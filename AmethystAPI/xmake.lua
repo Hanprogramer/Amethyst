@@ -44,8 +44,9 @@ target("AmethystAPI")
     add_files(
         "src/**.cpp",
         "src/**.c",
-        "src/**.asm"
     )
+
+    add_files("src/**.asm", { languages = "nasm" })
 
     -- Deps
     add_packages("libhat")
