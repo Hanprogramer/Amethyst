@@ -19,7 +19,6 @@ public:
 
     void RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type);
     const std::unordered_map<std::string, std::unordered_map<std::string, Pack>>& GetPacks() const;
-    const fs::path& GetModsFolderRelativeToPackage();
 
 private:
     AmethystContext* mAmethyst;
