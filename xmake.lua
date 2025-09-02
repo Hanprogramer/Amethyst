@@ -52,9 +52,7 @@ target("AmethystRuntime")
     add_deps("AmethystAPI", {public = true})
     set_default(true)
 
-    add_files(
-        "src/**.cpp"
-    )
+    add_files("src/**.cpp")
 
     add_defines(
         string.format('MOD_VERSION="%d.%d.%d"', modMajor, modMinor, modPatch),

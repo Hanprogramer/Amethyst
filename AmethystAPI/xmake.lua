@@ -22,7 +22,7 @@ target("AmethystAPI")
         "src/**.c"
     )
 
-    add_files("src/**.asm", { languages = "nasm" })
+    add_files("src/**.asm", { sourcekind = "as" })
 
     -- Deps
     add_deps("libhat")
