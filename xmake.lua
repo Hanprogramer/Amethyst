@@ -18,14 +18,6 @@ add_cxxflags("/O2", "/Zi", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
 add_ldflags("/DEBUG", "/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
 includes(path.join(os.getenv("AMETHYST_SRC"), "AmethystAPI"))
 
--- Use NASM for generated asm thunks
-toolchain("nasm")
-    set_kind("standalone")
-    on_load(function (toolchain)
-        toolchain:set_tools("as", "nasm")
-    end)
-toolchain_end()
-
 -- Project dependencies
 local amethystFolder = path.join(
     os.getenv("localappdata"),
@@ -65,9 +57,6 @@ target("AmethystRuntime")
 
     -- Deps
     add_packages("AmethystAPI", "libhat")
-
-    local localAppData = os.getenv("LOCALAPPDATA")
-
     add_links("user32", "oleaut32", "windowsapp")
     add_includedirs("src", {public = true})
 
