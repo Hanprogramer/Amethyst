@@ -9,3 +9,4 @@ dist
 **/vc140.pdb
 **/vsxmake2022
 /generated
+/.vscode/compile_commands.json
