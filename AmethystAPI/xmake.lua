@@ -11,7 +11,7 @@ target("AmethystAPI")
     set_kind("static")
     set_default(false)
 
-    add_files("src/**.cpp", "src/**.c")
+    add_files("src/**.cpp", "src/**.c", "include/**.cpp")
 
     add_files("src/**.asm")
         set_toolset("as", "nasm")
