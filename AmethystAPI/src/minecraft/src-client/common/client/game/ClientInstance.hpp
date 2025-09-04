@@ -4,6 +4,8 @@
 #include <string>
 #include <memory>
 #include "minecraft/src-deps/renderer/Camera.hpp"
+#include "minecraft/src-client/common/client/renderer/TexturePtr.hpp"
+#include "minecraft/src-deps/renderer/ViewportInfo.hpp"
 
 class Minecraft;
 class ClientInputHandler;
@@ -16,6 +18,7 @@ class MinecraftGame;
 class GuiData;
 class LocalPlayer;
 class BlockSource;
+class ToastManager;
 
 //is_virtual = True
 //    hide_vtable = False
@@ -34,20 +37,34 @@ class BlockSource;
 #pragma pack(push, 1)
 class ClientInstance {
 public:
+    class ClientRenderResources {
+    public:
+        void* mUITexture; // mce::Texture* mUITexture;
+        mce::TexturePtr mUICursorTexture;
+    };
+
     /* this + 0    */ uintptr_t** vtable;
     /* this + 8    */ std::byte padding8[192];
     /* this + 200  */ MinecraftGame* minecraftGame;
     /* this + 208  */ Minecraft* minecraft;
     /* this + 216  */ std::byte padding216[56];
-    /* this + 272  */ ClientInputHandler* inputHandler;
-    /* this + 280  */ std::byte padding280[344];
+    /* this + 272  */ ClientInputHandler* inputHandler; // this should be a unique_ptr!!!!
+    /* this + 280  */ std::byte padding280[552 - 280];
+
+
+    /* this + 552  */ ViewportInfo mViewportInfo;
+    /* this + 576  */ ClientInstance::ClientRenderResources mClientRenderResources;
+    /* this + 616  */ void* mLevelTexture; // mce::Texture* 
     /* this + 624  */ mce::Camera camera;
     /* this + 1136 */ std::byte padding1136[184];
     /* this + 1320 */ BlockTessellator* mBlockTessellator;
     /* this + 1328 */ std::byte padding1328[32];
     /* this + 1360 */ ItemRenderer* itemRenderer;
     /* this + 1368 */ GuiData* guiData;
-    /* this + 1376 */ std::byte padding1376[1856];
+    /* this + 1376 */ std::byte padding1376[1392 - 1376];
+    /* this + 1392 */ std::shared_ptr<ToastManager> mToastManager;
+    /* this + 1408 */ std::byte padding1408[3232 - 1408];
+
 
 public:
     // 1.20.71.1 - 48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F9 49 8B D8 4C 8B E2

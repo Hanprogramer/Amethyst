@@ -147,6 +147,8 @@ public:
     bool isClientSide() const;
     bool isCreative() const;
 
+    ActorUniqueID getUniqueID() const;
+
     /**@vIndex {0}*/
     virtual bool getStatusFlag(ActorFlags unk0) const;
 
