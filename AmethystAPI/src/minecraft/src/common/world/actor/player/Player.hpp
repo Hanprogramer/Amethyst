@@ -4,6 +4,7 @@
 #include <minecraft/src/common/world/PlayerUIContainer.hpp>
 #include <minecraft/src/common/world/item/ItemGroup.hpp>
 #include <minecraft/src/common/world/inventory/transaction/InventoryTransactionManager.hpp>
+#include <minecraft/src/common/world/actor/player/SerializedSkin.hpp>
 
 class PlayerInventory;
 class ChunkSource;
@@ -14,15 +15,17 @@ class ComplexInventoryTransaction;
 class GameMode;
 class LayeredAbilities;
 
-#pragma pack(push, 1)
+#pragma pack(push, 8)
 class Player : public Mob {
 public:
     /* this + 1512 */ std::byte padding1512[376];
     /* this + 1888 */ PlayerInventory* playerInventory;
-    /* this + 1896 */ std::byte padding1896[1400];
+    /* this + 1896 */ std::byte padding1896[1920 - 1896];
+    /* this + 1920 */ SerializedSkin mSkin;
+    /* this + 2528 */ std::byte padding2528[3288 - 2528];
     /* this + 3288 */ ItemGroup mCursorSelectedItemGroup;
     ///* this + 3432 */ PlayerUIContainer mPlayerUIContainer;
-    /* this + 3440 */ std::byte padding3440[296];
+    /* this + 3432 */ std::byte padding3432[3736 - 3432];
     /* this + 3736 */ InventoryTransactionManager mTransactionManager;
     /* this + 3784 */ std::unique_ptr<GameMode> mGameMode;
     /* this + 3792 */ std::byte padding3792[2680];
@@ -43,8 +46,9 @@ public:
     const LayeredAbilities& getAbilities() const;
     GameMode& getGameMode() const;
     bool canUseOperatorBlocks() const;
+    void updateSkin(const SerializedSkin& skin, int clientSubID);
 };
-#pragma pack(pop)
+#pragma pack(pop)   
 
 
 // 1.21.0.3

@@ -15,7 +15,7 @@ class TaskGroup {};
 
 // temp to get calling virtuals working
 
-class NetEventCallback {
+class NetEventCallback : public Bedrock::EnableNonOwnerReferences {
     virtual ~NetEventCallback() = default;
     virtual void padding0_rhegh();
 };
@@ -34,7 +34,7 @@ public:
 };
 }
 
-class ServerNetworkHandler : Bedrock::Threading::EnableQueueForMainThread, NetEventCallback, LevelListener, Social::MultiplayerServiceObserver, Social::XboxLiveUserObserver {
+class ServerNetworkHandler : public Bedrock::Threading::EnableQueueForMainThread, public NetEventCallback, public LevelListener, public Social::MultiplayerServiceObserver, public Social::XboxLiveUserObserver {
 public:
     /*  */ std::byte padding32[56];
     /* this + 88 */ Bedrock::NonOwnerPointer<ILevel> mLevel;
@@ -44,12 +44,7 @@ public:
 
     // virtuals: cba to deal with virtual inheritance
     virtual ServerPlayer* _getServerPlayer(const NetworkIdentifier& source, SubClientId subId);
-    
-    /*{
-        using function = decltype(&ServerNetworkHandler::_getServerPlayer);
-        static auto func = std::bit_cast<function>(SigScan("48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 48 8B 41 ? 41 0F B6 E8"));
-        return (this->*func)(source, subId);
-    }*/
+   
 };
 
 //static_assert(offsetof(ServerNetworkHandler, mLevel) == 88);

@@ -12,6 +12,7 @@ class ServerNetworkHandler;
 class LoopbackPacketSender;
 
 struct GameSession {
+public:
     /* this + 0  */ ClientOrServerNetworkSystemRef mNetwork;
     /* this + 16 */ std::byte padding_mLevelEntity[32]; // OwnerPtr<EntityContext>
     /* this + 48 */ Bedrock::NonOwnerPointer<Level> mLevel;

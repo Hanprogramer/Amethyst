@@ -60,6 +60,12 @@ bool Player::canUseOperatorBlocks() const
     return abilities.getBool(6);
 }
 
+void Player::updateSkin(const SerializedSkin& skin, int clientSubID) {
+    using function = decltype(&Player::updateSkin);
+    static auto func = std::bit_cast<function>(SigScan("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 41 8B D8 4C 8B FA"));
+    return (this->*func)(skin, clientSubID);
+}
+
  //int Player::getItemUseDuration() const
  //{
  //    using function = decltype(&Player::getItemUseDuration);

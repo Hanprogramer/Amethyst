@@ -3,6 +3,7 @@
 #include <minecraft/src-deps/core/math/Math.hpp>
 #include <minecraft/src-deps/core/utility/BinaryStream.hpp>
 #include <minecraft/src/common/world/Facing.hpp>
+#include <minecraft/src/common/world/phys/Vec3.hpp>
 
 class BlockPos {
 public:
@@ -10,11 +11,20 @@ public:
     int y;
     int z;
 
+    BlockPos() : x(0), y(0), z(0) {}
+
     BlockPos(int x, int y, int z)
     {
         this->x = x;
         this->y = y;
         this->z = z;
+    }
+
+    BlockPos(const Vec3& vec)
+    {
+        this->x = static_cast<int>(std::floor(vec.x));
+        this->y = static_cast<int>(std::floor(vec.y));
+        this->z = static_cast<int>(std::floor(vec.z));
     }
 
     BlockPos below() const

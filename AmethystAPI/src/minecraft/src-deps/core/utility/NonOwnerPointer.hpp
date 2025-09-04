@@ -31,7 +31,7 @@ public:
 public:
     NonOwnerPointer() : mControlBlock(nullptr) {}
 
-    explicit NonOwnerPointer(T* ptr) : mControlBlock(ptr->controlBlock) {}
+    explicit NonOwnerPointer(T* ptr) : mControlBlock(ptr->mControlBlock) {}
 
     NonOwnerPointer(const NonOwnerPointer<T>& other) : mControlBlock(other.mControlBlock) {}
 
@@ -43,7 +43,7 @@ public:
 
     NonOwnerPointer& operator=(T* ptr)
     {
-        this->mControlBlock = ptr->controlBlock;
+        this->mControlBlock = ptr->mControlBlock;
         return *this;
     }
 
