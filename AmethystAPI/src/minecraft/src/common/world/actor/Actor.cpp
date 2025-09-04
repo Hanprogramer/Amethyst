@@ -5,6 +5,7 @@
 #include "minecraft/src/common/world/entity/components/ActorRotationComponent.hpp"
 #include "minecraft/src/common/world/entity/components/StateVectorComponent.hpp"
 #include "minecraft/src/common/world/entity/components/ActorGameTypeComponent.hpp"
+#include "minecraft/src/common/world/entity/components/ActorUniqueIDComponent.hpp"
 
 Vec3* Actor::getPosition() const
 {
@@ -84,4 +85,9 @@ bool Actor::isCreative() const
 
     //return PlayerGameTypeUtility::isCreative(UnmappedGameType, v3);
     return ownType == GameType::Creative || (ownType == GameType::Default && defaultType == GameType::Creative);
+}
+
+ActorUniqueID Actor::getUniqueID() const
+{
+    return tryGetComponent<ActorUniqueIDComponent>()->mActorUniqueID;
 }

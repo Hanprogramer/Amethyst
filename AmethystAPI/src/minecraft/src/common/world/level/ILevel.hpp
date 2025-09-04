@@ -290,13 +290,13 @@ public:
     virtual Mob* getMob(ActorUniqueID) const;
 
     /**@vIndex {55}*/
-    virtual Player* getPlayer(ActorUniqueID) const;
+    virtual Player* getPlayer(const std::string&) const;
 
     /**@vIndex {56}*/
     virtual Player* getPlayer(const mce::UUID&) const;
 
     /**@vIndex {57}*/
-    virtual Player* getPlayer(const std::string&) const;
+    virtual Player* getPlayer(ActorUniqueID) const;
 
     /**@vIndex {58}*/
     virtual Player* getPlayerByXuid(const std::string&) const;

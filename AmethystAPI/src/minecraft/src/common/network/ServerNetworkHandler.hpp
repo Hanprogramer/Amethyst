@@ -3,6 +3,7 @@
 #include <minecraft/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <minecraft/src/common/CommonTypes.hpp>
 #include <minecraft/src/common/world/level/LevelListener.hpp>
+#include <minecraft/src-deps/core/threading/EnableQueueForMainThread.hpp>
 #include <minecraft/src/common/network/NetEventCallback.hpp>
 
 class ServerPlayer;
@@ -14,16 +15,11 @@ class RequestNetworkSettingsPacket;
 class TaskGroup {};
 
 // temp to get calling virtuals working
-namespace Bedrock::Threading {
-class EnableQueueForMainThread {
-private:
-    // std::unique_ptr<TaskGroup>
-    std::unique_ptr<TaskGroup> mQueueForMainThreadTaskGroup;
 
-    virtual ~EnableQueueForMainThread() = default;
-    virtual void padding0sgdresgr();
+class NetEventCallback {
+    virtual ~NetEventCallback() = default;
+    virtual void padding0_rhegh();
 };
-}
 
 namespace Social {
 class MultiplayerServiceObserver {

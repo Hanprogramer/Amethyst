@@ -114,7 +114,7 @@ public:
     virtual void blockedByShield(const ActorDamageSource& unk0, Actor& unk1) override;
 
     /**@vIndex {23}*/
-    virtual void teleportTo(const Vec3& unk0, bool unk1, int unk2, int unk3, bool unk4) override;
+    virtual void teleportTo(const Vec3& unk0, bool shouldStopRiding, int unk, int unkn2, bool keepVelocity) override;
 
     /**@vIndex {26}*/
     virtual void normalTick() override;

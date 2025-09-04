@@ -37,10 +37,7 @@ public:
     void write(T in);
 
     void writeUnsignedVarInt32(uint32_t value);
-    //void writeUnsignedVarInt64(uint64_t value);
     void writeSignedVarInt32(int32_t value);
-    //void writeSignedVarInt64(int64_t value);
-
     void writeString(std::string value);
 };
 

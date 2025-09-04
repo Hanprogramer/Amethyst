@@ -60,7 +60,7 @@ public:
     virtual ~Minecraft();
     virtual StackRefResult<const EntityRegistry> getEntityRegistry() const override;
     virtual StackRefResult<EntityRegistry> getEntityRegistry() override;
-    virtual void setSimTimePuase(bool pause);
+    virtual void setSimTimePause(bool pause);
     virtual void setSimTimeScale(float scale);
     virtual bool getSimPaused() const;
     virtual bool isOnlineClient() const;

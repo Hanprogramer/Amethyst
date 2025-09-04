@@ -103,6 +103,9 @@
         "xutility": "cpp",
         "pointers": "cpp",
         "queue": "cpp",
-        "source_location": "cpp"
+        "source_location": "cpp",
+        "execution": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp"
     }
 }
