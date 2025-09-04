@@ -3,6 +3,7 @@
 #include <minecraft/src/common/world/level/block/definition/BlockDefinitionGroup.hpp>
 #include <amethyst/runtime/events/RegisterEvents.hpp>
 #include <amethyst/runtime/events/GameEvents.hpp>
+#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
 
 SafetyHookInline _ScreenView_setupAndRender;
 SafetyHookInline _ClientInstance_onStartJoinGame;
@@ -14,7 +15,7 @@ SafetyHookInline _LevelRenderer_renderLevel;
 SafetyHookInline _ClientInstance__ClientInstance;
 SafetyHookInline _BlockGraphics_initBlocks;
 
-void ScreenView_setupAndRender(ScreenView* self, UIRenderContext* ctx)
+void ScreenView_setupAndRender(ScreenView* self, MinecraftUIRenderContext* ctx)
 {
     Amethyst::EventBus* eventBus = AmethystRuntime::getEventBus();
     BeforeRenderUIEvent ev(*self, *ctx);
