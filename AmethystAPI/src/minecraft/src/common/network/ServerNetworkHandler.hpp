@@ -4,6 +4,7 @@
 #include <minecraft/src/common/CommonTypes.hpp>
 #include <minecraft/src/common/world/level/LevelListener.hpp>
 #include <minecraft/src-deps/core/threading/EnableQueueForMainThread.hpp>
+#include <minecraft/src/common/network/NetEventCallback.hpp>
 
 class ServerPlayer;
 class ILevel;
