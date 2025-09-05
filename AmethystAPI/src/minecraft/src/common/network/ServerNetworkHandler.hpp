@@ -14,13 +14,6 @@ class RequestNetworkSettingsPacket;
 
 class TaskGroup {};
 
-// temp to get calling virtuals working
-
-class NetEventCallback : public Bedrock::EnableNonOwnerReferences {
-    virtual ~NetEventCallback() = default;
-    virtual void padding0_rhegh();
-};
-
 namespace Social {
 class MultiplayerServiceObserver {
 public:
