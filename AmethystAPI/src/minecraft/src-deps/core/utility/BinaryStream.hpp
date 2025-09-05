@@ -16,16 +16,20 @@ public:
 
 public:
     template <typename T>
-    Bedrock::Result<T> get();
+    Bedrock::Result<T> get()
+    {
+        T data{};
+
+        auto result = this->read(&data, sizeof(T));
+        Assert(result.has_value(), "this->read<T>() had an exception.");
+
+        return Bedrock::Result<T>(data);
+    }
 
     Bedrock::Result<uint32_t> getUnsignedVarInt32();
     Bedrock::Result<int32_t> getSignedVarInt32();
     Bedrock::Result<std::string> getString();
 };
-
-extern template Bedrock::Result<unsigned char> ReadOnlyBinaryStream::get<unsigned char>();
-extern template Bedrock::Result<float> ReadOnlyBinaryStream::get<float>();
-extern template Bedrock::Result<bool> ReadOnlyBinaryStream::get<bool>();
 
 class BinaryStream : public ReadOnlyBinaryStream {
 private:
@@ -34,14 +38,16 @@ private:
 
 public:
     template <typename T>
-    void write(T in);
+    void write(T in)
+    {
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(&in);
+
+        for (int i = 0; i < sizeof(T); i++) {
+            mBuffer += bytes[i];
+        }
+    }
 
     void writeUnsignedVarInt32(uint32_t value);
     void writeSignedVarInt32(int32_t value);
     void writeString(std::string value);
 };
-
-extern template void BinaryStream::write(unsigned char);
-extern template void BinaryStream::write(float);
-extern template void BinaryStream::write(bool);
-extern template void BinaryStream::write(short);

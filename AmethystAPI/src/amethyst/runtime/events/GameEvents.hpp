@@ -26,7 +26,9 @@ public:
 
 class UpdateEvent : public BaseEvent {
 public:
-    UpdateEvent() {}
+    Minecraft& mMinecraft;
+
+    UpdateEvent(Minecraft& mc) : mMinecraft(mc) {}
 };
 
 class OnLevelConstructedEvent : public BaseEvent {

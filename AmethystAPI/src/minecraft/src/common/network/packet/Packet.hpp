@@ -242,11 +242,11 @@ public:
     virtual MinecraftPacketIds getId() const = 0;
     virtual std::string getName() const = 0;
     virtual Bedrock::Result<void, std::error_code> checkSize(uint64_t packetSize, bool receiverIsServer) const;
-    virtual void write(BinaryStream&) = 0;
-    virtual Bedrock::Result<void, std::error_code> read(ReadOnlyBinaryStream&);
+    virtual void write(BinaryStream& out) = 0;
+    virtual Bedrock::Result<void, std::error_code> read(ReadOnlyBinaryStream& in);
     virtual bool dissallowBatching();
     virtual bool isValid();
-    virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream&) = 0;
+    virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream& in) = 0;
 
 public:
     Packet();

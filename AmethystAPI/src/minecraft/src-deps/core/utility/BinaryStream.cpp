@@ -1,23 +1,6 @@
 #include "BinaryStream.hpp"
 #include <minecraft/src/common/world/Facing.hpp>
 
-template <typename T>
-Bedrock::Result<T> ReadOnlyBinaryStream::get()
-{
-    T data{};
-
-    auto result = read(&data, sizeof(T));
-    Assert(result.has_value(), "this->read<T>() had an exception.");
-
-    return Bedrock::Result<T>(data);
-}
-
-template Bedrock::Result<unsigned char> ReadOnlyBinaryStream::get<unsigned char>();
-template Bedrock::Result<uint64_t> ReadOnlyBinaryStream::get<uint64_t>();
-template Bedrock::Result<float> ReadOnlyBinaryStream::get<float>();
-template Bedrock::Result<bool> ReadOnlyBinaryStream::get<bool>();
-template Bedrock::Result<FacingID> ReadOnlyBinaryStream::get<FacingID>();
-
 Bedrock::Result<uint32_t> ReadOnlyBinaryStream::getUnsignedVarInt32()
 {
     uint32_t value = 0;
@@ -60,23 +43,6 @@ Bedrock::Result<std::string> ReadOnlyBinaryStream::getString()
 
     return Bedrock::Result<std::string>(value);
 }
-
-template <typename T>
-void BinaryStream::write(T in)
-{
-    unsigned char* bytes = reinterpret_cast<unsigned char*>(&in);
-
-    for (int i = 0; i < sizeof(T); i++) {
-        mBuffer += bytes[i];
-    }
-}
-
-template void BinaryStream::write(unsigned char);
-template void BinaryStream::write(float);
-template void BinaryStream::write(bool);
-template void BinaryStream::write(uint64_t);
-template void BinaryStream::write(FacingID);
-template void BinaryStream::write(short);
 
 void BinaryStream::writeUnsignedVarInt32(uint32_t value)
 {

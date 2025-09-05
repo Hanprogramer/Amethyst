@@ -48,7 +48,7 @@ BOOL Minecraft_update(Minecraft* self)
 {
     BOOL value = _Minecraft_update.call<BOOL, Minecraft*>(self);
 
-    UpdateEvent event;
+    UpdateEvent event(*self);
     AmethystRuntime::getEventBus()->Invoke(event);
 
     return value;
