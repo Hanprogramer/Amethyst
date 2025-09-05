@@ -52,14 +52,20 @@ namespace Log {
     }
 
     template <typename... T>
-    inline void _Assert(bool condition, const char* function, int line, const std::format_string<T...> fmt, T&&... args)
+    [[noreturn]]
+    inline void _AssertFail(const char* function, int line, const std::format_string<T...> fmt, T&&... args)
     {
-        if (condition) return;
-
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
         formatted_string += std::format("\n\tin: {}, line: {}", function, line);
         Log::Error("{}", formatted_string);
         throw std::runtime_error(formatted_string);
+    }
+
+    template <typename... T>
+    inline void _Assert(bool condition, const char* function, int line, const std::format_string<T...> fmt, T&&... args)
+    {
+        if (condition) return;
+        _AssertFail(function, line, fmt, std::forward<T>(args)...);
     }
 }; // namespace Log
 

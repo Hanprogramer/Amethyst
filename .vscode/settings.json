@@ -106,6 +106,7 @@
         "source_location": "cpp",
         "execution": "cpp",
         "memory_resource": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "multi_span": "cpp"
     }
 }

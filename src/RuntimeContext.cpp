@@ -11,6 +11,7 @@ void RuntimeContext::Start()
     mPatchManager = std::make_unique<Amethyst::PatchManager>();
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
     mPackManager = std::make_unique<Amethyst::PackManager>(this);
+    mNetworkManager = std::make_unique<Amethyst::NetworkManager>();
 }
 
 void RuntimeContext::Shutdown()
@@ -21,4 +22,5 @@ void RuntimeContext::Shutdown()
     mPatchManager.reset();
     mEnumAllocator.reset();
     mPackManager.reset();
+    mNetworkManager.reset();
 }

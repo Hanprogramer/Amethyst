@@ -4,6 +4,8 @@
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <amethyst/Log.hpp>
 #include <format>
+#include "hooks/NetworkingHooks.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HANDLE gMcThreadHandle;
@@ -122,10 +124,13 @@ void AmethystRuntime::AddOwnResources()
 
 void AmethystRuntime::CreateOwnHooks()
 {
+    Amethyst::InitializeAmethystMod(*getContext());
+
     CreateInputHooks();
     CreateResourceHooks();
     CreateStartScreenHooks();
     CreateModFunctionHooks();
+    CreateNetworkingHooks();
 }
 
 void AmethystRuntime::RunMods()

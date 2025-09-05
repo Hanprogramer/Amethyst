@@ -38,6 +38,11 @@ Amethyst::EnumAllocator& Amethyst::GetEnumAllocator()
     return *_AmethystContextInstance->mEnumAllocator.get();
 }
 
+Amethyst::NetworkManager& Amethyst::GetNetworkManager()
+{
+    return *_AmethystContextInstance->mNetworkManager.get();
+}
+
 Minecraft* Amethyst::GetMinecraft()
 {
     return _AmethystContextInstance->mClientInstance->minecraft;

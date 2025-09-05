@@ -7,6 +7,7 @@
 #include "amethyst/runtime/patchManager/PatchManager.hpp"
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
+#include "amethyst/runtime/networking/NetworkManager.hpp"
 #include "amethyst/MinecraftVtables.hpp"
 #include "minecraft/src-client/common/client/game/ClientInstance.hpp"
 #include "minecraft/src-client/common/client/input/MinecraftInputHandler.hpp"
@@ -22,6 +23,7 @@ public:
     std::unique_ptr<Amethyst::PatchManager> mPatchManager;
     std::unique_ptr<Amethyst::EnumAllocator> mEnumAllocator;
     std::unique_ptr<Amethyst::PackManager> mPackManager;
+    std::unique_ptr<Amethyst::NetworkManager> mNetworkManager;
     std::vector<Mod> mMods;
 
     // Non-volatile

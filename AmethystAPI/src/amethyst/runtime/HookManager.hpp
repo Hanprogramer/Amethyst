@@ -6,6 +6,17 @@
 #include <unordered_map>
 #include <vector>
 
+#define NO_THROW_HOOK(className, functionName, signature)                                                                  \
+{                                                                                                                      \
+    auto scan = SigScanSafe(signature);                                                                                \
+    if (!scan.has_value())                                                                                             \
+        Log::Warning("[SAFE_HOOK] SigScan failed for {}::{}, signature = {}", #className, #functionName, signature);   \
+    else {                                                                                                             \
+        hookManager->RegisterFunction<&className::functionName>(scan.value());                                         \
+        hookManager->CreateHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
+    }                                                                                                                  \
+}
+
 namespace Amethyst {
     class function_id {
     public:
@@ -24,6 +35,12 @@ namespace Amethyst {
             static_assert(begin != std::string_view::npos);
             static_assert(end != std::string_view::npos);
             return funcSig.substr(begin + prefix.size(), end - begin - prefix.size());
+        }
+
+        template<typename T>
+        static consteval uint64_t class_hash() {
+            constexpr std::string_view name = __FUNCSIG__;
+            return HashedString::computeHash(name);
         }
     };
 
