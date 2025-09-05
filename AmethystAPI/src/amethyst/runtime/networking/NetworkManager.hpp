@@ -4,6 +4,9 @@
 #include <amethyst/Log.hpp>
 #include <minecraft/src/common/network/packet/Packet.hpp>
 #include <minecraft/src/common/network/PacketSender.hpp>
+#include <minecraft/src/common/CommonTypes.hpp>
+
+class UserEntityIdentifierComponent;
 
 namespace Amethyst {
 
@@ -71,10 +74,53 @@ public:
         };
     }
 
+    template <DerivedFromCustomPacket T>
+    void Send(::PacketSender& sender, std::unique_ptr<T> packet) 
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.send(sendable);
+    }
+
     template<DerivedFromCustomPacket T>
-    void SendPacketToServer(::PacketSender& sender, std::unique_ptr<T> packet) {
+    void SendToServer(::PacketSender& sender, std::unique_ptr<T> packet) 
+    {
         CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
         sender.sendToServer(sendable);
+    }
+
+    template <DerivedFromCustomPacket T>
+    void SendToClient(::PacketSender& sender, const UserEntityIdentifierComponent* userIdentifier, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendToClient(userIdentifier, sendable);
+    }
+
+    template <DerivedFromCustomPacket T>
+    void SendToClient(::PacketSender& sender, const NetworkIdentifier& id, SubClientId subid, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendToClient(id, sendable, subid);
+    }
+
+    template <DerivedFromCustomPacket T>
+    void SendToClients(::PacketSender& sender, const std::vector<NetworkIdentifierWithSubId>& ids, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendToClients(ids, sendable);
+    }
+
+    template <DerivedFromCustomPacket T>
+    void SendBroadcast(::PacketSender& sender, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendBroadcast(sendable);
+    }
+
+    template <DerivedFromCustomPacket T>
+    void SendBroadcast(::PacketSender& sender, const NetworkIdentifier& exceptId, SubClientId exceptSubid, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.send(exceptId, exceptSubid, sendable);
     }
 
     CustomPacketHandler& GetPacketHandler(uint64_t typeId) {
