@@ -7,7 +7,7 @@ class RenderMaterialInfo;
 class RenderMaterialGroupBase {
     public:
         virtual ~RenderMaterialGroupBase();
-        virtual mce::RenderMaterialInfo& getMaterialInfo(const HashedString& material);
+        virtual std::shared_ptr<RenderMaterialInfo>& getMaterialInfo(const HashedString& material);
         virtual void clearMaterial(const HashedString& material);
     };
 };
