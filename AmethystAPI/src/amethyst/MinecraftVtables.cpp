@@ -60,7 +60,6 @@ extern "C" void* ActorShaderManager_vtable = nullptr;
 // Constructors
 extern "C" void* BlockItem_ctor = nullptr;
 extern "C" void* BlockLegacy_ctor = nullptr;
-extern "C" void* MaterialPtr_ctor = nullptr;
 extern "C" void* BlockActor_ctor = nullptr;
 extern "C" void* BaseActorRenderer_ctor = nullptr;
 extern "C" void* ChestBlock_ctor = nullptr;

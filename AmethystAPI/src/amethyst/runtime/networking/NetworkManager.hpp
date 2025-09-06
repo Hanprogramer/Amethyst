@@ -27,6 +27,14 @@ public:
     CustomPacketInternal(std::unique_ptr<Amethyst::CustomPacket> packet, uint64_t typeId) 
         : Packet(), mPacket(std::move(packet)), mTypeId(typeId) {}
 
+    // Delete copy semantics
+    CustomPacketInternal(const CustomPacketInternal&) = delete;
+    CustomPacketInternal& operator=(const CustomPacketInternal&) = delete;
+
+    // Allow move semantics
+    CustomPacketInternal(CustomPacketInternal&&) noexcept = default;
+    CustomPacketInternal& operator=(CustomPacketInternal&&) noexcept = default;
+
     void InitPacketFromNetwork(uint64_t typeId);
 
     virtual MinecraftPacketIds getId() const override {

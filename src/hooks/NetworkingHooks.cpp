@@ -24,7 +24,7 @@ bool ServerNetworkHandler_allowIncomingPacketId(ServerNetworkHandler* self, cons
  class PacketHandlerDispatcherInstance<Amethyst::CustomPacketInternal, false> : public IPacketHandlerDispatcher {
  public:
      virtual void handle(const NetworkIdentifier& networkId, NetEventCallback& netEvent, std::shared_ptr<Packet>& _packet) const override {
-         Amethyst::CustomPacketInternal* packet = static_cast<Amethyst::CustomPacketInternal*>(_packet.get());
+         std::shared_ptr<Amethyst::CustomPacketInternal>& packet = (std::shared_ptr<Amethyst::CustomPacketInternal>&)_packet;
          Amethyst::CustomPacketHandler& handler = Amethyst::GetNetworkManager().GetPacketHandler(packet->mTypeId);
          handler.handle(networkId, netEvent, *packet->mPacket.get());
      }
@@ -51,6 +51,8 @@ bool ServerNetworkHandler_allowIncomingPacketId(ServerNetworkHandler* self, cons
 }
 
 void CreateNetworkingHooks() {
+    return;
+
     Amethyst::HookManager* hookManager = AmethystRuntime::getHookManager();
 
     NO_THROW_HOOK(ServerNetworkHandler, allowIncomingPacketId, "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 41 8B D8 48 8B F2");
