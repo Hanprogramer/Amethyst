@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <tuple>
 
 namespace mce {
     class UUID {

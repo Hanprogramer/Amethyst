@@ -1,0 +1,145 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Symbol-Generator/1.0.0": {
+        "dependencies": {
+          "ClangSharp": "20.1.2.1",
+          "CliFx": "2.3.6",
+          "K4os.Hash.xxHash": "1.0.8",
+          "Newtonsoft.Json": "13.0.3",
+          "libClangSharp": "20.1.2",
+          "libClangSharp.runtime.win-x64": "20.1.2"
+        },
+        "runtime": {
+          "Symbol-Generator.dll": {}
+        }
+      },
+      "ClangSharp/20.1.2.1": {
+        "dependencies": {
+          "ClangSharp.Interop": "20.1.2.1"
+        },
+        "runtime": {
+          "lib/net8.0/ClangSharp.dll": {
+            "assemblyVersion": "20.1.2.1",
+            "fileVersion": "20.1.2.1"
+          }
+        }
+      },
+      "ClangSharp.Interop/20.1.2.1": {
+        "dependencies": {
+          "libclang": "20.1.2",
+          "libClangSharp": "20.1.2"
+        },
+        "runtime": {
+          "lib/net8.0/ClangSharp.Interop.dll": {
+            "assemblyVersion": "20.1.2.1",
+            "fileVersion": "20.1.2.1"
+          }
+        }
+      },
+      "CliFx/2.3.6": {
+        "runtime": {
+          "lib/net8.0/CliFx.dll": {
+            "assemblyVersion": "2.3.6.0",
+            "fileVersion": "2.3.6.0"
+          }
+        }
+      },
+      "K4os.Hash.xxHash/1.0.8": {
+        "runtime": {
+          "lib/net6.0/K4os.Hash.xxHash.dll": {
+            "assemblyVersion": "1.0.8.0",
+            "fileVersion": "1.0.8.0"
+          }
+        }
+      },
+      "libclang/20.1.2": {},
+      "libClangSharp/20.1.2": {},
+      "libClangSharp.runtime.win-x64/20.1.2": {
+        "runtimeTargets": {
+          "runtimes/win-x64/native/libClangSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Newtonsoft.Json/13.0.3": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.3.27908"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Symbol-Generator/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ClangSharp/20.1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-C78naAH/SO5jCGfKsWhjOe2nhnAdGZvvgH5RBZmuvHvE6SDHQQi/YS9Cb+FVX76UX9u+Jh7Yat4O2FDPP6zM6w==",
+      "path": "clangsharp/20.1.2.1",
+      "hashPath": "clangsharp.20.1.2.1.nupkg.sha512"
+    },
+    "ClangSharp.Interop/20.1.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-XXs+ztGjUNv8nBK9lcbzPYWsdoYRkUSZJlf4lEVNUnF+DjbXL0Qp3jnFAV1eDOosfJ88ILXJFLD3VTPI29d5Gw==",
+      "path": "clangsharp.interop/20.1.2.1",
+      "hashPath": "clangsharp.interop.20.1.2.1.nupkg.sha512"
+    },
+    "CliFx/2.3.6": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-7Q6rbhCxpEoAtPrcBm4sJ4QlDeY+0Dp4in0oXAxrJJ/4L1LV/YkDQSqfUMwK56GbnpUo4fIrpOxoxM+ta44B1g==",
+      "path": "clifx/2.3.6",
+      "hashPath": "clifx.2.3.6.nupkg.sha512"
+    },
+    "K4os.Hash.xxHash/1.0.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Wp2F7BamQ2Q/7Hk834nV9vRQapgcr8kgv9Jvfm8J3D0IhDqZMMl+a2yxUq5ltJitvXvQfB8W6K4F4fCbw/P6YQ==",
+      "path": "k4os.hash.xxhash/1.0.8",
+      "hashPath": "k4os.hash.xxhash.1.0.8.nupkg.sha512"
+    },
+    "libclang/20.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1A3NeS7Ko3KOZG14BuZv0ajii1y7yBEozKgYwZSG4xzGUc8kyKyVaX0KkzVHY+/jSPKvOgUuLONGDuJn0lGfsA==",
+      "path": "libclang/20.1.2",
+      "hashPath": "libclang.20.1.2.nupkg.sha512"
+    },
+    "libClangSharp/20.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/716OBKj0Pg3RVh9D1gTggCF0fvTJy3KtmommelcEtycqJ9tOkMKSVwHh57tADMFrxKA/b2fxXIDyoKknjhh2w==",
+      "path": "libclangsharp/20.1.2",
+      "hashPath": "libclangsharp.20.1.2.nupkg.sha512"
+    },
+    "libClangSharp.runtime.win-x64/20.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-osf1ilTVVN4B19zs4ovT5yPKrYX9eAqMl+CNQGAZDaq6F0hN4fWQLi/wi0pVP9+mKPaaUtd7PC8iW/3ySDCgzg==",
+      "path": "libclangsharp.runtime.win-x64/20.1.2",
+      "hashPath": "libclangsharp.runtime.win-x64.20.1.2.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
+    }
+  }
+}

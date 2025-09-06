@@ -62,6 +62,28 @@ target("AmethystRuntime")
 
     add_headerfiles("src/**.hpp")
 
+    before_build(function (target)
+        local generated_dir = path.join(os.curdir(), "generated")
+        local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
+        local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
+        local symbol_generator_exe = path.join(os.curdir(), "tools/Symbol-Generator/Symbol-Generator.exe")
+        local args = {
+            symbol_generator_exe,
+            "generate",
+            "--input", string.format("%s", input_dir),
+            "--output", string.format("%s", generated_dir),
+            "--filters", "minecraft",
+            "--",
+            "-x c++",
+            "-std=c++23",
+            "-fms-extensions",
+            "-fms-compatibility",
+            string.format('-I%s', include_dir),
+            string.format('-I%s', input_dir)
+        }
+        os.exec(table.concat(args, " "))
+    end)
+
     after_build(function (target)
         local src_json = path.join(os.curdir(), "mod.json")
         local dst_json = path.join(modFolder, "mod.json")
