@@ -5,6 +5,7 @@
 #include "minecraft/src/common/resources/CompositePackSource.hpp"
 #include "amethyst/ModApi.hpp"
 
+
 namespace Core {
 class FilePathManager;
 }

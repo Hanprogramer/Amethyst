@@ -67,9 +67,9 @@ target("AmethystRuntime")
         local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
         local symbol_generator_exe = path.join(os.curdir(), "tools/Symbol-Generator/Symbol-Generator.exe")
-        local args = {
+        local gen_sym_args = {
             symbol_generator_exe,
-            "generate",
+            "gen-syms",
             "--input", string.format("%s", input_dir),
             "--output", string.format("%s", generated_dir),
             "--filters", "minecraft",
@@ -81,7 +81,14 @@ target("AmethystRuntime")
             string.format('-I%s', include_dir),
             string.format('-I%s', input_dir)
         }
-        os.exec(table.concat(args, " "))
+        os.exec(table.concat(gen_sym_args, " "))
+        local gen_lib_args = {
+            symbol_generator_exe,
+            "gen-lib",
+            "--input", string.format("%s/symbols", generated_dir),
+            "--output", string.format("%s/lib", generated_dir)
+        }
+        os.exec(table.concat(gen_lib_args, " "))
     end)
 
     after_build(function (target)
