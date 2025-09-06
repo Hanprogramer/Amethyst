@@ -51,8 +51,6 @@ bool ServerNetworkHandler_allowIncomingPacketId(ServerNetworkHandler* self, cons
 }
 
 void CreateNetworkingHooks() {
-    return;
-
     Amethyst::HookManager* hookManager = AmethystRuntime::getHookManager();
 
     NO_THROW_HOOK(ServerNetworkHandler, allowIncomingPacketId, "48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 41 8B D8 48 8B F2");
