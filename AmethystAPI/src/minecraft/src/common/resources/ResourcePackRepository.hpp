@@ -32,7 +32,7 @@ public:
 
 class ResourcePackStack;
 namespace lambda {
-// The lambda capture structure used in initializeResourceStack
+// The lambda capture structure used in addFromUUID
 struct Pack {
     Bedrock::NonOwnerPointer<ResourcePackRepository> repo;
     ResourcePackStack& stack;
