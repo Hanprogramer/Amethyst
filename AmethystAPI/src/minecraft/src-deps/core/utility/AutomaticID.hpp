@@ -17,7 +17,7 @@ template <typename T, typename ID_TYPE>
 struct std::hash<AutomaticID<T, ID_TYPE>> {
     size_t operator()(const AutomaticID<T, ID_TYPE>& id) const
     {
-        return std::hash<ID_TYPE>()(id.runtimeID);
+        return id.runtimeID;
     }
 };
 

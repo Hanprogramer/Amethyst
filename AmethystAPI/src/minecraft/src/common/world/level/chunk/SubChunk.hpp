@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
-#include <minecraft/src/common/world/level/BlockPos.hpp>
 #include <minecraft/src/common/world/level/ChunkPos.hpp>
 
 class SpinLock;
@@ -20,18 +19,6 @@ struct DirtyTicksCounter {
 
 class SubChunkBrightnessStorage;
 
-struct SubChunkPos {
-    int x;
-    int y;
-    int z;
-
-    SubChunkPos(int x, int y, int z) : x(x), y(y), z(z) {}
-    SubChunkPos(const SubChunkPos& other) : x(other.x), y(other.y), z(other.z) {}
-    SubChunkPos(const SubChunkPos&& other) noexcept : x(other.x), y(other.y), z(other.z) {}
-
-    SubChunkPos(const BlockPos& pos) : x(pos.x / 16), y(pos.y / 16), z(pos.z / 16) {}
-    SubChunkPos(const ChunkPos& pos, int subChunkY) : x(pos.x), y(subChunkY), z(pos.z) {}
-};
 
 template <typename T>
 class SubChunkStorage {
