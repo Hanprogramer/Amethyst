@@ -25,6 +25,7 @@ void VanillaGameModuleServer_initializeBehaviorStack(VanillaGameModuleServer* se
 void ResourcePackRepository_initializePackSource(ResourcePackRepository* self) 
 {
     _ResourcePackRepository_initializePackSource.thiscall<void, ResourcePackRepository*>(self);
+    self->_initializePackSource(); // Will fail, but intentional
     Log::Info("[AmethystRuntime] Initializing mod resource and behavior pack sources...");
     auto& context = *AmethystRuntime::getContext();
     auto& packManager = *context.mPackManager;

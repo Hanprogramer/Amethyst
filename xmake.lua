@@ -57,7 +57,7 @@ target("AmethystRuntime")
 
     -- Deps
     add_packages("AmethystAPI", "libhat")
-    add_links("user32", "oleaut32", "windowsapp")
+    add_links("user32", "oleaut32", "windowsapp", path.join(os.curdir(), "generated/lib/Minecraft.Windows.lib"))
     add_includedirs("src", {public = true})
 
     add_headerfiles("src/**.hpp")
@@ -66,10 +66,12 @@ target("AmethystRuntime")
         local generated_dir = path.join(os.curdir(), "generated")
         local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
-        local symbol_generator_exe = path.join(os.curdir(), "tools/Symbol-Generator/Symbol-Generator.exe")
+
+        local symbol_generator_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.SymbolGenerator.exe")
+        local library_generator_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.LibraryGenerator.exe")
+
         local gen_sym_args = {
             symbol_generator_exe,
-            "gen-syms",
             "--input", string.format("%s", input_dir),
             "--output", string.format("%s", generated_dir),
             "--filters", "minecraft",
@@ -81,21 +83,33 @@ target("AmethystRuntime")
             string.format('-I%s', include_dir),
             string.format('-I%s', input_dir)
         }
+        print('Generating *.symbols.json files for headers...')
         os.exec(table.concat(gen_sym_args, " "))
         local gen_lib_args = {
-            symbol_generator_exe,
-            "gen-lib",
+            library_generator_exe,
             "--input", string.format("%s/symbols", generated_dir),
             "--output", string.format("%s/lib", generated_dir)
         }
+        print('Generating Minecraft.Windows.lib file...')
         os.exec(table.concat(gen_lib_args, " "))
     end)
 
     after_build(function (target)
+        local generated_dir = path.join(os.curdir(), "generated")
         local src_json = path.join(os.curdir(), "mod.json")
         local dst_json = path.join(modFolder, "mod.json")
         if not os.isdir(modFolder) then
             os.mkdir(modFolder)
         end
         os.cp(src_json, dst_json)
+
+        local module_tweaker_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.ModuleTweaker.exe")
+
+        local tweaker_args = {
+            module_tweaker_exe,
+            "--module", target:targetfile(),
+            "--symbols", string.format("%s/symbols", generated_dir)
+        }
+        print('Tweaking output file...')
+        os.exec(table.concat(tweaker_args, " "))
     end)
