@@ -4,6 +4,10 @@
 #include "minecraft/src-deps/core/math/Math.hpp"
 #include "minecraft/src/common/util/DataIO.hpp"
 
+#ifdef min
+#undef min
+#endif
+
 ByteArrayTag::ByteArrayTag() : Tag(), data() {}
 
 ByteArrayTag::ByteArrayTag(TagMemoryChunk data) : Tag(), data(std::move(data)) {}
@@ -44,7 +48,7 @@ void ByteArrayTag::write(IDataOutput& dos) const
 
 void ByteArrayTag::load(IDataInput& dis)
 {
-    int size = dis.readInt();
+    int size = dis.readInt().value();
     if (size > 0) {
         std::byte* ptr = data.alloc<std::byte>(std::min(static_cast<size_t>(size), dis.numBytesLeft()));
         dis.readBytes(ptr, data.size());

@@ -46,8 +46,8 @@ void ListTag::write(IDataOutput& dos) const
 
 void ListTag::load(IDataInput& dis)
 {
-    mType = static_cast<Type>(dis.readByte());
-    int size = dis.readInt();
+    mType = static_cast<Type>(dis.readByte().value());
+    int size = dis.readInt().value();
 
     mList.clear();
     if (size > 0 && mType != Type::End) {

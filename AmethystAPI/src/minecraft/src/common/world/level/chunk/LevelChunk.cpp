@@ -38,3 +38,16 @@ void LevelChunk::setBlockActor(const ChunkBlockPos& pos, std::shared_ptr<BlockAc
 {
     mBlockEntities[pos] = std::move(actorShared);
 }
+
+SubChunk* LevelChunk::getSubChunk(short absoluteIndex)
+{
+    using function = decltype(&LevelChunk::getSubChunk);
+    static auto func = std::bit_cast<function>(SigScan("4C 8B 49 ? 44 0F BF D2"));
+    return (this->*func)(absoluteIndex);
+}
+
+bool LevelChunk::_deserializeSubChunk(short index, class StringByteInput& stream) {
+    using function = decltype(&LevelChunk::_deserializeSubChunk);
+    static auto func = std::bit_cast<function>(SigScan("48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 49 8B F0 0F BF FA"));
+    return (this->*func)(index, stream);
+}

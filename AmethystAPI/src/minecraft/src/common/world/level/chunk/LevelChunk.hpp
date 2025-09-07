@@ -7,6 +7,8 @@
 #include <minecraft/src/common/world/level/chunk/LevelChunkFormat.hpp>
 #include <minecraft/src/common/world/level/chunk/SubChunk.hpp>
 #include <unordered_map>
+#include <minecraft/src-deps/core/threading/SpinLock.hpp>
+#include <minecraft/src/common/world/level/Tick.hpp>
 
 class Block;
 class BlockPos;
@@ -16,6 +18,16 @@ class Level;
 class Dimension;
 class ChunkSource;
 class ActorLink;
+class BlockTickingQueue;
+
+enum class ChunkTerrainDataState : unsigned char {
+    NoData = 0x0000,
+    NeedsFixup = 0x0001,
+    ReadyForGeneration = 0x0002,
+    Generated = 0x0003,
+    PostProcessed = 0x0004,
+    Ready = 0x0005,
+};
 
 class LevelChunk {
 public:
@@ -32,7 +44,12 @@ public:
     /* this + 184  */ bool mHadSerializedEntities;
     /* this + 192  */ std::vector<ActorLink> mUnresolvedActorLinks;
     /* this + 216  */ std::atomic<ChunkState> mLoadState;
-    /* this + 217  */ std::byte padding217[312 - 217];
+    /* this + 217  */ ChunkTerrainDataState mTerrainDataState;
+    /* this + 224  */ SpinLock mCachedDataStateSpinLock;
+    /* this + 256  */ SpinLock mClientRequestHeightmapAdjustSpinLock;
+    /* this + 288  */ Tick mLastTick;
+    /* this + 296  */ std::unique_ptr<BlockTickingQueue> mTickQueue;
+    /* this + 304  */ std::unique_ptr<BlockTickingQueue> mRandomTickQueue;
     /* this + 312  */ std::vector<SubChunk> mSubChunks;
     /* this + 336  */ std::byte padding336[1348 - 336];
     /* this + 1348 */ std::array<ChunkLocalHeight, 256> mHeightmap;
@@ -55,6 +72,12 @@ public:
     // Custom helper functions
     std::shared_ptr<BlockActor> getAndRemoveBlockActor(const ChunkBlockPos& pos);
     void setBlockActor(const ChunkBlockPos& pos, std::shared_ptr<BlockActor> actorShared);
+
+    /// @signature {4C 8B 49 ? 44 0F BF D2}
+    SubChunk* getSubChunk(short absoluteIndex);
+
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 80 B9 ? ? ? ? ? 49 8B F0 0F BF FA}
+    bool _deserializeSubChunk(short subChunkIndex, class StringByteInput& stream);
 };
 
 static_assert(offsetof(LevelChunk, mBlockEntities) == 4184);

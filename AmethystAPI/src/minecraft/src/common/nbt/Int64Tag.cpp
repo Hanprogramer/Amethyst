@@ -13,7 +13,7 @@ void Int64Tag::write(IDataOutput& dos) const
 
 void Int64Tag::load(IDataInput& dis)
 {
-    data = dis.readLongLong();
+    data = dis.readLongLong().value();
 }
 
 Tag::Type Int64Tag::getId() const

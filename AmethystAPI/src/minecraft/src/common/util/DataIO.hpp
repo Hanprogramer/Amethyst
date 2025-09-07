@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <minecraft/src-deps/core/headerIncludes/gsl_includes.hpp>
+#include <minecraft/src-deps/core/utility/Result.hpp>
+#include <amethyst/Log.hpp>
 
 class IDataOutput {
 public:
@@ -19,14 +21,168 @@ public:
 class IDataInput {
 public:
     virtual ~IDataInput() = default;
-    virtual std::string readString() = 0;
-    virtual std::string readLongString() = 0;
-    virtual float readFloat() = 0;
-    virtual double readDouble() = 0;
-    virtual char readByte() = 0;
-    virtual short readShort() = 0;
-    virtual int readInt() = 0;
-    virtual int64_t readLongLong() = 0;
-    virtual bool readBytes(void*, size_t) = 0;
+    virtual Bedrock::Result<std::string, std::error_code> readString() = 0;
+    virtual Bedrock::Result<std::string, std::error_code> readLongString() = 0;
+    virtual Bedrock::Result<float, std::error_code> readFloat() = 0;
+    virtual Bedrock::Result<double, std::error_code> readDouble() = 0;
+    virtual Bedrock::Result<char, std::error_code> readByte() = 0;
+    virtual Bedrock::Result<short, std::error_code> readShort() = 0;
+    virtual Bedrock::Result<int, std::error_code> readInt() = 0;
+    virtual Bedrock::Result<int64_t, std::error_code> readLongLong() = 0;
+    virtual Bedrock::Result<bool, std::error_code> readBytes(void*, size_t) = 0;
     virtual size_t numBytesLeft() const = 0;
+};
+
+class BytesDataOutput : public IDataOutput {
+public:
+    virtual ~BytesDataOutput() = default;
+
+    void writeString(std::string_view v) override
+    {
+        int16_t length = static_cast<int16_t>(v.size() & 0x7FFF);
+        writeShort(length);
+        writeBytes(v.data(), length);
+    }
+
+    void writeLongString(std::string_view v) override
+    {
+        int32_t length = static_cast<int32_t>(v.size());
+        writeInt(length);
+        writeBytes(v.data(), length);
+    }
+
+    void writeFloat(float v) override { writeBytes(&v, sizeof(v)); }
+    void writeDouble(double v) override { writeBytes(&v, sizeof(v)); }
+    void writeByte(char v) override { writeBytes(&v, sizeof(v)); }
+    void writeShort(short v) override { writeBytes(&v, sizeof(v)); }
+    void writeInt(int v) override { writeBytes(&v, sizeof(v)); }
+    void writeLongLong(int64_t v) override { writeBytes(&v, sizeof(v)); }
+
+    virtual void writeBytes(const void* data, size_t size) override = 0;
+};
+
+class BytesDataInput : public IDataInput {
+public:
+    virtual ~BytesDataInput() = default;
+
+    Bedrock::Result<std::string, std::error_code> readString() override
+    {
+        auto lenResult = readShort();
+        Assert(lenResult.has_value(), "Failed to read string length");
+        short len = lenResult.value();
+        Assert(len >= 0 && static_cast<size_t>(len) <= numBytesLeft(), "Invalid string length");
+
+        std::string buffer(len, '\0');
+        auto okResult = readBytes(buffer.data(), len);
+        Assert(okResult.has_value() && okResult.value(), "Failed to read string bytes");
+
+        return Bedrock::Result<std::string, std::error_code>(buffer);
+    }
+
+    Bedrock::Result<std::string, std::error_code> readLongString() override
+    {
+        auto lenResult = readInt();
+        Assert(lenResult.has_value(), "Failed to read long string length");
+        int32_t len = lenResult.value();
+        Assert(len >= 0 && static_cast<size_t>(len) <= numBytesLeft(), "Invalid long string length");
+
+        std::string buffer(len, '\0');
+        auto okResult = readBytes(buffer.data(), len);
+        Assert(okResult.has_value() && okResult.value(), "Failed to read long string bytes");
+
+        return Bedrock::Result<std::string, std::error_code>(buffer);
+    }
+
+    Bedrock::Result<float, std::error_code> readFloat() override
+    {
+        float o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read float");
+        return Bedrock::Result<float, std::error_code>(o);
+    }
+
+    Bedrock::Result<double, std::error_code> readDouble() override
+    {
+        double o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read double");
+        return Bedrock::Result<double, std::error_code>(o);
+    }
+
+    Bedrock::Result<char, std::error_code> readByte() override
+    {
+        char o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read byte");
+        return Bedrock::Result<char, std::error_code>(o);
+    }
+
+    Bedrock::Result<short, std::error_code> readShort() override
+    {
+        short o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read short");
+        return Bedrock::Result<short, std::error_code>(o);
+    }
+
+    Bedrock::Result<int, std::error_code> readInt() override
+    {
+        int o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read int");
+        return Bedrock::Result<int, std::error_code>(o);
+    }
+
+    Bedrock::Result<int64_t, std::error_code> readLongLong() override
+    {
+        int64_t o{};
+        auto okResult = readBytes(&o, sizeof(o));
+        Assert(okResult.has_value() && okResult.value(), "Failed to read long long");
+        return Bedrock::Result<int64_t, std::error_code>(o);
+    }
+
+    virtual Bedrock::Result<bool, std::error_code> readBytes(void*, size_t) override = 0;
+    virtual size_t numBytesLeft() const override = 0;
+};
+
+struct StringByteOutput : BytesDataOutput {
+public:
+    StringByteOutput() = default;
+
+    void writeBytes(const void* data, size_t size) override
+    {
+        const char* cdata = reinterpret_cast<const char*>(data);
+        mBuffer.append(cdata, size);
+    }
+
+    std::string str() const
+    {
+        return mBuffer;
+    }
+
+private:
+    std::string mBuffer;
+};
+
+
+class StringByteInput : public BytesDataInput {
+public:
+    uint64_t mIdx = 0;
+    std::string_view mBuffer;
+
+    explicit StringByteInput(const std::string& buffer)
+        : mBuffer(buffer) {}
+
+    Bedrock::Result<bool, std::error_code> readBytes(void* buffer, size_t size) override
+    {
+        assert(mIdx + size <= mBuffer.size() && "Attempted to read past end of buffer");
+        memcpy(buffer, mBuffer.data() + mIdx, size);
+        mIdx += size;
+        return Bedrock::Result<bool, std::error_code>(true);
+    }
+
+    size_t numBytesLeft() const override
+    {
+        return mBuffer.size() - mIdx;
+    }
 };

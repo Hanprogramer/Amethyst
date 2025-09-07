@@ -13,7 +13,7 @@ void IntTag::write(IDataOutput& dos) const
 
 void IntTag::load(IDataInput& dis)
 {
-    data = dis.readInt();
+    data = dis.readInt().value();
 }
 
 Tag::Type IntTag::getId() const

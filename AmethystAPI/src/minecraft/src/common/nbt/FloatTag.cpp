@@ -13,7 +13,7 @@ void FloatTag::write(IDataOutput& dos) const
 
 void FloatTag::load(IDataInput& dis)
 {
-    data = dis.readFloat();
+    data = dis.readFloat().value();
 }
 
 Tag::Type FloatTag::getId() const

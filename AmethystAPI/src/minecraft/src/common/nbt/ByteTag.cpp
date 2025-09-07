@@ -11,7 +11,7 @@ void ByteTag::write(IDataOutput& output) const
 
 void ByteTag::load(IDataInput& input)
 {
-    data = input.readByte();
+    data = input.readByte().value();
 }
 
 Tag::Type ByteTag::getId() const

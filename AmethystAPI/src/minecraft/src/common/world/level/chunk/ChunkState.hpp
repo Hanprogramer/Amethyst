@@ -1,6 +1,6 @@
 #pragma once
 
-enum ChunkState : char {
+enum class ChunkState : char {
     Unloaded = 0x0000,
     Generating = 0x0001,
     Generated = 0x0002,

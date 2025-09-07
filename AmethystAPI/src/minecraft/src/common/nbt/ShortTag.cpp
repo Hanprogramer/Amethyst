@@ -14,7 +14,7 @@ void ShortTag::write(IDataOutput& dos) const
 
 void ShortTag::load(IDataInput& dis)
 {
-    data = dis.readShort();
+    data = dis.readShort().value();
 }
 
 Tag::Type ShortTag::getId() const
