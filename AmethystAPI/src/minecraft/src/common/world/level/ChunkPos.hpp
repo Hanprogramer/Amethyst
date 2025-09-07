@@ -1,6 +1,8 @@
 #pragma once
 #include <cstdint>
 #include <format>
+#include <minecraft/src/common/world/level/BlockPos.hpp>
+#include <minecraft/src/common/world/level/ChunkPos.hpp>
 
 class ChunkPos {
 public:
@@ -28,6 +30,11 @@ public:
 
     ChunkPos(int64_t packed) {
         this->packed = packed;
+    }
+
+    ChunkPos(const BlockPos& pos) {
+        x = pos.x / 16;
+        z = pos.z / 16;
     }
 };
 

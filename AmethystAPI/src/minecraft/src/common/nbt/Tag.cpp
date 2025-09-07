@@ -131,12 +131,12 @@ std::string Tag::getTagName(Type type)
 
 std::unique_ptr<Tag> Tag::readNamedTag(IDataInput& dis, std::string& name)
 {
-    Type type = static_cast<Type>(dis.readByte());
+    Type type = static_cast<Type>(dis.readByte().value());
     if (type == Type::End) {
         return std::make_unique<EndTag>();
     }
     else {
-        name = dis.readString();
+        name = dis.readString().value();
 
         std::unique_ptr<Tag> tag = newTag(type);
         if (tag) {

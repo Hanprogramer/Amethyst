@@ -14,7 +14,7 @@ void StringTag::write(IDataOutput& dos) const
 
 void StringTag::load(IDataInput& dis)
 {
-    data = dis.readString();
+    data = dis.readString().value();
 }
 
 Tag::Type StringTag::getId() const

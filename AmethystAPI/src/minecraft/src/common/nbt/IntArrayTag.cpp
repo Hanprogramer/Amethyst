@@ -3,6 +3,10 @@
 #include "minecraft/src/common/nbt/IntArrayTag.hpp"
 #include "minecraft/src-deps/core/math/Math.hpp"
 
+#ifdef min
+#undef min
+#endif
+
 IntArrayTag::IntArrayTag() : Tag(), data() {}
 
 IntArrayTag::IntArrayTag(TagMemoryChunk data) : Tag(), data(std::move(data)) {}
@@ -47,14 +51,14 @@ constexpr size_t MaxIntArray = 4096;
 
 void IntArrayTag::load(IDataInput& dis)
 {
-    int nSize = dis.readInt();
+    int nSize = dis.readInt().value();
     if (nSize > 0) {
         size_t size = nSize;
         int* ptr = data.alloc<int>(std::min(MaxIntArray, size));
 
         for (int i = 0; i < size && dis.numBytesLeft() != 0; ++i) {
             if (i < data.size()) {
-                ptr[i] = dis.readInt();
+                ptr[i] = dis.readInt().value();
             }
             else {
                 data.alloc<int>(std::min(data.size() + MaxIntArray, size));

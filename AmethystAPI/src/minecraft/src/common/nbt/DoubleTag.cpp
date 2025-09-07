@@ -14,7 +14,7 @@ void DoubleTag::write(IDataOutput& dos) const
 
 void DoubleTag::load(IDataInput& dis)
 {
-    data = dis.readDouble();
+    data = dis.readDouble().value();
 }
 
 Tag::Type DoubleTag::getId() const
