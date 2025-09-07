@@ -1,7 +1,7 @@
 #pragma once
 #include "minecraft/src-deps/core/semVer/SemVersion.hpp"
 
-class __declspec(align(8)) BaseGameVersion {
+class BaseGameVersion {
 public:
     SemVersion mSemVersion;
     bool mNeverCompatible;
