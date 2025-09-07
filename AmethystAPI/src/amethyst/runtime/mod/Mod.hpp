@@ -33,6 +33,7 @@ public:
 public:
     Mod(std::string modName);
     FARPROC GetFunction(const char* functionName);
+    HMODULE GetModule() const;
     void Shutdown();
 
 public:

@@ -2,18 +2,20 @@
 #include "debug/AmethystDebugging.hpp"
 #include <amethyst/runtime/events/ModEvents.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>
+#include <amethyst/runtime/RuntimeImporter.hpp>
 #include <amethyst/Log.hpp>
 #include <format>
 #include "hooks/NetworkingHooks.hpp"
 #include "amethyst/runtime/ModContext.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
+extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
 void AmethystRuntime::Start()
 {
-    getContext()->Start(); 
+    getContext()->Start();
     Log::Info("[AmethystRuntime] Using 'AmethystRuntime@{}'", MOD_VERSION);
 
     SemVersion version = getMinecraftPackageInfo()->mVersion;
@@ -34,7 +36,9 @@ void AmethystRuntime::Start()
     ReadLauncherConfig();
 
     // Prompt a debugger if they are in developer mode
-    if (mLauncherConfig.promptDebugger) PromptDebugger();
+    if (mLauncherConfig.promptDebugger) 
+        PromptDebugger();
+    Amethyst::RuntimeImporter::LoadImports(::hModule);
 
     // Add our resources before loading mods
     AddOwnResources();
@@ -89,6 +93,7 @@ void AmethystRuntime::LoadModDlls()
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_packs" / "main_bp" / "manifest.json")))
             mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_bp", PackType::Behavior);
         
+        Amethyst::RuntimeImporter::LoadImports(mod.GetModule());
         _LoadModFunc(&mModInitialize, mod, "Initialize");
     }
 
@@ -163,13 +168,16 @@ void AmethystRuntime::Shutdown()
 {
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
-
     getContext()->Shutdown();
 
     // Unload all mod dll's.
     for (auto& mod : mAmethystContext.mMods) {
+        Amethyst::RuntimeImporter::UnloadImports(mod.GetModule());
         mod.Shutdown();
     }
+
+    // Unload our own imports.
+    Amethyst::RuntimeImporter::UnloadImports(::hModule);
 
     // Clear lists of mods & functions.
     mAmethystContext.mMods.clear();

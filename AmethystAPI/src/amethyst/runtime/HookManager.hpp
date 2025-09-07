@@ -95,6 +95,17 @@ namespace Amethyst {
             }
         }
 
+        template <auto Func>
+        void RegisterFunction() {
+            // Converts the function to a unique hashed number
+            constexpr size_t hash = function_id::hash_code<Func>();
+
+            // If the event has not yet been created, make it, else re-use
+            if (!mFuncHashToOriginalAddress.contains(hash)) {
+                mFuncHashToOriginalAddress[hash] = std::bit_cast<uintptr_t>(Func);
+            }
+        }
+
         ~HookManager();
 
     private:
