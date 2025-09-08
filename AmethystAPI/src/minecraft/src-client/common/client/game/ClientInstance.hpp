@@ -3,9 +3,12 @@
 #include <functional>
 #include <string>
 #include <memory>
+#include <atomic>
+#include <chrono>
 #include "minecraft/src-deps/renderer/Camera.hpp"
 #include "minecraft/src-client/common/client/renderer/TexturePtr.hpp"
 #include "minecraft/src-deps/renderer/ViewportInfo.hpp"
+#include "minecraft/src/common/gamerefs/WeakRef.hpp"
 
 class Minecraft;
 class ClientInputHandler;
@@ -34,7 +37,27 @@ class ToastManager;
 //       ("mce::Camera", "camera", 512, 624),
 //       ("BlockTessellator*", "mBlockTessellator", 8, 1320)]
 
-#pragma pack(push, 1)
+class LevelRenderer;
+class LightTexture;
+class LoopbackPacketSender;
+class HolographicPlatform;
+class VoiceSystem;
+class ClientMoveInputHandler;
+class MinecraftKeyboardManager;
+class HitDetectSystem;
+class UserAuthentication;
+class SceneFactory;
+class CachedScenes;
+class BuildActionIntention;
+
+enum class PlayScreenDefaultTab : int32_t {
+    World = 0x0000,
+    Friends = 0x0001,
+    Servers = 0x0002,
+    Count = 0x0003,
+};
+
+
 class ClientInstance {
 public:
     class ClientRenderResources {
@@ -43,14 +66,51 @@ public:
         mce::TexturePtr mUICursorTexture;
     };
 
+    // thanks levilamina for CI!!
+
     /* this + 0    */ uintptr_t** vtable;
     /* this + 8    */ std::byte padding8[192];
     /* this + 200  */ MinecraftGame* minecraftGame;
     /* this + 208  */ Minecraft* minecraft;
-    /* this + 216  */ std::byte padding216[56];
-    /* this + 272  */ ClientInputHandler* inputHandler; // this should be a unique_ptr!!!!
-    /* this + 280  */ std::byte padding280[552 - 280];
+    /* this + 216  */ bool mIsFullVanillaPackOnStack;
 
+    /* this + 224  */ std::unique_ptr<LevelRenderer> mLevelRenderer;
+    /* this + 232  */ std::unique_ptr<LightTexture> mLightTexture;
+    /* this + 240  */ std::unique_ptr<LoopbackPacketSender> mPacketSender;
+    /* this + 248  */ std::unique_ptr<HolographicPlatform> mHoloInput;
+    /* this + 256  */ std::unique_ptr<VoiceSystem> mVoiceSystem;
+    /* this + 264  */ std::unique_ptr<ClientMoveInputHandler> mClientMoveInputHandler;
+    /* this + 272  */ std::unique_ptr<ClientInputHandler> mClientInputHandler;
+
+    // Somewhere between here
+    std::unique_ptr<MinecraftKeyboardManager> mKeyboardManager;
+    std::unique_ptr<HitDetectSystem> mHitDetectSystem;
+    std::shared_ptr<UserAuthentication> mUserAuthentication;
+    std::unique_ptr<SceneFactory> mSceneFactory;
+    std::unique_ptr<CachedScenes> mCachesScenes;
+    WeakEntityRef mCameraRef;
+    WeakEntityRef mCameraTargetRef;
+    WeakEntityRef mLocalUser;
+    std::unique_ptr<BuildActionIntention> mInProgressBai;
+    float mHoloviewerScale;
+    float mRealityModeFrameFactor;
+    bool mRealityModeToggleTriggered;
+    alignas(4) std::byte mPlayMode[4];
+    bool mTickedLastFrame;
+    std::atomic<bool> mOpenControllerDisconnectScreen;
+    std::atomic<bool> mHandlingControllerDisconnect;
+    std::atomic<bool> mConnectGamepadScreenActive;
+    PlayScreenDefaultTab mDefaultPlayscreenTab;
+    bool mInGameInputEnabled;
+    bool mIsInUpdate;
+    bool mLivingRoomCredits;
+    std::function<void()> mCreditsCallback;
+    std::chrono::steady_clock::time_point mNoBlockBreakUntil;
+    bool mNewDictationString;
+    std::string mDictation;
+
+    std::byte padding488[24];
+    // and here some size is off ^^ this pading shouldnt exist
 
     /* this + 552  */ ViewportInfo mViewportInfo;
     /* this + 576  */ ClientInstance::ClientRenderResources mClientRenderResources;
@@ -86,6 +146,7 @@ public:
     // 1.21.0.3 - ? - 4C 8B DC 49 89 5B ? 4D 89 4B ? 49 89 53 ? 55 56 57 48 83 EC
     std::shared_ptr<FileDataRequest> getImageFromUrl(const std::string& imageUrl, std::function<void(Bedrock::Http::Status, const Core::Path&, uint64_t)> callback);
 };
-#pragma pack(pop)
 
+static_assert(offsetof(ClientInstance, mLevelRenderer) == 224);
+static_assert(offsetof(ClientInstance, mViewportInfo) == 552);
 static_assert(sizeof(ClientInstance) == 3232);
