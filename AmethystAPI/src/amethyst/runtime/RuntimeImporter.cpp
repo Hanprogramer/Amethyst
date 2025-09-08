@@ -32,6 +32,7 @@ bool Amethyst::RuntimeImporter::LoadImports(void* handle)
     uint16_t numberOfSections = ntHeaders->FileHeader.NumberOfSections;
 
     // Lots of sections to find...
+    IMAGE_SECTION_HEADER* rivdtSection = nullptr;
     IMAGE_SECTION_HEADER* rifdtSection = nullptr;
     IMAGE_SECTION_HEADER* rimtSection = nullptr;
     IMAGE_SECTION_HEADER* ristSection = nullptr;
@@ -50,10 +51,13 @@ bool Amethyst::RuntimeImporter::LoadImports(void* handle)
         else if (sectionName == NEW_IMPORT_DIRECTORY) {
             idnewSection = &section[i];
         }
+        else if (sectionName == RUNTIME_IMPORT_VAR_DESC_TABLE) {
+            rivdtSection = &section[i];
+        }
     }
 
     // Ensure we found all required sections
-    if (!rimtSection || !ristSection || !rifdtSection || !idnewSection) {
+    if (!rimtSection || !ristSection || !rifdtSection || !idnewSection || !rivdtSection) {
         Log::Warning("[RuntimeImporter] One or more required sections not found in module.");
         return false;
     }
@@ -79,8 +83,9 @@ bool Amethyst::RuntimeImporter::LoadImports(void* handle)
         sigOffset += static_cast<uint32_t>(signature.length()) + 1; // +1 for null terminator
     }
 
-    // Now we can go through the RIFDT section to actually perform the imports
+    // Now we can go through the RIFDT and RIVDT section to actually perform the imports
     FunctionDescriptorTable& rifdtTable = *reinterpret_cast<FunctionDescriptorTable*>(base + rifdtSection->VirtualAddress);
+    VariableDescriptorTable& rivdtTable = *reinterpret_cast<VariableDescriptorTable*>(base + rivdtSection->VirtualAddress);
 
     // Unprotect "Minecraft.Windows.exe" IAT so we can write to it
     DWORD oldProtection;
@@ -121,6 +126,17 @@ bool Amethyst::RuntimeImporter::LoadImports(void* handle)
             }
         }
     }
+
+    // Iterate through each variable descriptor and perform the import
+    for (auto i = 0; i < rivdtTable.variableCount; i++) {
+        VariableDescriptor& varDesc = (&rivdtTable.variables)[i];
+        std::string importName = IndexToImportName[handle][varDesc.nameIndex];
+        uint32_t iatIndex = varDesc.iatIndex;
+        uintptr_t& iatEntry = *(&reinterpret_cast<uintptr_t*>(base + rivdtTable.iatRva)[iatIndex]);
+        ImportAddresses[handle][importName] = &iatEntry;
+        iatEntry = SlideAddress(varDesc.address);
+    }
+
     Log::Info("[RuntimeImporter] Loaded {} imports!", rifdtTable.functionCount);
     return true;
 }

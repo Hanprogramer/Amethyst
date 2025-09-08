@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 
+#define RUNTIME_IMPORT_VAR_DESC_TABLE ".rivdt"
 #define RUNTIME_IMPORT_FUNC_DESC_TABLE ".rifdt"
 #define RUNTIME_IMPORT_MANGLE_TABLE ".rimt"
 #define RUNTIME_IMPORT_SIG_TABLE ".rist"
@@ -19,6 +20,19 @@ public:
             uint64_t signatureIndex;
             uint64_t address;
         };
+    };
+
+    struct VariableDescriptor {
+        uint32_t nameIndex;
+        uint32_t iatIndex;
+        uint64_t address;
+    };
+
+    struct VariableDescriptorTable {
+        uint32_t variableCount;
+        uint32_t iatRva;
+        uint32_t iatSize;
+        VariableDescriptor variables;
     };
 
     struct FunctionDescriptorTable {
