@@ -38,6 +38,67 @@ local modFolder = path.join(
 set_symbols("debug")
 set_targetdir(modFolder)
 
+package("RuntimeImporter")
+    set_kind("binary")
+    set_homepage("https://github.com/AmethystAPI/Runtime-Importer")
+    set_description("The runtime importer enables importing functions and variables from the game just by defining annotations in header files")
+
+    on_check(function (package)
+        print("Checking for RuntimeImporter version...")
+    end)
+
+    on_load(function (package)
+        import("net.http")
+        import("core.base.json")
+        import("utils.archive")
+
+        local releases_file = path.join(os.tmpdir(), "runtimeimporter.releases.json")
+        http.download("https://api.github.com/repos/AmethystAPI/Runtime-Importer/releases/latest", releases_file)
+
+        local release = json.loadfile(releases_file)
+        local latest_tag = release.tag_name
+        local installed_version_file = path.join(package:installdir(), "version.txt")
+        local installed_version = os.isfile(installed_version_file) and io.readfile(installed_version_file) or "0.0.0"
+
+        if installed_version ~= latest_tag then
+            print("RuntimeImporter is outdated, reinstalling...")
+            print("Latest version is v" .. latest_tag)
+            local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/RuntimeImporter.zip"
+            local zipfile = path.join(os.tmpdir(), "RuntimeImporter.zip")
+            print("Installing RuntimeImporter...")
+
+            http.download(url, zipfile)
+            archive.extract(zipfile, package:installdir("bin"))
+            io.writefile(installed_version_file, latest_tag)
+        end
+
+        package:addenv("PATH", package:installdir("bin"))
+    end)
+
+    on_install(function (package)
+        import("net.http")
+        import("core.base.json")
+        import("utils.archive")
+
+        local releases_file = path.join(os.tmpdir(), "runtimeimporter.releases.json")
+        http.download("https://api.github.com/repos/AmethystAPI/Runtime-Importer/releases/latest", releases_file)
+
+        local release = json.loadfile(releases_file)
+        local latest_tag = release.tag_name
+
+        local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/RuntimeImporter.zip"
+        local zipfile = path.join(os.tmpdir(), "RuntimeImporter.zip")
+        print("Installing RuntimeImporter...")
+
+        local installed_version_file = path.join(package:installdir(), "version.txt")
+
+        http.download(url, zipfile)
+        archive.extract(zipfile, package:installdir("bin"))
+        io.writefile(installed_version_file, latest_tag)
+    end)
+package_end()
+
+add_requires("RuntimeImporter", {system = false})
 target("AmethystRuntime")
     set_kind("shared")
     set_toolchains("nasm")
@@ -56,6 +117,7 @@ target("AmethystRuntime")
     )
 
     -- Deps
+    add_packages("RuntimeImporter")
     add_packages("AmethystAPI", "libhat")
     add_links("user32", "oleaut32", "windowsapp", path.join(os.curdir(), "generated/lib/Minecraft.Windows.lib"))
     add_includedirs("src", {public = true})
@@ -63,15 +125,14 @@ target("AmethystRuntime")
     add_headerfiles("src/**.hpp")
 
     before_build(function (target)
+        local path_env = os.getenv("PATH")
+        print(path_env)
+
         local generated_dir = path.join(os.curdir(), "generated")
         local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
-
-        local symbol_generator_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.SymbolGenerator.exe")
-        local library_generator_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.LibraryGenerator.exe")
-
         local gen_sym_args = {
-            symbol_generator_exe,
+            "Amethyst.SymbolGenerator.exe",
             "--input", string.format("%s", input_dir),
             "--output", string.format("%s", generated_dir),
             "--filters", "minecraft",
@@ -86,7 +147,7 @@ target("AmethystRuntime")
         print('Generating *.symbols.json files for headers...')
         os.exec(table.concat(gen_sym_args, " "))
         local gen_lib_args = {
-            library_generator_exe,
+            "Amethyst.LibraryGenerator.exe",
             "--input", string.format("%s/symbols", generated_dir),
             "--output", string.format("%s/lib", generated_dir)
         }
@@ -103,10 +164,8 @@ target("AmethystRuntime")
         end
         os.cp(src_json, dst_json)
 
-        local module_tweaker_exe = path.join(os.curdir(), "tools/RuntimeImporter/Amethyst.ModuleTweaker.exe")
-
         local tweaker_args = {
-            module_tweaker_exe,
+            "Amethyst.ModuleTweaker.exe",
             "--module", target:targetfile(),
             "--symbols", string.format("%s/symbols", generated_dir)
         }
