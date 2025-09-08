@@ -57,6 +57,13 @@ namespace Amethyst {
             CreateHookAbsolute(trampoline, original_addr, hook);
         }
 
+        template <auto OriginalFn>
+        void CreateDirectHook(SafetyHookInline& trampoline, void* hook)
+        {
+            uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            CreateHookAbsolute(trampoline, original_addr, hook);
+        }
+
         /**
          * Directly hooks a function with an absolute address
          * CAUTION: This will not work if two mods want to hook the same function. For more compatibility, use HookManager::CreateHook
@@ -92,17 +99,6 @@ namespace Amethyst {
             // If the event has not yet been created, make it, else re-use
             if (!mFuncHashToOriginalAddress.contains(hash)) {
                 mFuncHashToOriginalAddress[hash] = address;
-            }
-        }
-
-        template <auto Func>
-        void RegisterFunction() {
-            // Converts the function to a unique hashed number
-            constexpr size_t hash = function_id::hash_code<Func>();
-
-            // If the event has not yet been created, make it, else re-use
-            if (!mFuncHashToOriginalAddress.contains(hash)) {
-                mFuncHashToOriginalAddress[hash] = std::bit_cast<uintptr_t>(Func);
             }
         }
 

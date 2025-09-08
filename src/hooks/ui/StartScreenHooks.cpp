@@ -18,6 +18,5 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
 void CreateStartScreenHooks() {
     auto& hooks = *AmethystRuntime::getHookManager();
 
-    hooks.RegisterFunction<&StartMenuScreenController::_registerBindings>();
-    hooks.CreateHook<&StartMenuScreenController::_registerBindings>(_StartMenuScreenController__registerBindings, &StartMenuScreenController__registerBindings);
+    hooks.CreateDirectHook<&StartMenuScreenController::_registerBindings>(_StartMenuScreenController__registerBindings, &StartMenuScreenController__registerBindings);
 }

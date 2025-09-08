@@ -10,6 +10,6 @@
 class ContainerScreenController /** : ClientInstanceScreenController, MinecraftScreenController, ScreenController, IScreenController, std::enable_shared_from_this<MinecraftScreenController> **/ {
 public:
     /// @address {0x59D9150}
-    MINECRAFT static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
+    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
 };
 #pragma pack(pop)

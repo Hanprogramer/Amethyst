@@ -4,4 +4,4 @@
 #else
 #define MC_API __declspec(dllimport)
 #endif
-#define MINECRAFT __declspec(dllimport)
+#define MC __declspec(dllimport)

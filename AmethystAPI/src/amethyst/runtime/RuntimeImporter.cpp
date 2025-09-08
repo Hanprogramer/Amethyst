@@ -155,6 +155,7 @@ bool Amethyst::RuntimeImporter::UnloadImports(void* handle)
     ImportAddresses.erase(handle);
     IndexToImportName.erase(handle);
     IndexToImportSignature.erase(handle);
+    return true;
 }
 
 uintptr_t Amethyst::RuntimeImporter::GetAddress(void* handle, const std::string& name)
