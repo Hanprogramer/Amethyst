@@ -14,6 +14,7 @@
 #include <minecraft/src/common/world/level/GameType.hpp>
 #include <minecraft/src/common/world/item/registry/ItemRegistryRef.hpp>
 #include <minecraft/src-client/common/client/social/MultiplayerGameinfo.hpp>
+#include <minecraft/src/common/world/Difficulty.hpp>
 
 // Auto-generated: Forward declarations
 namespace PlayerCapabilities { struct ISharedController; }
@@ -98,7 +99,6 @@ class ChangeDimensionRequest;
 class BossEventSubscriptionManager;
 class ActorAnimationGroup;
 class ActorAnimationControllerGroup;
-class Difficulty;
 class DimensionConversionData;
 class StrictEntityContext;
 class ActorRuntimeID;

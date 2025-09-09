@@ -3,6 +3,7 @@
 #include <minecraft/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <map>
 #include <minecraft/src-deps/core/utility/pubsub/Publisher.hpp>
+#include <minecraft/src-deps/core/utility/pubsub/detail/ThreadingPublisherBase.hpp>
 #include <minecraft/src-deps/core/string/StringHash.hpp>
 
 enum class GameRulesIndex : int {
@@ -66,19 +67,14 @@ public:
     /* this + 44 */ std::byte padding44[132];
 };
 
-class GameRules {
-public:
-    /* this + 0  */ std::byte padding0[24];
-    /* this + 24 */ std::vector<GameRule> mGamerules;
-};
-
 class GameRuleId;
 
 class GameRules : public Bedrock::EnableNonOwnerReferences {
 public:
     std::vector<GameRule> mGameRules;
     std::map<HashedString, GameRule> mWorldPolicies;
-    Bedrock::PubSub::Publisher<void(const GameRules&, const GameRuleId&), Bedrock::PubSub::ThreadModel::MultiThreaded> mGameRuleChangePublisher;
+    //Bedrock::PubSub::Publisher<void(const GameRules&, const GameRuleId&), Bedrock::PubSub::ThreadModel::MultiThreaded> mGameRuleChangePublisher;
+    std::byte mGameRuleChangePublisher[128];
 
     // 1.21.0.3 - 48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B F9 48 83 C1
     void _registerRules();
