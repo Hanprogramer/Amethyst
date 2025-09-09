@@ -78,7 +78,7 @@ package("RuntimeImporter")
             print("Generating precompiled header of STL...")
             os.mkdir(generated_dir)
             local clang_args = {
-                "clang++.exe",
+                path.join(package:installdir("bin"), "clang++.exe"),
                 "-x", "c++-header",
                 path.join(package:installdir("bin/utils"), "pch.hpp"),
                 "-std=c++23",
