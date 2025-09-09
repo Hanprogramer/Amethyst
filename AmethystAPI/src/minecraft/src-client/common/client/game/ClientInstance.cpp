@@ -43,3 +43,23 @@ std::shared_ptr<FileDataRequest> ClientInstance::getImageFromUrl(const std::stri
     auto func = std::bit_cast<function>(this->vtable[360]);
     return (this->*func)(imageUrl, callback);
 }
+
+EntityId ClientInstance::getCameraEntity() const
+{
+    using function = decltype(&ClientInstance::getCameraEntity);
+    auto func = std::bit_cast<function>(this->vtable[40]);
+    return (this->*func)();
+}
+
+Actor* ClientInstance::getCameraActor() const
+{
+    using function = decltype(&ClientInstance::getCameraActor);
+    auto func = std::bit_cast<function>(this->vtable[35]);
+    return (this->*func)();
+}
+
+void ClientInstance::getRawCameraEntities(WeakEntityRef& outCamera, WeakEntityRef& outCameraTarget) const {
+    using function = decltype(&ClientInstance::getRawCameraEntities);
+    auto func = std::bit_cast<function>(this->vtable[41]);
+    return (this->*func)(outCamera, outCameraTarget);
+}

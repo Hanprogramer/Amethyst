@@ -281,7 +281,7 @@ public:
     virtual StrictEntityContext fetchStrictEntity(ActorUniqueID, bool) const;
 
     /**@vIndex {52}*/
-    virtual Actor* fetchEntity(ActorUniqueID, bool) const;
+    virtual Actor* fetchEntity(ActorUniqueID uniqueId, bool getRemoved) const;
 
     /**@vIndex {53}*/
     virtual Actor* getRuntimeEntity(ActorRuntimeID, bool) const;

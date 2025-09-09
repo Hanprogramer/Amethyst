@@ -57,6 +57,7 @@ enum class PlayScreenDefaultTab : int32_t {
     Count = 0x0003,
 };
 
+class Actor;
 
 class ClientInstance {
 public:
@@ -81,15 +82,16 @@ public:
     /* this + 256  */ std::unique_ptr<VoiceSystem> mVoiceSystem;
     /* this + 264  */ std::unique_ptr<ClientMoveInputHandler> mClientMoveInputHandler;
     /* this + 272  */ std::unique_ptr<ClientInputHandler> mClientInputHandler;
+    /* this + 280  */ std::unique_ptr<MinecraftKeyboardManager> mKeyboardManager;
+    /* this + 288  */ std::unique_ptr<HitDetectSystem> mHitDetectSystem;
+    /* this + 296  */ std::shared_ptr<UserAuthentication> mUserAuthentication;
+    uint64_t padding304; // idk what this is!!
+    /* this + 312  */ std::unique_ptr<SceneFactory> mSceneFactory; 
+    /* this + 320  */ std::unique_ptr<CachedScenes> mCachesScenes;
 
     // Somewhere between here
-    std::unique_ptr<MinecraftKeyboardManager> mKeyboardManager;
-    std::unique_ptr<HitDetectSystem> mHitDetectSystem;
-    std::shared_ptr<UserAuthentication> mUserAuthentication;
-    std::unique_ptr<SceneFactory> mSceneFactory;
-    std::unique_ptr<CachedScenes> mCachesScenes;
     WeakEntityRef mCameraRef;
-    WeakEntityRef mCameraTargetRef;
+    WeakEntityRef mCameraTargetRef; 
     WeakEntityRef mLocalUser;
     std::unique_ptr<BuildActionIntention> mInProgressBai;
     float mHoloviewerScale;
@@ -109,7 +111,7 @@ public:
     bool mNewDictationString;
     std::string mDictation;
 
-    std::byte padding488[24];
+    std::byte padding488[16];
     // and here some size is off ^^ this pading shouldnt exist
 
     /* this + 552  */ ViewportInfo mViewportInfo;
@@ -143,9 +145,12 @@ public:
     void grabMouse();
     void releaseMouse();
     bool isShowingLoadingScreen() const;
+    void getRawCameraEntities(WeakEntityRef& outCamera, WeakEntityRef& outCameraTarget) const;
 
     // 1.21.0.3 - ? - 4C 8B DC 49 89 5B ? 4D 89 4B ? 49 89 53 ? 55 56 57 48 83 EC
     std::shared_ptr<FileDataRequest> getImageFromUrl(const std::string& imageUrl, std::function<void(Bedrock::Http::Status, const Core::Path&, uint64_t)> callback);
+    EntityId getCameraEntity() const;
+    Actor* getCameraActor() const;
 };
 
 static_assert(offsetof(ClientInstance, mLevelRenderer) == 224);

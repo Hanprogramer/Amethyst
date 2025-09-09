@@ -18,4 +18,16 @@ public:
     {
         return mEnttRegistry;
     }
+
+    template <typename Component>
+    [[nodiscard]] inline Component& get()
+    {
+        return mEnttRegistry.get<Component>(mEntity);
+    }
+
+    template <typename Component>
+    [[nodiscard]] inline Component const& get() const
+    {
+        return mEnttRegistry.get<Component>(mEntity);
+    }
 };
