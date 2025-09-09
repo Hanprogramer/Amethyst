@@ -22,6 +22,11 @@ public:
     uint64_t mId;
 };
 
+struct IdkWhatThisIsStruct {
+    short field0;
+    uint8_t field1;
+};
+
 class WorldStorageHandler : public Bedrock::Threading::EnableQueueForMainThread {
 public:
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 49 8B E9 4D 8B E0 4C 8B F2}
@@ -38,7 +43,7 @@ public:
 
     virtual ~WorldStorageHandler();
     virtual void virtual1();
-    virtual void updateOrCreateWorld(LevelData& levelData, LevelSummary& summary, std::shared_ptr<LevelSettings> settings);
+    virtual IdkWhatThisIsStruct updateOrCreateWorld(LevelData& levelData, LevelSummary& summary, std::shared_ptr<LevelSettings> settings);
 };
 
 };

@@ -15,7 +15,7 @@ LevelData LevelData::$ctor(bool useEducationEditionFeatures)
 
 GameType LevelData::getGameType() const
 {
-    auto it = mOverrides.find("game_type");
+    auto it = mOverrides.find("gameType");
     if (it != mOverrides.end())
     {
         if (std::holds_alternative<GameType>(it->second.mValue))
@@ -24,7 +24,7 @@ GameType LevelData::getGameType() const
         }
     }
 
-    auto it2 = mValues.find("game_type");
+    auto it2 = mValues.find("gameType");
     if (it2 != mValues.end())
     {
         if (std::holds_alternative<GameType>(it2->second.mValue))
@@ -57,14 +57,14 @@ LevelSeed64 LevelData::getSeed() const
 
 const std::string& LevelData::getEducationOid() const
 {
-    auto it = mOverrides.find("education_oid");
+    auto it = mOverrides.find("educationOid");
     if (it != mOverrides.end()) {
         if (std::holds_alternative<std::string>(it->second.mValue)) {
             return std::get<std::string>(it->second.mValue);
         }
     }
 
-    auto it2 = mValues.find("education_oid");
+    auto it2 = mValues.find("educationOid");
     if (it2 != mValues.end()) {
         if (std::holds_alternative<std::string>(it2->second.mValue)) {
             return std::get<std::string>(it2->second.mValue);
