@@ -31,6 +31,13 @@ void ClientInstance::releaseMouse() {
     return (this->*func)();
 }
 
+bool ClientInstance::isShowingLoadingScreen() const
+{
+    using function = decltype(&ClientInstance::isShowingLoadingScreen);
+    auto func = std::bit_cast<function>(this->vtable[67]);
+    return (this->*func)();
+}
+
 std::shared_ptr<FileDataRequest> ClientInstance::getImageFromUrl(const std::string& imageUrl, std::function<void(Bedrock::Http::Status, const Core::Path&, uint64_t)> callback) {
     using function = decltype(&ClientInstance::getImageFromUrl);
     auto func = std::bit_cast<function>(this->vtable[360]);

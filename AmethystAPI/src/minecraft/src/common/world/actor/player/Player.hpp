@@ -47,6 +47,7 @@ public:
     GameMode& getGameMode() const;
     bool canUseOperatorBlocks() const;
     void updateSkin(const SerializedSkin& skin, int clientSubID);
+    void setPlayerGameType(GameType gameType);
 };
 #pragma pack(pop)   
 

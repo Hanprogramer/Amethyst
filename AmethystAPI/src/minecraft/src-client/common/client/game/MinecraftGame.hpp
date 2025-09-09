@@ -2,6 +2,7 @@
 #include <memory>
 #include <minecraft/src-client/common/client/renderer/TextureGroup.hpp>
 #include <minecraft/src-client/common/client/gui/gui/FontHandle.hpp>
+#include <minecraft/src-client/common/client/world/System.hpp>
 
 // class MinecraftGame : public BedrockEngine::AppIsland, App, IMinecraftGame, LevelListener,
 //                             ResourcePackListener, OptionsObserver, ActiveDirectoryIdentityObserver
@@ -25,7 +26,9 @@ public:
     /* this + 2280 */ std::byte padding2296[3328 - 2280];
     /* this + 3328 */ std::unique_ptr<MinecraftInputHandler> mInput;
     /* this + 3336 */ std::byte padding3336[3912 - 3336 - 312];
-    /* this + 3608 */ std::byte padding3608[3912 - 3600];
+    /* this + 3608 */ std::byte padding3608[3768 - 3600];
+    /* this + 3768 */ World::System* mWorldSystem;
+    /* this + 3776 */ std::byte padding3744[3912 - 3776];
     /* this + 3912 */ FontHandle mFontHandle;
     /* this + 3984 */ FontHandle mRuneFontHandle;
     /* this + 4056 */ FontHandle mUnicodeFontHandle;
@@ -38,3 +41,4 @@ public:
 
 // 1.21.0.3
 static_assert(offsetof(MinecraftGame, mTextures) == 1920);
+static_assert(offsetof(MinecraftGame, mFontHandle) == 3912);

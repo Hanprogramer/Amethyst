@@ -142,6 +142,7 @@ public:
     LocalPlayer* getLocalPlayer();
     void grabMouse();
     void releaseMouse();
+    bool isShowingLoadingScreen() const;
 
     // 1.21.0.3 - ? - 4C 8B DC 49 89 5B ? 4D 89 4B ? 49 89 53 ? 55 56 57 48 83 EC
     std::shared_ptr<FileDataRequest> getImageFromUrl(const std::string& imageUrl, std::function<void(Bedrock::Http::Status, const Core::Path&, uint64_t)> callback);
