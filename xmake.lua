@@ -43,10 +43,6 @@ package("RuntimeImporter")
     set_homepage("https://github.com/AmethystAPI/Runtime-Importer")
     set_description("The runtime importer enables importing functions and variables from the game just by defining annotations in header files")
 
-    on_check(function (package)
-        print("Checking for RuntimeImporter version...")
-    end)
-
     on_load(function (package)
         import("net.http")
         import("core.base.json")
@@ -59,8 +55,9 @@ package("RuntimeImporter")
         local latest_tag = release.tag_name
         local installed_version_file = path.join(package:installdir(), "version.txt")
         local installed_version = os.isfile(installed_version_file) and io.readfile(installed_version_file) or "0.0.0"
+        local should_reinstall = installed_version ~= latest_tag
 
-        if installed_version ~= latest_tag then
+        if should_reinstall then
             print("RuntimeImporter is outdated, reinstalling...")
             print("Latest version is v" .. latest_tag)
             local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/RuntimeImporter.zip"
@@ -73,28 +70,27 @@ package("RuntimeImporter")
         end
 
         package:addenv("PATH", package:installdir("bin"))
+
+        local generated_dir = path.join(os.curdir(), "generated")
+        local pch_file = path.join(generated_dir, "pch.hpp.pch")
+        local should_regenerate_pch = os.exists(pch_file) == false or should_reinstall
+        if should_regenerate_pch then
+            print("Generating precompiled header of STL...")
+            os.mkdir(generated_dir)
+            local clang_args = {
+                "clang++.exe",
+                "-x", "c++-header",
+                path.join(package:installdir("bin/utils"), "pch.hpp"),
+                "-std=c++23",
+                "-fms-extensions",
+                "-fms-compatibility",
+                "-o", pch_file
+            }
+            os.exec(table.concat(clang_args, " "))
+        end
     end)
 
     on_install(function (package)
-        import("net.http")
-        import("core.base.json")
-        import("utils.archive")
-
-        local releases_file = path.join(os.tmpdir(), "runtimeimporter.releases.json")
-        http.download("https://api.github.com/repos/AmethystAPI/Runtime-Importer/releases/latest", releases_file)
-
-        local release = json.loadfile(releases_file)
-        local latest_tag = release.tag_name
-
-        local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/RuntimeImporter.zip"
-        local zipfile = path.join(os.tmpdir(), "RuntimeImporter.zip")
-        print("Installing RuntimeImporter...")
-
-        local installed_version_file = path.join(package:installdir(), "version.txt")
-
-        http.download(url, zipfile)
-        archive.extract(zipfile, package:installdir("bin"))
-        io.writefile(installed_version_file, latest_tag)
     end)
 package_end()
 
@@ -125,12 +121,10 @@ target("AmethystRuntime")
     add_headerfiles("src/**.hpp")
 
     before_build(function (target)
-        local path_env = os.getenv("PATH")
-        print(path_env)
-
         local generated_dir = path.join(os.curdir(), "generated")
         local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
+        
         local gen_sym_args = {
             "Amethyst.SymbolGenerator.exe",
             "--input", string.format("%s", input_dir),
@@ -138,6 +132,7 @@ target("AmethystRuntime")
             "--filters", "minecraft",
             "--",
             "-x c++",
+            "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
             "-std=c++23",
             "-fms-extensions",
             "-fms-compatibility",
@@ -146,6 +141,7 @@ target("AmethystRuntime")
         }
         print('Generating *.symbols.json files for headers...')
         os.exec(table.concat(gen_sym_args, " "))
+
         local gen_lib_args = {
             "Amethyst.LibraryGenerator.exe",
             "--input", string.format("%s/symbols", generated_dir),
