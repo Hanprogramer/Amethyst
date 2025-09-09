@@ -11,10 +11,17 @@ enum class CommandPermissionLevel : __int8
   Internal = 0x5,
 };
 
-class PermissionsHandler
-{
-  CommandPermissionLevel mCommandPermissions;
-  unsigned char mPlayerPermissions[1];
+enum class PlayerPermissionLevel : int8_t {
+    Visitor  = 0,
+    Member   = 1,
+    Operator = 2,
+    Custom   = 3,
+};
+
+class PermissionsHandler {
+public:
+    CommandPermissionLevel mCommandPermissions;
+    PlayerPermissionLevel mPlayerPermissions;
 };
 
 class Ability {

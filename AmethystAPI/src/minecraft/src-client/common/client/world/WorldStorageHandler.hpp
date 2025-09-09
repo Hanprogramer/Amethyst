@@ -12,10 +12,17 @@ namespace Social {
 };
 class HolographicPlatform;
 class IContentKeyProvider;
+class LevelSummary;
+class LevelData;
 
 namespace World {
 
-class WorldStorageHandler {
+class WorldID {
+public:
+    uint64_t mId;
+};
+
+class WorldStorageHandler : public Bedrock::Threading::EnableQueueForMainThread {
 public:
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 49 8B E9 4D 8B E0 4C 8B F2}
     WorldStorageHandler(
@@ -28,6 +35,10 @@ public:
         const gsl::not_null<Bedrock::NonOwnerPointer<const IContentKeyProvider>>& a8,
         gsl::not_null<Bedrock::NonOwnerPointer<LevelDbEnv>> a9
     );
+
+    virtual ~WorldStorageHandler();
+    virtual void virtual1();
+    virtual void updateOrCreateWorld(LevelData& levelData, LevelSummary& summary, std::shared_ptr<LevelSettings> settings);
 };
 
 };

@@ -8,7 +8,13 @@
 #include <minecraft/src/common/world/level/BlockPos.hpp>
 #include <minecraft/src-deps/core/resource/ResourceHelper.hpp>
 #include <minecraft/src/common/world/level/storage/GameRules.hpp>
+#include <minecraft/src/common/world/level/storage/ExperimentsStorage.hpp>
 #include <minecraft/src/common/resources/BaseGameVersion.hpp>
+#include <minecraft/src/common/world/Difficulty.hpp>
+#include <minecraft/src-client/common/client/social/MultiplayerGameinfo.hpp>
+#include <minecraft/src/common/world/actor/player/Abilities.hpp>
+
+class LevelData;
 
 enum class GeneratorType : int {
     Legacy    = 0,
@@ -44,6 +50,9 @@ struct SpawnSettings
 class LevelSeed64 {
 public:
     uint64_t mValue;
+
+    LevelSeed64() : mValue(0) {}
+    LevelSeed64(uint64_t seed) : mValue(seed) {}
 };
 
 namespace Editor {
@@ -54,47 +63,6 @@ enum class WorldType : int {
     EditorRealmsUpload = 3,
 };
 }
-
-namespace Social {
-enum class GamePublishSetting : int {
-    NoMultiPlay      = 0,
-    InviteOnly       = 1,
-    FriendsOnly      = 2,
-    FriendsOfFriends = 3,
-    Public           = 4,
-};
-}
-
-enum class CommandPermissionLevel : uint8_t {
-    Any           = 0,
-    GameDirectors = 1,
-    Admin         = 2,
-    Host          = 3,
-    Owner         = 4,
-    Internal      = 5,
-};
-
-enum class PlayerPermissionLevel : int8_t {
-    Visitor  = 0,
-    Member   = 1,
-    Operator = 2,
-    Custom   = 3,
-};
-
-class PermissionsHandler {
-public:
-    CommandPermissionLevel mCommandPermissions;
-    PlayerPermissionLevel mPlayerPermissions;
-};
-
-enum class Difficulty : int32_t {
-    Peaceful = 0x0000,
-    Easy = 0x0001,
-    Normal = 0x0002,
-    Hard = 0x0003,
-    Count = 0x0004,
-    Unknown = 0x0005,
-};
 
 enum class NetherWorldType : uint8_t {
     Normal = 0,
@@ -110,13 +78,6 @@ enum class DaylightCycle : uint8_t {
 struct PackInstanceId {
     PackIdVersion mPackId;
     std::string mSubpackName;
-};
-
-class ExperimentStorage {
-public:
-    std::vector<bool> mExperimentData;
-    std::vector<bool> mDeprecatedData;
-    bool mExperimentsEverToggled;
 };
 
 struct EduSharedUriResource {
@@ -137,11 +98,39 @@ enum class ChatRestrictionLevel : uint8_t {
 };
 
 class CloudSaveLevelInfo {
-    std::byte padding0[176 - 1];
+    std::string mDriveItemId;
+    std::string mCTag;
+    std::string mUserId;
+    std::string mFileName;
+    bool mNeedsUpload;
+    int mVersionId;
 };
 
-class EducationLevelSettings {
-    std::byte padding0[328 - 1];
+class EducationLocalLevelSettings {
+    std::optional<std::string> codeBuilderOverrideUri;
+};
+
+class AgentCapabilities {
+    std::optional<bool> canModifyBlocks;
+};
+
+class ExternalLinkSettings {
+    std::string url;
+    std::string displayName;
+};
+
+class EducationLevelSettings
+{
+    std::string codeBuilderDefaultUri;
+    std::string codeBuilderTitle;
+    bool canResizeCodeBuilder;
+    bool disableLegacyTitleBar;
+    std::string postProcessFilter;
+    std::string screenshotBorderResourcePath;
+    std::unordered_map<std::string, unsigned int> hiddenCommands;
+    EducationLocalLevelSettings localSettings;
+    std::optional<AgentCapabilities> agentCapabilities;
+    std::optional<ExternalLinkSettings> externalLinkSettings;
 };
 
 class LevelSettings {
@@ -153,7 +142,7 @@ public:
     bool mForceGameType;
     GeneratorType mGenerator;
     WorldVersion mWorldVersion;
-    NetherWorldType mNetherType;
+    NetherWorldType mNetherType; // 29
     SpawnSettings mSpawnSettings;
     bool mAchievementsDisabled;
     Editor::WorldType mEditorWorldType;
@@ -187,31 +176,37 @@ public:
     int mServerChunkTickRange;
     bool mIsFromWorldTemplate;
     bool mIsWorldTemplateOptionLocked;
-    bool mSpawnV1Villagers;
+    bool mSpawnV1Villagers; // 146
     bool mPersonaDisabled;
     bool mCustomSkinsDisabled;
     bool mEmoteChatMuted;
     int mLimitedWorldWidth;
     int mLimitedWorldDepth;
     PermissionsHandler mDefaultPermissions;
-    BlockPos mDefaultSpawn;
+    BlockPos mDefaultSpawn; // 164
     std::vector<PackInstanceId> mNewWorldBehaviorPackIdentities;
     std::vector<PackInstanceId> mNewWorldResourcePackIdentities;
     GameRules mGameRules;
-    ExperimentStorage mExperiments;
+    ExperimentsStorage mExperiments;
     BaseGameVersion mBaseGameVersion;
     std::string mEducationProductID;
     std::string mBiomeOverride;
     EduSharedUriResource mEduSharedUriResource;
     ChatRestrictionLevel mChatRestrictionLevel;
-    std::string mServerId;
+    std::string mServerId; // 744
     std::string mWorldId;
-    std::string mScenarioId;
-    std::optional<EducationLevelSettings> mEducationLevelSettings;
-    std::optional<bool> mOverrideForceExperimentalGameplayFlag;
-    std::optional<CloudSaveLevelInfo> mCloudSaveInfo;
-    std::vector<std::string> mExcludedScriptModules;
-    bool mAddExperiments;
-    bool mOverrideBaseGameVersion;
-    ForceBlockNetworkIdsAreHashes mForceBlockNetworkIdsAreHashes;
+    std::string mScenarioId; // 808
+    alignas(8) std::optional<EducationLevelSettings> mEducationLevelSettings; // 840
+    alignas(8) std::optional<bool> mOverrideForceExperimentalGameplayFlag;  
+    alignas(8) std::optional<CloudSaveLevelInfo> mCloudSaveInfo;             
+    std::vector<std::string> mExcludedScriptModules; // 1320
+    //bool mAddExperiments; // 1328
+    //bool mOverrideBaseGameVersion;
+    //ForceBlockNetworkIdsAreHashes mForceBlockNetworkIdsAreHashes;
+
+public:
+    static LevelSettings $ctor(const LevelData& levelData, DimensionType dimType);
+    static LevelSettings* $ctorPtr(const LevelData& levelData, DimensionType dimType);
 };
+
+//static_assert(sizeof(LevelSettings) == 1344);

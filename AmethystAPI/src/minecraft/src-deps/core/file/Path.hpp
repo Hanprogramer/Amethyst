@@ -11,11 +11,20 @@ template <class ContainerType>
 class PathBuffer {
 public:
     ContainerType mContainer;
+
+    PathBuffer() 
+        : mContainer() {}
+
+    PathBuffer(const ContainerType& container) 
+        : mContainer(container) {}
 };
 
 class Path {
 public:
     PathPart mPathPart;
     Path(const std::string&);
+    Path();
+
+
 };
 } // namespace Core
