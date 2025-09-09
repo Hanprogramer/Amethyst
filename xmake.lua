@@ -59,9 +59,9 @@ package("RuntimeImporter")
 
         if should_reinstall then
             print("RuntimeImporter is outdated, reinstalling...")
-            print("Latest version is v" .. latest_tag)
-            local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/RuntimeImporter.zip"
-            local zipfile = path.join(os.tmpdir(), "RuntimeImporter.zip")
+            print("Latest version is " .. latest_tag)
+            local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/Runtime-Importer.zip"
+            local zipfile = path.join(os.tmpdir(), "Runtime-Importer.zip")
             print("Installing RuntimeImporter...")
 
             http.download(url, zipfile)
