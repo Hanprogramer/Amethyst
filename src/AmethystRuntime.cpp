@@ -6,6 +6,7 @@
 #include <format>
 #include "hooks/NetworkingHooks.hpp"
 #include "amethyst/runtime/ModContext.hpp"
+#include "hooks/UiHooks.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HANDLE gMcThreadHandle;
@@ -131,6 +132,7 @@ void AmethystRuntime::CreateOwnHooks()
     CreateStartScreenHooks();
     CreateModFunctionHooks();
     CreateNetworkingHooks();
+    CreateUiHooks();
 }
 
 void AmethystRuntime::RunMods()

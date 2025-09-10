@@ -138,7 +138,7 @@ public:
     int64_t onStartJoinGame(ClientInstance*, int64_t, int64_t, int64_t);
 
     // 1.20.51.1 - 48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 45 0F B6 F0 44 0F B6 FA
-    void requestLeaveGame(char switchScreen, char sync);
+    void requestLeaveGame(bool switchScreen, bool sync);
 
     BlockSource* getRegion();
     LocalPlayer* getLocalPlayer();

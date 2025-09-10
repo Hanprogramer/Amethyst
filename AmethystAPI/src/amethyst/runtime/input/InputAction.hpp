@@ -50,20 +50,31 @@ public:
           mContexts(contexts) {}
 };
 
+enum class InputPassthrough {
+    // allows both mod and vanilla handling of the input event
+    Passthrough,
+
+    // prevents further processing of the input event
+    Consume,
+
+    // allows mod handling but prevents vanilla handling
+    ModOnly,
+};
+
 class InputAction {
 private:
     uint32_t mNameHash;
-    std::vector<std::function<void(FocusImpact, IClientInstance&)>> mButtonDownHandlers;
-    std::vector<std::function<void(FocusImpact, IClientInstance&)>> mButtonUpHandlers;
+    std::vector<std::function<InputPassthrough(FocusImpact, IClientInstance&)>> mButtonDownHandlers;
+    std::vector<std::function<InputPassthrough(FocusImpact, IClientInstance&)>> mButtonUpHandlers;
 
 public:
     InputAction(const std::string& actionName);
     uint32_t getNameHash() const { return mNameHash; }
-    void addButtonDownHandler(std::function<void(FocusImpact, IClientInstance&)> handler);
-    void addButtonUpHandler(std::function<void(FocusImpact, IClientInstance&)> handler);
+    void addButtonDownHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler);
+    void addButtonUpHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler);
 
 private:
-    void _onButtonStateChange(ButtonState state, FocusImpact focus, IClientInstance& client) const;
+    InputPassthrough _onButtonStateChange(ButtonState state, FocusImpact focus, IClientInstance& client) const;
     friend class InputManager;
 };
 

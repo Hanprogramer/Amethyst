@@ -79,13 +79,13 @@ Amethyst::InputAction& Amethyst::InputManager::GetVanillaInput(const std::string
     return *(newIt->second);
 }
 
-void Amethyst::InputManager::_handleButtonEvent(InputHandler* handler, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId) const
+Amethyst::InputPassthrough Amethyst::InputManager::_handleButtonEvent(InputHandler* handler, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId) const
 {
     auto it = mActions.find(button.id);
-    if (it == mActions.end()) return;
+    if (it == mActions.end()) return InputPassthrough::Passthrough;
 
     const Amethyst::InputAction& action = *it->second.get();
-    action._onButtonStateChange(button.state, focus, client);
+    return action._onButtonStateChange(button.state, focus, client);
 }
 
 void Amethyst::InputManager::_registerKeyboardInputs(VanillaClientInputMappingFactory* inputs, KeyboardInputMapping* keyboard, MouseInputMapping* mouse, Amethyst::KeybindContext context)

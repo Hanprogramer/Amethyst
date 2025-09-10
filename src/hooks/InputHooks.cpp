@@ -40,8 +40,11 @@ SafetyHookInline _InputHandler_handleButtonEvent;
 
 void InputHandler_handleButtonEvent(InputHandler* self, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId)
 {
-    _InputHandler_handleButtonEvent.call<void, InputHandler*, const ButtonEventData&, FocusImpact, IClientInstance&, int>(self, button, focus, client, controllerId);
-    AmethystRuntime::getInputManager()->_handleButtonEvent(self, button, focus, client, controllerId);
+    Amethyst::InputPassthrough passthrough = AmethystRuntime::getInputManager()->_handleButtonEvent(self, button, focus, client, controllerId);
+
+    if (passthrough == Amethyst::InputPassthrough::Passthrough) {
+        _InputHandler_handleButtonEvent.call<void, InputHandler*, const ButtonEventData&, FocusImpact, IClientInstance&, int>(self, button, focus, client, controllerId);
+    }
 }
 
 void CreateInputHooks()
