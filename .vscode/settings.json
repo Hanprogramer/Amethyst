@@ -13,6 +13,7 @@
         ".clang-format": true,
     },
     "files.associations": {
+        "*.material": "bc-minecraft-project",
         "algorithm": "cpp",
         "any": "cpp",
         "array": "cpp",
@@ -107,6 +108,7 @@
         "execution": "cpp",
         "memory_resource": "cpp",
         "random": "cpp",
-        "multi_span": "cpp"
+        "multi_span": "cpp",
+        "gsl_assert": "cpp"
     }
 }

@@ -23,7 +23,7 @@ enum class InputBindingMode : uint32_t {
     MotionController = 0x0003,
 };
 
-enum class ButtonState {
+enum class ButtonState : uint8_t {
     Up,
     Down,
     None
@@ -32,8 +32,9 @@ enum class ButtonState {
 struct ButtonEventData {
     uint32_t id;
     ButtonState state;
-    bool exlcusive;
-    int unknown12;
+    bool exclusive;
+    float repeatInterval;
+    int source;
 };
 
 class ClientInstance;
