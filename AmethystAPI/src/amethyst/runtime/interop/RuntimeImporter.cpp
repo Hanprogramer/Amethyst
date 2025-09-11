@@ -2,11 +2,83 @@
 #include <amethyst/Log.hpp>
 #include <amethyst/Memory.hpp>
 
+#pragma pack(push, 1)
+struct StringTable {
+    uint32_t length;
+    char strings;
+};
+
+struct FunctionDesc {
+    uint32_t nameIndex;
+    uint32_t iatIndex;
+    char usesSig;
+    union {
+        uint64_t signatureIndex;
+        uint64_t address;
+    };
+};
+
+struct FunctionDescTable {
+    uint32_t length;
+    uint32_t iatRva;
+    uint32_t iatSize;
+    FunctionDesc entries;
+};
+
+struct VariableDesc {
+    uint32_t nameIndex;
+    uint32_t iatIndex;
+    uint64_t address;
+};
+
+struct VariableDescTable {
+    uint32_t length;
+    uint32_t iatRva;
+    uint32_t iatSize;
+    VariableDesc entries;
+};
+
+struct VirtualTableDesc {
+    uint32_t nameIndex;
+    uint64_t address;
+};
+
+struct VirtualTableDescTable {
+    uint32_t length;
+    VirtualTableDesc entries;
+};
+
+struct VirtualFunctionDesc {
+    uint32_t nameIndex;
+    uint32_t iatIndex;
+    uint32_t vtableNameIndex;
+    uint32_t functionIndex;
+};
+
+struct VirtualFunctionDescTable {
+    uint32_t length;
+    uint32_t iatRva;
+    uint32_t iatSize;
+    VirtualFunctionDesc entries;
+};
+#pragma pack(pop)
+
+static constexpr const char* StringTableSectionName = ".strt";
+static constexpr const char* FunctionDescSectionName = ".fndt";
+static constexpr const char* VirtualFunctionDescSectionName = ".vfndt";
+static constexpr const char* VariableDescSectionName = ".vardt";
+static constexpr const char* VtableDescSectionName = ".vtbdt";
+static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
+    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
+    0x30, 0xD2,                                                 // xor dl, dl (sets delete flag to false)
+    0xFF, 0xE0                                                  // jmp rax
+};
+
 Amethyst::RuntimeImporter::RuntimeImporter(HMODULE moduleHandle) : 
 	mModule(moduleHandle),
-    mInitialized(false)
+    mInitialized(false),
+    mAllocator(safetyhook::Allocator::create())
 {
-
 }
 
 Amethyst::RuntimeImporter::~RuntimeImporter()
@@ -213,12 +285,19 @@ void Amethyst::RuntimeImporter::Initialize()
             // If this is a destructor, we need to wrap it in a special block that disables deleting
             if (IsDestructor(name)) {
                 mVirtualDestructors[vtableName] = vfuncAddress;
-                uint8_t* block = new uint8_t[sizeof(VirtualDestructorDeletingDisableBlock)];
-                UnprotectMemory(reinterpret_cast<uintptr_t>(block), sizeof(VirtualDestructorDeletingDisableBlock), nullptr);
+                auto allocationExp = mAllocator->allocate(sizeof(VirtualDestructorDeletingDisableBlock));
+                
+                if (!allocationExp.has_value()) {
+                    Log::Warning("[RuntimeImporter] Failed to allocate memory of virtual destructor block for '{}'", name);
+                    address = reinterpret_cast<uintptr_t>(&UninitializedDestructorHandler);
+                    continue;
+                }
+
+                auto& allocation = (mAllocatedDestructorBlocks[name] = std::move(*allocationExp));
+                uint8_t* block = allocation.data();
                 std::memcpy(block, VirtualDestructorDeletingDisableBlock, sizeof(VirtualDestructorDeletingDisableBlock));
                 uint64_t& addrInBlock = *reinterpret_cast<uint64_t*>(block + 2);
                 addrInBlock = vfuncAddress;
-                mAllocatedDestructorBlocks[name] = block;
                 vfuncAddress = reinterpret_cast<uintptr_t>(block);
             }
 
@@ -243,12 +322,8 @@ void Amethyst::RuntimeImporter::Shutdown()
     }
     mImportAddressTable.clear();
     mVirtualTables.clear();
-    for (auto& [name, block] : mAllocatedDestructorBlocks) {
-        delete[] block;
-    }
-    mAllocatedDestructorBlocks.clear();
     mVirtualDestructors.clear();
-
+    mAllocatedDestructorBlocks.clear();
     mInitialized = false;
 }
 
@@ -326,4 +401,9 @@ bool Amethyst::RuntimeImporter::GetSections(
 void Amethyst::RuntimeImporter::UninitializedFunctionHandler()
 {
     Log::Warning("[RuntimeImporter] Attempted to call an uninitialized function, don't expect happy endings...");
+}
+
+void Amethyst::RuntimeImporter::UninitializedDestructorHandler()
+{
+    Log::Warning("[RuntimeImporter] Attempted to call an uninitialized destructor, expect leaks...");
 }
