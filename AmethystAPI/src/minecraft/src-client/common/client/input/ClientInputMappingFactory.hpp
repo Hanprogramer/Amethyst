@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <unordered_map>
 #include <string>
@@ -14,6 +15,7 @@ class GamePadRemappingLayout {
 
 static_assert(sizeof(GamePadRemappingLayout) == 0x58);
 
+/// @vptr { 0x4CEB470, this }
 class ClientInputMappingFactory : public InputMappingFactory {
 public:
     std::unordered_map<std::string, InputMapping> mActiveInputMappings;
@@ -25,6 +27,9 @@ public:
     GamePadRemappingLayout mGameControllerRemappingLayout;
     GamePadRemappingLayout mMotionControllerRemappingLayout;
     std::shared_ptr<RemappingLayout> mLayout;
+
+    /// @vidx { inherit, this }
+    MC virtual ~ClientInputMappingFactory();
 };
 
 static_assert(sizeof(ClientInputMappingFactory) == 0x150);

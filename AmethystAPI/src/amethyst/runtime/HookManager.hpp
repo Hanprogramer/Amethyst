@@ -57,6 +57,39 @@ namespace Amethyst {
             CreateHookAbsolute(trampoline, original_addr, hook);
         }
 
+        template <auto OriginalFn>
+        void CreateDirectHook(SafetyHookInline& trampoline, void* hook)
+        {
+            uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            CreateHookAbsolute(trampoline, original_addr, hook);
+        }
+
+        template <auto OriginalFn>
+        void CreateVirtualHook(uintptr_t vtable, SafetyHookInline& trampoline, void* hook)
+        {
+            size_t offset = GetVirtualFunctionOffset<OriginalFn>();
+            uintptr_t vtableEntry = reinterpret_cast<uintptr_t*>(vtable)[offset / sizeof(void*)];
+            CreateHookAbsolute(trampoline, vtableEntry, hook);
+        }
+
+        /**
+         * Directly replaces a virtual function in a virtual table
+         * CAUTION: This will not work if two mods want to replace the same function. For more compatibility, use HookManager::CreateVirtualHook
+         */
+        template <auto OriginalFn>
+        uintptr_t ReplaceVirtualFunction(uintptr_t vtable, void* newFunction)
+        {
+            size_t offset = GetVirtualFunctionOffset<OriginalFn>();
+            uintptr_t* vtablePtr = reinterpret_cast<uintptr_t*>(vtable);
+            uintptr_t& function = vtablePtr[offset / sizeof(void*)];
+            uintptr_t original = function;
+            DWORD oldProt;
+            UnprotectMemory(reinterpret_cast<uintptr_t>(&function), sizeof(uintptr_t), &oldProt);
+            function = reinterpret_cast<uintptr_t>(newFunction);
+            ProtectMemory(reinterpret_cast<uintptr_t>(&function), sizeof(uintptr_t), oldProt);
+            return original;
+        }
+
         /**
          * Directly hooks a function with an absolute address
          * CAUTION: This will not work if two mods want to hook the same function. For more compatibility, use HookManager::CreateHook

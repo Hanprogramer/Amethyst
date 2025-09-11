@@ -17,6 +17,7 @@
 namespace fs = std::filesystem;
 
 typedef void (*ModInitialize)(AmethystContext* context);
+extern HMODULE hModule;
 
 /*
  Entry:
@@ -32,7 +33,10 @@ typedef void (*ModInitialize)(AmethystContext* context);
 class AmethystRuntime {
 private:
     // AmethystRuntime is a Singleton so don't allow creating from outside
-    AmethystRuntime() {}
+    AmethystRuntime() {
+        mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(::hModule);
+    }
+
     AmethystRuntime(const AmethystRuntime&);
     AmethystRuntime& operator=(const AmethystRuntime&) = delete;
     static AmethystRuntime* instance;
@@ -84,6 +88,10 @@ public:
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
     }
 
+    static Amethyst::RuntimeImporter* getRuntimeImporter() {
+        return AmethystRuntime::getInstance()->mRuntimeImporter.get();
+    }
+ 
     void Start();
     void Shutdown();
 
@@ -103,6 +111,7 @@ private:
 private:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
+    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
 
 public:
     std::vector<ModInitialize> mModInitialize;

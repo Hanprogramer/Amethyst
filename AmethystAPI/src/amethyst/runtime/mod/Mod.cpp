@@ -30,6 +30,16 @@ FARPROC Mod::GetFunction(const char* functionName)
     return GetProcAddress(hModule, functionName);
 }
 
+HMODULE Mod::GetModule() const
+{
+    return hModule;
+}
+
+Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
+{
+    return *mRuntimeImporter;
+}
+
 void Mod::Shutdown()
 {
     FreeLibrary(hModule);
