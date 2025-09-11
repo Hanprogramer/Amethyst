@@ -54,5 +54,8 @@ void CreateNetworkingHooks() {
     Amethyst::HookManager* hooks = AmethystRuntime::getHookManager();
 
     HOOK(MinecraftPackets, createPacket);
-    HOOK(ServerNetworkHandler, allowIncomingPacketId);
+
+    // HOOK(ServerNetworkHandler, allowIncomingPacketId);
+    // expanded
+    hooks->CreateDirectHook<&ServerNetworkHandler::allowIncomingPacketId>(_ServerNetworkHandler_allowIncomingPacketId, &ServerNetworkHandler_allowIncomingPacketId);
 }

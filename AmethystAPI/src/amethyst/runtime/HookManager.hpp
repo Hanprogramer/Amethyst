@@ -55,7 +55,20 @@ namespace Amethyst {
         template <auto OriginalFn>
         void CreateDirectHook(SafetyHookInline& trampoline, void* hook)
         {
-            uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            using FnType = decltype(OriginalFn);
+            uintptr_t original_addr = 0;
+
+            if constexpr (std::is_member_function_pointer_v<FnType>) {
+                // will cause issues if a virtual function is passed here
+                union { FnType fn; uintptr_t addr; } u{};
+                u.fn = OriginalFn;
+                original_addr = u.addr;
+            } 
+            else {
+                original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            }
+
+            // uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
             CreateHookAbsolute(trampoline, original_addr, hook);
         }
 

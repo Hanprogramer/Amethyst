@@ -123,13 +123,13 @@ void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments&
 void CreateModFunctionHooks() {
     Amethyst::HookManager* hooks = AmethystRuntime::getHookManager();
 
-    // HOOK(ScreenView, setupAndRender);
-    // HOOK(Minecraft, update);
-    // HOOK(ClientInstance, onStartJoinGame);
-    // HOOK(ClientInstance, requestLeaveGame);
-    // HOOK(ClientInstance, _ClientInstance);
-    // HOOK(VanillaItems, registerItems);
-    // HOOK(BlockDefinitionGroup, registerBlocks);
-    // HOOK(BlockGraphics, initBlocks);
-    // HOOK(Minecraft, _Minecraft);
+    HOOK(ClientInstance, onStartJoinGame);
+    HOOK(ClientInstance, requestLeaveGame);
+    HOOK(ClientInstance, _ClientInstance);
+    HOOK(ScreenView, setupAndRender);
+    HOOK(Minecraft, update);
+    HOOK(VanillaItems, registerItems);
+    HOOK(BlockDefinitionGroup, registerBlocks);
+    HOOK(BlockGraphics, initBlocks);
+    HOOK(Minecraft, _Minecraft);
 }

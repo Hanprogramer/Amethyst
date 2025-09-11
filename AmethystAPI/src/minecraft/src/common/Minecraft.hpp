@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <string>
 #include <gsl/pointers>
@@ -6,6 +7,7 @@
 #include <minecraft/src-deps/core/utility/pubsub/ThreadModel.hpp>
 #include <minecraft/src/common/gamerefs/gamerefs_entity/IEntityRegistryOwner.hpp>
 #include <minecraft/src/common/world/GameSession.hpp>
+#include <amethyst/Imports.hpp>
 
 class GameCallbacks;
 class IMinecraftEventing;
@@ -65,9 +67,11 @@ public:
     virtual bool getSimPaused() const;
     virtual bool isOnlineClient() const;
 
-    // 1.21.0.03 - 48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E1 49 8B D8 4C 8B EA
-    Minecraft* _Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, char a11, void* a12, void* a13, void* a14, void* a15);
+    /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E1 49 8B D8 4C 8B EA}
+    MC Minecraft* _Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, char a11, void* a12, void* a13, void* a14, void* a15);
 
     Level* getLevel() const;
-    bool update();
+
+    /// @signature {48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 55 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B E9 48 89 4C 24}
+    MC bool update();
 };
