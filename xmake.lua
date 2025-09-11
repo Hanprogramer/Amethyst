@@ -111,8 +111,7 @@ target("AmethystRuntime")
         string.format('MOD_TARGET_VERSION_MAJOR=%d', major),
         string.format('MOD_TARGET_VERSION_MINOR=%d', minor),
         string.format('MOD_TARGET_VERSION_PATCH=%d', patch),
-        'ENTT_PACKED_PAGE=128',
-        'AMETHYST_EXPORTS'
+        'ENTT_PACKED_PAGE=128'
     )
 
     -- Deps
