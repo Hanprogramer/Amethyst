@@ -2,6 +2,8 @@
 #include <minecraft/src-deps/core/file/Path.hpp>
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include <minecraft/src-deps/core/headerIncludes/gsl_includes.hpp>
+#include <minecraft/src-deps/core/threading/EnableQueueForMainThread.hpp>
+#include <minecraft/src-client/common/client/world/WorldID.hpp>
 
 class ILevelListCache;
 class IContentManager;
@@ -17,14 +19,13 @@ class LevelData;
 
 namespace World {
 
-class WorldID {
-public:
-    uint64_t mId;
-};
+//class WorldID {
+//public:
+//    uint64_t mId;
+//};
 
-struct IdkWhatThisIsStruct {
-    short field0;
-    uint8_t field1;
+struct IdkWhatThisIsButItNeedsToBeAStruct {
+    uint64_t data;
 };
 
 class WorldStorageHandler : public Bedrock::Threading::EnableQueueForMainThread {
@@ -43,7 +44,7 @@ public:
 
     virtual ~WorldStorageHandler();
     virtual void virtual1();
-    virtual IdkWhatThisIsStruct updateOrCreateWorld(LevelData& levelData, LevelSummary& summary, std::shared_ptr<LevelSettings> settings);
+    virtual IdkWhatThisIsButItNeedsToBeAStruct updateOrCreateWorld(LevelData& levelData, LevelSummary& summary, std::shared_ptr<LevelSettings> settings);
 };
 
 };

@@ -9,6 +9,8 @@ namespace cg {
         mce::Blob mStorage;
         cg::ImageDescription mImageDescription;
 
+        ImageBuffer() : mStorage(), mImageDescription() {}
+
         ImageBuffer(mce::Blob&& blob, cg::ImageDescription&& imageDescription)
             : mStorage(std::move(blob)), mImageDescription(std::move(imageDescription)) {}
 
@@ -35,6 +37,7 @@ namespace cg {
             }
 
             Assert(false, "checking not implemented for compressed images");
+            std::unreachable();
         }
     };
 };

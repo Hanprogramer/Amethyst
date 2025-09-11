@@ -1,6 +1,9 @@
 #pragma once
 #include "minecraft/src/common/world/phys/Vec2.hpp"
 #include <cstddef>
+#include <optional>
+#include <string>
+#include <vector>
 
 //struct_size = 0x9E0 is_virtual = False
 //    hide_vtable = True
@@ -31,6 +34,9 @@ public:
     /* this + 110  */ std::byte padding108[136 - 110];
     /* this + 136  */ IClientInstance& mClient;
     /* this + 144  */ std::byte padding144[2384];
+
+    void _displayWhisperMessage(const std::string& a1, const std::string& a2, const std::string& a3, const std::string& a4);
+    void displayLocalizableMessage(const std::string& a1, const std::vector<std::string>& a3);
 };
 #pragma pack(pop)
 

@@ -3,13 +3,6 @@
 #include <minecraft/src/common/world/inventory/transaction/ComplexInventoryTransaction.hpp>
 #include <minecraft/src/common/world/entity/components/AbilitiesComponent.hpp>
 
-// void Player::prepareRegion(ChunkSource& cs)
-// {
-//     using function = decltype(&Player::prepareRegion);
-//     static auto func = std::bit_cast<function>(this->vtable[190]);
-//     return (this->*func)(cs);
-// }
-
 const PlayerInventory& Player::getSupplies() const
 {
     return *this->playerInventory;
@@ -64,6 +57,14 @@ void Player::updateSkin(const SerializedSkin& skin, int clientSubID) {
     using function = decltype(&Player::updateSkin);
     static auto func = std::bit_cast<function>(SigScan("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 41 8B D8 4C 8B FA"));
     return (this->*func)(skin, clientSubID);
+}
+
+void Player::setPlayerGameType(GameType gameType)
+{
+    using function = decltype(&Player::setPlayerGameType);
+    uintptr_t** vtable = *(uintptr_t***)this;
+    auto func = std::bit_cast<function>(vtable[226]);
+    return (this->*func)(gameType);
 }
 
  //int Player::getItemUseDuration() const
