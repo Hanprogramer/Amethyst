@@ -1,4 +1,5 @@
 #pragma once
+#include "amethyst-deps/Zydis.h"
 #include "amethyst/Log.hpp"
 #include <chrono>
 #include <cstdint>
@@ -62,32 +63,53 @@ uintptr_t GetVtable(void* obj);
  */
 
 template <auto T>
-size_t GetVirtualFunctionOffset() {
+__declspec(noinline) size_t GetVirtualFunctionOffset() {
     uintptr_t func = std::bit_cast<uintptr_t>(T);
-    uint8_t* bytes = reinterpret_cast<uint8_t*>(func);
-    if (bytes[0] != 0xE9) {
-        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Expected 0xE9 (jmp), got {:X})", bytes[0]);
-        return 0;
-    }
+    ZydisDecoder decoder;
+    ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
 
-    func = *reinterpret_cast<uint32_t*>(bytes + 1) + func + 5;
-    bytes = reinterpret_cast<uint8_t*>(func) + 3;
+    ZydisDecodedInstruction instr;
+    ZydisDecodedOperand operands[ZYDIS_MAX_OPERAND_COUNT];
 
-    if (bytes[0] != 0xFF) {
-        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Expected 0xFF (jmp), got {:X})", bytes[0]);
-        return 0;
-    }
-
-    uint8_t modrm = bytes[1];
-    if (modrm == 0x60) {
-        return bytes[2];
-    }
-    else if (modrm == 0xA0) {
-        return *reinterpret_cast<uint32_t*>(bytes + 2);
+    // Decode jmp rel32
+    if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<const void*>(func), 16, &instr, operands))) {
+        if (instr.mnemonic == ZYDIS_MNEMONIC_JMP && instr.operand_count == 2 && operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE) {
+            func += instr.length + operands[0].imm.value.s;
+        }
     }
     else {
-        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Unknown ModRM byte {:X})", modrm);
+        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Failed to decode instruction at {:x}", func);
+        return 0;
     }
 
+    
+    if (ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<const void*>(func), 16, &instr, operands))) {
+        // Decode first instruction (mov rax, ...)
+        if (instr.mnemonic == ZYDIS_MNEMONIC_MOV) {
+            func += instr.length;
+            if (!ZYAN_SUCCESS(ZydisDecoderDecodeFull(&decoder, reinterpret_cast<const void*>(func), 16, &instr, operands))) {
+                Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Failed to decode instruction at {:x}", func);
+                return 0;
+            }
+        }
+        
+        // Decode second instruction (jmp [rax+disp])
+        if (instr.mnemonic != ZYDIS_MNEMONIC_JMP || operands[0].type != ZYDIS_OPERAND_TYPE_MEMORY) {
+            Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Expected jmp [rax+disp] instruction.");
+            return 0;
+        }
+
+        const auto& mem = operands[0].mem;
+        if (mem.base != ZYDIS_REGISTER_RAX) {
+            Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Expected base register to be RAX.");
+            return 0;
+        }
+
+        // disp.value holds either disp8 or disp32 already sign-extended
+        return static_cast<size_t>(mem.disp.value);
+    }
+    else {
+        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Failed to decode instruction at {:x}", func);
+    }
     return 0;
 }
