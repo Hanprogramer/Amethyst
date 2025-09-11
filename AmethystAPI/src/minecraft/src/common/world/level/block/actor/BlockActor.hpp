@@ -29,7 +29,7 @@ class IConstBlockSource;
 class Player; 
 class BlockLegacy;
 
-class MC_API BlockActor {
+class BlockActor {
 public:
     /* this + 8   */ int mTickCount;
     /* this + 16  */ const Block* mBlock;
@@ -114,5 +114,5 @@ static_assert(sizeof(BlockActor) == 200);
 
 class BlockActorFactory {
 public:
-    MC_API static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
+    static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
 };

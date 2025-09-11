@@ -38,7 +38,7 @@ local modFolder = path.join(
 set_symbols("debug")
 set_targetdir(modFolder)
 
-package("RuntimeImporter")
+package("Runtime-Importer")
     set_kind("binary")
     set_homepage("https://github.com/AmethystAPI/Runtime-Importer")
     set_description("The runtime importer enables importing functions and variables from the game just by defining annotations in header files")
@@ -48,7 +48,7 @@ package("RuntimeImporter")
         import("core.base.json")
         import("utils.archive")
 
-        local releases_file = path.join(os.tmpdir(), "runtimeimporter.releases.json")
+        local releases_file = path.join(os.tmpdir(), "runtime-importer.releases.json")
         http.download("https://api.github.com/repos/AmethystAPI/Runtime-Importer/releases/latest", releases_file)
 
         local importer_dir = path.join(os.curdir(), ".importer");
@@ -61,11 +61,11 @@ package("RuntimeImporter")
         
 
         if should_reinstall then
-            print("RuntimeImporter is outdated, reinstalling...")
+            print("Runtime-Importer is outdated, reinstalling...")
             print("Latest version is " .. latest_tag)
             local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/Runtime-Importer.zip"
             local zipfile = path.join(os.tmpdir(), "Runtime-Importer.zip")
-            print("Installing RuntimeImporter...")
+            print("Installing Runtime-Importer...")
 
             http.download(url, zipfile)
             archive.extract(zipfile, bin_dir)
@@ -77,9 +77,11 @@ package("RuntimeImporter")
         local generated_dir = path.join(importer_dir, "generated")
         local pch_file = path.join(generated_dir, "pch.hpp.pch")
         local should_regenerate_pch = os.exists(pch_file) == false or should_reinstall
+
         if should_regenerate_pch then
             print("Generating precompiled header of STL...")
             os.mkdir(generated_dir)
+
             local clang_args = {
                 path.join(bin_dir, "clang++.exe"),
                 "-x", "c++-header",
@@ -97,7 +99,8 @@ package("RuntimeImporter")
     end)
 package_end()
 
-add_requires("RuntimeImporter", {system = false})
+add_requires("Runtime-Importer", {system = false})
+
 target("AmethystRuntime")
     set_kind("shared")
     set_toolchains("nasm")
@@ -110,14 +113,13 @@ target("AmethystRuntime")
         string.format('MOD_TARGET_VERSION_MAJOR=%d', major),
         string.format('MOD_TARGET_VERSION_MINOR=%d', minor),
         string.format('MOD_TARGET_VERSION_PATCH=%d', patch),
-        'ENTT_PACKED_PAGE=128',
-        'AMETHYST_EXPORTS'
+        'ENTT_PACKED_PAGE=128'
     )
 
     -- Deps
-    add_packages("RuntimeImporter")
+    add_packages("Runtime-Importer")
     add_packages("AmethystAPI", "libhat")
-    add_links("user32", "oleaut32", "windowsapp", path.join(os.curdir(), "generated/lib/Minecraft.Windows.lib"))
+    add_links("user32", "oleaut32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
     add_includedirs("src", {public = true})
 
     add_headerfiles("src/**.hpp")

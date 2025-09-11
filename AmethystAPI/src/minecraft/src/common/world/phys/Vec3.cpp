@@ -26,6 +26,13 @@ Vec3::Vec3(const BlockPos& pos)
     this->z = (float)pos.z;
 }
 
+Vec3::Vec3(const glm::vec3& vec)
+{
+    this->x = vec.x;
+    this->y = vec.y;
+    this->z = vec.z;
+}
+
 Vec3 Vec3::operator+(const Vec3 rhs) const
 {
     return Vec3(
