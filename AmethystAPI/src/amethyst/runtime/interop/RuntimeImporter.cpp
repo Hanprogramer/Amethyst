@@ -24,7 +24,7 @@ HMODULE Amethyst::RuntimeImporter::GetModule() const
     return mModule;
 }
 
-uintptr_t* Amethyst::RuntimeImporter::GetAddress(const std::string& name)
+uintptr_t* Amethyst::RuntimeImporter::GetMutableAddress(const std::string& name)
 {
     if (mImportAddressTable.count(name) == 0)
         return nullptr;
@@ -33,9 +33,21 @@ uintptr_t* Amethyst::RuntimeImporter::GetAddress(const std::string& name)
 
 uintptr_t Amethyst::RuntimeImporter::GetAddress(const std::string& name) const
 {
+    if (IsDestructor(name)) {
+        auto it = mVirtualDestructors.find(name);
+        if (it != mVirtualDestructors.end()) {
+            return it->second;
+        }
+    }
+
     if (mImportAddressTable.count(name) == 0)
         return 0x0;
     return *mImportAddressTable.find(name)->second;
+}
+
+bool Amethyst::RuntimeImporter::IsDestructor(const std::string& name)
+{
+    return name.starts_with("??1") || name.starts_with("?_G") || name.starts_with("?_E");
 }
 
 uintptr_t Amethyst::RuntimeImporter::GetVirtualTableAddress(const std::string& name) const
@@ -197,7 +209,19 @@ void Amethyst::RuntimeImporter::Initialize()
             std::string vtableName = vtableNameIt->second;
             uintptr_t vtableAddress = mVirtualTables[vtableName];
             uintptr_t vfuncAddress = reinterpret_cast<uintptr_t*>(vtableAddress)[virtualFunctionDesc->functionIndex];
-            Log::Info("{:X}", vfuncAddress - GetMinecraftBaseAddress());
+            
+            // If this is a destructor, we need to wrap it in a special block that disables deleting
+            if (IsDestructor(name)) {
+                mVirtualDestructors[vtableName] = vfuncAddress;
+                uint8_t* block = new uint8_t[sizeof(VirtualDestructorDeletingDisableBlock)];
+                UnprotectMemory(reinterpret_cast<uintptr_t>(block), sizeof(VirtualDestructorDeletingDisableBlock), nullptr);
+                std::memcpy(block, VirtualDestructorDeletingDisableBlock, sizeof(VirtualDestructorDeletingDisableBlock));
+                uint64_t& addrInBlock = *reinterpret_cast<uint64_t*>(block + 2);
+                addrInBlock = vfuncAddress;
+                mAllocatedDestructorBlocks[name] = block;
+                vfuncAddress = reinterpret_cast<uintptr_t>(block);
+            }
+
             address = vfuncAddress;
             mImportAddressTable[name] = &address;
         }
@@ -219,6 +243,11 @@ void Amethyst::RuntimeImporter::Shutdown()
     }
     mImportAddressTable.clear();
     mVirtualTables.clear();
+    for (auto& [name, block] : mAllocatedDestructorBlocks) {
+        delete[] block;
+    }
+    mAllocatedDestructorBlocks.clear();
+    mVirtualDestructors.clear();
 
     mInitialized = false;
 }

@@ -72,6 +72,11 @@ public:
     static constexpr const char* VirtualFunctionDescSectionName = ".vfndt";
     static constexpr const char* VariableDescSectionName = ".vardt";
     static constexpr const char* VtableDescSectionName = ".vtbdt";
+    static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
+        0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
+        0x30, 0xD2,                                                 // xor dl, dl (sets delete flag to false)
+        0xFF, 0xE0                                                  // jmp rax
+    };
 
 private:
     HMODULE mModule = nullptr;
@@ -80,6 +85,8 @@ private:
     std::unordered_map<uint32_t, std::string> mStringTable{};
     std::unordered_map<std::string, uintptr_t*> mImportAddressTable{};
     std::unordered_map<std::string, uintptr_t> mVirtualTables{};
+    std::unordered_map<std::string, uintptr_t> mVirtualDestructors{};
+    std::unordered_map<std::string, uint8_t*> mAllocatedDestructorBlocks{};
 
 public:
     RuntimeImporter(HMODULE moduleHandle);
@@ -87,7 +94,7 @@ public:
 
     bool IsInitialized() const;
     HMODULE GetModule() const;
-    uintptr_t* GetAddress(const std::string& name);
+    uintptr_t* GetMutableAddress(const std::string& name);
     uintptr_t GetAddress(const std::string& name) const;
     uintptr_t GetVirtualTableAddress(const std::string& name) const;
 
@@ -102,5 +109,6 @@ public:
         IMAGE_SECTION_HEADER** vtableDescSection) const;
 
     static void UninitializedFunctionHandler();
+    static bool IsDestructor(const std::string& name);
 };
 }; // namespace Amethyst
