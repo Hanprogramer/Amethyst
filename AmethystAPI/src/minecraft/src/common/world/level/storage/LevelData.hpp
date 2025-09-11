@@ -44,7 +44,7 @@ struct WorldTemplateLevelData {
 class LevelData {
 public:
     AdventureSettings mAdventureSettings;
-    alignas(8) WorldTemplateLevelData mWorldTemplateLevelData; // 8
+    WorldTemplateLevelData mWorldTemplateLevelData; // 8
     GameRules mGameRules; // 416
     ExperimentsStorage mExperiments; // 608
     Abilities mDefaultAbilities;

@@ -52,5 +52,7 @@ public:
 	std::optional<CloudSaveLevelInfo> mCloudSaveInfo;
 	EduCloud::WorldSyncState mEduCloudWorldSyncState;
 
-	LevelSummary(const std::string& id, const LevelData& levelData, const Core::Path& a4, const Core::Path& a5, bool a6);
+	//LevelSummary(const std::string& id, const LevelData& levelData, const Core::Path& a4, const Core::Path& a5, bool a6);
+
+	static LevelSummary $ctor(const std::string& id, const LevelData& levelData, const Core::Path& a4, const Core::Path& a5, bool a6);
 };
