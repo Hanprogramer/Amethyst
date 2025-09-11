@@ -2,11 +2,10 @@
 #pragma once
 #include "minecraft/src-deps/core/file/Path.hpp"
 #include "minecraft/src-deps/core/resource/ResourceHelper.hpp"
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 
 /// @vptr {0x4EBAA28, this}
-MC class IInPackagePacks
-{
+class IInPackagePacks {
 public:
     struct MetaData {
     public:

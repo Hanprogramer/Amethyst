@@ -15,6 +15,7 @@
 #include <minecraft/src/common/world/item/registry/ItemRegistryRef.hpp>
 #include <minecraft/src-client/common/client/social/MultiplayerGameinfo.hpp>
 #include <minecraft/src/common/world/Difficulty.hpp>
+#include <minecraft/src-deps/core/threading/TaskGroup.hpp>
 
 // Auto-generated: Forward declarations
 namespace PlayerCapabilities { struct ISharedController; }
@@ -75,7 +76,6 @@ class MolangVariableMap;
 struct ResolvedItemIconInfo;
 class SavedDataStorage;
 class MapItemSavedData;
-class TaskGroup;
 class ActorInfoRegistry;
 class EntitySystems;
 class TagRegistry;

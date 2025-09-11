@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <amethyst/Memory.hpp>
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 
 class TextComponent : public UIComponent {
 public:

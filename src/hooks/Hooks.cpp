@@ -121,15 +121,15 @@ void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments&
 }
 
 void CreateModFunctionHooks() {
-    Amethyst::HookManager* hookManager = AmethystRuntime::getHookManager();
+    Amethyst::HookManager* hooks = AmethystRuntime::getHookManager();
 
-    NO_THROW_HOOK(ScreenView, setupAndRender, "48 8B C4 48 89 58 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B FA");
-    NO_THROW_HOOK(Minecraft, update, "48 8B C4 48 89 58 ? 48 89 70 ? 48 89 78 ? 55 41 54 41 55 41 56 41 57 48 8D A8 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 70 ? 0F 29 78 ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B E9 48 89 4C 24");
-    NO_THROW_HOOK(ClientInstance, onStartJoinGame, "40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 45 8B F1");
-    NO_THROW_HOOK(ClientInstance, requestLeaveGame, "48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 45 0F B6 F0 44 0F B6 FA");
-    NO_THROW_HOOK(ClientInstance, _ClientInstance, "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B F9 49 8B D8 4C 8B E2");
-    NO_THROW_HOOK(VanillaItems, registerItems, "40 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 0F 29 B4 24");
-    NO_THROW_HOOK(BlockDefinitionGroup, registerBlocks, "48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 45 33 E4");
-    NO_THROW_HOOK(BlockGraphics, initBlocks, "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B E2 48 89 95 ? ? ? ? 4C 8B F9 48 89 4D");
-    NO_THROW_HOOK(Minecraft, _Minecraft, "48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B E1 49 8B D8 4C 8B EA");
+    // HOOK(ScreenView, setupAndRender);
+    // HOOK(Minecraft, update);
+    // HOOK(ClientInstance, onStartJoinGame);
+    // HOOK(ClientInstance, requestLeaveGame);
+    // HOOK(ClientInstance, _ClientInstance);
+    // HOOK(VanillaItems, registerItems);
+    // HOOK(BlockDefinitionGroup, registerBlocks);
+    // HOOK(BlockGraphics, initBlocks);
+    // HOOK(Minecraft, _Minecraft);
 }

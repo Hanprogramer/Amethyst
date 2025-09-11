@@ -17,6 +17,7 @@
 #include "minecraft/src/common/world/level/levelgen/v1/FeatureTerrainAdjustments.hpp"
 #include "minecraft/src/common/world/level/levelgen/structure/StructureSetRegistry.hpp"
 #include <set>
+#include <minecraft/src-deps/core/threading/TaskGroup.hpp>
 
 enum class LimboEntitiesVersion : char {
     v0,
@@ -42,7 +43,6 @@ class LevelChunkMetaData;
 class RuntimeLightingManager;
 class BaseLightTextureImageBuilder;
 class BlockEventDispatcher;
-class TaskGroup;
 class PostprocessingManager;
 class SubChunkInterlocker;
 class Weather;

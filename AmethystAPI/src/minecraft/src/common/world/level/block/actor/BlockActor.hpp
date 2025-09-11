@@ -11,9 +11,9 @@
 #include <minecraft/src/common/world/level/block/actor/BlockActorRendererId.hpp>
 #include <minecraft/src/common/network/packet/BlockActorDataPacket.hpp>
 #include <gsl/gsl>
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 
-//#include <amethyst/ModApi.hpp>
+//#include <amethyst/Imports.hpp>
 
 // Auto-generated: Unknown complete types
 class UIProfanityContext {}; 

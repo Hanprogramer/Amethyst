@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <minecraft/src-deps/core/utility/StringUtils.hpp>
 #include <minecraft/src-deps/input/InputMode.hpp>
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 enum class FocusImpact : char {
     Neutral = 0x0,

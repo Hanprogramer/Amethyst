@@ -1,7 +1,7 @@
 /// @symbolgeneration
 #pragma once
-#include <amethyst/ModApi.hpp>
 #include "minecraft/src-deps/core/string/StringHash.hpp"
+#include <amethyst/Imports.hpp>
 
 namespace ui {
 enum class ViewRequest : uint32_t {
@@ -17,6 +17,7 @@ enum class ViewRequest : uint32_t {
 
 class UiPropertyBag;
 class ScreenEvent;
+
 
 class ScreenController {
 public:

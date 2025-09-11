@@ -1,6 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 #include "minecraft/src-client/common/client/gui/screens/ScreenController.hpp"
 
 class StartMenuScreenController : public ScreenController {

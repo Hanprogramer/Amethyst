@@ -2,7 +2,7 @@
 #pragma once
 #include <unordered_map>
 #include <string>
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 #include "minecraft/src/common/world/containers/ContainerEnumName.hpp"
 
 

@@ -1,6 +1,6 @@
 #pragma once
 #include <cstdint>
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 class InputMapping;
 
