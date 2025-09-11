@@ -72,6 +72,10 @@ namespace Amethyst {
             CreateHookAbsolute(trampoline, vtableEntry, hook);
         }
 
+        /**
+         * Directly replaces a virtual function in a virtual table
+         * CAUTION: This will not work if two mods want to replace the same function. For more compatibility, use HookManager::CreateVirtualHook
+         */
         template <auto OriginalFn>
         uintptr_t ReplaceVirtualFunction(uintptr_t vtable, void* newFunction)
         {
