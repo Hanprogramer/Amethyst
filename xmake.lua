@@ -100,7 +100,6 @@ target("AmethystRuntime")
     set_toolchains("nasm")
     add_deps("AmethystAPI", {public = true})
     set_default(true)
-
     add_files("src/**.cpp")
 
     add_defines(

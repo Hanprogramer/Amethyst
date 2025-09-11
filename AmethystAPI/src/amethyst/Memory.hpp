@@ -56,3 +56,38 @@ void ProtectMemory(uintptr_t address, size_t size, DWORD protectionData, DWORD* 
 uintptr_t AddressFromLeaInstruction(uintptr_t leaInstructionAddress);
 
 uintptr_t GetVtable(void* obj);
+
+/*
+ * Returns the virtual offset of a virtual function from a thunk
+ */
+
+template <auto T>
+size_t GetVirtualFunctionOffset() {
+    uintptr_t func = std::bit_cast<uintptr_t>(T);
+    uint8_t* bytes = reinterpret_cast<uint8_t*>(func);
+    if (bytes[0] != 0xE9) {
+        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Expected 0xE9 (jmp), got {:X})", bytes[0]);
+        return 0;
+    }
+
+    func = *reinterpret_cast<uint32_t*>(bytes + 1) + func + 5;
+    bytes = reinterpret_cast<uint8_t*>(func) + 3;
+
+    if (bytes[0] != 0xFF) {
+        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Expected 0xFF (jmp), got {:X})", bytes[0]);
+        return 0;
+    }
+
+    uint8_t modrm = bytes[1];
+    if (modrm == 0x60) {
+        return bytes[2];
+    }
+    else if (modrm == 0xA0) {
+        return *reinterpret_cast<uint32_t*>(bytes + 2);
+    }
+    else {
+        Log::Error("[AmethystRuntime] GetVirtualFunctionOffset: Not a valid thunk! (Unknown ModRM byte {:X})", modrm);
+    }
+
+    return 0;
+}

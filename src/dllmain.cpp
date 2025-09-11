@@ -1,6 +1,5 @@
 #include "dllmain.hpp"
 #include <debug/AmethystDebugging.hpp>
-#include <amethyst/runtime/RuntimeImporter.hpp>
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;

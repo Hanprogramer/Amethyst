@@ -60,6 +60,12 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
 void CreateResourceHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
 
+    uintptr_t vtableAddress = AmethystRuntime::getRuntimeImporter()->GetVirtualTableAddress("VanillaInPackagePacks::vtable::'this'");
+    auto index = GetVirtualFunctionOffset<&VanillaInPackagePacks::getPacks>() / sizeof(void*);
+    auto address = reinterpret_cast<uintptr_t>((reinterpret_cast<void**>(vtableAddress))[index]);
+
+    Log::Info("Address is: 0x{:X}", address);
+
     hooks.CreateDirectHook<&VanillaGameModuleClient::initializeResourceStack>(_VanillaGameModuleClient_initializeResourceStack, &VanillaGameModuleClient_initializeResourceStack);
     hooks.CreateDirectHook<&VanillaGameModuleServer::initializeBehaviorStack>(_VanillaGameModuleServer_initializeBehaviorStack, &VanillaGameModuleServer_initializeBehaviorStack);
     hooks.CreateDirectHook<&ResourcePackRepository::_initializePackSource>(_ResourcePackRepository_initializePackSource, &ResourcePackRepository_initializePackSource);

@@ -2,7 +2,7 @@
 #include "debug/AmethystDebugging.hpp"
 #include <amethyst/runtime/events/ModEvents.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>
-#include <amethyst/runtime/RuntimeImporter.hpp>
+#include <amethyst/runtime/interop/RuntimeImporter.hpp>
 #include <amethyst/Log.hpp>
 #include <format>
 #include "hooks/NetworkingHooks.hpp"
@@ -38,7 +38,9 @@ void AmethystRuntime::Start()
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger) 
         PromptDebugger();
-    Amethyst::RuntimeImporter::LoadImports(::hModule);
+
+    // Initialize our runtime importer
+    mRuntimeImporter->Initialize();
 
     // Add our resources before loading mods
     AddOwnResources();
@@ -93,7 +95,10 @@ void AmethystRuntime::LoadModDlls()
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_packs" / "main_bp" / "manifest.json")))
             mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_bp", PackType::Behavior);
         
-        Amethyst::RuntimeImporter::LoadImports(mod.GetModule());
+        // Create runtime importer instance and initialize it
+        mod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mod.GetModule());
+        mod.GetRuntimeImporter().Initialize();
+
         _LoadModFunc(&mModInitialize, mod, "Initialize");
     }
 
@@ -172,16 +177,15 @@ void AmethystRuntime::Shutdown()
 
     // Unload all mod dll's.
     for (auto& mod : mAmethystContext.mMods) {
-        Amethyst::RuntimeImporter::UnloadImports(mod.GetModule());
         mod.Shutdown();
     }
-
-    // Unload our own imports.
-    Amethyst::RuntimeImporter::UnloadImports(::hModule);
 
     // Clear lists of mods & functions.
     mAmethystContext.mMods.clear();
     mModInitialize.clear();
+
+    // Shutdown our runtime importer
+    mRuntimeImporter->Shutdown();
 }
 
 void AmethystRuntime::ResumeGameThread()

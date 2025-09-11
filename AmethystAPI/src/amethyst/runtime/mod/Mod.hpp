@@ -7,13 +7,17 @@
 #include <iostream>
 #include <shlobj.h>
 #include <vector>
+#include <amethyst/runtime/interop/RuntimeImporter.hpp>
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
 class Mod {
+    friend class AmethystRuntime;
+
 private:
-    HMODULE hModule;
+    HMODULE hModule = nullptr;
+    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter = nullptr;
 
 public:
     struct Metadata {
@@ -34,6 +38,7 @@ public:
     Mod(std::string modName);
     FARPROC GetFunction(const char* functionName);
     HMODULE GetModule() const;
+    Amethyst::RuntimeImporter& GetRuntimeImporter() const;
     void Shutdown();
 
 public:
