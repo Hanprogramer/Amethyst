@@ -57,20 +57,8 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
     }
 }
 
-static void(*_VanillaInPackagePacks_getPacks)(const VanillaInPackagePacks*, std::vector<IInPackagePacks::MetaData>&, PackType);
-void VanillaInPackagePacks_getPacks(const VanillaInPackagePacks* self, std::vector<IInPackagePacks::MetaData>& metadatas, PackType packType)
-{
-    _VanillaInPackagePacks_getPacks(self, metadatas, packType);
-    Log::Info("[AmethystRuntime] Getting in-package packs of type {} count {}", static_cast<int>(packType), metadatas.size());
-}
-
 void CreateResourceHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-
-    uintptr_t vtableAddress = 
-        AmethystRuntime::getRuntimeImporter()->GetVirtualTableAddress("VanillaInPackagePacks::vtable::'this'");
-    
-    _VanillaInPackagePacks_getPacks = (decltype(_VanillaInPackagePacks_getPacks))hooks.ReplaceVirtualFunction<&VanillaInPackagePacks::getPacks>(vtableAddress, &VanillaInPackagePacks_getPacks);
 
     hooks.CreateDirectHook<&VanillaGameModuleClient::initializeResourceStack>(_VanillaGameModuleClient_initializeResourceStack, &VanillaGameModuleClient_initializeResourceStack);
     hooks.CreateDirectHook<&VanillaGameModuleServer::initializeBehaviorStack>(_VanillaGameModuleServer_initializeBehaviorStack, &VanillaGameModuleServer_initializeBehaviorStack);
