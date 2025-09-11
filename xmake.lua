@@ -74,7 +74,7 @@ package("Runtime-Importer")
 
         package:addenv("PATH", bin_dir)
 
-        local generated_dir = path.join(importer_dir, "generated")
+        local generated_dir = path.join(importer_dir)
         local pch_file = path.join(generated_dir, "pch.hpp.pch")
         local should_regenerate_pch = os.exists(pch_file) == false or should_reinstall
 
@@ -126,7 +126,7 @@ target("AmethystRuntime")
 
     before_build(function (target)
         local importer_dir = path.join(os.curdir(), ".importer");
-        local generated_dir = path.join(importer_dir, "generated")
+        local generated_dir = path.join(importer_dir)
         local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
         
@@ -158,7 +158,7 @@ target("AmethystRuntime")
 
     after_build(function (target)
         local importer_dir = path.join(os.curdir(), ".importer");
-        local generated_dir = path.join(importer_dir, "generated")
+        local generated_dir = path.join(importer_dir)
         local src_json = path.join(os.curdir(), "mod.json")
         local dst_json = path.join(modFolder, "mod.json")
         if not os.isdir(modFolder) then
