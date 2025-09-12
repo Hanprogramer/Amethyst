@@ -74,11 +74,8 @@ class Options;
 /// @vptr {0x4EBD5A8, this}
 class VanillaClientInputMappingFactory : public ClientInputMappingFactory {
 public:
-    /// @vidx { 0, this }
+    /// @vidx { inherit, this }
     MC virtual ~VanillaClientInputMappingFactory();
-
-    /// @vidx { 1, this }
-    MC virtual void unk_1();
 
     /// @vidx { 2, this }
     MC virtual void createInputMappingTemplates(Options* options);
