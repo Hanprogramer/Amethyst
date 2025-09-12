@@ -52,8 +52,10 @@ void CreateInputHooks()
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
     Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
+    Log::Info("vtable 0x{:x}", (uintptr_t)&VanillaClientInputMappingFactory::$vtable_for_this - GetMinecraftBaseAddress());
+
     hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
-        VanillaClientInputMappingFactory::$vtable_for_this,
+        (uintptr_t)&VanillaClientInputMappingFactory::$vtable_for_this,
         _VanillaClientInputMappingFactory_createInputMappingTemplates,
         VanillaClientInputMappingFactory_createInputMappingTemplates
     );

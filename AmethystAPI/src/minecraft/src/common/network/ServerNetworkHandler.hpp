@@ -25,7 +25,7 @@ class XboxLiveUserObserver {
 public:
     virtual ~XboxLiveUserObserver() = default;
     virtual void padding0_afdefe();
-};
+}; 
 }
 
 class ServerNetworkHandler : public Bedrock::Threading::EnableQueueForMainThread, public NetEventCallback, public LevelListener, public Social::MultiplayerServiceObserver, public Social::XboxLiveUserObserver {
@@ -42,5 +42,5 @@ public:
     /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 41 8B D8 48 8B F2}
     MC bool allowIncomingPacketId(const NetworkIdentifier& networkId, MinecraftPacketIds packet);
 };
-
+ 
 //static_assert(offsetof(ServerNetworkHandler, mLevel) == 88);

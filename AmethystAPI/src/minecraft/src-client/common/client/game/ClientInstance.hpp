@@ -11,7 +11,7 @@
 #include "minecraft/src-deps/renderer/ViewportInfo.hpp"
 #include "minecraft/src/common/gamerefs/WeakRef.hpp"
 #include <amethyst/Imports.hpp>
-
+ 
 class Minecraft;
 class ClientInputHandler;
 class ItemRenderer;
@@ -23,7 +23,7 @@ class MinecraftGame;
 class GuiData;
 class LocalPlayer;
 class BlockSource;
-class ToastManager;
+class ToastManager; 
 
 //is_virtual = True
 //    hide_vtable = False
