@@ -126,6 +126,7 @@ void CreateModFunctionHooks() {
     HOOK(ClientInstance, onStartJoinGame);
     HOOK(ClientInstance, requestLeaveGame);
     HOOK(ClientInstance, _ClientInstance);
+    
     HOOK(ScreenView, setupAndRender);
     HOOK(Minecraft, update);
     HOOK(VanillaItems, registerItems);
