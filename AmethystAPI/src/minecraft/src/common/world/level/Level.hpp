@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 
 #include <memory>
@@ -7,12 +8,14 @@
 #include <minecraft/src/common/world/level/IWorldRegistriesProvider.hpp>
 #include <minecraft/src/common/gamerefs/OwnerPtr.hpp>
 #include <minecraft/src/common/world/level/dimension/DimensionFactory.hpp>
+#include <amethyst/Imports.hpp>
 
 // client code included on server?
 #include <minecraft/src-client/common/client/renderer/texture/BaseLightTextureImageBuilder.hpp>
 
 class PacketSender;
 
+/// @vptr {0x4DFA540}
 class Level : public ILevel, public BlockSourceListener, public IWorldRegistriesProvider {
 public:
     /* this + 40   */ std::byte padding40[800];
@@ -25,6 +28,8 @@ public:
     /* this + 6408 */ std::shared_ptr<OwnerPtr<DimensionFactory>> mDimensionFactory;     // its actually a gsl::not_null but compiler hates that despite the fact we don't construct level
     /* this + 6424 */ std::byte padding6424[6512 - 6424];
     /* this + 6512 */ Factory<BaseLightTextureImageBuilder, Level&, Scheduler&> mLightTextureImageBuilderFactory;
+
+    MC static uintptr_t $vtable_for_this;
 };
 
 // 1.21.0.3

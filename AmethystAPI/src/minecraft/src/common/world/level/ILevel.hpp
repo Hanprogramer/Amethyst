@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <gsl/gsl>
 #include <minecraft/src-deps/core/utility/NonOwnerPointer.hpp>
@@ -16,6 +17,7 @@
 #include <minecraft/src-client/common/client/social/MultiplayerGameinfo.hpp>
 #include <minecraft/src/common/world/Difficulty.hpp>
 #include <minecraft/src-deps/core/threading/TaskGroup.hpp>
+#include <amethyst/Imports.hpp>
 
 // Auto-generated: Forward declarations
 namespace PlayerCapabilities { struct ISharedController; }
@@ -422,7 +424,7 @@ public:
     virtual void onPlayerDeath(Player&, const ActorDamageSource&);
 
     /**@vIndex {99}*/
-    virtual void tick();
+    MC virtual void tick();
 
     /**@vIndex {100}*/
     virtual bool explode(Explosion&);

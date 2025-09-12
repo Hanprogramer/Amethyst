@@ -121,7 +121,7 @@ void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments&
 }
 
 void CreateModFunctionHooks() {
-    Amethyst::HookManager* hooks = AmethystRuntime::getHookManager();
+    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
 
     HOOK(ClientInstance, onStartJoinGame);
     HOOK(ClientInstance, requestLeaveGame);

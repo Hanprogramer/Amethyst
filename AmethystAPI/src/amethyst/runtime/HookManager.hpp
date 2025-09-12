@@ -19,7 +19,12 @@
 
 #define HOOK(className, functionName)                                                                               \
 {                                                                                                                   \
-    hooks->CreateDirectHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
+    hooks.CreateDirectHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
+}
+
+#define VHOOK(className, functionName, forName)                                                                                  \
+{                                                                                                                  \
+    hooks.CreateVirtualHook<&className::functionName>(##className::$vtable_for_##forName, _##className##_##functionName, &className##_##functionName); \
 }
 
 

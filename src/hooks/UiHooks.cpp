@@ -16,7 +16,7 @@ ui::ViewRequest ScreenController__handleButtonEvent(ScreenController* screen, Sc
 }
 
 void CreateUiHooks() {
-    Amethyst::HookManager* hooks = AmethystRuntime::getHookManager();
+    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
 
     HOOK(ScreenController, _handleButtonEvent);
 }
