@@ -232,7 +232,7 @@ void Amethyst::RuntimeImporter::Initialize()
 
             std::string& name = nameIt->second;
             if (name.starts_with("?$vtable_for_")) {
-                mVtableToVarStorage[name] = variableDesc->address;
+                mVtableToVarStorage[name] = SlideAddress(variableDesc->address);
                 address = reinterpret_cast<uintptr_t>(&mVtableToVarStorage[name]);
             }
             else {
