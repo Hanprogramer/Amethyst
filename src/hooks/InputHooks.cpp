@@ -54,7 +54,7 @@ void CreateInputHooks()
     Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
     hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
-        (uintptr_t)&VanillaClientInputMappingFactory::$vtable_for_this,
+        VanillaClientInputMappingFactory::$vtable_for_this,
         _VanillaClientInputMappingFactory_createInputMappingTemplates,
         VanillaClientInputMappingFactory_createInputMappingTemplates
     );
