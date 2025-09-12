@@ -48,6 +48,8 @@ Amethyst::InputAction& Amethyst::InputManager::RegisterNewInput(const std::strin
         return *(it->second);
     }
 
+    Log::Info("Options 0x{:x}", (uintptr_t)options);
+
     // Add it to options which allows for it to be remapped, and is necessary for listeners
     for (auto& layout : options->mKeyboardRemappings) {
         Keymapping keymapping("key." + actionName, defaultKeys, allowRemapping);

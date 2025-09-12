@@ -72,8 +72,6 @@ package("Runtime-Importer")
             io.writefile(installed_version_file, latest_tag)
         end
 
-        package:addenv("PATH", bin_dir)
-
         local generated_dir = path.join(importer_dir)
         local pch_file = path.join(generated_dir, "pch.hpp.pch")
         local should_regenerate_pch = os.exists(pch_file) == false or should_reinstall
@@ -131,7 +129,7 @@ target("AmethystRuntime")
         local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
         
         local gen_sym_args = {
-            "Amethyst.SymbolGenerator.exe",
+            ".importer/bin/Amethyst.SymbolGenerator.exe",
             "--input", string.format("%s", input_dir),
             "--output", string.format("%s", generated_dir),
             "--filters", "minecraft",
@@ -148,7 +146,7 @@ target("AmethystRuntime")
         os.exec(table.concat(gen_sym_args, " "))
 
         local gen_lib_args = {
-            "Amethyst.LibraryGenerator.exe",
+            ".importer/bin/Amethyst.LibraryGenerator.exe",
             "--input", string.format("%s/symbols", generated_dir),
             "--output", string.format("%s/lib", generated_dir)
         }
@@ -167,7 +165,7 @@ target("AmethystRuntime")
         os.cp(src_json, dst_json)
 
         local tweaker_args = {
-            "Amethyst.ModuleTweaker.exe",
+            ".importer/bin/Amethyst.ModuleTweaker.exe",
             "--module", target:targetfile(),
             "--symbols", string.format("%s/symbols", generated_dir)
         }
