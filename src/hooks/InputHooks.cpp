@@ -2,6 +2,7 @@
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <minecraft/src-deps/input/MouseDevice.hpp>
 #include <amethyst/Log.hpp>
+#include <minecraft/src-client/common/client/input/VanillaClientInputMappingFactory.hpp>
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
 SafetyHookInline _VanillaClientInputMappingFactory_createInputMappingTemplates;
@@ -52,7 +53,7 @@ void CreateInputHooks()
     Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
     hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
-        importer.GetVirtualTableAddress("VanillaClientInputMappingFactory::vtable::'this'"),
+        VanillaClientInputMappingFactory::$vtable_for_this,
         _VanillaClientInputMappingFactory_createInputMappingTemplates,
         VanillaClientInputMappingFactory_createInputMappingTemplates
     );
