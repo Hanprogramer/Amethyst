@@ -130,7 +130,7 @@ void AmethystRuntime::PromptDebugger()
 void AmethystRuntime::AddOwnResources()
 {
     // Add our own resource pack
-    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, "main_rp", PackType::Resources);
+    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, "main_rp", PackType::Resources, Amethyst::PackPriority::ExtremelyHigh);
 }
 
 void AmethystRuntime::CreateOwnHooks()
