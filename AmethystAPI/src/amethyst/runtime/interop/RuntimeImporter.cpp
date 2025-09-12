@@ -214,6 +214,7 @@ void Amethyst::RuntimeImporter::Initialize()
         }
     }
 
+    mVtableToVarStorage.clear();
     // Parse and initialize the variable descriptor table
     {
         VariableDescTable& variableDescTable = *reinterpret_cast<VariableDescTable*>(base + variableDescSection->VirtualAddress);
@@ -230,7 +231,14 @@ void Amethyst::RuntimeImporter::Initialize()
             }
 
             std::string& name = nameIt->second;
-            address = SlideAddress(variableDesc->address);
+            if (name.starts_with("?$vtable_for_")) {
+                mVtableToVarStorage[name] = variableDesc->address;
+                address = reinterpret_cast<uintptr_t>(&mVtableToVarStorage[name]);
+            }
+            else {
+                address = SlideAddress(variableDesc->address);
+            }
+            
             mImportAddressTable[name] = &address;
         }
     }
@@ -324,6 +332,7 @@ void Amethyst::RuntimeImporter::Shutdown()
     mVirtualTables.clear();
     mVirtualDestructors.clear();
     mAllocatedDestructorBlocks.clear();
+    mVtableToVarStorage.clear();
     mInitialized = false;
 }
 
