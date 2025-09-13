@@ -42,6 +42,7 @@ Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
 
 void Mod::Shutdown()
 {
+    mRuntimeImporter->Shutdown();
     FreeLibrary(hModule);
 }
 

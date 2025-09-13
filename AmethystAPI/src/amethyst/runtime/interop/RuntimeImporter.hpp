@@ -12,6 +12,7 @@ private:
 
     std::unordered_map<uint32_t, std::string> mStringTable{};
     std::unordered_map<std::string, uintptr_t*> mImportAddressTable{};
+    std::unordered_map<std::string, uintptr_t*> mFuntionImportAddresses{};
     std::unordered_map<std::string, uintptr_t> mVirtualTables{};
     std::unordered_map<std::string, uintptr_t> mVirtualDestructors{};
     std::unordered_map<std::string, safetyhook::Allocation> mAllocatedDestructorBlocks{};
