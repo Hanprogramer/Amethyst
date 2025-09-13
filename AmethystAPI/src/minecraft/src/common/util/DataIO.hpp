@@ -3,6 +3,9 @@
 #include <minecraft/src-deps/core/headerIncludes/gsl_includes.hpp>
 #include <minecraft/src-deps/core/utility/Result.hpp>
 #include <amethyst/Log.hpp>
+#include <minecraft/src/common/world/phys/Vec3.hpp>
+#include <minecraft/src/common/world/phys/Vec2.hpp>
+#include <minecraft/src/common/world/level/ChunkPos.hpp>
 
 class IDataOutput {
 public:
@@ -16,6 +19,28 @@ public:
     virtual void writeInt(int) = 0;
     virtual void writeLongLong(int64_t) = 0;
     virtual void writeBytes(const void*, size_t) = 0;
+
+    void writeVec3(const Vec3& vec) {
+        writeFloat(vec.x);
+        writeFloat(vec.y);
+        writeFloat(vec.z);
+    }
+
+    void writeVec2(const Vec2& vec) {
+        writeFloat(vec.x);
+        writeFloat(vec.y);
+    }
+
+    void writeBlockPos(const BlockPos& pos) {
+        writeInt(pos.x);
+        writeInt(pos.y);
+        writeInt(pos.z);
+    }
+
+    void writeChunkPos(const ChunkPos& pos) {
+        writeInt(pos.x);
+        writeInt(pos.z);
+    }
 };
 
 class IDataInput {
@@ -31,6 +56,36 @@ public:
     virtual Bedrock::Result<int64_t, std::error_code> readLongLong() = 0;
     virtual Bedrock::Result<bool, std::error_code> readBytes(void*, size_t) = 0;
     virtual size_t numBytesLeft() const = 0;
+
+    Vec3 readVec3()
+    {
+        float x = readFloat().value();
+        float y = readFloat().value();
+        float z = readFloat().value();
+        return Vec3(x, y, z);
+    }
+
+    Vec2 readVec2()
+    {
+        float x = readFloat().value();
+        float y = readFloat().value();
+        return Vec2(x, y);
+    }
+
+    BlockPos readBlockPos()
+    {
+        int x = readInt().value();
+        int y = readInt().value();
+        int z = readInt().value();
+        return BlockPos(x, y, z);
+    }
+
+    ChunkPos readChunkPos()
+    {
+        int x = readInt().value();
+        int z = readInt().value();
+        return ChunkPos(x, z);
+    }
 };
 
 class BytesDataOutput : public IDataOutput {
