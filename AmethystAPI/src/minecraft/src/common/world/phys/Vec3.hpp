@@ -37,6 +37,11 @@ public:
 
     static Vec3 lerp(const Vec3& start, const Vec3& end, float t);
     static Vec3 ZERO;
+
+    operator glm::vec3() const
+    {
+        return glm::vec3(x, y, z);
+    }
 };
 
 // BinaryStream specialization
