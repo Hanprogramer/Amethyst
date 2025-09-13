@@ -325,6 +325,8 @@ void Amethyst::RuntimeImporter::Shutdown()
 
     mStringTable.clear();
     for (auto& [name, address] : mImportAddressTable) {
+        if (mVtableToVarStorage.count(name) != 0)
+            continue;
         uintptr_t& mutableAddress = *address;
         mutableAddress = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
     }
