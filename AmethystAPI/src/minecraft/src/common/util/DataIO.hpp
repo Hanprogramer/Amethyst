@@ -223,10 +223,10 @@ private:
 class StringByteInput : public BytesDataInput {
 public:
     uint64_t mIdx = 0;
-    std::string_view mBuffer;
+    std::string mBuffer;
 
-    explicit StringByteInput(const std::string& buffer)
-        : mBuffer(buffer) {}
+    explicit StringByteInput(std::string buffer)
+        : mBuffer(std::move(buffer)) {}
 
     Bedrock::Result<bool, std::error_code> readBytes(void* buffer, size_t size) override
     {

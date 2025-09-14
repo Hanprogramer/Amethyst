@@ -89,7 +89,7 @@ public:
     /* this + 296  */ std::shared_ptr<UserAuthentication> mUserAuthentication;
     uint64_t padding304; // idk what this is!!
     /* this + 312  */ std::unique_ptr<SceneFactory> mSceneFactory; 
-    /* this + 320  */ std::unique_ptr<CachedScenes> mCachesScenes;
+    /* this + 320  */ std::unique_ptr<CachedScenes> mCachedScenes;
 
     // Somewhere between here
     WeakEntityRef mCameraRef;

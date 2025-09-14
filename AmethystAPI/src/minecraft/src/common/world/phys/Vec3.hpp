@@ -35,6 +35,8 @@ public:
 
     float distance(const Vec3& other) const;
 
+    float lengthXZ() const;
+
     static Vec3 lerp(const Vec3& start, const Vec3& end, float t);
     static Vec3 ZERO;
 
