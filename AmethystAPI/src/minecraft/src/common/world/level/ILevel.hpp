@@ -315,7 +315,8 @@ public:
     /**@vIndex {62}*/
     MC virtual int getNumRemotePlayers();
 
-    /**@vIndex {63}*/
+    /// @vidx {63}
+    /// Returns the primary local player (DOES NOT WORK FROM SERVER LEVEL)
     MC virtual Player* getPrimaryLocalPlayer() const;
 
     /**@vIndex {64}*/
@@ -703,10 +704,10 @@ public:
     MC virtual int getActiveUsersCount() const;
 
     /**@vIndex {192}*/
-    MC virtual void forEachPlayer(std::function<bool(const Player&)>) const;
+    MC virtual void forEachPlayer(std::function<bool(Player&)>);
 
     /**@vIndex {193}*/
-    MC virtual void forEachPlayer(std::function<bool(Player&)>);
+    MC virtual void forEachPlayer(std::function<bool(const Player&)>) const;
 
     /**@vIndex {194}*/
     MC virtual void forEachUser(std::function<bool(const EntityContext&)>) const;
