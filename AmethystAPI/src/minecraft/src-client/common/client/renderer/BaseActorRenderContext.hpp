@@ -1,6 +1,8 @@
+/// @symbolgeneration
 #pragma once
 #include <minecraft/src/common/world/phys/Vec3.hpp>
 #include <minecraft/src/common/world/phys/AABB.hpp>
+#include <amethyst/Imports.hpp>
 
 class ScreenContext;
 class ClientInstance;
@@ -46,7 +48,9 @@ public:
     /* this + 177 */ std::byte mHistoricalFrameTimes[0x1E7];
 
 public:
-    BaseActorRenderContext(ScreenContext* screenContext, IClientInstance* clientInstance, IMinecraftGame* minecraftGame);
+    /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 4C 24 ? 57 48 83 EC ? 49 8B F8 48 8B DA 48 8B F1 48 8D 05 ? ? ? ? 48 89 01 33 ED}
+    MC BaseActorRenderContext(ScreenContext* screenContext, IClientInstance* clientInstance, IMinecraftGame* minecraftGame);
+
     MatrixStack& getWorldMatrix();
 };
 

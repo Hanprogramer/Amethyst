@@ -13,7 +13,11 @@ namespace mce {
         glm::tvec3<float> mUp;
         glm::tvec3<float> mForward;
         glm::tvec3<float> mPosition;
-        /* this +  */ std::byte padding256[208];
+        float mAspectRatio;
+        float mFov;
+        float mZNear;
+        float mZFar;
+        /* this +  */ std::byte padding272[192];
 
         const glm::tvec3<float> getRightVector() const {
             return mRight;
