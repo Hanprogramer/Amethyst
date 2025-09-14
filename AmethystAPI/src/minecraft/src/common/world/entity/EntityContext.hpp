@@ -26,6 +26,12 @@ public:
     }
 
     template <typename Component>
+    [[nodiscard]] inline Component* try_get()
+    {
+        return mEnttRegistry.try_get<Component>(mEntity);
+    }
+
+    template <typename Component>
     [[nodiscard]] inline Component const& get() const
     {
         return mEnttRegistry.get<Component>(mEntity);
