@@ -11,7 +11,6 @@ SafetyHookInline _ClientInstance_requestLeaveGame;
 SafetyHookInline _Minecraft_update;
 SafetyHookInline _VanillaItems_registerItems;
 SafetyHookInline _BlockDefinitionGroup_registerBlocks;
-SafetyHookInline _LevelRenderer_renderLevel;
 SafetyHookInline _ClientInstance__ClientInstance;
 SafetyHookInline _BlockGraphics_initBlocks;
 

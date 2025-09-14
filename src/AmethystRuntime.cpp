@@ -9,6 +9,7 @@
 #include "amethyst/runtime/ModContext.hpp"
 #include "hooks/ui/UIHooks.hpp"
 #include "hooks/item/ItemHooks.hpp"
+#include "hooks/RenderingHooks.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HMODULE hModule;
@@ -145,6 +146,7 @@ void AmethystRuntime::CreateOwnHooks()
     CreateNetworkingHooks();
     CreateUIHooks();
     CreateItemHooks();
+    CreateRenderingHooks();
 }
 
 void AmethystRuntime::RunMods()
