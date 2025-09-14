@@ -42,7 +42,8 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         }
     }
 
-    hovertext += "\n§o§9" + modName + "§r";
+    hovertext += std::format("\n§8{}§r", fullName);
+    hovertext += std::format("\n§o§9{}§r", modName);
 }
 
 void CreateItemHooks()
