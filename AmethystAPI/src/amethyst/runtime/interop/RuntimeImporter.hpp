@@ -21,6 +21,10 @@ private:
 
 public:
     RuntimeImporter(HMODULE moduleHandle);
+    RuntimeImporter(const RuntimeImporter&) = delete;
+    RuntimeImporter(RuntimeImporter&&) = delete;
+    RuntimeImporter& operator=(const RuntimeImporter&) = delete;
+    RuntimeImporter& operator=(RuntimeImporter&&) = delete;
     ~RuntimeImporter();
 
     bool IsInitialized() const;

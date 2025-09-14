@@ -20,6 +20,10 @@ struct Pack {
 class PackManager {
 public:
     PackManager(AmethystContext* amethyst);
+    PackManager(const PackManager&) = delete;
+    PackManager(PackManager&&) = delete;
+    PackManager& operator=(const PackManager&) = delete;
+    PackManager& operator=(PackManager&&) = delete;
     ~PackManager();
 
     void RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type);

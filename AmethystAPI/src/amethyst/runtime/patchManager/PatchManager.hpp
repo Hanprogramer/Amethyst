@@ -6,6 +6,11 @@
 namespace Amethyst {
 	class PatchManager {
 	public:		
+		PatchManager() = default;
+        PatchManager(const PatchManager&) = delete;
+        PatchManager(PatchManager&&) = delete;
+        PatchManager& operator=(const PatchManager&) = delete;
+        PatchManager& operator=(PatchManager&&) = delete;
         void ApplyPatch(uintptr_t address, uint8_t* patch, size_t size);
         ~PatchManager();
 

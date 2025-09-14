@@ -57,6 +57,12 @@ namespace Amethyst {
 
     class HookManager {
     public:
+        HookManager() = default;
+        HookManager(const HookManager&) = delete;
+        HookManager(HookManager&&) = delete;
+        HookManager& operator=(const HookManager&) = delete;
+        HookManager& operator=(HookManager&&) = delete;
+
         template <auto OriginalFn>
         void CreateDirectHook(SafetyHookInline& trampoline, void* hook)
         {

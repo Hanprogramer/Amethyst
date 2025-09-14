@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <memory>
 #include <string>
@@ -78,8 +79,11 @@ class ItemTag : public HashedString {
 
 };
 
+/// @vptr {0x4DFCE10}
 class Item {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     /* this + 8   */ std::string mTextureAtlasFile;
     /* this + 40  */ int mFrameCount;
     /* this + 44  */ bool mAnimatesInToolbar;
@@ -180,7 +184,8 @@ public:
     virtual bool isLiquidClipItem() const;
     virtual bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
     virtual bool requiresInteract() const;
-    virtual void appendFormattedHovertext(const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory) const;
+    /// @vidx {48}
+    MC virtual void appendFormattedHovertext(const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory) const;
     virtual bool isValidRepairItem(const ItemStackBase& source, const ItemStackBase& repairItem, const BaseGameVersion& baseGameVersion) const;
     virtual int getEnchantSlot() const;
     virtual int getEnchantValue() const;
