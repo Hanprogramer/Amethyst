@@ -4,6 +4,10 @@
 #include "minecraft/src-client/common/client/game/MinecraftGame.hpp"
 #include "minecraft/src-client/common/client/game/IClientInstance.hpp"
 
+class SceneStack;
+class IScreenCapabilities;
+class IAdvancedGraphicsOptions;
+
 /// @vptr {0x4D01468}
 class MinecraftScreenModel : 
     public std::enable_shared_from_this<MinecraftScreenModel> 
@@ -11,8 +15,12 @@ class MinecraftScreenModel :
 public:
     class Context {
     public:
-        MinecraftGame& mGame;
-        ClientInstance& mClientInstance;
+        MinecraftGame& mMinecraft;
+        ClientInstance& mClient;
+        Bedrock::NotNullNonOwnerPtr<IAdvancedGraphicsOptions> mAdvancedGraphicsOptions;
+        Bedrock::NotNullNonOwnerPtr<SceneStack> mSceneStack;
+        SceneFactory& mSceneFactory;
+        std::unique_ptr<IScreenCapabilities> mCapabilities;
     };
 
     MC static uintptr_t $vtable_for_this;

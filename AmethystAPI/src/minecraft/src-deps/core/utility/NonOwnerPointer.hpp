@@ -76,5 +76,5 @@ public:
     }
 };
 template<typename T>
-using NotNullNonOwnerPointer = gsl::not_null<NonOwnerPointer<T>>;
+using NotNullNonOwnerPtr = gsl::not_null<NonOwnerPointer<T>>;
 } // namespace Bedrock
