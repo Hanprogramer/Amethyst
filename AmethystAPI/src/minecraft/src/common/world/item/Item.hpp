@@ -209,7 +209,8 @@ public:
     virtual ActorDefinitionIdentifier getActorIdentifier(const ItemStack& a3) const;
     virtual int buildIdAux(short auxValue, const CompoundTag* a3) const;
     virtual bool canUseOnSimTick() const;
-    virtual ItemStack& use(ItemStack& itemStack, Player& player) const;
+    /// @vidx {72}
+    MC virtual ItemStack& use(ItemStack& itemStack, Player& player) const;
     virtual Actor* createProjectileActor(BlockSource&, const ItemStack&, const Vec3&, const Vec3&) const;
     virtual bool dispense(BlockSource& region, Container& container, int slot, const Vec3& pos, unsigned char face) const;
     virtual ItemUseMethod useTimeDepleted(ItemStack& inoutInstance, Level* level, Player* player) const;

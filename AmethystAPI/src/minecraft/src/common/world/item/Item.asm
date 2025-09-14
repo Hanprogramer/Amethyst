@@ -367,11 +367,6 @@ global ?canUseOnSimTick@Item@@UEBA_NXZ
 	mov rax, [rel Item_vtable]
 	jmp [rax + 568]
 
-global ?use@Item@@UEBAAEAVItemStack@@AEAV2@AEAVPlayer@@@Z
-?use@Item@@UEBAAEAVItemStack@@AEAV2@AEAVPlayer@@@Z:
-	mov rax, [rel Item_vtable]
-	jmp [rax + 576]
-
 global ?createProjectileActor@Item@@UEBAPEAVActor@@AEAVBlockSource@@AEBVItemStack@@AEBVVec3@@2@Z
 ?createProjectileActor@Item@@UEBAPEAVActor@@AEAVBlockSource@@AEBVItemStack@@AEBVVec3@@2@Z:
 	mov rax, [rel Item_vtable]
