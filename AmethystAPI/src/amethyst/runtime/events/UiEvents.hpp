@@ -3,10 +3,12 @@
 
 class ScreenEvent;
 
-class UiButtonHandleEvent : public BaseEvent {
+class UIButtonHandleEvent : public BaseEvent {
 public:
     ScreenEvent& mScreenEvent;
 
-    UiButtonHandleEvent(ScreenEvent& screenEvent) 
+    UIButtonHandleEvent(ScreenEvent& screenEvent) 
         : mScreenEvent(screenEvent) {}
 };
+
+using UiButtonHandleEvent = UIButtonHandleEvent;

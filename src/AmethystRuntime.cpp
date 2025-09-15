@@ -7,7 +7,8 @@
 #include <format>
 #include "hooks/NetworkingHooks.hpp"
 #include "amethyst/runtime/ModContext.hpp"
-#include "hooks/UiHooks.hpp"
+#include "hooks/ui/UIHooks.hpp"
+#include "hooks/item/ItemHooks.hpp"
 #include "hooks/RenderingHooks.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
@@ -143,7 +144,8 @@ void AmethystRuntime::CreateOwnHooks()
     CreateStartScreenHooks();
     CreateModFunctionHooks();
     CreateNetworkingHooks();
-    CreateUiHooks();
+    CreateUIHooks();
+    CreateItemHooks();
     CreateRenderingHooks();
 }
 

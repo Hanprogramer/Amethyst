@@ -70,6 +70,10 @@ class NetworkManager {
 public:
     NetworkManager()
         : mPacketHandlers(), mPacketFactories() {}
+    NetworkManager(const NetworkManager&) = delete;
+    NetworkManager(NetworkManager&&) = delete;
+    NetworkManager& operator=(const NetworkManager&) = delete;
+    NetworkManager& operator=(NetworkManager&&) = delete;
 
     template<DerivedFromCustomPacket T>
     void RegisterPacketType(std::unique_ptr<Amethyst::CustomPacketHandler> handler) {
