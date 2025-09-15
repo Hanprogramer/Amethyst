@@ -87,9 +87,9 @@ public:
     /* this + 280  */ std::unique_ptr<MinecraftKeyboardManager> mKeyboardManager;
     /* this + 288  */ std::unique_ptr<HitDetectSystem> mHitDetectSystem;
     /* this + 296  */ std::shared_ptr<UserAuthentication> mUserAuthentication;
-    uint64_t padding304; // idk what this is!!
     /* this + 312  */ std::unique_ptr<SceneFactory> mSceneFactory; 
     /* this + 320  */ std::unique_ptr<CachedScenes> mCachedScenes;
+    uint64_t padding328; // maybe std::unique_ptr<CameraManager> idk shit tho: ass ryd3v
 
     // Somewhere between here
     WeakEntityRef mCameraRef;

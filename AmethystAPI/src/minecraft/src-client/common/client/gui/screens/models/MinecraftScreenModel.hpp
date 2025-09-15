@@ -1,11 +1,11 @@
 /// @symbolgeneration
 #pragma once
 #include "amethyst/Imports.hpp"
+#include "minecraft/src/common/config/ScreenCapabilities.hpp"
 #include "minecraft/src-client/common/client/game/MinecraftGame.hpp"
 #include "minecraft/src-client/common/client/game/IClientInstance.hpp"
 
 class SceneStack;
-class IScreenCapabilities;
 class IAdvancedGraphicsOptions;
 
 /// @vptr {0x4D01468}
@@ -27,7 +27,7 @@ public:
     std::byte padding24[0xE8 - 0x10 - 0x8]; // full_size - shared_from_this - vptr
 
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 4C 8B F2 48 8B F1 48 89 4D ? 48 89 55 ? 33 D2}
-    MC MinecraftScreenModel(MinecraftScreenModel::Context context);
+    MC MinecraftScreenModel(const MinecraftScreenModel::Context& context);
 
     /// @vidx {0}
     MC virtual ~MinecraftScreenModel();
