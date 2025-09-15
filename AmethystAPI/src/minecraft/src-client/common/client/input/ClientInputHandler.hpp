@@ -2,7 +2,6 @@
 #include "minecraft/src-deps/input/InputHandler.hpp"
 
 class ClientInstance;
-using IClientInstance = ClientInstance;
 
 class ClientInputHandler {
 public:

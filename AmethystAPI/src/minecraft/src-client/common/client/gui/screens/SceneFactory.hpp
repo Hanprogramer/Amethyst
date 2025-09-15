@@ -4,8 +4,7 @@
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include "minecraft/src-client/common/client/gui/screens/SceneStack.hpp"
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 class MinecraftGame;
 using IMinecraftGame = MinecraftGame;
 class IAdvancedGraphicsOptions;

@@ -30,4 +30,13 @@ public:
         // Alpha can be reset so interpolation starts fresh
         mAlpha = 0.0f;
     }
+
+    float ComputeAlpha() const
+    {
+        int64_t currentMs = mGetTimeMSCallback();
+        float deltaSeconds = static_cast<float>(currentMs - mLastMs) / 1000.0f;
+        deltaSeconds *= mTimeScale;
+        float tickDelta = deltaSeconds * mTicksPerSecond;
+        return tickDelta;
+    }
 };

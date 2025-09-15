@@ -98,4 +98,9 @@ public:
     constexpr T* operator->() const { return get(); }
 };
 
-class WeakEntityRef : public WeakRef<EntityContext> {};
+class WeakStorageEntity {
+    WeakRef<EntityContext> mRegistry;
+    EntityId mEntity;
+};
+
+class WeakEntityRef : public WeakStorageEntity {};

@@ -39,8 +39,7 @@ struct ButtonEventData {
     int source;
 };
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 class BindingFactoryMap;
 class InputMappingFactoryMap;
 

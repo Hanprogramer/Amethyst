@@ -12,8 +12,7 @@ namespace mce {
 class Color;
 }
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 class UIScene;
 class Font;
 struct NinesliceInfo;
@@ -67,10 +66,11 @@ class ComponentRenderBatch;
 class CustomRenderComponent;
 class HashedString;
 class UIRepository;
+class ClientInstance;
 
 class MinecraftUIRenderContext {
 public:
-    /* this + 8   */ IClientInstance* mClient;
+    /* this + 8   */ ClientInstance* mClient;
     /* this + 16  */ ScreenContext* mScreenContext;
     /* this + 24  */ MinecraftUIMeasureStrategy mMeasureStrategy;
     /* this + 40  */ float mTextAlpha;

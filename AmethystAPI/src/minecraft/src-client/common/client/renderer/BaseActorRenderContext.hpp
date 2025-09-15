@@ -5,12 +5,12 @@
 #include <amethyst/Imports.hpp>
 
 class ScreenContext;
-class ClientInstance;
-using IClientInstance = ClientInstance;
 
 class MinecraftGame;
 using IMinecraftGame = MinecraftGame;
 
+class ClientInstance;
+class IClientInstance;
 class ItemRenderer;
 struct SortedMeshDrawList;
 class BlockActorRenderDispatcher;
@@ -49,7 +49,7 @@ public:
 
 public:
     /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 4C 24 ? 57 48 83 EC ? 49 8B F8 48 8B DA 48 8B F1 48 8D 05 ? ? ? ? 48 89 01 33 ED}
-    MC BaseActorRenderContext(ScreenContext* screenContext, IClientInstance* clientInstance, IMinecraftGame* minecraftGame);
+    MC BaseActorRenderContext(ScreenContext& screenContext, ClientInstance& clientInstance, IMinecraftGame& minecraftGame);
 
     MatrixStack& getWorldMatrix();
 };
