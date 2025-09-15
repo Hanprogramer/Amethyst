@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <type_traits>
 #include "minecraft/src-client/common/client/game/IClientInstance.hpp"
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include "minecraft/src-client/common/client/gui/screens/models/MinecraftScreenModel.hpp"
@@ -11,7 +12,8 @@ class IAdvancedGraphicsOptions;
 class SceneCreationUtils {
 public:
     template <typename T, typename... Args>
-    static std::shared_ptr<T> _createModel(SceneFactory& factory, MinecraftGame& game, ClientInstance& client, const Bedrock::NotNullNonOwnerPtr<IAdvancedGraphicsOptions>& advancedGraphicOptions, const std::string& screenName, Args&&... args)
+    requires std::is_base_of<MinecraftScreenModel, T>::value && std::constructible_from<T, const MinecraftScreenModel::Context&, Args...>
+    static std::shared_ptr<T> _createModel(SceneFactory& factory, MinecraftGame& game, ClientInstance& client, const Bedrock::NotNullNonOwnerPtr<IAdvancedGraphicsOptions>& advancedGraphicOptions, Args&&... args)
     {
         auto& appConfigs = *ServiceLocator<AppConfigs>::mService;
 
@@ -24,6 +26,6 @@ public:
             .mCapabilities = nullptr
         };
 
-        return std::make_shared<T>(ctx);
+        return std::make_shared<T>(ctx, std::forward<Args>(args)...);
     }
 };

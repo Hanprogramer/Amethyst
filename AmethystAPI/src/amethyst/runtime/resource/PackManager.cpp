@@ -11,7 +11,7 @@ Amethyst::PackManager::PackManager(AmethystContext* amethyst) :
 
 Amethyst::PackManager::~PackManager() {}
 
-void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type)
+void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type, PackPriority priority)
 {
 	std::string key = metadata.GetVersionedName();
     fs::path resourcesPath = GetAmethystFolder() / "mods" / metadata.GetVersionedName() / "resource_packs";
@@ -74,7 +74,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
     SemVersion semVersion = {version[0].get<uint16_t>(), version[1].get<uint16_t>(), version[2].get<uint16_t>()};
 
 	// Insert the new pack
-    mPacks[key].insert({path, Pack{metadata, path, packUuid, semVersion, type}});
+    mPacks[key].insert({path, Pack{metadata, path, packUuid, semVersion, type, priority}});
     Log::Info("[AmethystRuntime] Registered pack '{}' for '{}'.", path, key);
 }
 
@@ -87,7 +87,13 @@ void Amethyst::PackManager::AddResourcePacksToStack(const Bedrock::NonOwnerPoint
 {
     // Iterate over all registered packs
     for (auto& [nameVer, packs] : mPacks) {
-        for (auto& [path, pack] : packs) {
+        // Sort packs by priority (highest priority first)
+        std::vector<std::pair<std::string, Pack&>> sortedPacks(packs.begin(), packs.end());
+        std::ranges::sort(sortedPacks, [](const auto& a, const auto& b) {
+            return static_cast<int>(a.second.priority) > static_cast<int>(b.second.priority);
+        });
+
+        for (auto& [path, pack] : sortedPacks) {
             if (pack.type != PackType::Resources)
                 continue;
             // Add the pack to the stack
@@ -102,7 +108,13 @@ void Amethyst::PackManager::AddBehaviorPacksToStack(const Bedrock::NonOwnerPoint
 {
     // Iterate over all registered packs
     for (auto& [nameVer, packs] : mPacks) {
-        for (auto& [path, pack] : packs) {
+        // Sort packs by priority (highest priority first)
+        std::vector<std::pair<std::string, Pack&>> sortedPacks(packs.begin(), packs.end());
+        std::ranges::sort(sortedPacks, [](const auto& a, const auto& b) {
+            return static_cast<int>(a.second.priority) > static_cast<int>(b.second.priority);
+        });
+
+        for (auto& [path, pack] : sortedPacks) {
             if (pack.type != PackType::Behavior)
                 continue;
             // Add the pack to the stack

@@ -58,3 +58,5 @@ public:
     /// @vidx {13}
     MC virtual void unknown_13();
 };
+
+static_assert(sizeof(MinecraftScreenModel) == 0xE8);
