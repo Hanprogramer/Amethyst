@@ -54,3 +54,8 @@ Level* Amethyst::GetLevel()
     if (!ci) return nullptr;
     return ci->mMinecraft->getLevel();
 }
+
+ClientInstance* Amethyst::GetClientInstance()
+{
+    return _AmethystContextInstance->mClientInstance;
+}

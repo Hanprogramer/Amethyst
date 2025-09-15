@@ -20,4 +20,5 @@ namespace Amethyst {
 
 	Minecraft* GetMinecraft();
 	Level* GetLevel();
+	ClientInstance* GetClientInstance();
 }

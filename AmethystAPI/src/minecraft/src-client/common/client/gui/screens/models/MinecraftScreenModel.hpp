@@ -7,6 +7,7 @@
 
 class SceneStack;
 class IAdvancedGraphicsOptions;
+class SceneFactory;
 
 /// @vptr {0x4D01468}
 class MinecraftScreenModel : 
