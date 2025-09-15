@@ -59,13 +59,19 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
 
 void CreateResourceHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
+    Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
-    hooks.RegisterFunction<&VanillaGameModuleClient::initializeResourceStack>("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4D 8B F9 4C 89 8D");
-    hooks.CreateHook<&VanillaGameModuleClient::initializeResourceStack>(_VanillaGameModuleClient_initializeResourceStack, &VanillaGameModuleClient_initializeResourceStack);
+    hooks.CreateVirtualHook<&VanillaGameModuleClient::initializeResourceStack>(
+        importer.GetVirtualTableAddress("VanillaGameModuleClient::vtable::'this'"),
+        _VanillaGameModuleClient_initializeResourceStack,
+        VanillaGameModuleClient_initializeResourceStack
+    );
 
-    hooks.RegisterFunction<&VanillaGameModuleServer::initializeBehaviorStack>("48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 49 8B F9 4D 8B F0 4C 8B BD");
-    hooks.CreateHook<&VanillaGameModuleServer::initializeBehaviorStack>(_VanillaGameModuleServer_initializeBehaviorStack, &VanillaGameModuleServer_initializeBehaviorStack);
+    hooks.CreateVirtualHook<&VanillaGameModuleServer::initializeBehaviorStack>(
+        importer.GetVirtualTableAddress("VanillaGameModuleServer::vtable::'this'"),
+        _VanillaGameModuleServer_initializeBehaviorStack,
+        VanillaGameModuleServer_initializeBehaviorStack
+    );
 
-    hooks.RegisterFunction<&ResourcePackRepository::_initializePackSource>("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B F1 45 33 E4 0F 57 C9 F3 0F 7F 4D ? 41 8B FC");
-    hooks.CreateHook<&ResourcePackRepository::_initializePackSource>(_ResourcePackRepository_initializePackSource, &ResourcePackRepository_initializePackSource);
+    hooks.CreateDirectHook<&ResourcePackRepository::_initializePackSource>(_ResourcePackRepository_initializePackSource, &ResourcePackRepository_initializePackSource);
 }

@@ -2,6 +2,7 @@
 #include "minecraft/src-deps/core/headerIncludes/gsl_includes.hpp"
 #include <string>
 #include <cstddef>
+#include <string_view>
 
 typedef uint64_t HashType64;
 

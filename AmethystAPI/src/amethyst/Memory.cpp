@@ -89,5 +89,5 @@ uintptr_t AddressFromLeaInstruction(uintptr_t leaInstructionAddress)
 
 uintptr_t GetVtable(void* obj)
 {
-    return (uintptr_t) * reinterpret_cast<uintptr_t**>(obj);
+    return (uintptr_t)*reinterpret_cast<uintptr_t**>(obj);
 }

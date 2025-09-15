@@ -1,7 +1,9 @@
+/// @symbolgeneration
 #pragma once
 #include "minecraft/src-deps/input/InputHandler.hpp"
 #include "minecraft/src-client/common/client/input/ClientInputMappingFactory.hpp"
 #include <string>
+#include <amethyst/Imports.hpp>
 
 class KeyboardInputMapping;
 class MouseInputMapping;
@@ -69,15 +71,21 @@ public:
 
 class Options;
 
+/// @vptr {0x4EBD5A8, this}
 class VanillaClientInputMappingFactory : public ClientInputMappingFactory {
 public:
+    /// @vidx { inherit, this }
+    MC virtual ~VanillaClientInputMappingFactory();
+
+    /// @vidx { 2, this }
+    MC virtual void createInputMappingTemplates(Options* options);
+     
+
+public:
     void createKeyboardAndMouseBinding(KeyboardInputMapping* keyboard, MouseInputMapping* mouse, const std::string* buttonName, const std::string* keyName, FocusImpact impact = FocusImpact::Neutral);
-
-//hooks:
-    // 40 55 53 56 57 41 56 48 8B EC 48 83 EC ? 45 0F B6 F1
-    //typedef void(__thiscall* __addFullKeyboardGamePlayControls)(VanillaClientInputMappingFactory*, KeyboardInputMapping*, MouseInputMapping*);
-    void _addFullKeyboardGamePlayControls(KeyboardInputMapping*, MouseInputMapping*);
-
-    // 1.20.71.1 - 48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 8B FA
-    void createInputMappingTemplates(Options* options);
+    
+    /// @signature {40 55 53 56 57 41 56 48 8B EC 48 83 EC ? 45 0F B6 F1}
+    MC void _addFullKeyboardGamePlayControls(KeyboardInputMapping*, MouseInputMapping*);
+    
+    MC static uintptr_t $vtable_for_this;
 };

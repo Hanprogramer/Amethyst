@@ -1,4 +1,9 @@
 #pragma once
+#include <minecraft/src/common/world/phys/Vec2.hpp>
+#include <minecraft/src/common/world/phys/Vec3.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 namespace mce {
     class Math {
@@ -52,6 +57,29 @@ namespace mce {
         static float sqrt(float x)
         {
             return std::sqrt(x);
+        }
+
+        static Vec3 quaternionToViewVector(const glm::quat& q)
+        {
+            return glm::rotate(q, glm::vec3(0.0f, 0.0f, -1.0f));
+        }
+
+        static Vec2 viewVectorToRotation(const Vec3& normLook)
+        {
+            float hDist = normLook.lengthXZ();
+            float yaw = glm::degrees(std::atan2(normLook.z, normLook.x)) - 90.0f;
+            float pitch = -glm::degrees(std::atan2(normLook.y, hDist));
+            return Vec2(pitch, yaw);
+        }
+        
+        static float wrapRadians(float angle)
+        {
+            angle = fmod(angle, glm::two_pi<float>());
+            if (angle >= glm::pi<float>())
+                angle -= glm::two_pi<float>();
+            if (angle < -glm::pi<float>())
+                angle += glm::two_pi<float>();
+            return angle;
         }
     };
 };

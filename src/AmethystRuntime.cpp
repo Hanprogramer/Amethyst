@@ -2,19 +2,23 @@
 #include "debug/AmethystDebugging.hpp"
 #include <amethyst/runtime/events/ModEvents.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>
+#include <amethyst/runtime/interop/RuntimeImporter.hpp>
 #include <amethyst/Log.hpp>
 #include <format>
 #include "hooks/NetworkingHooks.hpp"
 #include "amethyst/runtime/ModContext.hpp"
-#include "hooks/UiHooks.hpp"
+#include "hooks/ui/UIHooks.hpp"
+#include "hooks/item/ItemHooks.hpp"
+#include "hooks/RenderingHooks.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
+extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
 void AmethystRuntime::Start()
 {
-    getContext()->Start(); 
+    getContext()->Start();
     Log::Info("[AmethystRuntime] Using 'AmethystRuntime@{}'", MOD_VERSION);
 
     SemVersion version = getMinecraftPackageInfo()->mVersion;
@@ -35,7 +39,11 @@ void AmethystRuntime::Start()
     ReadLauncherConfig();
 
     // Prompt a debugger if they are in developer mode
-    if (mLauncherConfig.promptDebugger) PromptDebugger();
+    if (mLauncherConfig.promptDebugger) 
+        PromptDebugger();
+
+    // Initialize our runtime importer
+    mRuntimeImporter->Initialize();
 
     // Add our resources before loading mods
     AddOwnResources();
@@ -90,6 +98,10 @@ void AmethystRuntime::LoadModDlls()
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_packs" / "main_bp" / "manifest.json")))
             mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_bp", PackType::Behavior);
         
+        // Create runtime importer instance and initialize it
+        mod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mod.GetModule());
+        mod.GetRuntimeImporter().Initialize();
+
         _LoadModFunc(&mModInitialize, mod, "Initialize");
     }
 
@@ -132,7 +144,9 @@ void AmethystRuntime::CreateOwnHooks()
     CreateStartScreenHooks();
     CreateModFunctionHooks();
     CreateNetworkingHooks();
-    CreateUiHooks();
+    CreateUIHooks();
+    CreateItemHooks();
+    CreateRenderingHooks();
 }
 
 void AmethystRuntime::RunMods()
@@ -165,7 +179,6 @@ void AmethystRuntime::Shutdown()
 {
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
-
     getContext()->Shutdown();
 
     // Unload all mod dll's.
@@ -176,6 +189,9 @@ void AmethystRuntime::Shutdown()
     // Clear lists of mods & functions.
     mAmethystContext.mMods.clear();
     mModInitialize.clear();
+
+    // Shutdown our runtime importer
+    mRuntimeImporter->Shutdown();
 }
 
 void AmethystRuntime::ResumeGameThread()

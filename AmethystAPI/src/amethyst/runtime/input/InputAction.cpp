@@ -1,20 +1,22 @@
 #include "InputAction.hpp"
 #include <minecraft/src-deps/input/InputHandler.hpp>
 
+class ClientInstance;
+
 Amethyst::InputAction::InputAction(const std::string& actionName) 
 	: mNameHash(StringToNameId("button." + actionName)), mButtonDownHandlers(), mButtonUpHandlers() {}
 
-void Amethyst::InputAction::addButtonDownHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler)
+void Amethyst::InputAction::addButtonDownHandler(std::function<InputPassthrough(FocusImpact, ClientInstance&)> handler)
 {
     mButtonDownHandlers.push_back(handler);
 }
 
-void Amethyst::InputAction::addButtonUpHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler)
+void Amethyst::InputAction::addButtonUpHandler(std::function<InputPassthrough(FocusImpact, ClientInstance&)> handler)
 {
 	mButtonUpHandlers.push_back(handler);
 }
 
-Amethyst::InputPassthrough Amethyst::InputAction::_onButtonStateChange(ButtonState state, FocusImpact focus, IClientInstance& client) const
+Amethyst::InputPassthrough Amethyst::InputAction::_onButtonStateChange(ButtonState state, FocusImpact focus, ClientInstance& client) const
 {
     bool shouldPassToVanilla = true;
 

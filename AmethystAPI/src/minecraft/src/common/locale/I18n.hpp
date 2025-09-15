@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <string>
 #include <vector>
@@ -6,6 +7,7 @@
 #include <minecraft/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <map>
 #include <minecraft/src-deps/core/headerIncludes/gsl_includes.hpp>
+#include <amethyst/Imports.hpp>
 
 class PackManifest;
 class PackAccessStrategy;
@@ -48,6 +50,7 @@ public:
     virtual bool isPackKeyword(std::string const&) = 0;
 };
 
-I18n& getI18n();
+/// @signature {48 83 EC ? BA ? ? ? ? 65 48 8B 04 25 ? ? ? ? 48 8B 08 8B 04 0A 39 05 ? ? ? ? 7F ? 48 8D 05 ? ? ? ? 48 83 C4 ? C3 48 8D 0D ? ? ? ? E8 ? ? ? ? 83 3D ? ? ? ? ? 75 ? E8 ? ? ? ? 48 8D 0D ? ? ? ? E8 ? ? ? ? 90 48 8D 0D ? ? ? ? E8 ? ? ? ? 48 8D 05 ? ? ? ? 48 83 C4 ? C3 CC CC CC CC CC 48 89 5C 24}
+MC I18n& getI18n();
 
 std::string operator"" _i18n(const char* str, size_t);

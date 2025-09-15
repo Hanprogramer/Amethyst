@@ -3,9 +3,10 @@
 #include <minecraft/src-deps/core/file/Path.hpp>
 #include <string>
 #include <vector>
+#include <minecraft/src-client/common/client/social/GameConnectionInfo.hpp>
 
 namespace Social {
-enum GamePublishSetting : int32_t {
+enum class GamePublishSetting : int32_t {
     NoMultiPlay = 0x0000,
     InviteOnly = 0x0001,
     FriendsOnly = 0x0002,
@@ -13,17 +14,7 @@ enum GamePublishSetting : int32_t {
     Public = 0x0004,
 };
 
-enum ConnectionType : int16_t {
-    Undefined = 0xff,
-    Local = 0x0000,
-    IPv4 = 0x0001,
-    IPv6 = 0x0002,
-    NAT = 0x0003,
-    UPNP = 0x0004,
-    UnknownIP = 0x0005,
-};
-
-enum MultiplayerServiceIdentifier : int32_t {
+enum class MultiplayerServiceIdentifier : int32_t {
     XboxLive = 0x0000,
     Nintendo = 0x0001,
     AdHoc = 0x0002,
@@ -31,17 +22,6 @@ enum MultiplayerServiceIdentifier : int32_t {
     EDU = 0x0004,
     Mock = 0x0005,
     Invalid = 0xff,
-};
-
-class GameConnectionInfo {
-public:
-    ConnectionType mType;
-    std::string mHostIpAddress;
-    std::byte padding1[4];
-    std::string mRakNetGUID;
-    uint32_t mHostPort;
-    std::byte padding2[20];
-    uint64_t mNetherNetID;
 };
 
 class MultiplayerGameinfo {

@@ -1,4 +1,5 @@
 #pragma once
+#include "minecraft/src-deps/input/InputHandler.hpp"
 #include "minecraft/src-deps/input/InputMapping.hpp"
 #include <string>
 #include <vector>

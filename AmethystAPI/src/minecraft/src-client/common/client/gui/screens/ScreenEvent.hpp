@@ -77,7 +77,7 @@ enum class ScreenEventScope : char {
   View = 0x0001,
 };
 
-struct ScreenEvent {
+class ScreenEvent {
 public:
     ScreenEventType type;
     ScreenEventData data;

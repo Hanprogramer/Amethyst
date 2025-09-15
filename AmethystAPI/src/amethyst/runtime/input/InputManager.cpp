@@ -85,7 +85,7 @@ Amethyst::InputPassthrough Amethyst::InputManager::_handleButtonEvent(InputHandl
     if (it == mActions.end()) return InputPassthrough::Passthrough;
 
     const Amethyst::InputAction& action = *it->second.get();
-    return action._onButtonStateChange(button.state, focus, client);
+    return action._onButtonStateChange(button.state, focus, client.asInstance());
 }
 
 void Amethyst::InputManager::_registerKeyboardInputs(VanillaClientInputMappingFactory* inputs, KeyboardInputMapping* keyboard, MouseInputMapping* mouse, Amethyst::KeybindContext context)

@@ -1,11 +1,13 @@
 #include "dllmain.hpp"
 #include <debug/AmethystDebugging.hpp>
 
+HMODULE hModule;
 HANDLE gMcThreadHandle;
 DWORD gMcThreadId;
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
+    ::hModule = hModule;
     return TRUE;
 }
 

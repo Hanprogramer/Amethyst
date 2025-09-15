@@ -2,10 +2,12 @@
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <minecraft/src-deps/input/MouseDevice.hpp>
 #include <amethyst/Log.hpp>
+#include <minecraft/src-client/common/client/input/VanillaClientInputMappingFactory.hpp>
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
-SafetyHookInline _createInputMappingTemplates;
+SafetyHookInline _VanillaClientInputMappingFactory_createInputMappingTemplates;
 SafetyHookInline _MouseDevice_feed;
+SafetyHookInline _InputHandler_handleButtonEvent;
 
 void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboard, MouseInputMapping* mouse)
 {
@@ -15,12 +17,13 @@ void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, Key
     inputManager->_registerKeyboardInputs(self, keyboard, mouse, Amethyst::KeybindContext::Gameplay);
 }
 
-void createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
-    _createInputMappingTemplates.call(self, opt);
+void VanillaClientInputMappingFactory_createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
+    _VanillaClientInputMappingFactory_createInputMappingTemplates.thiscall<void, VanillaClientInputMappingFactory*, Options*>(self, opt);
 
     // This options is cached for later times the runtime needs to add keybinds.
     // This function createInputMappingTemplates is called once at the very start of the game and never again.
     AmethystRuntime::getContext()->mOptions = opt;
+
 
     // Since this is the first time, register all custom keybinds now that options is available.
     RegisterInputsEvent event(*AmethystRuntime::getInputManager());
@@ -36,8 +39,6 @@ void MouseDevice_feed(MouseDevice* mouse, char actionButtonId, char buttonData, 
     }
 }
 
-SafetyHookInline _InputHandler_handleButtonEvent;
-
 void InputHandler_handleButtonEvent(InputHandler* self, const ButtonEventData& button, FocusImpact focus, IClientInstance& client, int controllerId)
 {
     Amethyst::InputPassthrough passthrough = AmethystRuntime::getInputManager()->_handleButtonEvent(self, button, focus, client, controllerId);
@@ -50,16 +51,15 @@ void InputHandler_handleButtonEvent(InputHandler* self, const ButtonEventData& b
 void CreateInputHooks()
 {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
+    Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
-    hooks.RegisterFunction<&VanillaClientInputMappingFactory::createInputMappingTemplates>("48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 8B FA");
-    hooks.CreateHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(_createInputMappingTemplates, &createInputMappingTemplates);
+    hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
+        VanillaClientInputMappingFactory::$vtable_for_this,
+        _VanillaClientInputMappingFactory_createInputMappingTemplates,
+        VanillaClientInputMappingFactory_createInputMappingTemplates
+    );
 
-    hooks.RegisterFunction<&VanillaClientInputMappingFactory::_addFullKeyboardGamePlayControls>("40 55 53 56 57 41 56 48 8B EC 48 83 EC ? 45 0F B6 F1");
-    hooks.CreateHook<&VanillaClientInputMappingFactory::_addFullKeyboardGamePlayControls>(_addFullKeyboardGamePlayControls, &addFullKeyboardGamePlayControls);
-
-    hooks.RegisterFunction<&MouseDevice::feed>("48 8B C4 48 89 58 ? 48 89 68 ? 48 89 70 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 44 0F B7 BC 24");
-    hooks.CreateHook<&MouseDevice::feed>(_MouseDevice_feed, &MouseDevice_feed);
-
-    hooks.RegisterFunction<&InputHandler_handleButtonEvent>("40 53 55 56 57 41 54 41 56 41 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 8B 84 24");
-    hooks.CreateHook<&InputHandler_handleButtonEvent>(_InputHandler_handleButtonEvent, &InputHandler_handleButtonEvent);
+    hooks.CreateDirectHook<&VanillaClientInputMappingFactory::_addFullKeyboardGamePlayControls>(_addFullKeyboardGamePlayControls, &addFullKeyboardGamePlayControls);
+    hooks.CreateDirectHook<&MouseDevice::feed>(_MouseDevice_feed, &MouseDevice_feed);
+    hooks.CreateDirectHook<&InputHandler::handleButtonEvent>(_InputHandler_handleButtonEvent, &InputHandler_handleButtonEvent);
 }

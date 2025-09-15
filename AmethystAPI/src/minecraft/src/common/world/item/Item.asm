@@ -246,11 +246,6 @@ global ?requiresInteract@Item@@UEBA_NXZ
 	mov rax, [rel Item_vtable]
 	jmp [rax + 376]
 
-global ?appendFormattedHovertext@Item@@UEBAXAEBVItemStackBase@@AEAVLevel@@AEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z
-?appendFormattedHovertext@Item@@UEBAXAEBVItemStackBase@@AEAVLevel@@AEAV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z:
-	mov rax, [rel Item_vtable]
-	jmp [rax + 384]
-
 global ?isValidRepairItem@Item@@UEBA_NAEBVItemStackBase@@0AEBVBaseGameVersion@@@Z
 ?isValidRepairItem@Item@@UEBA_NAEBVItemStackBase@@0AEBVBaseGameVersion@@@Z:
 	mov rax, [rel Item_vtable]
@@ -371,11 +366,6 @@ global ?canUseOnSimTick@Item@@UEBA_NXZ
 ?canUseOnSimTick@Item@@UEBA_NXZ:
 	mov rax, [rel Item_vtable]
 	jmp [rax + 568]
-
-global ?use@Item@@UEBAAEAVItemStack@@AEAV2@AEAVPlayer@@@Z
-?use@Item@@UEBAAEAVItemStack@@AEAV2@AEAVPlayer@@@Z:
-	mov rax, [rel Item_vtable]
-	jmp [rax + 576]
 
 global ?createProjectileActor@Item@@UEBAPEAVActor@@AEAVBlockSource@@AEBVItemStack@@AEBVVec3@@2@Z
 ?createProjectileActor@Item@@UEBAPEAVActor@@AEAVBlockSource@@AEBVItemStack@@AEBVVec3@@2@Z:

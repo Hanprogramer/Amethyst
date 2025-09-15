@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <chrono>
 #include <cstdint>
@@ -8,6 +9,7 @@
 #include <minecraft/src-deps/core/utility/ErrorInfo.hpp>
 #include <amethyst/Log.hpp>
 #include <minecraft/src-deps/core/utility/BinaryStream.hpp>
+#include <amethyst/Imports.hpp>
 
 class IPacketHandlerDispatcher;
 class BinaryStream;
@@ -255,5 +257,5 @@ public:
 class MinecraftPackets {
 public:
     /// @signature {40 53 48 83 EC ? 45 33 C0 48 8B D9 FF CA 81 FA}
-    static std::shared_ptr<Packet> createPacket(MinecraftPacketIds id);
+    MC static std::shared_ptr<Packet> createPacket(MinecraftPacketIds id);
 };

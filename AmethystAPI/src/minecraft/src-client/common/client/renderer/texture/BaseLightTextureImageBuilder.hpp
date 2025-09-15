@@ -6,8 +6,7 @@ class BlockPos;
 class BaseLightData;
 struct BrightnessPair;
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 
 class BaseLightTextureImageBuilder {
 public:

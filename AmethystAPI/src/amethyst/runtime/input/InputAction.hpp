@@ -64,17 +64,17 @@ enum class InputPassthrough {
 class InputAction {
 private:
     uint32_t mNameHash;
-    std::vector<std::function<InputPassthrough(FocusImpact, IClientInstance&)>> mButtonDownHandlers;
-    std::vector<std::function<InputPassthrough(FocusImpact, IClientInstance&)>> mButtonUpHandlers;
+    std::vector<std::function<InputPassthrough(FocusImpact, ClientInstance&)>> mButtonDownHandlers;
+    std::vector<std::function<InputPassthrough(FocusImpact, ClientInstance&)>> mButtonUpHandlers;
 
 public:
     InputAction(const std::string& actionName);
     uint32_t getNameHash() const { return mNameHash; }
-    void addButtonDownHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler);
-    void addButtonUpHandler(std::function<InputPassthrough(FocusImpact, IClientInstance&)> handler);
+    void addButtonDownHandler(std::function<InputPassthrough(FocusImpact, ClientInstance&)> handler);
+    void addButtonUpHandler(std::function<InputPassthrough(FocusImpact, ClientInstance&)> handler);
 
 private:
-    InputPassthrough _onButtonStateChange(ButtonState state, FocusImpact focus, IClientInstance& client) const;
+    InputPassthrough _onButtonStateChange(ButtonState state, FocusImpact focus, ClientInstance& client) const;
     friend class InputManager;
 };
 

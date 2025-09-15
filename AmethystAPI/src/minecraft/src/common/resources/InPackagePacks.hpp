@@ -1,7 +1,10 @@
+/// @symbolgeneration
 #pragma once
 #include "minecraft/src-deps/core/file/Path.hpp"
 #include "minecraft/src-deps/core/resource/ResourceHelper.hpp"
+#include <amethyst/Imports.hpp>
 
+/// @vptr {0x4EBAA28, this}
 class IInPackagePacks {
 public:
     struct MetaData {
@@ -17,6 +20,8 @@ public:
         }
     };
 
-    virtual ~IInPackagePacks() = 0;
-    virtual std::vector<IInPackagePacks::MetaData> getPacks(PackType packType) const = 0;
+    /// @vidx {0, this}
+    MC virtual ~IInPackagePacks() = 0;
+    /// @vidx {1, this}
+    MC virtual std::vector<IInPackagePacks::MetaData> getPacks(PackType packType) const = 0;
 };
