@@ -2,6 +2,7 @@
 #include <amethyst/runtime/events/InputEvents.hpp>
 #include <minecraft/src-deps/input/MouseDevice.hpp>
 #include <amethyst/Log.hpp>
+#include <minecraft/src-client/common/client/input/VanillaClientInputMappingFactory.hpp>
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
 SafetyHookInline _VanillaClientInputMappingFactory_createInputMappingTemplates;
@@ -17,11 +18,12 @@ void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, Key
 }
 
 void VanillaClientInputMappingFactory_createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
-    _VanillaClientInputMappingFactory_createInputMappingTemplates.call(self, opt);
+    _VanillaClientInputMappingFactory_createInputMappingTemplates.thiscall<void, VanillaClientInputMappingFactory*, Options*>(self, opt);
 
     // This options is cached for later times the runtime needs to add keybinds.
     // This function createInputMappingTemplates is called once at the very start of the game and never again.
     AmethystRuntime::getContext()->mOptions = opt;
+
 
     // Since this is the first time, register all custom keybinds now that options is available.
     RegisterInputsEvent event(*AmethystRuntime::getInputManager());
@@ -52,7 +54,7 @@ void CreateInputHooks()
     Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
     hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
-        importer.GetVirtualTableAddress("VanillaClientInputMappingFactory::vtable::'this'"),
+        VanillaClientInputMappingFactory::$vtable_for_this,
         _VanillaClientInputMappingFactory_createInputMappingTemplates,
         VanillaClientInputMappingFactory_createInputMappingTemplates
     );

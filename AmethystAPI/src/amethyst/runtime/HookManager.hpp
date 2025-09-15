@@ -6,16 +6,27 @@
 #include <unordered_map>
 #include <vector>
 
-#define NO_THROW_HOOK(className, functionName, signature)                                                                  \
-{                                                                                                                      \
-    auto scan = SigScanSafe(signature);                                                                                \
-    if (!scan.has_value())                                                                                             \
-        Log::Warning("[SAFE_HOOK] SigScan failed for {}::{}, signature = {}", #className, #functionName, signature);   \
-    else {                                                                                                             \
-        hookManager->RegisterFunction<&className::functionName>(scan.value());                                         \
-        hookManager->CreateHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
-    }                                                                                                                  \
+// #define NO_THROW_HOOK(className, functionName, signature)                                                                  \
+// {                                                                                                                      \
+//     auto scan = SigScanSafe(signature);                                                                                \
+//     if (!scan.has_value())                                                                                             \
+//         Log::Warning("[SAFE_HOOK] SigScan failed for {}::{}, signature = {}", #className, #functionName, signature);   \
+//     else {                                                                                                             \
+//         hookManager->RegisterFunction<&className::functionName>(scan.value());                                         \
+//         hookManager->CreateHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
+//     }                                                                                                                  \
+// }
+
+#define HOOK(className, functionName)                                                                               \
+{                                                                                                                   \
+    hooks.CreateDirectHook<&className::functionName>(_##className##_##functionName, &className##_##functionName); \
 }
+
+#define VHOOK(className, functionName, forName)                                                                                  \
+{                                                                                                                  \
+    hooks.CreateVirtualHook<&className::functionName>(##className::$vtable_for_##forName, _##className##_##functionName, &className##_##functionName); \
+}
+
 
 namespace Amethyst {
     class function_id {
@@ -46,21 +57,29 @@ namespace Amethyst {
 
     class HookManager {
     public:
-        template <auto OriginalFn>
-        void CreateHook(SafetyHookInline& trampoline, void* hook)
-        {
-            constexpr size_t hash = function_id::hash_code<OriginalFn>();
-
-            Assert(mFuncHashToOriginalAddress.contains(hash), "[AmethystAPI] '{}' has not registered!", function_id::name<OriginalFn>());
-
-            uintptr_t original_addr = mFuncHashToOriginalAddress[hash];
-            CreateHookAbsolute(trampoline, original_addr, hook);
-        }
+        HookManager() = default;
+        HookManager(const HookManager&) = delete;
+        HookManager(HookManager&&) = delete;
+        HookManager& operator=(const HookManager&) = delete;
+        HookManager& operator=(HookManager&&) = delete;
 
         template <auto OriginalFn>
         void CreateDirectHook(SafetyHookInline& trampoline, void* hook)
         {
-            uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            using FnType = decltype(OriginalFn);
+            uintptr_t original_addr = 0;
+
+            if constexpr (std::is_member_function_pointer_v<FnType>) {
+                // will cause issues if a virtual function is passed here
+                union { FnType fn; uintptr_t addr; } u{};
+                u.fn = OriginalFn;
+                original_addr = u.addr;
+            } 
+            else {
+                original_addr = std::bit_cast<uintptr_t>(OriginalFn);
+            }
+
+            // uintptr_t original_addr = std::bit_cast<uintptr_t>(OriginalFn);
             CreateHookAbsolute(trampoline, original_addr, hook);
         }
 
@@ -90,6 +109,51 @@ namespace Amethyst {
             return original;
         }
 
+        // Legacy funcs
+        // I'm just trying to figure out if its worth just removing em?
+
+        // template <auto OriginalFn>
+        // void CreateHook(SafetyHookInline& trampoline, void* hook)
+        // {
+        //     constexpr size_t hash = function_id::hash_code<OriginalFn>();
+
+        //     Assert(mFuncHashToOriginalAddress.contains(hash), "[AmethystAPI] '{}' has not registered!", function_id::name<OriginalFn>());
+
+        //     uintptr_t original_addr = mFuncHashToOriginalAddress[hash];
+        //     CreateHookAbsolute(trampoline, original_addr, hook);
+        // }
+
+        // template <auto Func>
+        // void RegisterFunction(std::string_view signature)
+        // {
+        //     // Converts the function to a unique hashed number
+        //     constexpr size_t hash = function_id::hash_code<Func>();
+
+        //     // If the event has not yet been created, make it, else re-use
+        //     if (!mFuncHashToOriginalAddress.contains(hash)) {
+        //         auto result = SigScanSafe(signature);
+
+        //         Assert(result.has_value(), "Failed to find function: \"{}\"\nUsing signature: \"{}\"", function_id::name<Func>(), signature);
+
+        //         mFuncHashToOriginalAddress[hash] = result.value();
+        //     }
+        // }
+
+        // template <auto Func>
+        // void RegisterFunction(uintptr_t address)
+        // {
+        //     // Converts the function to a unique hashed number
+        //     constexpr size_t hash = function_id::hash_code<Func>();
+
+        //     // If the event has not yet been created, make it, else re-use
+        //     if (!mFuncHashToOriginalAddress.contains(hash)) {
+        //         mFuncHashToOriginalAddress[hash] = address;
+        //     }
+        // }
+
+        ~HookManager();
+
+    private:
         /**
          * Directly hooks a function with an absolute address
          * CAUTION: This will not work if two mods want to hook the same function. For more compatibility, use HookManager::CreateHook
@@ -100,37 +164,6 @@ namespace Amethyst {
             mHooks.push_back(&safetyHookTrampoline);
         }
 
-        template <auto Func>
-        void RegisterFunction(std::string_view signature)
-        {
-            // Converts the function to a unique hashed number
-            constexpr size_t hash = function_id::hash_code<Func>();
-
-            // If the event has not yet been created, make it, else re-use
-            if (!mFuncHashToOriginalAddress.contains(hash)) {
-                auto result = SigScanSafe(signature);
-
-                Assert(result.has_value(), "Failed to find function: \"{}\"\nUsing signature: \"{}\"", function_id::name<Func>(), signature);
-
-                mFuncHashToOriginalAddress[hash] = result.value();
-            }
-        }
-
-        template <auto Func>
-        void RegisterFunction(uintptr_t address)
-        {
-            // Converts the function to a unique hashed number
-            constexpr size_t hash = function_id::hash_code<Func>();
-
-            // If the event has not yet been created, make it, else re-use
-            if (!mFuncHashToOriginalAddress.contains(hash)) {
-                mFuncHashToOriginalAddress[hash] = address;
-            }
-        }
-
-        ~HookManager();
-
-    private:
         std::vector<SafetyHookInline*> mHooks;
         std::unordered_map<size_t, uintptr_t> mFuncHashToOriginalAddress;
         friend class AmethystRuntime;

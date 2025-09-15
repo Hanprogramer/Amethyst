@@ -45,12 +45,12 @@ Amethyst::NetworkManager& Amethyst::GetNetworkManager()
 
 Minecraft* Amethyst::GetMinecraft()
 {
-    return _AmethystContextInstance->mClientInstance->minecraft;
+    return _AmethystContextInstance->mClientInstance->mMinecraft;
 }
 
 Level* Amethyst::GetLevel()
 {
     ClientInstance* ci = _AmethystContextInstance->mClientInstance;
     if (!ci) return nullptr;
-    return ci->minecraft->getLevel();
+    return ci->mMinecraft->getLevel();
 }

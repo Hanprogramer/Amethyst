@@ -1,6 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 class MouseDevice {
 public:

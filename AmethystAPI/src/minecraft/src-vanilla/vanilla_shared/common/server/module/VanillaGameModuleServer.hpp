@@ -1,6 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 /// @vptr { 0x4EC7070, this }
 class VanillaGameModuleServer {

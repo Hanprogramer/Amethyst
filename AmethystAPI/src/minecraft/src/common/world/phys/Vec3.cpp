@@ -179,6 +179,11 @@ float Vec3::distance(const Vec3& other) const
     return std::sqrt(dx * dx + dy * dy + dz * dz);
 }
 
+float Vec3::lengthXZ() const
+{
+    return std::sqrt(x * x + z * z);
+}
+
 template <>
 Bedrock::Result<Vec3> ReadOnlyBinaryStream::get<Vec3>() {
     auto x = get<float>().value();

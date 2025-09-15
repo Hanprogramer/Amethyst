@@ -13,6 +13,7 @@
 #include "minecraft/src-client/common/client/input/MinecraftInputHandler.hpp"
 #include "minecraft/src-client/common/client/options/Options.hpp"
 #include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
+#include "amethyst/Imports.hpp"
 
 class AmethystContext {
 public:

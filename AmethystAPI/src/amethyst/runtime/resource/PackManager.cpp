@@ -15,6 +15,8 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 {
 	std::string key = metadata.GetVersionedName();
     fs::path resourcesPath = GetAmethystFolder() / "mods" / metadata.GetVersionedName() / "resource_packs";
+    fs::path behaviorPath = GetAmethystFolder() / "mods" / metadata.GetVersionedName() / "behavior_packs";
+    auto packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
 
 	// Check if the mod is on the list of packs, if not add it
 	if (!mPacks.contains(key)) {
@@ -27,7 +29,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 		return;
     }
 
-    auto manifestPath = resourcesPath / path / "manifest.json";
+    auto manifestPath = packBasePath / path / "manifest.json";
 
     // Check if the pack contains a manifest.json
     if (!fs::exists(manifestPath)) {

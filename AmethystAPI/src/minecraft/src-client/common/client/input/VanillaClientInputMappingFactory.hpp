@@ -3,6 +3,7 @@
 #include "minecraft/src-deps/input/InputHandler.hpp"
 #include "minecraft/src-client/common/client/input/ClientInputMappingFactory.hpp"
 #include <string>
+#include <amethyst/Imports.hpp>
 
 class KeyboardInputMapping;
 class MouseInputMapping;
@@ -70,19 +71,21 @@ public:
 
 class Options;
 
-/// @vptr { 0x4EBD5A8, this }
+/// @vptr {0x4EBD5A8, this}
 class VanillaClientInputMappingFactory : public ClientInputMappingFactory {
 public:
     /// @vidx { inherit, this }
     MC virtual ~VanillaClientInputMappingFactory();
-    virtual void unk_1();
 
     /// @vidx { 2, this }
     MC virtual void createInputMappingTemplates(Options* options);
+     
 
 public:
     void createKeyboardAndMouseBinding(KeyboardInputMapping* keyboard, MouseInputMapping* mouse, const std::string* buttonName, const std::string* keyName, FocusImpact impact = FocusImpact::Neutral);
     
     /// @signature {40 55 53 56 57 41 56 48 8B EC 48 83 EC ? 45 0F B6 F1}
     MC void _addFullKeyboardGamePlayControls(KeyboardInputMapping*, MouseInputMapping*);
+    
+    MC static uintptr_t $vtable_for_this;
 };

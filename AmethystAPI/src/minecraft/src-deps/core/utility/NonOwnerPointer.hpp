@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include "gsl/gsl"
 
 namespace Bedrock {
 class EnableNonOwnerReferences {
@@ -74,5 +75,6 @@ public:
         return static_cast<T*>(this->mControlBlock ? this->mControlBlock->ptr : nullptr);
     }
 };
-
+template<typename T>
+using NotNullNonOwnerPtr = gsl::not_null<NonOwnerPointer<T>>;
 } // namespace Bedrock

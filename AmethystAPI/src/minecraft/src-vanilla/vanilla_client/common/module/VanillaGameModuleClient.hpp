@@ -1,6 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 #include "minecraft/src-client/common/module/GameModuleClient.hpp"
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include "gsl/gsl"

@@ -4,7 +4,7 @@
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 #include "minecraft/src/common/resources/PackSourceFactory.hpp"
 #include "minecraft/src/common/resources/CompositePackSource.hpp"
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 namespace Core {
 class FilePathManager;

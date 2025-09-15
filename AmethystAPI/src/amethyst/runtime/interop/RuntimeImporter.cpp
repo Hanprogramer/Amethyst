@@ -1,6 +1,7 @@
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
 #include <amethyst/Log.hpp>
 #include <amethyst/Memory.hpp>
+#include "minecraft/src-client/common/client/world/WorldCreationHelper.hpp"
 
 #pragma pack(push, 1)
 struct StringTable {
@@ -211,9 +212,11 @@ void Amethyst::RuntimeImporter::Initialize()
                 address = static_cast<uintptr_t>(SlideAddress(functionDesc->address));
             }
             mImportAddressTable[name] = &address;
+            mFuntionImportAddresses[name] = &address;
         }
     }
 
+    mVtableToVarStorage.clear();
     // Parse and initialize the variable descriptor table
     {
         VariableDescTable& variableDescTable = *reinterpret_cast<VariableDescTable*>(base + variableDescSection->VirtualAddress);
@@ -230,7 +233,14 @@ void Amethyst::RuntimeImporter::Initialize()
             }
 
             std::string& name = nameIt->second;
-            address = SlideAddress(variableDesc->address);
+            if (name.starts_with("?$vtable_for_")) {
+                mVtableToVarStorage[name] = SlideAddress(variableDesc->address);
+                address = reinterpret_cast<uintptr_t>(&mVtableToVarStorage[name]);
+            }
+            else {
+                address = SlideAddress(variableDesc->address);
+            }
+            
             mImportAddressTable[name] = &address;
         }
     }
@@ -303,6 +313,7 @@ void Amethyst::RuntimeImporter::Initialize()
 
             address = vfuncAddress;
             mImportAddressTable[name] = &address;
+            mFuntionImportAddresses[name] = &address;
         }
     }
 
@@ -315,15 +326,16 @@ void Amethyst::RuntimeImporter::Shutdown()
         return;
     }
 
-    mStringTable.clear();
-    for (auto& [name, address] : mImportAddressTable) {
-        uintptr_t& mutableAddress = *address;
-        mutableAddress = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
+    for (auto& [name, address] : mFuntionImportAddresses) {
+        (*address) = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
     }
+    mStringTable.clear();
+    mFuntionImportAddresses.clear();
     mImportAddressTable.clear();
     mVirtualTables.clear();
     mVirtualDestructors.clear();
     mAllocatedDestructorBlocks.clear();
+    mVtableToVarStorage.clear();
     mInitialized = false;
 }
 

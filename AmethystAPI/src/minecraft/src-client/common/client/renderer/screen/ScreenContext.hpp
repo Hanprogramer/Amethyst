@@ -2,8 +2,6 @@
 #include "minecraft/src-client/common/client/gui/screens/UIScreenContext.hpp"
 #include "minecraft/src-deps/minecraftrenderer/renderer/MeshContext.hpp"
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
 class Tessellator;
 
 #pragma pack(push, 1)

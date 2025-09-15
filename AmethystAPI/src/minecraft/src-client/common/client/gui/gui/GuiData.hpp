@@ -15,8 +15,7 @@
 //       ("Vec2", "clientUIScreenSize", 8, 48 + 16),
 //       ("IClientInstance&", "mClient", 8, 136)]
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 
 #pragma pack(push, 1)
 class GuiData {

@@ -10,7 +10,7 @@
 #include <cstdint>
 #include <minecraft/src-deps/core/utility/StringUtils.hpp>
 #include <minecraft/src-deps/input/InputMode.hpp>
-#include "amethyst/ModApi.hpp"
+#include <amethyst/Imports.hpp>
 
 enum class FocusImpact : char {
     Neutral = 0x0,
@@ -39,8 +39,7 @@ struct ButtonEventData {
     int source;
 };
 
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 class BindingFactoryMap;
 class InputMappingFactoryMap;
 

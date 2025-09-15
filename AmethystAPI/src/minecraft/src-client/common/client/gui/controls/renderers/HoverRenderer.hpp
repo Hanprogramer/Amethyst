@@ -3,8 +3,7 @@
 #include "glm/glm.hpp"
 
 class MinecraftUIRenderContext;
-class ClientInstance;
-using IClientInstance = ClientInstance;
+class IClientInstance;
 struct RectangleArea;
 
 class HoverRenderer {

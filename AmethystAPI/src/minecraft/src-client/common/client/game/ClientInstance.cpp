@@ -63,9 +63,3 @@ void ClientInstance::getRawCameraEntities(WeakEntityRef& outCamera, WeakEntityRe
     auto func = std::bit_cast<function>(this->vtable[41]);
     return (this->*func)(outCamera, outCameraTarget);
 }
-
-void ClientInstance::requestLeaveGame(bool switchScreen, bool sync) {
-    using function = decltype(&ClientInstance::requestLeaveGame);
-    auto func = std::bit_cast<function>(this->vtable[14]);
-    return (this->*func)(switchScreen, sync);
-}

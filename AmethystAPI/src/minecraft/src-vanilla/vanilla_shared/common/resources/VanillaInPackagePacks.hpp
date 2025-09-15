@@ -1,7 +1,7 @@
 /// @symbolgeneration
 #pragma once
 #include "minecraft/src/common/resources/InPackagePacks.hpp"
-#include <amethyst/ModApi.hpp>
+#include <amethyst/Imports.hpp>
 
 /// @vptr {0x4EBAA28, this}
 class VanillaInPackagePacks : public IInPackagePacks {

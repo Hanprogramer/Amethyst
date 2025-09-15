@@ -1,7 +1,6 @@
 #pragma once
 #include <memory>
-
-class TaskGroup;
+#include <minecraft/src-deps/core/threading/TaskGroup.hpp>
 
 namespace Bedrock::Threading {
     class EnableQueueForThread {

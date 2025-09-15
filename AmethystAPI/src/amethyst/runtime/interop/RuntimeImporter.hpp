@@ -12,13 +12,19 @@ private:
 
     std::unordered_map<uint32_t, std::string> mStringTable{};
     std::unordered_map<std::string, uintptr_t*> mImportAddressTable{};
+    std::unordered_map<std::string, uintptr_t*> mFuntionImportAddresses{};
     std::unordered_map<std::string, uintptr_t> mVirtualTables{};
     std::unordered_map<std::string, uintptr_t> mVirtualDestructors{};
     std::unordered_map<std::string, safetyhook::Allocation> mAllocatedDestructorBlocks{};
+    std::unordered_map<std::string, uintptr_t> mVtableToVarStorage{};
     std::shared_ptr<safetyhook::Allocator> mAllocator = nullptr;
 
 public:
     RuntimeImporter(HMODULE moduleHandle);
+    RuntimeImporter(const RuntimeImporter&) = delete;
+    RuntimeImporter(RuntimeImporter&&) = delete;
+    RuntimeImporter& operator=(const RuntimeImporter&) = delete;
+    RuntimeImporter& operator=(RuntimeImporter&&) = delete;
     ~RuntimeImporter();
 
     bool IsInitialized() const;
