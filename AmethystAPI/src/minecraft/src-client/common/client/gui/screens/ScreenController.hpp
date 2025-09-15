@@ -1,6 +1,7 @@
 /// @symbolgeneration
 #pragma once
 #include "minecraft/src-deps/core/string/StringHash.hpp"
+#include "minecraft/src-deps/input/InputHandler.hpp"
 #include <amethyst/Imports.hpp>
 
 class UIPropertyBag;
@@ -57,12 +58,6 @@ class ScreenViewCommand {
     std::function<void(void)> forceRepeatTTS;
     std::function<void(float)> setCustomObfuscatedTime;
     std::function<void(const std::string&)> triggerAnimationEvent;
-};
-
-enum class ButtonState : char {
-    Up = 0x0000,
-    Down = 0x0001,
-    None = 0x0002,
 };
 
 class IScreenController {
