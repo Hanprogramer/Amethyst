@@ -99,6 +99,7 @@ public:
 };
 
 class WeakStorageEntity {
+public:
     WeakRef<EntityContext> mRegistry;
     EntityId mEntity;
 };
