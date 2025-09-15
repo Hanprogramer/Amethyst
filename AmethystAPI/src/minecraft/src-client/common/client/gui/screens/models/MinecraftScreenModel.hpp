@@ -3,7 +3,7 @@
 #include "amethyst/Imports.hpp"
 #include "minecraft/src/common/config/ScreenCapabilities.hpp"
 #include "minecraft/src-client/common/client/game/MinecraftGame.hpp"
-#include "minecraft/src-client/common/client/game/IClientInstance.hpp"
+#include "minecraft/src-client/common/client/game/ClientInstance.hpp"
 
 class SceneStack;
 class IAdvancedGraphicsOptions;

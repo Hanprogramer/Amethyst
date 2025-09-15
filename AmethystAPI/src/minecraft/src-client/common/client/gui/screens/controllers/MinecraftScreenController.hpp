@@ -1,34 +1,58 @@
 /// @symbolgeneration
 #pragma once
-#include <unordered_map>
-#include <string>
 #include <memory>
-#include <amethyst/Imports.hpp>
-#include "minecraft/src/common/world/containers/ContainerEnumName.hpp"
-#include "minecraft/src-client/common/client/gui/screens/controllers/ClientInstanceScreenController.hpp"
+#include "amethyst/Imports.hpp"
+#include "minecraft/src-client/common/client/gui/screens/ScreenController.hpp"
+#include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 
-enum class UIProfile;
-class ClientInstanceScreenModel;
-enum class InteractionModel : int {
-    CombinedInventory = 0x0000,
-    SeparateInventoryAndHotbar = 0x0001,
+enum class ScreenExitBehavior : int {
+    LeaveScreen = 0x0000,
+    ExitGame = 0x0001,
+    GoToStartScreen = 0x0002,
+    DoNothing = 0x0003
 };
 
-/// @vptr {0x4CD2850}
-class ContainerScreenController :
-    public ClientInstanceScreenController
+enum class HoloUIInputMode : uint32_t {
+    Unknown = 0x0000,
+    Controller = 0x0001,
+    Gaze = 0x0002,
+    Mouse = 0x0003
+};
+
+class MinecraftScreenModel;
+
+/// @vptr {0x4D03830}
+class MinecraftScreenController :
+	public ScreenController,
+	public Bedrock::EnableNonOwnerReferences,
+    public std ::enable_shared_from_this<MinecraftScreenController> 
 {
 public:
-    std::byte padding3128[0x1158 - sizeof(ClientInstanceScreenController)];
+    struct LeaveScreenInfo {
+        std::byte padding0[0x28];
+    };
 
-    /// @address {0x59D9150}
-    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
+    std::shared_ptr<MinecraftScreenModel> mMinecraftScreenModel;
+    ScreenExitBehavior mExitBehavior;
+    InputMode mInputMode;
+    HoloUIInputMode mHoloUIInputMode;
+    InputMode mPreviousInputMode;
+    HoloUIInputMode mPreviousHoloUIInputMode;
+    bool mPlayerDied;
+    std::function<void __cdecl(enum ModalScreenButtonId)> mModalDialogResultCallback;
+    std::string mTTSTitle;
+    std::string mTTSDialogMessage;
+    MinecraftScreenController::LeaveScreenInfo mLeaveScreen;
+    bool mRayTracingActive;
+    std::unordered_map<std::string, std::vector<bool>> mDropDownActive;
+    std::unordered_map<std::string, int> mStepSliderValues;
+    bool mIsShowErrorScreenInProgress;
 
-    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
-    MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
+    /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 56 41 57 48 83 EC ? 41 0F B6 E9 41 8B F8}
+    MC MinecraftScreenController(std::shared_ptr<MinecraftScreenModel> model, ScreenExitBehavior exitBehavior, bool flag);
 
     /// @vidx {0}
-    MC virtual ~ContainerScreenController();
+    MC virtual ~MinecraftScreenController();
     /// @vidx {1}
     MC virtual void preFrameTick();
     /// @vidx {2}
@@ -131,60 +155,6 @@ public:
     MC virtual void unknown_50();
     /// @vidx {51}
     MC virtual void unknown_51();
-    /// @vidx {52}
-    MC virtual void unknown_52();
-    /// @vidx {53}
-    MC virtual void unknown_53();
-    /// @vidx {54}
-    MC virtual void unknown_54();
-    /// @vidx {55}
-    MC virtual void unknown_55();
-    /// @vidx {56}
-    MC virtual void unknown_56();
-    /// @vidx {57}
-    MC virtual void unknown_57();
-    /// @vidx {58}
-    MC virtual void unknown_58();
-    /// @vidx {59}
-    MC virtual void unknown_59();
-    /// @vidx {60}
-    MC virtual void unknown_60();
-    /// @vidx {61}
-    MC virtual void unknown_61();
-    /// @vidx {62}
-    MC virtual void unknown_62();
-    /// @vidx {63}
-    MC virtual void unknown_63();
-    /// @vidx {64}
-    MC virtual void unknown_64();
-    /// @vidx {65}
-    MC virtual void unknown_65();
-    /// @vidx {66}
-    MC virtual void unknown_66();
-    /// @vidx {67}
-    MC virtual void unknown_67();
-    /// @vidx {68}
-    MC virtual void unknown_68();
-    /// @vidx {69}
-    MC virtual void unknown_69();
-    /// @vidx {70}
-    MC virtual void unknown_70();
-    /// @vidx {71}
-    MC virtual void unknown_71();
-    /// @vidx {72}
-    MC virtual void unknown_72();
-    /// @vidx {73}
-    MC virtual void unknown_73();
-    /// @vidx {74}
-    MC virtual void unknown_74();
-    /// @vidx {75}
-    MC virtual void unknown_75();
-    /// @vidx {76}
-    MC virtual void unknown_76();
-
-// Non-virtuals
-public:
-    static InteractionModel interactionModelFromUIProfile(UIProfile profile);
 };
 
-static_assert(sizeof(ContainerScreenController) == 0x1158);
+static_assert(sizeof(MinecraftScreenController) == 0xC20);
