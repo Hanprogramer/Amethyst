@@ -1,34 +1,24 @@
 /// @symbolgeneration
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <memory>
-#include <amethyst/Imports.hpp>
-#include "minecraft/src/common/world/containers/ContainerEnumName.hpp"
-#include "minecraft/src-client/common/client/gui/screens/controllers/ClientInstanceScreenController.hpp"
+#include "minecraft/src-client/common/client/gui/screens/controllers/ContainerScreenController.hpp"
 
-enum class UIProfile;
-class ClientInstanceScreenModel;
-enum class InteractionModel : int {
-    CombinedInventory = 0x0000,
-    SeparateInventoryAndHotbar = 0x0001,
-};
+class Player;
+class BlockPos;
+struct ActorUniqueID;
+class ContainerManagerController;
 
-/// @vptr {0x4CD2850}
-class ContainerScreenController :
-    public ClientInstanceScreenController
+/// @vptr {0x4EC2B90}
+class BlockContainerScreenController :
+	public ContainerScreenController 
 {
 public:
-    std::byte padding3128[0x1158 - sizeof(ClientInstanceScreenController)];
+    std::shared_ptr<ContainerManagerController> mBlockContainerManagerController;
 
-    /// @address {0x59D9150}
-    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
+	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F1 48 8B FA 48 8B D9 48 89 4C 24}
+    MC BlockContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, Player& player, const BlockPos& pos, ActorUniqueID actorId);
 
-    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
-    MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
-
-    /// @vidx {0}
-    MC virtual ~ContainerScreenController();
+	/// @vidx {0}
+    MC virtual ~BlockContainerScreenController();
     /// @vidx {1}
     MC virtual void preFrameTick();
     /// @vidx {2}
@@ -181,10 +171,6 @@ public:
     MC virtual void unknown_75();
     /// @vidx {76}
     MC virtual void unknown_76();
-
-// Non-virtuals
-public:
-    static InteractionModel interactionModelFromUIProfile(UIProfile profile);
 };
 
-static_assert(sizeof(ContainerScreenController) == 0x1158);
+static_assert(sizeof(BlockContainerScreenController) == 0x1168);

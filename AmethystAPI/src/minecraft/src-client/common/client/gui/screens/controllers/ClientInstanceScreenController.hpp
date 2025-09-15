@@ -1,34 +1,24 @@
 /// @symbolgeneration
 #pragma once
-#include <unordered_map>
-#include <string>
-#include <memory>
-#include <amethyst/Imports.hpp>
-#include "minecraft/src/common/world/containers/ContainerEnumName.hpp"
-#include "minecraft/src-client/common/client/gui/screens/controllers/ClientInstanceScreenController.hpp"
+#include "amethyst/Imports.hpp"
+#include "minecraft/src-client/common/client/gui/screens/controllers/MinecraftScreenController.hpp"
+#include "minecraft/src-client/common/client/gui/screens/models/ClientInstanceScreenModel.hpp"
 
-enum class UIProfile;
-class ClientInstanceScreenModel;
-enum class InteractionModel : int {
-    CombinedInventory = 0x0000,
-    SeparateInventoryAndHotbar = 0x0001,
-};
+class PlatformMultiplayerRestrictions;
 
-/// @vptr {0x4CD2850}
-class ContainerScreenController :
-    public ClientInstanceScreenController
+/// @vptr {0x4CC91C0}
+class ClientInstanceScreenController :
+	public MinecraftScreenController
 {
 public:
-    std::byte padding3128[0x1158 - sizeof(ClientInstanceScreenController)];
+    std::shared_ptr<ClientInstanceScreenModel> mClientInstanceScreenModel;
+    std::unique_ptr<PlatformMultiplayerRestrictions> mPlatformMultiplayerRestrictions;
 
-    /// @address {0x59D9150}
-    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
-
-    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
-    MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
+	/// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 0F 57 C0 F3 0F 7F 44 24 ? 48 8B 42 ? 48 85 C0 74 ? F0 FF 40 ? 48 8B 02 48 89 44 24 ? 48 8B 42 ? 48 89 44 24 ? 41 B1 ? 45 33 C0 48 8D 54 24 ? E8 ? ? ? ? 90 48 8D 05 ? ? ? ? 48 89 03 48 8D 05 ? ? ? ? 48 89 83 ? ? ? ? 33 C0}
+    MC ClientInstanceScreenController(std::shared_ptr<ClientInstanceScreenModel> model);
 
     /// @vidx {0}
-    MC virtual ~ContainerScreenController();
+    MC virtual ~ClientInstanceScreenController();
     /// @vidx {1}
     MC virtual void preFrameTick();
     /// @vidx {2}
@@ -131,60 +121,6 @@ public:
     MC virtual void unknown_50();
     /// @vidx {51}
     MC virtual void unknown_51();
-    /// @vidx {52}
-    MC virtual void unknown_52();
-    /// @vidx {53}
-    MC virtual void unknown_53();
-    /// @vidx {54}
-    MC virtual void unknown_54();
-    /// @vidx {55}
-    MC virtual void unknown_55();
-    /// @vidx {56}
-    MC virtual void unknown_56();
-    /// @vidx {57}
-    MC virtual void unknown_57();
-    /// @vidx {58}
-    MC virtual void unknown_58();
-    /// @vidx {59}
-    MC virtual void unknown_59();
-    /// @vidx {60}
-    MC virtual void unknown_60();
-    /// @vidx {61}
-    MC virtual void unknown_61();
-    /// @vidx {62}
-    MC virtual void unknown_62();
-    /// @vidx {63}
-    MC virtual void unknown_63();
-    /// @vidx {64}
-    MC virtual void unknown_64();
-    /// @vidx {65}
-    MC virtual void unknown_65();
-    /// @vidx {66}
-    MC virtual void unknown_66();
-    /// @vidx {67}
-    MC virtual void unknown_67();
-    /// @vidx {68}
-    MC virtual void unknown_68();
-    /// @vidx {69}
-    MC virtual void unknown_69();
-    /// @vidx {70}
-    MC virtual void unknown_70();
-    /// @vidx {71}
-    MC virtual void unknown_71();
-    /// @vidx {72}
-    MC virtual void unknown_72();
-    /// @vidx {73}
-    MC virtual void unknown_73();
-    /// @vidx {74}
-    MC virtual void unknown_74();
-    /// @vidx {75}
-    MC virtual void unknown_75();
-    /// @vidx {76}
-    MC virtual void unknown_76();
-
-// Non-virtuals
-public:
-    static InteractionModel interactionModelFromUIProfile(UIProfile profile);
 };
 
-static_assert(sizeof(ContainerScreenController) == 0x1158);
+static_assert(sizeof(ClientInstanceScreenController) == 0xC38);

@@ -1,6 +1,12 @@
 /// @symbolgeneration
+#pragma once
 #include "amethyst/Imports.hpp"
 #include "minecraft/src-client/common/client/gui/screens/models/MinecraftScreenModel.hpp"
+
+enum class UIProfile : int {
+    Classic = 0x0000,
+    Pocket = 0x0001
+};
 
 /// @vptr {0x4CB1C48}
 class ClientInstanceScreenModel : 
@@ -42,4 +48,7 @@ public:
     MC virtual void unknown_12();
     /// @vidx {13}
     MC virtual void unknown_13();
+
+    /// @signature {48 89 5C 24 ? 57 48 83 EC ? 48 8B D1 48 8B 41 ? 48 85 C0 74 ? 48 83 38 ? 74 ? 48 8B 41 ? 48 85 C0 74 ? F0 FF 40 ? 48 8B 49 ? 48 89 4C 24 ? 48 8B 5A ? 48 89 5C 24 ? 48 8B 09 48 8B 01 48 8B 80 ? ? ? ? FF 15 ? ? ? ? 48 8B 10 48 8B C8 48 8B 82 ? ? ? ? FF 15 ? ? ? ? 8B F8 48 85 DB 74 ? 48 8B CB E8 ? ? ? ? 8B C7 48 8B 5C 24 ? 48 83 C4 ? 5F C3 E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 55}
+    MC UIProfile getUIProfile();
 };

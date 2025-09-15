@@ -8,7 +8,8 @@
 #include "minecraft/src-deps/core/utility/ServiceLocator.hpp"
 
 class IAdvancedGraphicsOptions;
-
+class MinecraftGame;
+class ClientInstance;
 class SceneCreationUtils {
 public:
     template <typename T, typename... Args>
