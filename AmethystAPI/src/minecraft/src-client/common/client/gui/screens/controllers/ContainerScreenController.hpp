@@ -14,6 +14,7 @@ class ItemStackBase;
 class ItemStack;
 class SlotData;
 class SelectedSlotInfo;
+class ContainerManagerController;
 enum class InteractionModel : int {
     CombinedInventory = 0x0000,
     SeparateInventoryAndHotbar = 0x0001,
