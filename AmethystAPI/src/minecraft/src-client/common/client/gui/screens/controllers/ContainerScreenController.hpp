@@ -8,7 +8,12 @@
 #include "minecraft/src-client/common/client/gui/screens/controllers/ClientInstanceScreenController.hpp"
 
 enum class UIProfile;
+enum class FadeInIconBehavior;
 class ClientInstanceScreenModel;
+class ItemStackBase;
+class ItemStack;
+class SlotData;
+class SelectedSlotInfo;
 enum class InteractionModel : int {
     CombinedInventory = 0x0000,
     SeparateInventoryAndHotbar = 0x0001,
@@ -29,124 +34,44 @@ public:
 
     /// @vidx {0}
     MC virtual ~ContainerScreenController();
-    /// @vidx {1}
-    MC virtual void preFrameTick();
-    /// @vidx {2}
-    MC virtual ui::DirtyFlag tick();
-    /// @vidx {3}
-    MC virtual ui::ViewRequest handleEvent(ScreenEvent& event);
-    /// @vidx {4}
-    MC virtual std::optional<std::string> getRoute();
-    /// @vidx {5}
-    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>& state);
-    /// @vidx {6}
-    MC virtual void unknown_6();
-    /// @vidx {7}
-    MC virtual void unknown_7();
-    /// @vidx {8}
-    MC virtual void unknown_8();
-    /// @vidx {9}
-    MC virtual void unknown_9();
-    /// @vidx {10}
-    MC virtual void unknown_10();
-    /// @vidx {11}
-    MC virtual void unknown_11();
-    /// @vidx {12}
-    MC virtual void unknown_12();
-    /// @vidx {13}
-    MC virtual void unknown_13();
-    /// @vidx {14}
-    MC virtual void unknown_14();
-    /// @vidx {15}
-    MC virtual void unknown_15();
-    /// @vidx {16}
-    MC virtual void unknown_16();
-    /// @vidx {17}
-    MC virtual void unknown_17();
-    /// @vidx {18}
-    MC virtual void unknown_18();
-    /// @vidx {19}
-    MC virtual void unknown_19();
-    /// @vidx {20}
-    MC virtual void unknown_20();
-    /// @vidx {21}
-    MC virtual void unknown_21();
-    /// @vidx {22}
-    MC virtual void unknown_22();
-    /// @vidx {23}
-    MC virtual void unknown_23();
-    /// @vidx {24}
-    MC virtual void unknown_24();
-    /// @vidx {25}
-    MC virtual void unknown_25();
-    /// @vidx {26}
-    MC virtual void unknown_26();
-    /// @vidx {27}
-    MC virtual void unknown_27();
-    /// @vidx {28}
-    MC virtual void unknown_28();
-    /// @vidx {29}
-    MC virtual void unknown_29();
-    /// @vidx {30}
-    MC virtual void unknown_30();
-    /// @vidx {31}
-    MC virtual void unknown_31();
-    /// @vidx {32}
-    MC virtual void unknown_32();
-    /// @vidx {33}
-    MC virtual void unknown_33();
-    /// @vidx {34}
-    MC virtual void unknown_34();
-    /// @vidx {35}
-    MC virtual void unknown_35();
-    /// @vidx {36}
-    MC virtual void unknown_36();
-    /// @vidx {37}
-    MC virtual void unknown_37();
-    /// @vidx {38}
-    MC virtual void unknown_38();
-    /// @vidx {39}
-    MC virtual void unknown_39();
-    /// @vidx {40}
-    MC virtual void unknown_40();
-    /// @vidx {41}
-    MC virtual void unknown_41();
-    /// @vidx {42}
-    MC virtual void unknown_42();
-    /// @vidx {43}
-    MC virtual void unknown_43();
-    /// @vidx {44}
-    MC virtual void unknown_44();
-    /// @vidx {45}
-    MC virtual void unknown_45();
-    /// @vidx {46}
-    MC virtual void unknown_46();
-    /// @vidx {47}
-    MC virtual void unknown_47();
-    /// @vidx {48}
-    MC virtual void unknown_48();
-    /// @vidx {49}
-    MC virtual void unknown_49();
-    /// @vidx {50}
-    MC virtual void unknown_50();
-    /// @vidx {51}
-    MC virtual void unknown_51();
-    /// @vidx {52}
-    MC virtual void unknown_52();
+    /// @vidx {inherit}
+    MC virtual ui::DirtyFlag tick() override;
+    /// @vidx {inherit}
+    MC virtual void onOpen() override;
+    /// @vidx {inherit}
+    MC virtual void onLeave() override;
+    /// @vidx {inherit}
+    MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification) override;
+    /// @vidx {inherit}
+    MC virtual void setAssociatedBlockPos(const BlockPos&) override;
+    /// @vidx {inherit}
+    MC virtual void setAssociatedEntityUniqueID(ActorUniqueID) override;
+    /// @vidx {inherit}
+    MC virtual void addStaticScreenVars(Json::Value&) override;
+    /// @vidx {inherit}
+    MC virtual bool _isStillValid(void) override;
+    /// @vidx {inherit}
+    MC virtual bool _getGestureControlEnabled() override;
+    /// @vidx {inherit}
+    MC virtual std::string _getButtonADescription() override;
+    /// @vidx {inherit}
+    MC virtual std::string _getButtonXDescription() override;
+    /// @vidx {inherit}
+    MC virtual std::string _getButtonYDescription() override;
     /// @vidx {53}
-    MC virtual void unknown_53();
+    MC virtual void _handleTakeHalf(const std::string&, int);
     /// @vidx {54}
-    MC virtual void unknown_54();
+    MC virtual void _handlePlaceAll(const std::string&, int);
     /// @vidx {55}
-    MC virtual void unknown_55();
+    MC virtual void _handlePlaceOne(const std::string&, int);
     /// @vidx {56}
-    MC virtual void unknown_56();
+    MC virtual void _handleTakePlace(const std::string&, int, bool);
     /// @vidx {57}
-    MC virtual void unknown_57();
+    MC virtual void _handleSelectSlot(const std::string&, int);
     /// @vidx {58}
-    MC virtual void unknown_58();
+    MC virtual SelectedSlotInfo _getSelectedSlotInfo();
     /// @vidx {59}
-    MC virtual void unknown_59();
+    MC virtual void _reevaluateSlotData(SlotData&&);
     /// @vidx {60}
     MC virtual void unknown_60();
     /// @vidx {61}
@@ -154,33 +79,35 @@ public:
     /// @vidx {62}
     MC virtual void unknown_62();
     /// @vidx {63}
-    MC virtual void unknown_63();
+    MC virtual ui::ViewRequest _onContainerSlotHovered(const std::string& collection, int index);
     /// @vidx {64}
-    MC virtual void unknown_64();
+    MC virtual ui::ViewRequest _onContainerSlotUnhovered(const std::string& collection, int index);
     /// @vidx {65}
-    MC virtual void unknown_65();
+    MC virtual ui::ViewRequest _onContainerSlotSelected(const std::string& collection, int index);
     /// @vidx {66}
-    MC virtual void unknown_66();
+    MC virtual ui::ViewRequest _onContainerSlotPressed(const std::string& collection, int index);
     /// @vidx {67}
-    MC virtual void unknown_67();
+    MC virtual bool _shouldSwap(const std::string& collectionLhs, int indexLhs, const std::string& collectionRhs, int indexRhs);
     /// @vidx {68}
-    MC virtual void unknown_68();
+    MC virtual bool _isTargetSwappable(const std::string& collection, int index);
     /// @vidx {69}
-    MC virtual void unknown_69();
+    MC virtual std::string _getCollectionName(UIPropertyBag*);
     /// @vidx {70}
-    MC virtual void unknown_70();
+    MC virtual bool _canSplit(const std::string&);
     /// @vidx {71}
-    MC virtual void unknown_71();
+    MC virtual void _sendFlyingItem(const ItemStackBase&, const std::string&, int, const std::string&, int, FadeInIconBehavior);
     /// @vidx {72}
-    MC virtual void unknown_72();
+    MC virtual void _registerCoalesceOrder() = 0;
     /// @vidx {73}
-    MC virtual void unknown_73();
+    MC virtual void _registerAutoPlaceOrder() = 0;
     /// @vidx {74}
-    MC virtual void unknown_74();
+    MC virtual void _createItemLockNotification(bool);
     /// @vidx {75}
-    MC virtual void unknown_75();
+    MC virtual int _getProgressiveBarDirection(const std::string&, int);
     /// @vidx {76}
     MC virtual void unknown_76();
+    /// @vidx {77}
+    MC virtual bool _isInCreativeContainer(const std::string&);
 
 // Non-virtuals
 public:

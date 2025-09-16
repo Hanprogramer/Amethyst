@@ -19,6 +19,7 @@ class TextEditScreenEventData;
 class ToggleChangeEventData;
 class TextEditSelectedStateChangeEventData;
 class TaskGroup;
+class BlockPos;
 struct ActorUniqueID;
 
 namespace Json {
@@ -137,11 +138,11 @@ public:
     /// @vidx {2}
     MC virtual ui::DirtyFlag tick();
     /// @vidx {3}
-    MC virtual ui::ViewRequest handleEvent(ScreenEvent& event);
+    MC virtual ui::ViewRequest handleEvent(ScreenEvent&);
     /// @vidx {4}
     MC virtual std::optional<std::string> getRoute();
     /// @vidx {5}
-    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>& state);
+    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>&);
     /// @vidx {6}
     MC virtual void onOpen();
     /// @vidx {7}
@@ -167,45 +168,47 @@ public:
     /// @vidx {17}
     MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification);
     /// @vidx {18}
-    MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&);
-    /// @vidx {19}
     MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
+    /// @vidx {19}
+    MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /// @vidx {20}
-    MC virtual void handleLicenceChanged();
+    MC virtual void handleLicenseChanged();
     /// @vidx {21}
     MC virtual void onDictationEvent(const std::string&);
     /// @vidx {22}
     MC virtual void setAssociatedBlockPos(const BlockPos&);
     /// @vidx {23}
-    MC virtual void setAssociatedEntityUniqueID(ActorUniqueID);
+    MC virtual void setAssociatedEntityUniqueID(const ActorUniqueID);
     /// @vidx {24}
     MC virtual void setSuspendInput(bool);
     /// @vidx {25}
-    MC virtual void setSuspendDirectionalInput(bool);
-    /// @vidx {26}
     MC virtual void setViewCommand(const ScreenViewCommand&);
-    /// @vidx {27}
+    /// @vidx {26}
     MC virtual void addStaticScreenVars(Json::Value&);
-    /// @vidx {28}
+    /// @vidx {27}
     MC virtual std::string getAdditionalScreenInfo();
-    /// @vidx {29}
+    /// @vidx {28}
     MC virtual std::string getTelemetryOverride();
-    /// @vidx {30}
+    /// @vidx {29}
     MC virtual void addEventProperties(std::unordered_map<std::string, std::string>&);
-    /// @vidx {31}
+    /// @vidx {30}
     MC virtual ui::SceneType getSceneType();
-    /// @vidx {32}
+    /// @vidx {31}
     MC virtual int getScreenVersion();
+    /// @vidx {32}
+    MC virtual uint32_t getSceneId();
     /// @vidx {33}
-    MC virtual int getSceneId();
-    /// @vidx {34}
     MC virtual bool screenHandlesGamepadMenuButton();
-    /// @vidx {35}
+    /// @vidx {34}
     MC virtual ScreenControllerProxy* getProxy();
-    /// @vidx {36}
+    /// @vidx {35}
     MC virtual void onEntered();
-    /// @vidx {37}
+    /// @vidx {36}
     MC virtual void onScreenPushedAbove();
+    /// @vidx {37}
+    MC virtual void onEntering();
+    /// @vidx {38}
+    MC virtual bool _doesScreenHaveExitBehavior();
 
 // Non-virtuals
 public:
