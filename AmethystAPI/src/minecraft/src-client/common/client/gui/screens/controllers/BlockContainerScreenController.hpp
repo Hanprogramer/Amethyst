@@ -17,7 +17,7 @@ public:
 	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F1 48 8B FA 48 8B D9 48 89 4C 24}
     MC BlockContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, Player& player, const BlockPos& pos, ActorUniqueID actorId);
 
-	/// @vidx {0}
+	/// @vidx {inherit}
     MC virtual ~BlockContainerScreenController();
 	/// @vidx {inherit}
     MC virtual bool _isStillValid();

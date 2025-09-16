@@ -1,2 +1,7 @@
 #pragma once
-// WIP
+
+class SlotData {
+public:
+    std::string mCollectionName;
+    int mCollectionIndex;
+};

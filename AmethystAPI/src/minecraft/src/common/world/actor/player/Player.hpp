@@ -14,11 +14,13 @@ class InventoryTransaction;
 class ComplexInventoryTransaction;
 class GameMode;
 class LayeredAbilities;
+class IContainerManager;
 
 #pragma pack(push, 8)
 class Player : public Mob {
 public:
-    /* this + 1512 */ std::byte padding1512[376];
+    /* this + 1512 */ std::byte padding1512[360];
+    /* this + 1872 */ std::shared_ptr<IContainerManager> mContainerManager;
     /* this + 1888 */ PlayerInventory* playerInventory;
     /* this + 1896 */ std::byte padding1896[1920 - 1896];
     /* this + 1920 */ SerializedSkin mSkin;
@@ -48,6 +50,9 @@ public:
     bool canUseOperatorBlocks() const;
     void updateSkin(const SerializedSkin& skin, int clientSubID);
     void setPlayerGameType(GameType gameType);
+
+    void setContainerManagerModel(std::shared_ptr<IContainerManager> manager);
+    std::weak_ptr<IContainerManager> getContainerManagerModel() const;
 };
 #pragma pack(pop)   
 

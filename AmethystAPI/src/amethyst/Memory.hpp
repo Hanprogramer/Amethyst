@@ -64,7 +64,13 @@ uintptr_t GetVtable(void* obj);
 
 template <auto T>
 __declspec(noinline) size_t GetVirtualFunctionOffset() {
-    uintptr_t func = std::bit_cast<uintptr_t>(T);
+    using FnType = decltype(T);
+    union {
+        FnType func;
+        uintptr_t addr;
+    } u;
+    u.func = T;
+    uintptr_t func = u.addr;
     ZydisDecoder decoder;
     ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
 

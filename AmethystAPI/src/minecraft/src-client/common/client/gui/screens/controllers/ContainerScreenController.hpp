@@ -20,14 +20,17 @@ enum class InteractionModel : int {
     SeparateInventoryAndHotbar = 0x0001,
 };
 
+// Potentially wrong vtable ordering
+
 /// @vptr {0x4CD2850}
 class ContainerScreenController :
     public ClientInstanceScreenController
 {
 public:
-    std::byte padding3128[0xD88 - sizeof(ClientInstanceScreenController)];
+    MC static uintptr_t $vtable_for_this;
+
+    std::byte padding3128[0x1148 - sizeof(ClientInstanceScreenController)];
     std::shared_ptr<ContainerManagerController> mContainerManagerController;
-    std::byte padding3144[0x3C0];
 
     /// @address {0x59D9150}
     MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
@@ -35,7 +38,7 @@ public:
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
     MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
 
-    /// @vidx {0}
+    /// @vidx {inherit}
     MC virtual ~ContainerScreenController();
     /// @vidx {inherit}
     MC virtual ui::DirtyFlag tick() override;
@@ -76,11 +79,11 @@ public:
     /// @vidx {59}
     MC virtual void _reevaluateSlotData(SlotData&&);
     /// @vidx {60}
-    MC virtual void unknown_60();
+    MC virtual const ItemStack& _getItemStack(const std::string& collection, int index);
     /// @vidx {61}
-    MC virtual void unknown_61();
+    MC virtual const ItemStackBase& _getVisualItemStack(const std::string& collection, int index);
     /// @vidx {62}
-    MC virtual void unknown_62();
+    MC virtual const ItemStackBase& _getTakeableItemStackBase(const std::string& collection, int index);
     /// @vidx {63}
     MC virtual ui::ViewRequest _onContainerSlotHovered(const std::string& collection, int index);
     /// @vidx {64}
@@ -100,9 +103,9 @@ public:
     /// @vidx {71}
     MC virtual void _sendFlyingItem(const ItemStackBase&, const std::string&, int, const std::string&, int, FadeInIconBehavior);
     /// @vidx {72}
-    MC virtual void _registerCoalesceOrder() = 0;
+    MC virtual void _registerCoalesceOrder();
     /// @vidx {73}
-    MC virtual void _registerAutoPlaceOrder() = 0;
+    MC virtual void _registerAutoPlaceOrder();
     /// @vidx {74}
     MC virtual void _createItemLockNotification(bool);
     /// @vidx {75}
@@ -115,6 +118,13 @@ public:
 // Non-virtuals
 public:
     static InteractionModel interactionModelFromUIProfile(UIProfile profile);
+
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 89 4D ? 0F 57 C0 B9 ? ? ? ? 0F 11 44 24 ? E8 ? ? ? ? 0F 10 05 ? ? ? ? 4C 8B C0 48 89 44 24 ? BF}
+    MC void _registerStateMachine();
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8B EC 48 81 EC ? ? ? ? 4C 8B F9}
+    MC void _registerEventHandlers();
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B F9}
+    MC void _registerBindings();
 };
 
 static_assert(sizeof(ContainerScreenController) == 0x1158);

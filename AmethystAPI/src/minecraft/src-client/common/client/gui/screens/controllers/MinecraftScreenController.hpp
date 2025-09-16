@@ -57,7 +57,7 @@ public:
     /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 41 56 41 57 48 83 EC ? 41 0F B6 E9 41 8B F8}
     MC MinecraftScreenController(std::shared_ptr<MinecraftScreenModel> model, ScreenExitBehavior exitBehavior, bool flag);
 
-    /// @vidx {0}
+    /// @vidx {inherit}
     MC virtual ~MinecraftScreenController();
     /// @vidx {inherit}
     MC virtual bool _doesScreenHaveExitBehavior() override;

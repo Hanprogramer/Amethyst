@@ -67,6 +67,16 @@ void Player::setPlayerGameType(GameType gameType)
     return (this->*func)(gameType);
 }
 
+void Player::setContainerManagerModel(std::shared_ptr<IContainerManager> manager)
+{
+    mContainerManager = manager;
+}
+
+std::weak_ptr<IContainerManager> Player::getContainerManagerModel() const
+{
+    return mContainerManager;
+}
+
  //int Player::getItemUseDuration() const
  //{
  //    using function = decltype(&Player::getItemUseDuration);
