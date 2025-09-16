@@ -24,9 +24,7 @@ class ContainerScreenController :
     public ClientInstanceScreenController
 {
 public:
-    std::byte padding3128[0xD88 - sizeof(ClientInstanceScreenController)];
-    std::shared_ptr<ContainerManagerController> mContainerManagerController;
-    std::byte padding3144[0x3C0];
+    std::byte padding3128[0x1158 - sizeof(ClientInstanceScreenController)];
 
     /// @address {0x59D9150}
     MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
