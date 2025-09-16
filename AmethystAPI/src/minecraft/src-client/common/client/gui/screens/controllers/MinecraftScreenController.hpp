@@ -5,6 +5,12 @@
 #include "minecraft/src-client/common/client/gui/screens/ScreenController.hpp"
 #include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
 
+namespace Social {
+enum class UserPlatformConnectionResult;
+}
+
+enum class PickCustomSkinResult;
+
 enum class ScreenExitBehavior : int {
     LeaveScreen = 0x0000,
     ExitGame = 0x0001,
@@ -39,7 +45,7 @@ public:
     InputMode mPreviousInputMode;
     HoloUIInputMode mPreviousHoloUIInputMode;
     bool mPlayerDied;
-    std::function<void __cdecl(enum ModalScreenButtonId)> mModalDialogResultCallback;
+    std::function<void(enum ModalScreenButtonId)> mModalDialogResultCallback;
     std::string mTTSTitle;
     std::string mTTSDialogMessage;
     MinecraftScreenController::LeaveScreenInfo mLeaveScreen;
@@ -53,108 +59,36 @@ public:
 
     /// @vidx {0}
     MC virtual ~MinecraftScreenController();
-    /// @vidx {1}
-    MC virtual void preFrameTick();
-    /// @vidx {2}
-    MC virtual ui::DirtyFlag tick();
-    /// @vidx {3}
-    MC virtual ui::ViewRequest handleEvent(ScreenEvent& event);
-    /// @vidx {4}
-    MC virtual std::optional<std::string> getRoute();
-    /// @vidx {5}
-    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>& state);
-    /// @vidx {6}
-    MC virtual void unknown_6();
-    /// @vidx {7}
-    MC virtual void unknown_7();
-    /// @vidx {8}
-    MC virtual void unknown_8();
-    /// @vidx {9}
-    MC virtual void unknown_9();
-    /// @vidx {10}
-    MC virtual void unknown_10();
-    /// @vidx {11}
-    MC virtual void unknown_11();
-    /// @vidx {12}
-    MC virtual void unknown_12();
-    /// @vidx {13}
-    MC virtual void unknown_13();
-    /// @vidx {14}
-    MC virtual void unknown_14();
-    /// @vidx {15}
-    MC virtual void unknown_15();
-    /// @vidx {16}
-    MC virtual void unknown_16();
-    /// @vidx {17}
-    MC virtual void unknown_17();
-    /// @vidx {18}
-    MC virtual void unknown_18();
-    /// @vidx {19}
-    MC virtual void unknown_19();
-    /// @vidx {20}
-    MC virtual void unknown_20();
-    /// @vidx {21}
-    MC virtual void unknown_21();
-    /// @vidx {22}
-    MC virtual void unknown_22();
-    /// @vidx {23}
-    MC virtual void unknown_23();
-    /// @vidx {24}
-    MC virtual void unknown_24();
-    /// @vidx {25}
-    MC virtual void unknown_25();
-    /// @vidx {26}
-    MC virtual void unknown_26();
-    /// @vidx {27}
-    MC virtual void unknown_27();
-    /// @vidx {28}
-    MC virtual void unknown_28();
-    /// @vidx {29}
-    MC virtual void unknown_29();
-    /// @vidx {30}
-    MC virtual void unknown_30();
-    /// @vidx {31}
-    MC virtual void unknown_31();
-    /// @vidx {32}
-    MC virtual void unknown_32();
-    /// @vidx {33}
-    MC virtual void unknown_33();
-    /// @vidx {34}
-    MC virtual void unknown_34();
-    /// @vidx {35}
-    MC virtual void unknown_35();
-    /// @vidx {36}
-    MC virtual void unknown_36();
-    /// @vidx {37}
-    MC virtual void unknown_37();
-    /// @vidx {38}
-    MC virtual void unknown_38();
+    /// @vidx {inherit}
+    MC virtual bool _doesScreenHaveExitBehavior() override;
     /// @vidx {39}
-    MC virtual void unknown_39();
+    MC virtual bool _isStillValid();
     /// @vidx {40}
-    MC virtual void unknown_40();
+    MC virtual bool _getGamepadHelperVisible();
     /// @vidx {41}
-    MC virtual void unknown_41();
+    MC virtual bool _getMixedHelperVisible();
     /// @vidx {42}
-    MC virtual void unknown_42();
+    MC virtual bool _getKeyboardHelperVisible();
     /// @vidx {43}
-    MC virtual void unknown_43();
+    MC virtual bool _getGestureControlEnabled();
     /// @vidx {44}
-    MC virtual void unknown_44();
+    MC virtual std::string _getButtonStartDescription();
     /// @vidx {45}
-    MC virtual void unknown_45();
+    MC virtual std::string _getButtonADescription();
     /// @vidx {46}
-    MC virtual void unknown_46();
+    MC virtual std::string _getButtonBDescription();
     /// @vidx {47}
-    MC virtual void unknown_47();
+    MC virtual std::string _getButtonXDescription();
     /// @vidx {48}
-    MC virtual void unknown_48();
+    MC virtual std::string _getButtonYDescription();
     /// @vidx {49}
-    MC virtual void unknown_49();
+    MC virtual std::string _getButtonKeyboardDescription();
     /// @vidx {50}
-    MC virtual void unknown_50();
+    MC virtual void showPickCustomSkinDialog(std::function<void(PickCustomSkinResult)>);
     /// @vidx {51}
-    MC virtual void unknown_51();
+    MC virtual std::string _getScreenName();
+    /// @vidx {52}
+    MC virtual ui::ViewRequest promptConnect(bool, std::function<void(Social::UserPlatformConnectionResult)>);
 };
 
 static_assert(sizeof(MinecraftScreenController) == 0xC20);

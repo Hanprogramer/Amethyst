@@ -19,8 +19,15 @@ class TextEditScreenEventData;
 class ToggleChangeEventData;
 class TextEditSelectedStateChangeEventData;
 class TaskGroup;
+class BlockPos;
+struct ActorUniqueID;
+
+namespace Json {
+class Value;
+}
 
 namespace ui {
+enum class SceneType {};
 enum class ViewRequest : uint32_t {
     None = 0x0000,
     Refresh = 0x0001,
@@ -33,6 +40,7 @@ enum class ViewRequest : uint32_t {
 enum class DirtyFlag {
 
 };
+class GameEventNotification {};
 }
 
 class ScreenViewCommand {
@@ -130,75 +138,77 @@ public:
     /// @vidx {2}
     MC virtual ui::DirtyFlag tick();
     /// @vidx {3}
-    MC virtual ui::ViewRequest handleEvent(ScreenEvent& event);
+    MC virtual ui::ViewRequest handleEvent(ScreenEvent&);
     /// @vidx {4}
     MC virtual std::optional<std::string> getRoute();
     /// @vidx {5}
-    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>& state);
+    MC virtual void setScreenState(const std::vector<std::pair<std::string_view, std::string_view>>&);
     /// @vidx {6}
-    MC virtual void unknown_6();
+    MC virtual void onOpen();
     /// @vidx {7}
-    MC virtual void unknown_7();
+    MC virtual void queueTitleNarration();
     /// @vidx {8}
-    MC virtual void unknown_8();
+    MC virtual void onTerminate();
     /// @vidx {9}
-    MC virtual void unknown_9();
+    MC virtual void onInit();
     /// @vidx {10}
-    MC virtual void unknown_10();
+    MC virtual void onDelete();
     /// @vidx {11}
-    MC virtual void unknown_11();
+    MC virtual bool canExit();
     /// @vidx {12}
-    MC virtual void unknown_12();
+    MC virtual ui::ViewRequest tryExit();
     /// @vidx {13}
-    MC virtual void unknown_13();
+    MC virtual void onCreation();
     /// @vidx {14}
-    MC virtual void unknown_14();
+    MC virtual void onReload();
     /// @vidx {15}
-    MC virtual void unknown_15();
+    MC virtual void onLeave();
     /// @vidx {16}
-    MC virtual void unknown_16();
+    MC virtual void leaveScreen(const std::string&);
     /// @vidx {17}
-    MC virtual void unknown_17();
+    MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification);
     /// @vidx {18}
-    MC virtual void unknown_18();
+    MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /// @vidx {19}
-    MC virtual void unknown_19();
+    MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /// @vidx {20}
-    MC virtual void unknown_20();
+    MC virtual void handleLicenseChanged();
     /// @vidx {21}
-    MC virtual void unknown_21();
+    MC virtual void onDictationEvent(const std::string&);
     /// @vidx {22}
-    MC virtual void unknown_22();
+    MC virtual void setAssociatedBlockPos(const BlockPos&);
     /// @vidx {23}
-    MC virtual void unknown_23();
+    MC virtual void setAssociatedEntityUniqueID(const ActorUniqueID);
     /// @vidx {24}
-    MC virtual void unknown_24();
+    MC virtual void setSuspendInput(bool);
     /// @vidx {25}
-    MC virtual void unknown_25();
+    MC virtual void setViewCommand(const ScreenViewCommand&);
     /// @vidx {26}
-    MC virtual void unknown_26();
+    MC virtual void addStaticScreenVars(Json::Value&);
     /// @vidx {27}
-    MC virtual void unknown_27();
+    MC virtual std::string getAdditionalScreenInfo();
     /// @vidx {28}
-    MC virtual void unknown_28();
+    MC virtual std::string getTelemetryOverride();
     /// @vidx {29}
-    MC virtual void unknown_29();
+    MC virtual void addEventProperties(std::unordered_map<std::string, std::string>&);
     /// @vidx {30}
-    MC virtual void unknown_30();
+    MC virtual ui::SceneType getSceneType();
     /// @vidx {31}
-    MC virtual void unknown_31();
+    MC virtual int getScreenVersion();
     /// @vidx {32}
-    MC virtual void unknown_32();
+    MC virtual uint32_t getSceneId();
     /// @vidx {33}
-    MC virtual void unknown_33();
+    MC virtual bool screenHandlesGamepadMenuButton();
     /// @vidx {34}
-    MC virtual void unknown_34();
+    MC virtual ScreenControllerProxy* getProxy();
     /// @vidx {35}
-    MC virtual void unknown_35();
+    MC virtual void onEntered();
     /// @vidx {36}
-    MC virtual void unknown_36();
+    MC virtual void onScreenPushedAbove();
     /// @vidx {37}
-    MC virtual void unknown_37();
+    MC virtual void onEntering();
+    /// @vidx {38}
+    MC virtual bool _doesScreenHaveExitBehavior();
 
 // Non-virtuals
 public:
