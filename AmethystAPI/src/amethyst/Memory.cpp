@@ -94,7 +94,7 @@ uintptr_t GetVtable(void* obj)
 
 void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
 {
-    Log::Info("[AmethystRuntime] Comparing virtual tables {:X} and {:X}", lhs, rhs);
+    Log::Info("Comparing virtual tables {:X} and {:X}", lhs, rhs);
     auto lhsArray = reinterpret_cast<uintptr_t*>(lhs);
     auto rhsArray = reinterpret_cast<uintptr_t*>(rhs);
 
@@ -111,7 +111,7 @@ void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
         uintptr_t lhsFunc = resolveJmp(lhsArray[i]) - GetMinecraftBaseAddress();
         uintptr_t rhsFunc = resolveJmp(rhsArray[i]) - GetMinecraftBaseAddress();
         if (lhsFunc != rhsFunc) {
-            Log::Warning("{}[AmethystRuntime] Virtual table mismatch at index {}: {:X} != {:X}", Log::YELLOW, i, lhsFunc, rhsFunc);
+            Log::Warning("Virtual table mismatch at index {}: {:X} != {:X}", i, lhsFunc, rhsFunc);
         }
     }
 }

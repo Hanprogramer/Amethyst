@@ -491,6 +491,7 @@ namespace Json {
          ObjectValues *map_;
 # endif
       } value_;
+      
       ValueType type_ : 8;
       unsigned int allocated_ : 1;     // Notes: if declared as bool, bitfield is useless.
 # ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
