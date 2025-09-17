@@ -15,6 +15,7 @@ class ItemStackRequestScope;
 class AutoPlaceResult;
 class ItemTransferAmount;
 class ContainerManagerModel;
+class ContainerController;
 enum class ContainerScreenRequestActionType;
 
 enum ItemTakeType : int {
@@ -31,7 +32,9 @@ public:
     MC static uintptr_t $vtable_for_this;
 
     std::weak_ptr<ContainerManagerModel> mContainerManagerModel;
-    std::byte padding8[0x7A];
+    std::byte padding16[0x18];
+    std::unordered_map<std::string, ContainerController> mContainers;
+    std::byte padding8[0x22];
 
     /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 48 83 EC ? 48 8B F2 48 8B D9}
     MC ContainerManagerController(std::weak_ptr<ContainerManagerModel>);
