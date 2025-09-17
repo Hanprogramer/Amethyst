@@ -20,8 +20,6 @@ enum class InteractionModel : int {
     SeparateInventoryAndHotbar = 0x0001,
 };
 
-// Potentially wrong vtable ordering
-
 /// @vptr {0x4CD2850}
 class ContainerScreenController :
     public ClientInstanceScreenController

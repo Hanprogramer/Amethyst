@@ -79,10 +79,11 @@ public:
 };
 
 /// @vptr {0x4CCA2A0}
-class ScreenController :
-    public IScreenController 
+class ScreenController
 {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     enum class PreviousButtonStateRequirement : int32_t {
         Any = 0x0000,
         Down = 0x0001,
@@ -167,10 +168,13 @@ public:
     MC virtual void leaveScreen(const std::string&);
     /// @vidx {17}
     MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification);
-    /// @vidx {18}
-    MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
+
+    // Keep your eyes open for overloads
     /// @vidx {19}
+    MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
+    /// @vidx {18}
     MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&);
+
     /// @vidx {20}
     MC virtual void handleLicenseChanged();
     /// @vidx {21}

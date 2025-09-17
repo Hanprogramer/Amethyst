@@ -18,13 +18,13 @@ public:
     MC BlockContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, Player& player, const BlockPos& pos, ActorUniqueID actorId);
 
 	/// @vidx {inherit}
-    MC virtual ~BlockContainerScreenController();
+    MC virtual ~BlockContainerScreenController() override;
 	/// @vidx {inherit}
-    MC virtual bool _isStillValid();
+    MC virtual bool _isStillValid() override;
     /// @vidx {inherit}
-    MC virtual void _registerCoalesceOrder();
+    MC virtual void _registerCoalesceOrder() override;
     /// @vidx {inherit}
-    MC virtual void _registerAutoPlaceOrder();
+    MC virtual void _registerAutoPlaceOrder() override;
 };
 
 static_assert(sizeof(BlockContainerScreenController) == 0x1168);

@@ -34,6 +34,8 @@ class MinecraftScreenController :
     public std ::enable_shared_from_this<MinecraftScreenController> 
 {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     struct LeaveScreenInfo {
         std::byte padding0[0x28];
     };
@@ -58,7 +60,31 @@ public:
     MC MinecraftScreenController(std::shared_ptr<MinecraftScreenModel> model, ScreenExitBehavior exitBehavior, bool flag);
 
     /// @vidx {inherit}
-    MC virtual ~MinecraftScreenController();
+    MC virtual ~MinecraftScreenController() override;
+    /// @vidx {inherit}
+    MC virtual ui::DirtyFlag tick() override;
+    /// @vidx {inherit}
+    MC virtual void onOpen() override;
+    /// @vidx {inherit}
+    MC virtual void onInit() override;
+    /// @vidx {inherit}
+    MC virtual void onDelete() override;
+    /// @vidx {inherit}
+    MC virtual ui::ViewRequest tryExit() override;
+    /// @vidx {inherit}
+    MC virtual void leaveScreen(const std::string&) override;
+
+    /// @vidx {inherit}
+    MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&) override;
+    /// @vidx {inherit}
+    MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&) override;
+    
+    /// @vidx {inherit}
+    MC virtual void onDictationEvent(const std::string&) override;
+    /// @vidx {inherit}
+    MC virtual void setSuspendInput(bool) override;
+    /// @vidx {inherit}
+    MC virtual uint32_t getSceneId() override;
     /// @vidx {inherit}
     MC virtual bool _doesScreenHaveExitBehavior() override;
     /// @vidx {39}
