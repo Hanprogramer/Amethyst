@@ -60,11 +60,13 @@ uintptr_t GetVtable(void* obj);
 
 /*
  * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
  */
 void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions);
 
 /*
  * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
  */
 template <typename ObjT>
 void CompareVirtualTables(ObjT* lhs, uintptr_t rhs, size_t maxFunctions) {
@@ -73,6 +75,7 @@ void CompareVirtualTables(ObjT* lhs, uintptr_t rhs, size_t maxFunctions) {
 
 /*
  * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
  */
 template <typename ObjT>
 void CompareVirtualTables(uintptr_t lhs, ObjT* rhs, size_t maxFunctions)
@@ -82,6 +85,7 @@ void CompareVirtualTables(uintptr_t lhs, ObjT* rhs, size_t maxFunctions)
 
 /*
  * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
  */
 template <typename ObjT>
 void CompareVirtualTables(ObjT* lhs, ObjT* rhs, size_t maxFunctions) {
