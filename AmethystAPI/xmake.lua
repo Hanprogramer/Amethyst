@@ -17,6 +17,8 @@ target("AmethystAPI")
         set_toolset("as", "nasm")
         add_asflags("-f win64", { force = true })
 
+    add_defines("JSONCPP_VALUE_USE_INTERNAL_MAP=1")
+
     -- Deps
     add_deps("libhat")
 

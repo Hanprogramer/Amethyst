@@ -110,5 +110,6 @@
         "random": "cpp",
         "multi_span": "cpp",
         "gsl_assert": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "C:/Users/blake/Documents/Modding/Amethyst/AmethystAPI/include/glm"
 }
