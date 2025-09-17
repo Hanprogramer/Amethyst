@@ -16,87 +16,37 @@ namespace Json {
 // //////////////////////////////////////////////////////////////////
 
 ValueIteratorBase::ValueIteratorBase()
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
-   : current_()
-   , isNull_( true )
-{
-}
-#else
-   : isArray_( true )
-   , isNull_( true )
-{
-   iterator_.array_ = ValueInternalArray::IteratorState();
-}
-#endif
+   : current_(), isNull_( true ) {}
 
 
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
 ValueIteratorBase::ValueIteratorBase( const Value::ObjectValues::iterator &current )
-   : current_( current )
-   , isNull_( false )
-{
-}
-#else
-ValueIteratorBase::ValueIteratorBase( const ValueInternalArray::IteratorState &state )
-   : isArray_( true )
-{
-   iterator_.array_ = state;
-}
+   : current_( current ), isNull_( false ) {}
 
-
-ValueIteratorBase::ValueIteratorBase( const ValueInternalMap::IteratorState &state )
-   : isArray_( false )
-{
-   iterator_.map_ = state;
-}
-#endif
 
 Value &
 ValueIteratorBase::deref() const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    return current_->second;
-#else
-   if ( isArray_ )
-      return ValueInternalArray::dereference( iterator_.array_ );
-   return ValueInternalMap::value( iterator_.map_ );
-#endif
 }
 
 
 void 
 ValueIteratorBase::increment()
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    ++current_;
-#else
-   if ( isArray_ )
-      ValueInternalArray::increment( iterator_.array_ );
-   ValueInternalMap::increment( iterator_.map_ );
-#endif
 }
 
 
 void 
 ValueIteratorBase::decrement()
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    --current_;
-#else
-   if ( isArray_ )
-      ValueInternalArray::decrement( iterator_.array_ );
-   ValueInternalMap::decrement( iterator_.map_ );
-#endif
 }
 
 
 ValueIteratorBase::difference_type 
 ValueIteratorBase::computeDistance( const SelfType &other ) const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
-# ifdef JSONCPP_USE_CPPTL_SMALLMAP
-   return current_ - other.current_;
-# else
    // Iterator for null value are initialized using the default
    // constructor, which initialize current_ to the default
    // std::map::iterator. As begin() and end() are two instance 
@@ -106,7 +56,6 @@ ValueIteratorBase::computeDistance( const SelfType &other ) const
    {
       return 0;
    }
-
 
    // Usage of std::distance is not portable (does not compile with Sun Studio 12 RogueWave STL,
    // which is the one used by default).
@@ -118,12 +67,6 @@ ValueIteratorBase::computeDistance( const SelfType &other ) const
       ++myDistance;
    }
    return myDistance;
-# endif
-#else
-   if ( isArray_ )
-      return ValueInternalArray::distance( iterator_.array_, other.iterator_.array_ );
-   return ValueInternalMap::distance( iterator_.map_, other.iterator_.map_ );
-#endif
 }
 
 
@@ -179,14 +122,8 @@ ValueIteratorBase::index() const
 const char *
 ValueIteratorBase::memberName() const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    const char *name = (*current_).first.c_str();
    return name ? name : "";
-#else
-   if ( !isArray_ )
-      return ValueInternalMap::key( iterator_.map_ );
-   return "";
-#endif
 }
 
 
@@ -203,22 +140,8 @@ ValueConstIterator::ValueConstIterator()
 }
 
 
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
 ValueConstIterator::ValueConstIterator( const Value::ObjectValues::iterator &current )
-   : ValueIteratorBase( current )
-{
-}
-#else
-ValueConstIterator::ValueConstIterator( const ValueInternalArray::IteratorState &state )
-   : ValueIteratorBase( state )
-{
-}
-
-ValueConstIterator::ValueConstIterator( const ValueInternalMap::IteratorState &state )
-   : ValueIteratorBase( state )
-{
-}
-#endif
+   : ValueIteratorBase( current ) {}
 
 ValueConstIterator &
 ValueConstIterator::operator =( const ValueIteratorBase &other )
@@ -241,22 +164,9 @@ ValueIterator::ValueIterator()
 }
 
 
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
 ValueIterator::ValueIterator( const Value::ObjectValues::iterator &current )
-   : ValueIteratorBase( current )
-{
-}
-#else
-ValueIterator::ValueIterator( const ValueInternalArray::IteratorState &state )
-   : ValueIteratorBase( state )
-{
-}
+   : ValueIteratorBase( current ) {}
 
-ValueIterator::ValueIterator( const ValueInternalMap::IteratorState &state )
-   : ValueIteratorBase( state )
-{
-}
-#endif
 
 ValueIterator::ValueIterator( const ValueConstIterator &other )
    : ValueIteratorBase( other )
