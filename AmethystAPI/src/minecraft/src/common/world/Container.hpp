@@ -73,12 +73,12 @@ enum class ContainerID : unsigned char {
 };
 
 class ContainerSizeChangeListener {
-    virtual void containerSizeChanged(int);
+    virtual void containerSizeChanged(int) = 0;
     virtual ~ContainerSizeChangeListener() = default;
 };
 
 class ContainerContentChangeListener {
-    virtual void containerContentChanged(int);
+    virtual void containerContentChanged(int) = 0;
     virtual ~ContainerContentChangeListener() = default;
 };
 

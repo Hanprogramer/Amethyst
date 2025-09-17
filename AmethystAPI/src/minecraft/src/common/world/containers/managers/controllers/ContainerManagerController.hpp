@@ -28,6 +28,8 @@ class ContainerManagerController :
 	public std::enable_shared_from_this<ContainerManagerController>
 {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     std::byte padding8[0x8A];
 
     /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 48 83 EC ? 48 8B F2 48 8B D9}
@@ -79,10 +81,13 @@ public:
     MC virtual void handleSwap(const SlotData&, const SlotData&);
     /// @vidx {22}
     MC virtual void handleDrop(const SlotData&, ItemTransferAmount);
-    /// @vidx {23}
-    MC virtual void handleDestroy(SelectedSlotInfo const&, ItemTransferAmount);
+
+    // Keep your eyes open for overloads
     /// @vidx {24}
+    MC virtual void handleDestroy(SelectedSlotInfo const&, ItemTransferAmount);
+    /// @vidx {23}
     MC virtual void handleDestroy(const SlotData&, ItemTransferAmount);
+
     /// @vidx {25}
     MC virtual void handleConsume(const SlotData&, ItemTransferAmount);
     /// @vidx {26}

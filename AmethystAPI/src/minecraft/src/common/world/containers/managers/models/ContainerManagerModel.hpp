@@ -2,14 +2,23 @@
 #pragma once
 #include "amethyst/Imports.hpp"
 #include "minecraft/src/common/world/containers/managers/IContainerManager.hpp"
-// NOT WIP
+#include "minecraft/src/common/world/inventory/network/ContainerScreenContext.hpp"
+#include "minecraft/src/common/world/containers/models/ContainerModel.hpp"
+
+class ContainerManagerController;
 
 /// @vptr {0x4DE9970}
 class ContainerManagerModel :
 	public IContainerManager
 {
 public:
-    std::byte padding8[0xD0];
+    Player& mPlayer;
+    std::vector<ItemStack> mLastSlots;
+    ContainerID mContainerId;
+    ContainerType mContainerType;
+    std::unordered_map<const ContainerManagerController*, std::function<void(ContainerManagerModel&)>> mInformControllerOfDestructionCallbacks;
+    ContainerScreenContext mScreenContext;
+    std::unordered_map<std::string, std::shared_ptr<ContainerModel>> mContainers;
 
     /// @signature {48 89 5C 24 ? 48 89 4C 24 ? 57 48 83 EC ? 48 8B D9 48 8D 05 ? ? ? ? 48 89 01 4C 89 41}
     MC ContainerManagerModel(ContainerID id, Player& player);
@@ -26,13 +35,16 @@ public:
     MC virtual void setContainerType(ContainerType type);
     /// @vidx {5}
     MC virtual void serverInitItemStackIds();
-
-    virtual std::vector<ItemStack> getItemCopies() = 0;
-    virtual void setSlot(int slot, const ItemStack& stack, bool) = 0;
-    virtual const ItemStack& getSlot(int slot) = 0;
-    virtual void setData(int, int) = 0;
-    virtual void broadcastChanges() = 0;
-
+    /// @vidx {6}
+    MC virtual std::vector<ItemStack> getItemCopies() = 0;
+    /// @vidx {7}
+    MC virtual void setSlot(int slot, const ItemStack& stack, bool) = 0;
+    /// @vidx {8}
+    MC virtual const ItemStack& getSlot(int slot) = 0;
+    /// @vidx {9}
+    MC virtual void setData(int, int) = 0;
+    /// @vidx {10}
+    MC virtual void broadcastChanges() = 0;
     /// @vidx {11}
     MC virtual void debitPlayerLevels(int amount);
     /// @vidx {12}
@@ -45,8 +57,8 @@ public:
     MC virtual bool isValid(float);
     /// @vidx {16}
     MC virtual int tick();
-
-    virtual void _postInit() = 0;
+    /// @vidx {17}
+    MC virtual void _postInit() = 0;
 
 // Non-virtuals
 public:
