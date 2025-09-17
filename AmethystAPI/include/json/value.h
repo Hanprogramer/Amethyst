@@ -9,6 +9,7 @@
 #if !defined(JSONCPP_IS_AMALGAMATION)
 # include "forwards.h"
 #endif // if !defined(JSONCPP_IS_AMALGAMATION)
+
 # include <string>
 # include <vector>
 
@@ -39,7 +40,7 @@ namespace Json {
 
    /** \brief Type of the value held by a Value object.
     */
-   enum ValueType
+   enum ValueType : int8_t
    {
       nullValue = 0, ///< 'null' value
       intValue,      ///< signed integer value
@@ -127,13 +128,8 @@ namespace Json {
     * It is possible to iterate over the list of a #objectValue values using 
     * the getMemberNames() method.
     */
-   class JSONCPP_API Value 
-   {
+   class JSONCPP_API Value {
       friend class ValueIteratorBase;
-# ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
-      friend class ValueInternalLink;
-      friend class ValueInternalMap;
-# endif
    public:
       typedef std::vector<std::string> Members;
       typedef ValueIterator iterator;
@@ -172,31 +168,28 @@ namespace Json {
 
    private:
 #ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
-# ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
-      class CZString 
+
+   class CZString {
+   public:
+      enum DuplicationPolicy 
       {
-      public:
-         enum DuplicationPolicy 
-         {
-            noDuplication = 0,
-            duplicate,
-            duplicateOnCopy
-         };
-         CZString( ArrayIndex index );
-         CZString( const char *cstr, DuplicationPolicy allocate );
-         CZString( const CZString &other );
-         ~CZString();
-         CZString &operator =( const CZString &other );
-         bool operator<( const CZString &other ) const;
-         bool operator==( const CZString &other ) const;
-         ArrayIndex index() const;
-         const char *c_str() const;
-         bool isStaticString() const;
-      private:
-         void swap( CZString &other );
-         const char *cstr_;
-         ArrayIndex index_;
+         noDuplication = 0,
+         duplicate,
+         duplicateOnCopy
       };
+
+      // CZString( ArrayIndex index );
+      CZString( const char *cstr, DuplicationPolicy allocate );
+      CZString( const CZString &other );
+      ~CZString();
+      CZString &operator =( const CZString &other );
+      bool operator<( const CZString &other ) const;
+      bool operator==( const CZString &other ) const;
+      const char *c_str() const;
+   private:
+      void swap( CZString &other );
+      const char *cstr_;
+   };
 
    public:
 #  ifndef JSONCPP_USE_CPPTL_SMALLMAP
@@ -204,7 +197,7 @@ namespace Json {
 #  else
       typedef CppTL::SmallMap<CZString, Value> ObjectValues;
 #  endif // ifndef JSONCPP_USE_CPPTL_SMALLMAP
-# endif // ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
+
 #endif // ifndef JSONCPP_DOC_EXCLUDE_IMPLEMENTATION
 
    public:
@@ -250,7 +243,7 @@ namespace Json {
 # endif
       Value( bool value );
       Value( const Value &other );
-      ~Value();
+      ~Value() = default;
 
       Value &operator=( const Value &other );
       /// Swap values.
@@ -418,11 +411,6 @@ namespace Json {
       /// \post if type() was nullValue, it remains nullValue
       Members getMemberNames() const;
 
-//# ifdef JSONCPP_USE_CPPTL
-//      EnumMemberNames enumMemberNames() const;
-//      EnumValues enumValues() const;
-//# endif
-
       /// Comments must be //... or /* ... */
       void setComment( const char *comment,
                        CommentPlacement placement );
@@ -444,60 +432,25 @@ namespace Json {
    private:
       Value &resolveReference( const char *key, 
                                bool isStatic );
-
-# ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
-      inline bool isItemAvailable() const
-      {
-         return itemIsUsed_ == 0;
-      }
-
-      inline void setItemUsed( bool isUsed = true )
-      {
-         itemIsUsed_ = isUsed ? 1 : 0;
-      }
-
-      inline bool isMemberNameStatic() const
-      {
-         return memberNameIsStatic_ == 0;
-      }
-
-      inline void setMemberNameIsStatic( bool isStatic )
-      {
-         memberNameIsStatic_ = isStatic ? 1 : 0;
-      }
-# endif // # ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
-
    private:
-      //struct MemberNamesTransform
-      //{
-      //   typedef const char *result_type;
-      //   const char *operator()( const CZString &name ) const
-      //   {
-      //      return name.c_str();
-      //   }
-      //};
-
       union ValueHolder
       {
          LargestInt int_;
          LargestUInt uint_;
          double real_;
          bool bool_;
-         char *string_;
-# ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
-         ValueInternalArray *array_;
-         ValueInternalMap *map_;
-#else
-         ObjectValues *map_;
-# endif
+         Json::Value::CZString* string_;
+         std::map<Json::Value::CZString, Json::Value>* map_;
+         std::vector<Json::Value*>* array_;
       } value_;
       
-      ValueType type_ : 8;
-      unsigned int allocated_ : 1;     // Notes: if declared as bool, bitfield is useless.
-# ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
-      unsigned int itemIsUsed_ : 1;      // used by the ValueInternalMap container.
-      int memberNameIsStatic_ : 1;       // used by the ValueInternalMap container.
-# endif
+      ValueType type_;
+
+//       unsigned int allocated_ : 1;     // Notes: if declared as bool, bitfield is useless.
+// # ifdef JSONCPP_VALUE_USE_INTERNAL_MAP
+//       unsigned int itemIsUsed_ : 1;      // used by the ValueInternalMap container.
+//       int memberNameIsStatic_ : 1;       // used by the ValueInternalMap container.
+// # endif
    };
 
 

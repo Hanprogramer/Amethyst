@@ -130,70 +130,49 @@ ValueIteratorBase::computeDistance( const SelfType &other ) const
 bool 
 ValueIteratorBase::isEqual( const SelfType &other ) const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    if ( isNull_ )
    {
       return other.isNull_;
    }
+
    return current_ == other.current_;
-#else
-   if ( isArray_ )
-      return ValueInternalArray::equals( iterator_.array_, other.iterator_.array_ );
-   return ValueInternalMap::equals( iterator_.map_, other.iterator_.map_ );
-#endif
 }
 
 
 void 
 ValueIteratorBase::copy( const SelfType &other )
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    current_ = other.current_;
-#else
-   if ( isArray_ )
-      iterator_.array_ = other.iterator_.array_;
-   iterator_.map_ = other.iterator_.map_;
-#endif
 }
 
 
 Value 
 ValueIteratorBase::key() const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    const Value::CZString czstring = (*current_).first;
    if ( czstring.c_str() )
    {
-      if ( czstring.isStaticString() )
-         return Value( StaticString( czstring.c_str() ) );
+      // if ( czstring.isStaticString() )
+      //    return Value( StaticString( czstring.c_str() ) );
       return Value( czstring.c_str() );
    }
-   return Value( czstring.index() );
-#else
-   if ( isArray_ )
-      return Value( ValueInternalArray::indexOf( iterator_.array_ ) );
-   bool isStatic;
-   const char *memberName = ValueInternalMap::key( iterator_.map_, isStatic );
-   if ( isStatic )
-      return Value( StaticString( memberName ) );
-   return Value( memberName );
-#endif
+
+   // IDK HOW TO REIMPLMENT THIS! cstring doesnt store index anymore
+   std::unreachable();
+   // return Value( czstring.index() );
 }
 
 
 UInt 
 ValueIteratorBase::index() const
 {
-#ifndef JSONCPP_VALUE_USE_INTERNAL_MAP
    const Value::CZString czstring = (*current_).first;
-   if ( !czstring.c_str() )
-      return czstring.index();
+
+   // IDK HOW TO REIMPLEMENT THIS
+   // if ( !czstring.c_str() )
+   //    return czstring.index();
+
    return Value::UInt( -1 );
-#else
-   if ( isArray_ )
-      return Value::UInt( ValueInternalArray::indexOf( iterator_.array_ ) );
-   return Value::UInt( -1 );
-#endif
 }
 
 

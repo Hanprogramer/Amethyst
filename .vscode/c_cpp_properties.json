@@ -10,8 +10,7 @@
             "defines": [
                 "_DEBUG",
                 "UNICODE",
-                "_UNICODE",
-                "JSONCPP_VALUE_USE_INTERNAL_MAP"
+                "_UNICODE"
             ],
             "windowsSdkVersion": "10.0.26100.0",
             "compilerPath": "cl.exe",
