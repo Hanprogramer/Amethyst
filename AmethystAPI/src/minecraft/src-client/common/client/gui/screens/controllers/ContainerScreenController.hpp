@@ -15,6 +15,7 @@ class ItemStack;
 class SlotData;
 class SelectedSlotInfo;
 class ContainerManagerController;
+class AutoPlaceItem;
 enum class InteractionModel : int {
     CombinedInventory = 0x0000,
     SeparateInventoryAndHotbar = 0x0001,
@@ -27,7 +28,10 @@ class ContainerScreenController :
 public:
     MC static uintptr_t $vtable_for_this;
 
-    std::byte padding3128[0x1148 - sizeof(ClientInstanceScreenController)];
+    std::byte padding3128[0x1010 - sizeof(ClientInstanceScreenController)];
+    std::unordered_map<std::string, std::vector<std::string>> mCoalesceOrderMap;
+    std::unordered_map<std::string, std::vector<AutoPlaceItem>> mAutoPlaceOrderMap;
+    std::byte padding4240[0xB8];
     std::shared_ptr<ContainerManagerController> mContainerManagerController;
 
     /// @address {0x59D9150}
@@ -126,3 +130,4 @@ public:
 };
 
 static_assert(sizeof(ContainerScreenController) == 0x1158);
+static_assert(offsetof(ContainerScreenController, mContainerManagerController) == 0x1148);
