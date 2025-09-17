@@ -91,3 +91,27 @@ uintptr_t GetVtable(void* obj)
 {
     return (uintptr_t)*reinterpret_cast<uintptr_t**>(obj);
 }
+
+void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
+{
+    Log::Info("Comparing virtual tables {:X} and {:X}", lhs, rhs);
+    auto lhsArray = reinterpret_cast<uintptr_t*>(lhs);
+    auto rhsArray = reinterpret_cast<uintptr_t*>(rhs);
+
+    auto resolveJmp = [](uintptr_t addr) -> uintptr_t {
+        unsigned char* bytes = reinterpret_cast<unsigned char*>(addr);
+        if (bytes[0] == 0xFF && bytes[1] == 0x25) {
+            int32_t ripOffset = *reinterpret_cast<int32_t*>(bytes + 2);
+            return *reinterpret_cast<uintptr_t*>(addr + 6 + ripOffset);
+        }
+        return addr;
+    };
+
+    for (size_t i = 0; i < maxFunctions; i++) {
+        uintptr_t lhsFunc = resolveJmp(lhsArray[i]) - GetMinecraftBaseAddress();
+        uintptr_t rhsFunc = resolveJmp(rhsArray[i]) - GetMinecraftBaseAddress();
+        if (lhsFunc != rhsFunc) {
+            Log::Warning("Virtual table mismatch at index {}: {:X} != {:X}", i, lhsFunc, rhsFunc);
+        }
+    }
+}

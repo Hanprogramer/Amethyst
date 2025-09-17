@@ -15,6 +15,8 @@ enum class ContainerCategory : int {
     Unknown = 0x0004,
 };
 
+class ContainerWeakRef;
+
 /// @vptr {0x4DE9508}
 class ContainerModel : 
 	public ContainerContentChangeListener 
@@ -48,7 +50,7 @@ public:
     /// @vidx {6}
     MC virtual void tick(int);
     /// @vidx {7}
-    MC virtual void getContainerWeakRef();
+    MC virtual ContainerWeakRef getContainerWeakRef();
     /// @vidx {8}
     MC virtual void getItemStack(int);
     /// @vidx {9}
@@ -62,7 +64,7 @@ public:
     /// @vidx {13}
     MC virtual void setItem(int, const ItemStack&);
     /// @vidx {14}
-    MC virtual void isValid();
+    MC virtual bool isValid();
     /// @vidx {15}
     MC virtual void isItemFiltered(const ItemStackBase&);
     /// @vidx {16}
@@ -76,9 +78,9 @@ public:
     /// @vidx {20}
     MC virtual void isSlotDisabled(int);
     /// @vidx {21}
-    MC virtual void _getContainer();
+    MC virtual Container* _getContainer();
     /// @vidx {22}
-    MC virtual void _getContainerOffset();
+    MC virtual int _getContainerOffset();
     /// @vidx {23}
     MC virtual void _init();
     /// @vidx {24}

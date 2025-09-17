@@ -1,6 +1,8 @@
 #pragma once
 #include "minecraft/src/common/world/Container.hpp"
 
+class ContainerScreenContext;
+
 class IContainerManager {
 public:
     virtual ~IContainerManager() = 0;
@@ -20,5 +22,5 @@ public:
     virtual bool isServerAuthoritative() = 0;
     virtual bool isValid(float) = 0;
     virtual int tick() = 0;
-    virtual void _postInit() = 0;
+    virtual ContainerScreenContext _postInit() = 0;
 };

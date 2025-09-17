@@ -59,11 +59,44 @@ uintptr_t AddressFromLeaInstruction(uintptr_t leaInstructionAddress);
 uintptr_t GetVtable(void* obj);
 
 /*
+ * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
+ */
+void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions);
+
+/*
+ * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
+ */
+template <typename ObjT>
+void CompareVirtualTables(ObjT* lhs, uintptr_t rhs, size_t maxFunctions) {
+    CompareVirtualTables(GetVtable(lhs), rhs, maxFunctions);
+}
+
+/*
+ * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
+ */
+template <typename ObjT>
+void CompareVirtualTables(uintptr_t lhs, ObjT* rhs, size_t maxFunctions)
+{
+    CompareVirtualTables(lhs, GetVtable(rhs), maxFunctions);
+}
+
+/*
+ * Compares two virtual tables and logs any differences
+ * Be aware that if one of the virtual destructors of any functions are imported from the game there will always be a mismatch between them.
+ */
+template <typename ObjT>
+void CompareVirtualTables(ObjT* lhs, ObjT* rhs, size_t maxFunctions) {
+    CompareVirtualTables(GetVtable(lhs), GetVtable(rhs), maxFunctions);
+}
+
+/*
  * Returns the virtual offset of a virtual function from a thunk
  */
-
 template <auto T>
-__declspec(noinline) size_t GetVirtualFunctionOffset() {
+size_t GetVirtualFunctionOffset() {
     using FnType = decltype(T);
     union {
         FnType func;

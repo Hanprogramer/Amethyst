@@ -30,7 +30,8 @@ class ContainerManagerController :
 public:
     MC static uintptr_t $vtable_for_this;
 
-    std::byte padding8[0x8A];
+    std::weak_ptr<ContainerManagerModel> mContainerManagerModel;
+    std::byte padding8[0x7A];
 
     /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 48 83 EC ? 48 8B F2 48 8B D9}
     MC ContainerManagerController(std::weak_ptr<ContainerManagerModel>);
