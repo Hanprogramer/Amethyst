@@ -155,37 +155,37 @@ Value::CZString::c_str() const
  * memset( this, 0, sizeof(Value) )
  * This optimization is used in ValueInternalMap fast allocator.
  */
-Value::Value( ValueType type )
-   : type_( type )
+Value::Value(ValueType type)
+    : type_(type)
 {
-   switch ( type )
-   {
-   case nullValue:
-      break;
-   case intValue:
-   case uintValue:
-      value_.int_ = 0;
-      break;
-   case realValue:
-      value_.real_ = 0.0;
-      break;
-   case stringValue:
-      value_.string_ = 0;
-      break;
-   case arrayValue:
-      value_.array_ = new std::vector<Value*>();
-      break;
-   case objectValue:
-      value_.map_ = new ObjectValues();
-      break;
-   case booleanValue:
-      value_.bool_ = false;
-      break;
-   default:
-      JSONCPP_ASSERT_UNREACHABLE;
-   }
+    switch (type_) {
+    case nullValue:
+        break;
+    case intValue:
+        value_.int_ = 0;
+        break;
+    case uintValue:
+        value_.uint_ = 0;
+        break;
+    case realValue:
+        value_.real_ = 0.0;
+        break;
+    case booleanValue:
+        value_.bool_ = false;
+        break;
+    case stringValue:
+        value_.string_ = nullptr;
+        break;
+    case arrayValue:
+        value_.array_ = new std::vector<Value*>();
+        break;
+    case objectValue:
+        value_.map_ = new ObjectValues();
+        break;
+    default:
+        JSONCPP_ASSERT_UNREACHABLE;
+    }
 }
-
 
 #if defined(JSONCPP_HAS_INT64)
 Value::Value( UInt value )
@@ -321,9 +321,11 @@ Value::~Value()
 Value &
 Value::operator=( const Value &other )
 {
-   Value temp( other );
-   swap( temp );
-   return *this;
+    if (this != &other) {
+        Value temp(other);
+        swap(temp);
+    }
+    return *this;
 }
 
 Value& Value::operator=(const char* str)
@@ -343,8 +345,47 @@ Value& Value::operator=(const std::string& str)
 void 
 Value::swap( Value &other )
 {
-   std::swap( type_, other.type_ );
-   std::swap( value_, other.value_ );
+    using std::swap;
+
+    // Swap the type
+    swap(type_, other.type_);
+
+    // Swap the underlying values based on type
+    switch (type_) {
+    case nullValue:
+        break;
+
+    case intValue:
+        swap(value_.int_, other.value_.int_);
+        break;
+
+    case uintValue:
+        swap(value_.uint_, other.value_.uint_);
+        break;
+
+    case realValue:
+        swap(value_.real_, other.value_.real_);
+        break;
+
+    case booleanValue:
+        swap(value_.bool_, other.value_.bool_);
+        break;
+
+    case stringValue:
+        swap(value_.string_, other.value_.string_);
+        break;
+
+    case arrayValue:
+        swap(value_.array_, other.value_.array_);
+        break;
+
+    case objectValue:
+        swap(value_.map_, other.value_.map_);
+        break;
+
+    default:
+        JSONCPP_ASSERT_UNREACHABLE;
+    }
 }
 
 ValueType 
@@ -913,9 +954,23 @@ Value::operator[]( int index ) const
    return (*this)[ ArrayIndex(index) ];
 }
 
+Value 
+Value::get( ArrayIndex index, 
+            const Value &defaultValue ) const
+{
+   const Value *value = &((*this)[index]);
+   return value == &null ? defaultValue : *value;
+}
 
-Value &
-Value::operator[]( const char *key )
+
+bool 
+Value::isValidIndex( ArrayIndex index ) const
+{
+   return index < size();
+}
+
+Value&
+Value::operator[](const char* key)
 {
     JSONCPP_ASSERT(type_ == nullValue || type_ == objectValue);
     if (type_ == nullValue)
@@ -931,21 +986,6 @@ Value::operator[]( const char *key )
     Value* newValue = new Value();
     (*value_.map_)[actualKey] = newValue;
     return *newValue;
-}
-
-Value 
-Value::get( ArrayIndex index, 
-            const Value &defaultValue ) const
-{
-   const Value *value = &((*this)[index]);
-   return value == &null ? defaultValue : *value;
-}
-
-
-bool 
-Value::isValidIndex( ArrayIndex index ) const
-{
-   return index < size();
 }
 
 const Value &
@@ -973,26 +1013,6 @@ const Value& Value::operator[](const std::string& key) const
 {
     return (*this)[key.c_str()];
 }
-
-
-//Value &
-//Value::operator[]( const std::string &key )
-//{
-//   return (*this)[ key.c_str() ];
-//}
-
-
-//const Value &
-//Value::operator[]( const std::string &key ) const
-//{
-//   return (*this)[ key.c_str() ];
-//}
-
-//Value &
-//Value::operator[]( const StaticString &key )
-//{
-//   return resolveReference( key, true );
-//}
 
 Value &
 Value::append( const Value &value )

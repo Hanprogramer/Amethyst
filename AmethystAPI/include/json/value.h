@@ -322,25 +322,12 @@ namespace Json {
 
       /// Access an object value by name, create a null member if it does not exist.
       Value &operator[]( const char *key );
-
       /// Access an object value by name, returns null if there is no member with that name.
       const Value& operator[]( const char *key ) const;
       /// Access an object value by name, create a null member if it does not exist.
       Value& operator[]( const std::string &key );
       /// Access an object value by name, returns null if there is no member with that name.
       const Value& operator[]( const std::string &key ) const;
-      /** \brief Access an object value by name, create a null member if it does not exist.
-
-       * If the object as no entry for that name, then the member name used to store
-       * the new entry is not duplicated.
-       * Example of use:
-       * \code
-       * Json::Value object;
-       * static const StaticString code("code");
-       * object[code] = 1234;
-       * \endcode
-       */
-      //Value &operator[]( const StaticString &key );
 
       /// Return the member named key if it exist, defaultValue otherwise.
       Value get( const char *key, 
@@ -383,15 +370,6 @@ namespace Json {
 
       std::string toStyledString() const;
 
-      // const_iterator begin() const;
-      // const_iterator end() const;
-
-      // iterator begin();
-      // iterator end();
-
-   private:
-      Value &resolveReference( const char *key, 
-                               bool isStatic );
    private:
       union ValueHolder
       {
