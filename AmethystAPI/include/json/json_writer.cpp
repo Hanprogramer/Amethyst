@@ -288,9 +288,9 @@ StyledWriter::write( const Value &root )
    document_ = "";
    addChildValues_ = false;
    indentString_ = "";
-   writeCommentBeforeValue( root );
+   //writeCommentBeforeValue( root );
    writeValue( root );
-   writeCommentAfterValueOnSameLine( root );
+   //writeCommentAfterValueOnSameLine( root );
    document_ += "\n";
    return document_;
 }
@@ -336,17 +336,18 @@ StyledWriter::writeValue( const Value &value )
             {
                const std::string &name = *it;
                const Value &childValue = value[name];
-               writeCommentBeforeValue( childValue );
+
                writeWithIndent( valueToQuotedString( name.c_str() ) );
                document_ += " : ";
                writeValue( childValue );
+
                if ( ++it == members.end() )
                {
-                  writeCommentAfterValueOnSameLine( childValue );
                   break;
                }
+
                document_ += ",";
-               writeCommentAfterValueOnSameLine( childValue );
+               //writeCommentAfterValueOnSameLine( childValue );
             }
             unindent();
             writeWithIndent( "}" );
