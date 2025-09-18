@@ -32,9 +32,8 @@ public:
     MC static uintptr_t $vtable_for_this;
 
     std::weak_ptr<ContainerManagerModel> mContainerManagerModel;
-    std::byte padding16[0x18];
-    std::unordered_map<std::string, ContainerController> mContainers;
-    std::byte padding8[0x22];
+    std::unordered_map<std::string, std::shared_ptr<ContainerController>> mContainers;
+    std::byte padding104[0x40];
 
     /// @signature {48 89 5C 24 ? 48 89 54 24 ? 48 89 4C 24 ? 55 56 57 48 83 EC ? 48 8B F2 48 8B D9}
     MC ContainerManagerController(std::weak_ptr<ContainerManagerModel>);
@@ -119,3 +118,4 @@ public:
 };
 
 static_assert(sizeof(ContainerManagerController) == 0xA8);
+static_assert(offsetof(ContainerManagerController, mContainers) == 0x28);

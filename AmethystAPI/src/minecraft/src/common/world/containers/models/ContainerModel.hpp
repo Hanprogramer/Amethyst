@@ -85,6 +85,12 @@ public:
     MC virtual void _init();
     /// @vidx {24}
     MC virtual void _onItemChanged(int, const ItemStack&, const ItemStack&);
+
+// Non-virtuals
+public:
+
+    /// @signature {85 D2 0F 88 ? ? ? ? 53 55 56 57 41 56 41 57}
+    MC void networkUpdateItem(int, const ItemStack&, bool);
 };
 
 static_assert(sizeof(ContainerModel) == 0xD0);
