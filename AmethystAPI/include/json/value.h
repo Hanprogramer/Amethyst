@@ -158,18 +158,11 @@ namespace Json {
 
    class CZString {
    public:
-      enum DuplicationPolicy 
-      {
-         noDuplication = 0,
-         duplicate,
-         duplicateOnCopy
-      };
-
-      // CZString( ArrayIndex index );
-      CZString( const char *cstr, DuplicationPolicy allocate );
-      CZString( const CZString &other );
+      CZString(const char *cstr);
+      CZString(const char* begin, const char* end);
+      CZString(const CZString &other );
       ~CZString();
-      CZString &operator =( const CZString &other );
+      CZString& operator =( const CZString &other );
       bool operator<( const CZString &other ) const;
       bool operator==( const CZString &other ) const;
       const char *c_str() const;
@@ -221,9 +214,12 @@ namespace Json {
       Value( const std::string &value );
       Value( bool value );
       Value( const Value &other );
-      ~Value() = default;
+      ~Value();
 
-      Value &operator=( const Value &other );
+      Value& operator=( const char* str );
+      Value& operator=( const std::string& str );
+
+      Value& operator=( const Value &other );
       /// Swap values.
       /// \note Currently, comments are intentionally not swapped, for
       /// both logic and efficiency.
@@ -326,12 +322,13 @@ namespace Json {
 
       /// Access an object value by name, create a null member if it does not exist.
       Value &operator[]( const char *key );
+
       /// Access an object value by name, returns null if there is no member with that name.
-      const Value &operator[]( const char *key ) const;
+      const Value& operator[]( const char *key ) const;
       /// Access an object value by name, create a null member if it does not exist.
-      Value &operator[]( const std::string &key );
+      Value& operator[]( const std::string &key );
       /// Access an object value by name, returns null if there is no member with that name.
-      const Value &operator[]( const std::string &key ) const;
+      const Value& operator[]( const std::string &key ) const;
       /** \brief Access an object value by name, create a null member if it does not exist.
 
        * If the object as no entry for that name, then the member name used to store
@@ -343,7 +340,7 @@ namespace Json {
        * object[code] = 1234;
        * \endcode
        */
-      Value &operator[]( const StaticString &key );
+      //Value &operator[]( const StaticString &key );
 
       /// Return the member named key if it exist, defaultValue otherwise.
       Value get( const char *key, 

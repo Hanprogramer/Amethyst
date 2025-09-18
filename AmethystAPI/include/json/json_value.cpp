@@ -34,38 +34,6 @@ const LargestUInt Value::maxLargestUInt = LargestUInt(-1);
 
 /// Unknown size marker
 static const unsigned int unknown = (unsigned)-1;
-
-
-/** Duplicates the specified string value.
- * @param value Pointer to the string to duplicate. Must be zero-terminated if
- *              length is "unknown".
- * @param length Length of the value. if equals to unknown, then it will be
- *               computed using strlen(value).
- * @return Pointer on the duplicate instance of string.
- */
-static inline char *
-duplicateStringValue( const char *value, 
-                      unsigned int length = unknown )
-{
-   if ( length == unknown )
-      length = (unsigned int)strlen(value);
-   char *newString = static_cast<char *>( malloc( length + 1 ) );
-   JSONCPP_ASSERT_MESSAGE( newString != 0, "Failed to allocate string value buffer" );
-   memcpy( newString, value, length );
-   newString[length] = 0;
-   return newString;
-}
-
-
-/** Free the string duplicated by duplicateStringValue().
- */
-static inline void 
-releaseStringValue( char *value )
-{
-   if ( value )
-      free( value );
-}
-
 } // namespace Json
 
 
@@ -78,6 +46,7 @@ releaseStringValue( char *value )
 // //////////////////////////////////////////////////////////////////
 #if !defined(JSONCPP_IS_AMALGAMATION)
 # include "json_valueiterator.inl"
+#include "value.h"
 #endif // if !defined(JSONCPP_IS_AMALGAMATION)
 
 namespace Json {
@@ -93,23 +62,42 @@ namespace Json {
 // Notes: index_ indicates if the string was allocated when
 // a string is stored.
 
-Value::CZString::CZString( const char *cstr, DuplicationPolicy allocate )
-   : cstr_( allocate == duplicate ? duplicateStringValue(cstr) 
-                                  : cstr )
+Value::CZString::CZString(const char *cstr)
 {
+   if (cstr) {
+      cstr_ = _strdup(cstr);
+   }
+   else {
+      cstr_ = nullptr;
+   }
+}
+
+Value::CZString::CZString(const char* begin, const char* end) {
+   if (begin && end && end > begin) {
+       size_t len = static_cast<size_t>(end - begin);
+       char* buf = new char[len + 1];
+       memcpy(buf, begin, len);
+       buf[len] = '\0';
+       cstr_ = buf;
+   } else {
+       cstr_ = nullptr;
+   }
 }
 
 Value::CZString::CZString( const CZString &other )
-: cstr_( other.cstr_ != 0
-                ?  duplicateStringValue( other.cstr_ )
-                : other.cstr_ )
 {
+   if (other.cstr_) {
+      cstr_ = _strdup(other.cstr_);
+   }
+   else {
+      cstr_ = nullptr;
+   }
 }
 
-Value::CZString::~CZString()
-{
-   if ( cstr_ )
-      releaseStringValue( const_cast<char *>( cstr_ ) );
+Value::CZString::~CZString() {
+   if (this->cstr_) {
+      free((void*)this->cstr_ );
+   }
 }
 
 void 
@@ -154,13 +142,6 @@ Value::CZString::c_str() const
 {
    return cstr_;
 }
-
-// bool 
-// Value::CZString::isStaticString() const
-// {
-//    return index_ == noDuplication;
-// }
-
 
 // //////////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////////
@@ -244,7 +225,7 @@ Value::Value( double value )
 Value::Value( const char *value )
    : type_( stringValue )
 {
-   value_.string_ = (Json::Value::CZString*)duplicateStringValue( value );
+   value_.string_ = new CZString(value);
 }
 
 
@@ -252,23 +233,20 @@ Value::Value( const char *beginValue,
               const char *endValue )
    : type_( stringValue )
 {
-   value_.string_ = (Json::Value::CZString*)duplicateStringValue( beginValue, 
-                                          (unsigned int)(endValue - beginValue) );
+   value_.string_ = new CZString(beginValue, endValue);
 }
 
 
 Value::Value( const std::string &value )
    : type_( stringValue )
 {
-   value_.string_ = (Json::Value::CZString*)duplicateStringValue( value.c_str(), 
-                                          (unsigned int)value.length() );
-
+   value_.string_ = new CZString(value.c_str());
 }
 
 Value::Value( const StaticString &value )
    : type_( stringValue )
 {
-   value_.string_ = (Json::Value::CZString*)const_cast<char *>( value.c_str() );
+   value_.string_ = new CZString(value.c_str());
 }
 
 Value::Value( bool value )
@@ -291,18 +269,53 @@ Value::Value( const Value &other )
          value_ = other.value_;
          break;
       case stringValue:
-         if ( other.value_.string_ )
-         {
-            value_.string_ = other.value_.string_;
+         if (other.value_.string_) {
+            value_.string_ = new CZString(*other.value_.string_);
+         } else {
+            value_.string_ = nullptr;
          }
-         else
-            value_.string_ = 0;
          break;
       case arrayValue:
+         value_.array_ = new std::vector<Value*>();
+         for (const auto& ptr : *other.value_.array_) {
+               value_.array_->push_back(new Value(*ptr));
+         }
+         break;
+
       case objectValue:
          value_.map_ = new ObjectValues( *other.value_.map_ );
          break;
    }
+}
+
+Value::~Value()
+{
+   switch (type_) {
+      case stringValue:
+         delete value_.string_;
+         break;
+
+      case arrayValue:
+         if (value_.array_) {
+            // Clean up each Value* in the array
+            for (auto ptr : *value_.array_) {
+                  delete ptr;
+            }
+            delete value_.array_;
+         }
+         break;
+
+      case objectValue:
+         if (value_.map_) {
+            // Clean up each Value inside the map
+            delete value_.map_;
+         }
+         break;
+
+      default:
+         // int_, uint_, real_, bool_, nullValue → no heap allocations
+         break;
+    }
 }
 
 Value &
@@ -313,12 +326,24 @@ Value::operator=( const Value &other )
    return *this;
 }
 
+Value& Value::operator=(const char* str)
+{
+    Value temp(str);
+    swap(temp);
+    return *this;
+}
+
+Value& Value::operator=(const std::string& str)
+{
+    Value temp(str);
+    swap(temp);
+    return *this;
+}
+
 void 
 Value::swap( Value &other )
 {
-   ValueType temp = type_;
-   type_ = other.type_;
-   other.type_ = temp;
+   std::swap( type_, other.type_ );
    std::swap( value_, other.value_ );
 }
 
@@ -892,30 +917,21 @@ Value::operator[]( int index ) const
 Value &
 Value::operator[]( const char *key )
 {
-   return resolveReference( key, false );
+    JSONCPP_ASSERT(type_ == nullValue || type_ == objectValue);
+    if (type_ == nullValue)
+        *this = Value(objectValue);
+
+    CZString actualKey(key);
+    auto it = value_.map_->find(actualKey);
+
+    if (it != value_.map_->end()) {
+        return it->second;
+    }
+
+    Value* newValue = new Value();
+    (*value_.map_)[actualKey] = newValue;
+    return *newValue;
 }
-
-
-Value &
-Value::resolveReference( const char *key, 
-                         bool isStatic )
-{
-   JSONCPP_ASSERT( type_ == nullValue  ||  type_ == objectValue );
-   if ( type_ == nullValue )
-      *this = Value( objectValue );
-
-   CZString actualKey(key, CZString::duplicate);
-   auto it = value_.map_->find(actualKey);
-
-   if (it != value_.map_->end()) {
-      return it->second;
-   }
-
-   Value *newValue = new Value();
-   (*value_.map_)[actualKey] = newValue;
-   return *newValue;
-}
-
 
 Value 
 Value::get( ArrayIndex index, 
@@ -932,8 +948,6 @@ Value::isValidIndex( ArrayIndex index ) const
    return index < size();
 }
 
-
-
 const Value &
 Value::operator[]( const char *key ) const
 {
@@ -941,37 +955,44 @@ Value::operator[]( const char *key ) const
    if ( type_ == nullValue )
       return null;
 
-   CZString actualKey( key, CZString::duplicate );
+   CZString actualKey(key);
    auto it = value_.map_->find(actualKey);
 
-   if (it != value_.map_->end()) {
-      return it->second;
-   }
+   if (it != value_.map_->end())
+       return it->second;
 
-   // insert default value
-   auto result = value_.map_->emplace(std::move(actualKey), new Value());
-   return result.first->second;
+   return null;
 }
 
-
-Value &
-Value::operator[]( const std::string &key )
+Value& Value::operator[](const std::string& key)
 {
-   return (*this)[ key.c_str() ];
+    return (*this)[key.c_str()];
 }
 
-
-const Value &
-Value::operator[]( const std::string &key ) const
+const Value& Value::operator[](const std::string& key) const
 {
-   return (*this)[ key.c_str() ];
+    return (*this)[key.c_str()];
 }
 
-Value &
-Value::operator[]( const StaticString &key )
-{
-   return resolveReference( key, true );
-}
+
+//Value &
+//Value::operator[]( const std::string &key )
+//{
+//   return (*this)[ key.c_str() ];
+//}
+
+
+//const Value &
+//Value::operator[]( const std::string &key ) const
+//{
+//   return (*this)[ key.c_str() ];
+//}
+
+//Value &
+//Value::operator[]( const StaticString &key )
+//{
+//   return resolveReference( key, true );
+//}
 
 Value &
 Value::append( const Value &value )
@@ -1003,7 +1024,7 @@ Value::removeMember( const char* key )
    if ( type_ == nullValue )
       return null;
 
-   CZString actualKey( key, CZString::duplicate );
+   CZString actualKey(key);
    ObjectValues::iterator it = value_.map_->find( actualKey );
    if ( it == value_.map_->end() )
       return null;
