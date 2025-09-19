@@ -1,4 +1,5 @@
 #include "amethyst/Log.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 namespace Log {
     FILE* fp;
@@ -30,5 +31,14 @@ namespace Log {
     {
         HWND consoleWindow = GetConsoleWindow();
         ShowWindow(consoleWindow, SW_HIDE);
+    }
+
+    const std::string& GetModName() {
+        const Amethyst::ModInfo* info = Amethyst::GetOwnModInfo();
+        if (info == nullptr) {
+            static std::string unknown = "AmethystRuntime";
+            return unknown;
+        }
+        return info->name;
     }
 } // namespace Log

@@ -8,6 +8,7 @@ namespace Log {
     void InitializeConsole();
     void DestroyConsole();
     void HideConsole();
+    const std::string& GetModName();
 
     constexpr const char* RESET   = "\033[0m";
     constexpr const char* YELLOW  = "\033[1;33m";
@@ -16,18 +17,21 @@ namespace Log {
     template <typename... T>
     void Info(const std::format_string<T...> fmt, T&&... args) {
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::cout << formatted_string << "\n";
     }
 
     template <typename... T>
     void Info(const std::wformat_string<T...> fmt, T&&... args) {
         std::wstring formatted_string = std::format(fmt, std::forward<T>(args)...);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::wcout << formatted_string << L"\n";
     }
 
     template <typename... T>
     void Warning(const std::format_string<T...> fmt, T&&... args) {
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::cout << YELLOW << formatted_string << RESET << "\n";
     }
 
@@ -35,12 +39,14 @@ namespace Log {
     void Warning(const std::wformat_string<T...> fmt, T&&... args) {
         std::wstring formatted_wstring = std::format(fmt, std::forward<T>(args)...);
         std::string formatted_string = StringFromWstring(formatted_wstring);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::cout << YELLOW << formatted_string << RESET << "\n";
     }
 
     template <typename... T>
     void Error(const std::format_string<T...> fmt, T&&... args) {
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::cerr << RED << formatted_string << RESET << "\n";
     }
 
@@ -48,6 +54,7 @@ namespace Log {
     void Error(const std::wformat_string<T...> fmt, T&&... args) {
         std::wstring formatted_wstring = std::format(fmt, std::forward<T>(args)...);
         std::string formatted_string = StringFromWstring(formatted_wstring);
+        formatted_string = std::format("[{}] {}", GetModName(), formatted_string);
         std::cerr << RED << formatted_string << RESET << "\n";
     }
 
@@ -58,6 +65,9 @@ namespace Log {
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
         formatted_string += std::format("\n\tin: {}, line: {}", function, line);
         Log::Error("{}", formatted_string);
+
+        __debugbreak();
+
         throw std::runtime_error(formatted_string);
     }
 

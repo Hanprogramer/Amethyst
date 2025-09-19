@@ -19,7 +19,7 @@ extern DWORD gMcThreadId;
 void AmethystRuntime::Start()
 {
     getContext()->Start();
-    Log::Info("[AmethystRuntime] Using 'AmethystRuntime@{}'", MOD_VERSION);
+    Log::Info("Using 'AmethystRuntime@{}'", MOD_VERSION);
 
     SemVersion version = getMinecraftPackageInfo()->mVersion;
 
@@ -32,7 +32,7 @@ void AmethystRuntime::Start()
         );
     }
     else {
-        Log::Info("[AmethystRuntime] Minecraft Version: {}.{}.{}", version.mMajor, version.mMinor, version.mPatch);
+        Log::Info("Minecraft Version: {}.{}.{}", version.mMajor, version.mMinor, version.mPatch);
     }
 
     // read the config file and load in any mods
@@ -88,7 +88,7 @@ void AmethystRuntime::LoadModDlls()
 
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
-        Log::Info("[AmethystRuntime] Loading '{}'", mod.modName);
+        Log::Info("Loading '{}'", mod.modName);
 
         // Check if the mod has a resource pack and register it if it does
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "resource_packs" / "main_rp" / "manifest.json")))
@@ -124,7 +124,7 @@ void AmethystRuntime::_LoadModFunc(std::vector<T>* vector, Mod& mod, const char*
 
 void AmethystRuntime::PromptDebugger()
 {
-    Log::Info("[AmethystRuntime] Minecraft's Base: 0x{:x}", GetMinecraftBaseAddress());
+    Log::Info("Minecraft's Base: 0x{:x}", GetMinecraftBaseAddress());
     std::string command = std::format("vsjitdebugger -p {:d}", GetCurrentProcessId());
     system(command.c_str());
 }
@@ -137,7 +137,7 @@ void AmethystRuntime::AddOwnResources()
 
 void AmethystRuntime::CreateOwnHooks()
 {
-    Amethyst::InitializeAmethystMod(*getContext());
+    Amethyst::InitializeAmethystMod(*getContext(), std::make_unique<Amethyst::ModInfo>("AmethystRuntime"));
 
     CreateInputHooks();
     CreateResourceHooks();
@@ -200,7 +200,7 @@ void AmethystRuntime::ResumeGameThread()
     static NtResumeThreadPtr NtResumeThread = (NtResumeThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread");
     NtResumeThread(gMcThreadHandle, NULL);
 
-    Log::Info("[AmethystRuntime] Resumed game thread (0x{:x}) 0x{:x}", gMcThreadId, (uint64_t)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread"));
+    Log::Info("Resumed game thread!");
 }
 
 void AmethystRuntime::PauseGameThread()
@@ -209,7 +209,7 @@ void AmethystRuntime::PauseGameThread()
     static NtSuspendThreadPtr NtSuspendThread = (NtSuspendThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSuspendThread");
     NtSuspendThread(gMcThreadHandle, NULL);
 
-    Log::Info("[AmethystRuntime] Paused game thread (0x{:x})", gMcThreadId);
+    Log::Info("Paused game thread!");
 }
 
 extern "C" __declspec(dllexport) AmethystContext* GetContextInstance()
