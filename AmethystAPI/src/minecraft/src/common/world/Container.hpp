@@ -124,8 +124,8 @@ public:
     virtual int getMaxStackSize() const = 0;
     virtual void startOpen(Player&) = 0;
     virtual void stopOpen(Player&);
-    virtual std::vector<ItemStack, std::allocator<ItemStack>> getSlotCopies() const;
-    virtual const std::vector<ItemStack const *,std::allocator<ItemStack const*>> getSlots() const;
+    virtual std::vector<ItemStack> getSlotCopies() const;
+    virtual const std::vector<const ItemStack*> getSlots() const;
     virtual int getEmptySlotsCount() const;
     virtual int getItemCount(const ItemStack&);
     virtual int findFirstSlotForItem(const ItemStack&) const;

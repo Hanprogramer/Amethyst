@@ -1,4 +1,6 @@
 #include "ContainerFactory.hpp"
+#include "minecraft/src/common/world/Container.hpp"
+#include "minecraft/src/common/world/actor/player/PlayerInventory.hpp"
 #include "minecraft/src/common/world/actor/player/Player.hpp"
 
 void ContainerFactory::_setPlayerContainerManagerModel(Player& player, std::shared_ptr<IContainerManager> manager)

@@ -36,6 +36,14 @@ const ItemStack& Player::getSelectedItem() const
      return (this->*func)(std::move(transaction));
  }
 
+void Player::sendNetworkPacket(Packet& packet)
+{
+    using function = decltype(&Player::sendNetworkPacket);
+    uintptr_t** vtable = *(uintptr_t***)this;
+    auto func = std::bit_cast<function>(vtable[243]);
+    return (this->*func)(packet);
+}
+
 const LayeredAbilities& Player::getAbilities() const
 {
     return this->tryGetComponent<AbilitiesComponent>()->mAbilities;

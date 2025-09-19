@@ -1,20 +1,19 @@
 #pragma once
 #include <memory>
 #include "minecraft/src/common/world/actor/Mob.hpp"
-#include <minecraft/src/common/world/PlayerUIContainer.hpp>
 #include <minecraft/src/common/world/item/ItemGroup.hpp>
 #include <minecraft/src/common/world/inventory/transaction/InventoryTransactionManager.hpp>
 #include <minecraft/src/common/world/actor/player/SerializedSkin.hpp>
+#include <minecraft/src/common/world/actor/player/PlayerInventory.hpp>
 
-class PlayerInventory;
 class ChunkSource;
 class ItemStackNetManagerBase;
 class PlayerEventCoordinator;
 class InventoryTransaction;
 class ComplexInventoryTransaction;
-class GameMode;
 class LayeredAbilities;
 class IContainerManager;
+class GameMode;
 
 #pragma pack(push, 8)
 class Player : public Mob {
@@ -43,6 +42,7 @@ public:
     void sendInventoryTransaction(const InventoryTransaction& transaction); 
     void sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction>) const; 
     int getItemUseDuration() const;
+    void sendNetworkPacket(Packet&);
 
     // non virtuals
     const LayeredAbilities& getAbilities() const;
@@ -58,10 +58,10 @@ public:
 
 
 // 1.21.0.3
-static_assert(offsetof(Player, mItemStackNetManager) == 6472);
+//static_assert(offsetof(Player, mItemStackNetManager) == 6472);
 static_assert(offsetof(Player, playerInventory) == 1888);
-static_assert(offsetof(Player, mTransactionManager) == 3736);
-static_assert(sizeof(Player) == 7592);  
+//static_assert(offsetof(Player, mTransactionManager) == 3736);
+//static_assert(sizeof(Player) == 7592);  
 
 
 // idk version

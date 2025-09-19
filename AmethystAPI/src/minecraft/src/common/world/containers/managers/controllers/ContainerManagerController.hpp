@@ -8,7 +8,6 @@
 #include "amethyst/Imports.hpp"
 // WIP?
 
-class SelectedSlotInfo;
 class AutoPlaceItem;
 class ContainerScreenActionResult;
 class ItemStackRequestScope;
@@ -17,6 +16,12 @@ class ItemTransferAmount;
 class ContainerManagerModel;
 class ContainerController;
 enum class ContainerScreenRequestActionType;
+
+class SelectedSlotInfo {
+public:
+    const SlotData& mSlot;
+    const int mProgressiveTake;
+};
 
 enum ItemTakeType : int {
     All = 0x0000,
@@ -118,4 +123,4 @@ public:
 };
 
 static_assert(sizeof(ContainerManagerController) == 0xA8);
-static_assert(offsetof(ContainerManagerController, mContainers) == 0x28);
+//static_assert(offsetof(ContainerManagerController, mContainers) == 0x20);

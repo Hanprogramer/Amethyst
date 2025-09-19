@@ -1,4 +1,6 @@
+/// @symbolgeneration
 #pragma once
+#include "amethyst/Imports.hpp"
 #include <string>
 #include "minecraft/src/common/world/item/ItemDescriptorCount.hpp"
 #include "minecraft/src/common/CommonTypes.hpp"
@@ -13,7 +15,8 @@ public:
 	BlockRuntimeId mBlockRuntimeId;
 	std::string mUserDataBuffer;
 
-	NetworkItemStackDescriptor(const ItemStack& stack);
+	/// @signature {48 89 5C 24 ? 55 56 57 41 56 41 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B FA 48 8B F1 48 89 4C 24 ? 0F B6 5A}
+	MC NetworkItemStackDescriptor(const ItemStack& stack);
 
 	NetworkItemStackDescriptor operator=(const NetworkItemStackDescriptor& other) {
         if (this != &other) {
