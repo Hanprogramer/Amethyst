@@ -90,6 +90,10 @@ public:
     static Amethyst::RuntimeImporter* getRuntimeImporter() {
         return AmethystRuntime::getInstance()->mRuntimeImporter.get();
     }
+
+    static Amethyst::ItemOwnerNameRegistry* getItemOwnerNameRegistry() {
+        return AmethystRuntime::getInstance()->mAmethystContext.mItemOwnerNameRegistry.get();
+    }
  
     void Start();
     void Shutdown();

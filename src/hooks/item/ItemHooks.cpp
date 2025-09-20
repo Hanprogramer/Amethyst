@@ -17,7 +17,16 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         std::string&,
         bool>(self, stack, level, hovertext, showCategory);
 
-    std::string_view fullName = self->mFullName.getString();
+    std::string fullName = self->mFullName.getString();
+    hovertext += std::format("\n§8{}§r", fullName);
+
+    auto* itemOwnerNameRegistry = AmethystRuntime::getItemOwnerNameRegistry();
+    auto name = itemOwnerNameRegistry->GetItemOwnerName(fullName);
+    if (name.has_value()) {
+        hovertext += std::format("\n§o§9{}§r", *name);
+        return;
+    }
+
     std::string_view modNameView = fullName.substr(0, fullName.find(':'));
 
     std::string modName;
@@ -42,7 +51,6 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         }
     }
 
-    hovertext += std::format("\n§8{}§r", fullName);
     hovertext += std::format("\n§o§9{}§r", modName);
 }
 
