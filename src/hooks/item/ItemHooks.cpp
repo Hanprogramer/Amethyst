@@ -21,14 +21,23 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     hovertext += std::format("\n§8{}§r", fullName);
 
     auto* itemOwnerNameRegistry = AmethystRuntime::getItemOwnerNameRegistry();
-    auto name = itemOwnerNameRegistry->GetItemOwnerName(fullName);
+
+    std::optional<std::string> name;
+
+    name = itemOwnerNameRegistry->GetItemOwnerName(fullName);
+    if (name.has_value()) {
+        hovertext += std::format("\n§o§9{}§r", *name);
+        return;
+    }
+
+    std::string namespaceName = self->mNamespace;
+    name = itemOwnerNameRegistry->GetItemOwnerNameByNamespace(namespaceName);
     if (name.has_value()) {
         hovertext += std::format("\n§o§9{}§r", *name);
         return;
     }
 
     std::string_view modNameView = fullName.substr(0, fullName.find(':'));
-
     std::string modName;
     if (modNameView.empty() || modNameView == "minecraft") {
         modName = "Minecraft";

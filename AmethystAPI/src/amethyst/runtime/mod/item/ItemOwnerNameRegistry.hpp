@@ -6,6 +6,7 @@
 namespace Amethyst {
 class ItemOwnerNameRegistry {
     std::unordered_map<std::string, std::string> mItemOwnerNames;
+    std::unordered_map<std::string, std::string> mNamespaceOwnerNames;
 
 public: 
     ItemOwnerNameRegistry() = default;
@@ -15,6 +16,13 @@ public:
     ItemOwnerNameRegistry& operator=(const ItemOwnerNameRegistry&) = delete;
     ItemOwnerNameRegistry(ItemOwnerNameRegistry&&) = delete;
     ItemOwnerNameRegistry& operator=(ItemOwnerNameRegistry&&) = delete;
+
+    /*
+     * Registers an owner name for all items in the given namespace.
+     * Observe that if an owner name is already registered for an item in the namespace, it will be overwritten.
+     * namespaceName should be in the format "modid" (e.g. "minecraft").
+     */
+    void RegisterItemOwnerNameForNamespace(const std::string& namespaceName, const std::string& ownerName);
 
     /*
      * Registers an owner name for the given item full name.
@@ -29,5 +37,12 @@ public:
      * itemFullName should be in the format "modid:itemname" (e.g. "minecraft:diamond_sword").
      */
     std::optional<std::string> GetItemOwnerName(const std::string& itemFullName) const;
+
+    /*
+     * Gets the registered item owner name for the given namespace, if it exists.
+     * Returns std::nullopt if no owner name is registered for the namespace.
+     * namespaceName should be in the format "modid" (e.g. "minecraft").
+     */
+    std::optional<std::string> GetItemOwnerNameByNamespace(const std::string& namespaceName) const;
 };
 }
