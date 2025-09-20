@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include <memory>
 #include "minecraft/src/common/world/actor/Mob.hpp"
@@ -14,6 +15,8 @@ class ComplexInventoryTransaction;
 class LayeredAbilities;
 class IContainerManager;
 class GameMode;
+class ServerPlayer;
+class LocalPlayer;
 
 #pragma pack(push, 8)
 class Player : public Mob {
@@ -32,6 +35,10 @@ public:
     /* this + 3792 */ std::byte padding3792[2680];
     /* this + 6472 */ std::unique_ptr<ItemStackNetManagerBase> mItemStackNetManager;
     /* this + 6480 */ std::byte padding6480[1112];
+
+    // 101% accurate parameters lmao
+    /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 44 89 4C 24 ? 4C 89 44 24}
+    MC void $constructor(Player* self, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, void* a11, void* a12, void* a13, void* a14);
 
     /* virtuals */
     void prepareRegion(ChunkSource& cs);
@@ -53,6 +60,11 @@ public:
 
     void setContainerManagerModel(std::shared_ptr<IContainerManager> manager);
     std::weak_ptr<IContainerManager> getContainerManagerModel() const;
+
+    const ServerPlayer* getServerPlayer() const;
+    const LocalPlayer* getLocalPlayer() const;
+    ServerPlayer* getServerPlayer();
+    LocalPlayer* getLocalPlayer();
 };
 #pragma pack(pop)   
 

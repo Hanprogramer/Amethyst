@@ -85,6 +85,34 @@ std::weak_ptr<IContainerManager> Player::getContainerManagerModel() const
     return mContainerManager;
 }
 
+const ServerPlayer* Player::getServerPlayer() const
+{
+    if (isClientSide()) 
+        return nullptr;
+    return reinterpret_cast<const ServerPlayer*>(this);
+}
+
+const LocalPlayer* Player::getLocalPlayer() const
+{
+    if (!isClientSide()) 
+        return nullptr;
+    return reinterpret_cast<const LocalPlayer*>(this);
+}
+
+ServerPlayer* Player::getServerPlayer()
+{
+    if (isClientSide())
+        return nullptr;
+    return reinterpret_cast<ServerPlayer*>(this);
+}
+
+LocalPlayer* Player::getLocalPlayer()
+{
+    if (!isClientSide())
+        return nullptr;
+    return reinterpret_cast<LocalPlayer*>(this);
+}
+
  //int Player::getItemUseDuration() const
  //{
  //    using function = decltype(&Player::getItemUseDuration);
