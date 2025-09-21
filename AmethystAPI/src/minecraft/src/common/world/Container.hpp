@@ -8,7 +8,6 @@
 class ItemStack;
 class ContainerContentChangeListener;
 class ContainerSizeChangeListener;
-class ContainerCloseListener;
 class ContainerRemovedListener;
 
 enum class ContainerType : signed char {
@@ -72,12 +71,20 @@ enum class ContainerID : unsigned char {
     CONTAINER_ID_PLAYER_ONLY_UI = 0x7C,
 };
 
+class ContainerCloseListener {
+public:
+    virtual void containerClosed(Player& player) = 0;
+    virtual ~ContainerCloseListener() = default;
+};
+
 class ContainerSizeChangeListener {
+public:
     virtual void containerSizeChanged(int) = 0;
     virtual ~ContainerSizeChangeListener() = default;
 };
 
 class ContainerContentChangeListener {
+public:
     virtual void containerContentChanged(int) = 0;
     virtual ~ContainerContentChangeListener() = default;
 };

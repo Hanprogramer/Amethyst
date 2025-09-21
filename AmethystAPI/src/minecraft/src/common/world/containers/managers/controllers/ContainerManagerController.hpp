@@ -8,7 +8,6 @@
 #include "amethyst/Imports.hpp"
 // WIP?
 
-class AutoPlaceItem;
 class ContainerScreenActionResult;
 class ItemStackRequestScope;
 class AutoPlaceResult;
@@ -16,6 +15,12 @@ class ItemTransferAmount;
 class ContainerManagerModel;
 class ContainerController;
 enum class ContainerScreenRequestActionType;
+
+class AutoPlaceItem {
+public:
+    std::string collection;
+    bool stopWhenPlaced;
+};
 
 class SelectedSlotInfo {
 public:

@@ -151,9 +151,7 @@ namespace Amethyst {
         //     }
         // }
 
-        ~HookManager();
 
-    private:
         /**
          * Directly hooks a function with an absolute address
          * CAUTION: This will not work if two mods want to hook the same function. For more compatibility, use HookManager::CreateHook
@@ -164,6 +162,8 @@ namespace Amethyst {
             mHooks.push_back(&safetyHookTrampoline);
         }
 
+        ~HookManager();
+    private:
         std::vector<SafetyHookInline*> mHooks;
         std::unordered_map<size_t, uintptr_t> mFuncHashToOriginalAddress;
         friend class AmethystRuntime;

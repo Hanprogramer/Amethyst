@@ -9,8 +9,8 @@ namespace Amethyst {
 	public:
 		std::string name;
 
-		ModInfo(std::string name)
-			: name(std::move(name)) {}
+		ModInfo(const std::string& name) : 
+			name(name) {}
 	};
 
 	/**

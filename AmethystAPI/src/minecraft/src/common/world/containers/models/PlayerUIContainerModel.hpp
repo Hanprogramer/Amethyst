@@ -3,7 +3,7 @@
 #include "amethyst/Imports.hpp"
 #include "minecraft/src/common/world/containers/models/ContainerModel.hpp"
 
-enum class ContainerEnumName;
+enum class ContainerEnumName : unsigned char;
 class Player;
 
 /// @vptr {0x4DDF030}
