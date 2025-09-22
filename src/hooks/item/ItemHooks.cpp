@@ -5,7 +5,6 @@
 #include <minecraft/src/common/world/item/ItemStack.hpp>
 #include <minecraft/src/common/world/level/Level.hpp>
 
-
 SafetyHookInline _Item_appendFormattedHovertext;
 void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory)
 {
@@ -20,21 +19,18 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     std::string fullName = self->mFullName.getString();
     hovertext += std::format("\n§8{}§r", fullName);
 
-    auto* itemOwnerNameRegistry = AmethystRuntime::getItemOwnerNameRegistry();
-
-    std::optional<std::string> name;
-
-    name = itemOwnerNameRegistry->GetItemOwnerName(fullName);
-    if (name.has_value()) {
-        hovertext += std::format("\n§o§9{}§r", *name);
-        return;
-    }
-
-    std::string namespaceName = self->mNamespace;
-    name = itemOwnerNameRegistry->GetItemOwnerNameByNamespace(namespaceName);
-    if (name.has_value()) {
-        hovertext += std::format("\n§o§9{}§r", *name);
-        return;
+    for (auto& tag : self->mTags) {
+        if (tag.getString().starts_with("mod_item_owner:"))
+        {
+            auto colonPos = tag.getString().find(':') + 1;
+            if (colonPos == std::string::npos || colonPos + 1 >= tag.getString().size())
+                continue;
+            std::string owner = tag.getString().substr(colonPos);
+            if (!owner.empty()) {
+                hovertext += std::format("\n§o§9{}§r", owner);
+                return;
+            }
+        }
     }
 
     std::string_view modNameView = fullName.substr(0, fullName.find(':'));

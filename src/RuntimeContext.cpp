@@ -12,7 +12,6 @@ void RuntimeContext::Start()
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
     mPackManager = std::make_unique<Amethyst::PackManager>(this);
     mNetworkManager = std::make_unique<Amethyst::NetworkManager>();
-    mItemOwnerNameRegistry = std::make_unique<Amethyst::ItemOwnerNameRegistry>();
 }
 
 void RuntimeContext::Shutdown()
@@ -24,5 +23,4 @@ void RuntimeContext::Shutdown()
     mEnumAllocator.reset();
     mPackManager.reset();
     mNetworkManager.reset();
-    mItemOwnerNameRegistry.reset();
 }
