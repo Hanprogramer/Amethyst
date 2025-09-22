@@ -25,7 +25,7 @@ Mod::Mod(std::string modName)
     this->metadata = Mod::GetMetadata(modName);
 }
 
-FARPROC Mod::GetFunction(const char* functionName)
+FARPROC Mod::GetFunction(const char* functionName) const
 {
     return GetProcAddress(hModule, functionName);
 }
@@ -82,8 +82,8 @@ Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
 
     // Verify all fields are correct in config.json
     Assert(data["meta"].is_object(), "[AmethystRuntime] Required field \"meta\" should be of type \"object\" in mod.json, for {}", modName);
+    Assert(data["meta"]["modid"].is_string(), "[AmethystRuntime] Required field \"modid\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
     Assert(data["meta"]["name"].is_string(), "[AmethystRuntime] Required field \"name\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-
 
     std::vector<std::string> authors = {};
 
@@ -100,11 +100,14 @@ Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
     Assert(data["meta"]["version"].is_string(), "[AmethystRuntime] Required field \"version\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
 
     // Set values
-    Metadata meta;
-
-    meta.name = data["meta"]["name"];
-    meta.author = authors;
-    meta.version = data["meta"]["version"];
+    Metadata meta{
+        data["meta"]["modid"],
+        data["meta"]["name"],
+        data["meta"].contains("logname") && data["meta"]["logname"].is_string() ? data["meta"]["logname"] : data["meta"]["name"],
+        data["meta"].contains("friendlyname") && data["meta"]["friendlyname"].is_string() ? data["meta"]["friendlyname"] : data["meta"]["name"],
+        data["meta"]["version"],
+        authors
+    };
 
     return meta;
 }

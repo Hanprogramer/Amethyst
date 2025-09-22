@@ -34,11 +34,11 @@ namespace Log {
     }
 
     const std::string& GetModName() {
-        const Amethyst::ModInfo* info = Amethyst::GetOwnModInfo();
-        if (info == nullptr) {
+        const Mod* mod = Amethyst::GetOwnMod();
+        if (mod == nullptr) {
             static std::string unknown = "AmethystRuntime";
             return unknown;
         }
-        return info->name;
+        return mod->metadata.logName;
     }
 } // namespace Log

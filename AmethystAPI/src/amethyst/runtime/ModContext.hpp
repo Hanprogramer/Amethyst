@@ -1,23 +1,16 @@
 #pragma once
 #include <amethyst/runtime/AmethystContext.hpp>
+#include <amethyst/runtime/mod/Mod.hpp>
 
 class Minecraft;
 class Level;
 
 namespace Amethyst {
-	struct ModInfo {
-	public:
-		std::string name;
-
-		ModInfo(const std::string& name) : 
-			name(name) {}
-	};
-
 	/**
 	Initializes internal variables required for an Amethyst mod to function.
 	 - This should be the first thing called in the ModFunction Initialize().
 	*/
-	void InitializeAmethystMod(AmethystContext& context, std::unique_ptr<ModInfo> info);
+    void InitializeAmethystMod(AmethystContext& context, const Mod& mod);
 
 	AmethystContext& GetContext();
 	Amethyst::EventBus& GetEventBus();
@@ -30,5 +23,5 @@ namespace Amethyst {
 	Level* GetLevel();
 	ClientInstance* GetClientInstance();
 
-	const Amethyst::ModInfo* GetOwnModInfo();
+	const Mod* GetOwnMod();
 }

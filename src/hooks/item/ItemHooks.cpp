@@ -16,32 +16,20 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         std::string&,
         bool>(self, stack, level, hovertext, showCategory);
 
-    std::string fullName = self->mFullName.getString();
-    hovertext += std::format("\n§8{}§r", fullName);
-
-    for (auto& tag : self->mTags) {
-        if (tag.getString().starts_with("mod_item_owner:"))
-        {
-            auto colonPos = tag.getString().find(':') + 1;
-            if (colonPos == std::string::npos || colonPos + 1 >= tag.getString().size())
-                continue;
-            std::string owner = tag.getString().substr(colonPos);
-            if (!owner.empty()) {
-                hovertext += std::format("\n§o§9{}§r", owner);
-                return;
-            }
-        }
-    }
-
-    std::string_view modNameView = fullName.substr(0, fullName.find(':'));
+    std::string itemNamespace = self->mNamespace;
     std::string modName;
-    if (modNameView.empty() || modNameView == "minecraft") {
+    Mod* mod;
+    if (itemNamespace.empty() || itemNamespace == "minecraft")
+    {
         modName = "Minecraft";
     }
+    else if ((mod = AmethystRuntime::getContext()->GetModById(itemNamespace)) != nullptr) {
+        modName = mod->metadata.friendlyName;
+    }
     else {
-        modName.reserve(modNameView.size());
+        modName.reserve(itemNamespace.size());
         bool cap = true;
-        for (char c : modNameView) {
+        for (char c : itemNamespace) {
             if (c == '_') {
                 modName.push_back(' ');
                 cap = true;
@@ -56,6 +44,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         }
     }
 
+    hovertext += std::format("\n§8{}§r", self->mFullName.getString());
     hovertext += std::format("\n§o§9{}§r", modName);
 }
 

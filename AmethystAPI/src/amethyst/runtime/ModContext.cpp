@@ -3,9 +3,9 @@
 #include <minecraft/src/common/Minecraft.hpp>
 
 static AmethystContext* _AmethystContextInstance;
-static std::unique_ptr<Amethyst::ModInfo> _ModInfo;
+static const Mod* _OwnMod;
 
-void Amethyst::InitializeAmethystMod(AmethystContext& context, std::unique_ptr<ModInfo> info)
+void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
     // Initialize vtbl pointers & ctor pointers.
     InitializeVtablePtrs();
@@ -13,13 +13,8 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, std::unique_ptr<M
     // Store a persistent AmethystContext instance
     _AmethystContextInstance = &context;
 
-    // Store mod info
-    _ModInfo = std::move(info);
-}
-
-const Amethyst::ModInfo* Amethyst::GetOwnModInfo()
-{
-    return _ModInfo.get();
+    // Store our own mod info for later retrieval
+    _OwnMod = &mod;
 }
 
 AmethystContext& Amethyst::GetContext()
@@ -67,4 +62,9 @@ Level* Amethyst::GetLevel()
 ClientInstance* Amethyst::GetClientInstance()
 {
     return _AmethystContextInstance->mClientInstance;
+}
+
+const Mod* Amethyst::GetOwnMod()
+{
+    return _OwnMod;
 }

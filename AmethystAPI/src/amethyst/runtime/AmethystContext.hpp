@@ -41,6 +41,24 @@ public:
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
 
+    const Mod* GetModById(const std::string& modId) const {
+        for (const auto& mod : mMods) {
+            if (mod.metadata.modId == modId) {
+                return &mod;
+            }
+        }
+        return nullptr;
+    }
+
+    Mod* GetModById(const std::string& modId) {
+        for (auto& mod : mMods) {
+            if (mod.metadata.modId == modId) {
+                return &mod;
+            }
+        }
+        return nullptr;
+    }
+
 protected:
     virtual void Start() = 0;
     virtual void Shutdown() = 0;

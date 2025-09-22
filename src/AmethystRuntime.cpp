@@ -43,7 +43,8 @@ void AmethystRuntime::Start()
         PromptDebugger();
 
     // Initialize our runtime importer
-    mRuntimeImporter->Initialize();
+    mAmethystMod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mAmethystMod.GetModule());
+    mAmethystMod.GetRuntimeImporter().Initialize();
 
     // Add our resources before loading mods
     AddOwnResources();
@@ -52,7 +53,6 @@ void AmethystRuntime::Start()
     // Create our hooks then run the mods
     CreateOwnHooks();
     RunMods();
-
 } 
 
 void AmethystRuntime::ReadLauncherConfig()
@@ -102,12 +102,12 @@ void AmethystRuntime::LoadModDlls()
         mod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mod.GetModule());
         mod.GetRuntimeImporter().Initialize();
 
-        _LoadModFunc(&mModInitialize, mod, "Initialize");
+        _LoadModFunc(mModInitialize, mod, "Initialize");
     }
 
     // Invoke mods to initialize and setup hooks, etc..
-    for (auto& modInitialize : mModInitialize)
-        modInitialize(&mAmethystContext);
+    for (auto& [mod, initialize] : mModInitialize)
+        initialize(&mAmethystContext, mod);
 
     // Allow mods to add listeners to eachothers events
     AddModEventListenersEvent event;
@@ -115,11 +115,11 @@ void AmethystRuntime::LoadModDlls()
 }
 
 template <typename T>
-void AmethystRuntime::_LoadModFunc(std::vector<T>* vector, Mod& mod, const char* functionName)
+void AmethystRuntime::_LoadModFunc(std::unordered_map<Mod*, T>& map, Mod& mod, const char* functionName)
 {
     FARPROC address = mod.GetFunction(functionName);
     if (address == NULL) return;
-    vector->push_back(reinterpret_cast<T>(address));
+    map[&mod] = reinterpret_cast<T>(address);
 }
 
 void AmethystRuntime::PromptDebugger()
@@ -132,12 +132,12 @@ void AmethystRuntime::PromptDebugger()
 void AmethystRuntime::AddOwnResources()
 {
     // Add our own resource pack
-    mAmethystContext.mPackManager->RegisterNewPack({ "AmethystRuntime", MOD_VERSION, { "FrederoxDev" }}, "main_rp", PackType::Resources, Amethyst::PackPriority::Lowest);
+    mAmethystContext.mPackManager->RegisterNewPack(mAmethystMod.metadata, "main_rp", PackType::Resources, Amethyst::PackPriority::Lowest);
 }
 
 void AmethystRuntime::CreateOwnHooks()
 {
-    Amethyst::InitializeAmethystMod(*getContext(), std::make_unique<Amethyst::ModInfo>("AmethystRuntime"));
+    Amethyst::InitializeAmethystMod(*getContext(), mAmethystMod);
 
     CreateInputHooks();
     CreateResourceHooks();
@@ -187,11 +187,11 @@ void AmethystRuntime::Shutdown()
     }
 
     // Clear lists of mods & functions.
-    mAmethystContext.mMods.clear();
     mModInitialize.clear();
+    mAmethystContext.mMods.clear();
 
     // Shutdown our runtime importer
-    mRuntimeImporter->Shutdown();
+    mAmethystMod.GetRuntimeImporter().Shutdown();
 }
 
 void AmethystRuntime::ResumeGameThread()

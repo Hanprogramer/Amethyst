@@ -15,7 +15,7 @@
 
 namespace fs = std::filesystem;
 
-typedef void (*ModInitialize)(AmethystContext* context);
+typedef void (*ModInitialize)(AmethystContext* context, const Mod* mod);
 extern HMODULE hModule;
 
 /*
@@ -32,8 +32,10 @@ extern HMODULE hModule;
 class AmethystRuntime {
 private:
     // AmethystRuntime is a Singleton so don't allow creating from outside
-    AmethystRuntime() {
-        mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(::hModule);
+    AmethystRuntime() : 
+        mAmethystMod(std::format("AmethystRuntime@{}", MOD_VERSION))
+    {
+        mAmethystMod.hModule = ::hModule;
     }
 
     AmethystRuntime(const AmethystRuntime&);
@@ -87,8 +89,14 @@ public:
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
     }
 
-    static Amethyst::RuntimeImporter* getRuntimeImporter() {
-        return AmethystRuntime::getInstance()->mRuntimeImporter.get();
+    static Amethyst::RuntimeImporter* getRuntimeImporter() 
+    {
+        return &AmethystRuntime::getInstance()->mAmethystMod.GetRuntimeImporter();
+    }
+
+    static Mod* getAmethystMod() 
+    {
+        return &AmethystRuntime::getInstance()->mAmethystMod;
     }
 
     void Start();
@@ -105,13 +113,13 @@ private:
     void PauseGameThread();
 
     template <typename T>
-    void _LoadModFunc(std::vector<T>* vector, Mod& mod, const char* functionName);
+    void _LoadModFunc(std::unordered_map<Mod*, T>& map, Mod& mod, const char* functionName);
 
 private:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
-    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
 
 public:
-    std::vector<ModInitialize> mModInitialize;
+    std::unordered_map<Mod*, ModInitialize> mModInitialize;
+    Mod mAmethystMod;
 };
