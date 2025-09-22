@@ -29,4 +29,18 @@ public:
         this->mContainerId = other.mContainerId;
         this->mFlags = other.mFlags;
     }
+
+    bool operator==(const InventorySource& other) const {
+        return this->mType == other.mType && this->mContainerId == other.mContainerId && this->mFlags == other.mFlags;
+    }
 };
+
+namespace std {
+template <>
+struct hash<InventorySource> {
+    size_t operator()(const InventorySource& source) const
+    {
+        return (static_cast<size_t>(source.mType) << 32) | (static_cast<size_t>(source.mContainerId) << 16) | static_cast<size_t>(source.mFlags);
+    }
+};
+} // namespace std

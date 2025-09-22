@@ -23,7 +23,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     {
         modName = "Minecraft";
     }
-    else if ((mod = AmethystRuntime::getContext()->GetModById(itemNamespace)) != nullptr) {
+    else if ((mod = AmethystRuntime::getContext()->GetModByNamespace(itemNamespace)) != nullptr) {
         modName = mod->metadata.friendlyName;
     }
     else {

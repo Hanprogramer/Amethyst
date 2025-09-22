@@ -21,7 +21,7 @@ private:
 
 public:
     struct Metadata {
-        std::string modId;
+        std::string modNamespace;
         std::string name;
         std::string logName;
         std::string friendlyName;
@@ -45,7 +45,7 @@ public:
     void Shutdown();
 
     bool operator==(const Mod& other) const {
-        return metadata.modId == other.metadata.modId && metadata.version == other.metadata.version;
+        return metadata.modNamespace == other.metadata.modNamespace && metadata.version == other.metadata.version;
     }
 
 public:
@@ -61,7 +61,7 @@ namespace std {
     struct hash<Mod> {
         std::size_t operator()(const Mod& s) const noexcept
         {
-            std::size_t h1 = std::hash<std::string>{}(s.metadata.modId);
+            std::size_t h1 = std::hash<std::string>{}(s.metadata.modNamespace);
             std::size_t h2 = std::hash<std::string>{}(s.metadata.name);
             return h1 ^ (h2 << 1);
         }

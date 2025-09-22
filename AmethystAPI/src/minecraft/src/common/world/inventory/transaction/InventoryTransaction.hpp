@@ -8,8 +8,7 @@
 
 class InventoryTransaction {
 public:
-    //std::unordered_map<InventorySource, std::vector<InventoryAction>> mActions;
-    std::byte _pad[0x40];
+    std::unordered_map<InventorySource, std::vector<InventoryAction>> mActions;
     std::vector<InventoryTransactionItemGroup> mContents;
 
     void addAction(const InventoryAction& action)

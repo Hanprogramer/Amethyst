@@ -41,18 +41,20 @@ public:
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
 
-    const Mod* GetModById(const std::string& modId) const {
+    const Mod* GetModByNamespace(const std::string& modNamespace) const 
+    {
         for (const auto& mod : mMods) {
-            if (mod.metadata.modId == modId) {
+            if (mod.metadata.modNamespace == modNamespace) {
                 return &mod;
             }
         }
         return nullptr;
     }
 
-    Mod* GetModById(const std::string& modId) {
+    Mod* GetModByNamespace(const std::string& modNamespace)
+    {
         for (auto& mod : mMods) {
-            if (mod.metadata.modId == modId) {
+            if (mod.metadata.modNamespace == modNamespace) {
                 return &mod;
             }
         }
