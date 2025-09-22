@@ -1,4 +1,5 @@
 #pragma once
+#include "minecraft/src/common/world/item/ItemStackBase.hpp"
 
 class ItemStackBase;
 
@@ -10,5 +11,3 @@ public:
     }
 };
 
-// ItemStackBase has ItemInstance as a member variable, so include has to be after declaration...
-#include "minecraft/src/common/world/item/ItemStackBase.hpp"

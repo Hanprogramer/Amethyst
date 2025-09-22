@@ -36,6 +36,14 @@ const ItemStack& Player::getSelectedItem() const
      return (this->*func)(std::move(transaction));
  }
 
+void Player::sendNetworkPacket(Packet& packet)
+{
+    using function = decltype(&Player::sendNetworkPacket);
+    uintptr_t** vtable = *(uintptr_t***)this;
+    auto func = std::bit_cast<function>(vtable[243]);
+    return (this->*func)(packet);
+}
+
 const LayeredAbilities& Player::getAbilities() const
 {
     return this->tryGetComponent<AbilitiesComponent>()->mAbilities;
@@ -75,6 +83,34 @@ void Player::setContainerManagerModel(std::shared_ptr<IContainerManager> manager
 std::weak_ptr<IContainerManager> Player::getContainerManagerModel() const
 {
     return mContainerManager;
+}
+
+const ServerPlayer* Player::getServerPlayer() const
+{
+    if (isClientSide()) 
+        return nullptr;
+    return reinterpret_cast<const ServerPlayer*>(this);
+}
+
+const LocalPlayer* Player::getLocalPlayer() const
+{
+    if (!isClientSide()) 
+        return nullptr;
+    return reinterpret_cast<const LocalPlayer*>(this);
+}
+
+ServerPlayer* Player::getServerPlayer()
+{
+    if (isClientSide())
+        return nullptr;
+    return reinterpret_cast<ServerPlayer*>(this);
+}
+
+LocalPlayer* Player::getLocalPlayer()
+{
+    if (!isClientSide())
+        return nullptr;
+    return reinterpret_cast<LocalPlayer*>(this);
 }
 
  //int Player::getItemUseDuration() const

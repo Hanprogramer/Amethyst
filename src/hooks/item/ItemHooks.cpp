@@ -5,7 +5,6 @@
 #include <minecraft/src/common/world/item/ItemStack.hpp>
 #include <minecraft/src/common/world/level/Level.hpp>
 
-
 SafetyHookInline _Item_appendFormattedHovertext;
 void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory)
 {
@@ -17,17 +16,20 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         std::string&,
         bool>(self, stack, level, hovertext, showCategory);
 
-    std::string_view fullName = self->mFullName.getString();
-    std::string_view modNameView = fullName.substr(0, fullName.find(':'));
-
+    std::string itemNamespace = self->mNamespace;
     std::string modName;
-    if (modNameView.empty() || modNameView == "minecraft") {
+    Mod* mod;
+    if (itemNamespace.empty() || itemNamespace == "minecraft")
+    {
         modName = "Minecraft";
     }
+    else if ((mod = AmethystRuntime::getContext()->GetModByNamespace(itemNamespace)) != nullptr) {
+        modName = mod->metadata.friendlyName;
+    }
     else {
-        modName.reserve(modNameView.size());
+        modName.reserve(itemNamespace.size());
         bool cap = true;
-        for (char c : modNameView) {
+        for (char c : itemNamespace) {
             if (c == '_') {
                 modName.push_back(' ');
                 cap = true;
@@ -42,7 +44,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         }
     }
 
-    hovertext += std::format("\n§8{}§r", fullName);
+    hovertext += std::format("\n§8{}§r", self->mFullName.getString());
     hovertext += std::format("\n§o§9{}§r", modName);
 }
 

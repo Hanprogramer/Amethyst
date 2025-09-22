@@ -3,7 +3,7 @@
 #include "amethyst/Imports.hpp"
 #include "minecraft/src/common/world/containers/models/ContainerModel.hpp"
 
-enum class ContainerEnumName;
+enum class ContainerEnumName : unsigned char;
 class Player;
 
 /// @vptr {0x4DE9A00}
@@ -17,20 +17,19 @@ public:
     MC InventoryContainerModel(ContainerEnumName, int, Player&);
     
     /// @vidx {inherit}
-    virtual void containerContentChanged(int) override;
+    MC virtual void containerContentChanged(int) override;
     /// @vidx {inherit}
-    virtual ~InventoryContainerModel() override;
+    MC virtual ~InventoryContainerModel() override;
     /// @vidx {inherit}
-    virtual void postInit() override;
+    MC virtual void postInit() override;
     /// @vidx {inherit}
-    virtual void releaseResources() override;
+    MC virtual void releaseResources() override;
     /// @vidx {inherit}
-    virtual ContainerWeakRef getContainerWeakRef() override;
+    MC virtual ContainerWeakRef getContainerWeakRef() override;
     /// @vidx {inherit}
-    virtual bool isValid() override;
+    MC virtual bool isValid() override;
     /// @vidx {inherit}
-    virtual Container* _getContainer() override;
+    MC virtual Container* _getContainer() override;
     /// @vidx {inherit}
-    virtual int _getContainerOffset() override;
+    MC virtual int _getContainerOffset() override;
 };
-

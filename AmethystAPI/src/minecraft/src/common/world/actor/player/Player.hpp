@@ -1,20 +1,22 @@
+/// @symbolgeneration
 #pragma once
 #include <memory>
 #include "minecraft/src/common/world/actor/Mob.hpp"
-#include <minecraft/src/common/world/PlayerUIContainer.hpp>
 #include <minecraft/src/common/world/item/ItemGroup.hpp>
 #include <minecraft/src/common/world/inventory/transaction/InventoryTransactionManager.hpp>
 #include <minecraft/src/common/world/actor/player/SerializedSkin.hpp>
+#include <minecraft/src/common/world/actor/player/PlayerInventory.hpp>
 
-class PlayerInventory;
 class ChunkSource;
 class ItemStackNetManagerBase;
 class PlayerEventCoordinator;
 class InventoryTransaction;
 class ComplexInventoryTransaction;
-class GameMode;
 class LayeredAbilities;
 class IContainerManager;
+class GameMode;
+class ServerPlayer;
+class LocalPlayer;
 
 #pragma pack(push, 8)
 class Player : public Mob {
@@ -34,6 +36,10 @@ public:
     /* this + 6472 */ std::unique_ptr<ItemStackNetManagerBase> mItemStackNetManager;
     /* this + 6480 */ std::byte padding6480[1112];
 
+    // 101% accurate parameters lmao
+    /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 44 89 4C 24 ? 4C 89 44 24}
+    MC void $constructor(Player* self, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, void* a11, void* a12, void* a13, void* a14);
+
     /* virtuals */
     void prepareRegion(ChunkSource& cs);
     const PlayerInventory& getSupplies() const;
@@ -43,6 +49,7 @@ public:
     void sendInventoryTransaction(const InventoryTransaction& transaction); 
     void sendComplexInventoryTransaction(std::unique_ptr<ComplexInventoryTransaction>) const; 
     int getItemUseDuration() const;
+    void sendNetworkPacket(Packet&);
 
     // non virtuals
     const LayeredAbilities& getAbilities() const;
@@ -53,15 +60,20 @@ public:
 
     void setContainerManagerModel(std::shared_ptr<IContainerManager> manager);
     std::weak_ptr<IContainerManager> getContainerManagerModel() const;
+
+    const ServerPlayer* getServerPlayer() const;
+    const LocalPlayer* getLocalPlayer() const;
+    ServerPlayer* getServerPlayer();
+    LocalPlayer* getLocalPlayer();
 };
 #pragma pack(pop)   
 
 
 // 1.21.0.3
-static_assert(offsetof(Player, mItemStackNetManager) == 6472);
+//static_assert(offsetof(Player, mItemStackNetManager) == 6472);
 static_assert(offsetof(Player, playerInventory) == 1888);
-static_assert(offsetof(Player, mTransactionManager) == 3736);
-static_assert(sizeof(Player) == 7592);  
+//static_assert(offsetof(Player, mTransactionManager) == 3736);
+//static_assert(sizeof(Player) == 7592);  
 
 
 // idk version

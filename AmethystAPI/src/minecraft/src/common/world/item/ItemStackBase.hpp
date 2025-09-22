@@ -93,6 +93,3 @@ private:
 };
 
 static_assert(sizeof(ItemStackBase) == 0x88);
-
-// ItemInstance inherits from ItemStackBase but is also used as a member variable
-#include "minecraft/src/common/world/item/ItemInstance.hpp"

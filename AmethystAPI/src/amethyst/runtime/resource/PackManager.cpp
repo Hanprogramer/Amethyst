@@ -25,7 +25,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 
 	// Check if the pack path is already registered for this mod
     if (mPacks[key].contains(path)) {
-		Log::Warning("[AmethystRuntime] Pack '{}' of type {} for '{}' is already registered, skipping.", path, static_cast<int>(type), key);
+		Log::Warning("Pack '{}' of type {} for '{}' is already registered, skipping.", path, static_cast<int>(type), key);
 		return;
     }
 
@@ -33,40 +33,40 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 
     // Check if the pack contains a manifest.json
     if (!fs::exists(manifestPath)) {
-        Log::Warning("[AmethystRuntime] Pack '{}' for '{}' does not contain a manifest.json, skipping.", path, key);
+        Log::Warning("Pack '{}' for '{}' does not contain a manifest.json, skipping.", path, key);
         return;
     }
 
     // Try to read the manifest.json to ensure it's valid
     std::ifstream manifestFile(manifestPath, std::ios::binary);
-    Assert(manifestFile.is_open(), "[AmethystRuntime] Failed to open manifest.json for pack '{}' of '{}'", path, key);
+    Assert(manifestFile.is_open(), "Failed to open manifest.json for pack '{}' of '{}'", path, key);
     std::string manifestContents((std::istreambuf_iterator<char>(manifestFile)), std::istreambuf_iterator<char>());
 
     // Try to parse the manifest.json
     auto manifestJson = json::parse(manifestContents);
     if (!manifestJson.is_object()) {
-        Log::Warning("[AmethystRuntime] manifest.json for pack '{}' of '{}' is not a valid json object, skipping.", path, key);
+        Log::Warning("manifest.json for pack '{}' of '{}' is not a valid json object, skipping.", path, key);
         return;
     }
 
     // Ensure it has a header object
     auto& header = manifestJson["header"];
     if (!header.is_object()) {
-        Log::Warning("[AmethystRuntime] manifest.json for pack '{}' of '{}' does not contain a valid \"header\" object, skipping.", path, key);
+        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"header\" object, skipping.", path, key);
         return;
     }
 
     // Ensure it has a uuid string in the header
     auto& uuid = header["uuid"];
     if (!uuid.is_string()) {
-        Log::Warning("[AmethystRuntime] manifest.json for pack '{}' of '{}' does not contain a valid \"uuid\" string in the \"header\" object, skipping.", path, key);
+        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"uuid\" string in the \"header\" object, skipping.", path, key);
         return;
     }
     
     // Ensure it has a version array in the header
     auto& version = header["version"];
     if (!version.is_array() || version.size() != 3 || !version[0].is_number_unsigned() || !version[1].is_number_unsigned() || !version[2].is_number_unsigned()) {
-        Log::Warning("[AmethystRuntime] manifest.json for pack '{}' of '{}' does not contain a valid \"version\" array in the \"header\" object, skipping.", path, key);
+        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"version\" array in the \"header\" object, skipping.", path, key);
         return;
     }
 
@@ -75,7 +75,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
 
 	// Insert the new pack
     mPacks[key].insert({path, Pack{metadata, path, packUuid, semVersion, type, priority}});
-    Log::Info("[AmethystRuntime] Registered pack '{}' for '{}'.", path, key);
+    Log::Info("Registered pack '{}' for '{}'.", path, key);
 }
 
 const std::unordered_map<std::string, std::unordered_map<std::string, Amethyst::Pack>>& Amethyst::PackManager::GetPacks() const

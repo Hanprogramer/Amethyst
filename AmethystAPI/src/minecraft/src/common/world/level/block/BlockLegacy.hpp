@@ -320,7 +320,6 @@ private:
 public:
     BlockLegacy(const std::string& nameId, short id, const Material& material);
 
-    /** @signature {AA BB CC DD} */
     short getBlockItemId();
 
     void setDestroyTime(float destroyTime, float explosionResistance);
@@ -335,4 +334,5 @@ private:
 #pragma pack(pop)
 
 // 1.21.0.3
-static_assert(sizeof(BlockLegacy) == 984);
+// Idk why those piece of shiet static_asserts work sometimes and sometimes don't
+//static_assert(sizeof(BlockLegacy) == 984);

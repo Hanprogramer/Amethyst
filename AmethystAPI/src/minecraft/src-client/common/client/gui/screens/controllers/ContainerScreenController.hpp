@@ -31,7 +31,8 @@ public:
     std::byte padding3128[0x1010 - sizeof(ClientInstanceScreenController)];
     std::unordered_map<std::string, std::vector<std::string>> mCoalesceOrderMap;
     std::unordered_map<std::string, std::vector<AutoPlaceItem>> mAutoPlaceOrderMap;
-    std::byte padding4240[0xB8];
+    std::byte padding4240[0xB0];
+    InteractionModel mInteractionModel;
     std::shared_ptr<ContainerManagerController> mContainerManagerController;
 
     /// @address {0x59D9150}
@@ -127,6 +128,8 @@ public:
     MC void _registerEventHandlers();
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B F9}
     MC void _registerBindings();
+
+    InteractionModel getInteractionModel() const;
 };
 
 static_assert(sizeof(ContainerScreenController) == 0x1158);

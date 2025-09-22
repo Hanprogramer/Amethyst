@@ -8,7 +8,6 @@
 class ItemStack;
 class ContainerContentChangeListener;
 class ContainerSizeChangeListener;
-class ContainerCloseListener;
 class ContainerRemovedListener;
 
 enum class ContainerType : signed char {
@@ -72,12 +71,20 @@ enum class ContainerID : unsigned char {
     CONTAINER_ID_PLAYER_ONLY_UI = 0x7C,
 };
 
+class ContainerCloseListener {
+public:
+    virtual void containerClosed(Player& player) = 0;
+    virtual ~ContainerCloseListener() = default;
+};
+
 class ContainerSizeChangeListener {
+public:
     virtual void containerSizeChanged(int) = 0;
     virtual ~ContainerSizeChangeListener() = default;
 };
 
 class ContainerContentChangeListener {
+public:
     virtual void containerContentChanged(int) = 0;
     virtual ~ContainerContentChangeListener() = default;
 };
@@ -124,8 +131,8 @@ public:
     virtual int getMaxStackSize() const = 0;
     virtual void startOpen(Player&) = 0;
     virtual void stopOpen(Player&);
-    virtual std::vector<ItemStack, std::allocator<ItemStack>> getSlotCopies() const;
-    virtual const std::vector<ItemStack const *,std::allocator<ItemStack const*>> getSlots() const;
+    virtual std::vector<ItemStack> getSlotCopies() const;
+    virtual const std::vector<const ItemStack*> getSlots() const;
     virtual int getEmptySlotsCount() const;
     virtual int getItemCount(const ItemStack&);
     virtual int findFirstSlotForItem(const ItemStack&) const;

@@ -27,7 +27,7 @@ LONG WINAPI AmethystUnhandledExceptionsHandler(EXCEPTION_POINTERS* ExceptionInfo
     uint64_t exceptionAddr = (uint64_t)exceptionRecord->ExceptionAddress;
     uint64_t exceptionCode = (uint64_t)exceptionRecord->ExceptionCode;
 
-    Log::Error("[AmethystRuntime] Exception thrown at 0x{:x}\n", exceptionAddr - GetMinecraftBaseAddress(), szModuleName);
+    Log::Error("Exception thrown at 0x{:x}\n", exceptionAddr - GetMinecraftBaseAddress(), szModuleName);
     LogAssemblyOfExceptionCause(exceptionAddr);
     Log::Error("\nError Code: 0x{:x}", exceptionCode);
 
@@ -47,7 +47,7 @@ DWORD WINAPI Main()
         runtime->Start();
     }
     catch (std::exception& exception) {
-        Log::Error("[AmethystRuntime] Uncaught Exception: {}", exception.what());
+        Log::Error("Uncaught Exception: {}", exception.what());
         throw exception;
     }
 
@@ -97,7 +97,7 @@ void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
     auto mainCallLambda = [](LPVOID lpParameter) -> DWORD {
         // Cast the parameter back to ThreadData
         auto pData = static_cast<ThreadData*>(lpParameter);
-        Log::Info("[AmethystRuntime] McThreadID: {}, McThreadHandle: {}", pData->dwThreadId, pData->hThreadHandle);
+        Log::Info("McThreadID: {}, McThreadHandle: {}", pData->dwThreadId, pData->hThreadHandle);
         
         gMcThreadHandle = pData->hThreadHandle;
         gMcThreadId = pData->dwThreadId;

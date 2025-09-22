@@ -69,6 +69,14 @@ public:
     void _addContainer(std::shared_ptr<ContainerModel> model) {
         mContainers[model->mContainerStringName] = model;
     }
+
+    ContainerModel* getContainerByName(const std::string& name) {
+        auto it = mContainers.find(name);
+        if (it != mContainers.end()) {
+            return it->second.get();
+        }
+        return nullptr;
+    }
 };
 
 static_assert(sizeof(ContainerManagerModel) == 0xD8);

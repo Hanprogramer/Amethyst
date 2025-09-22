@@ -1,11 +1,13 @@
 /// @symbolgeneration
 #pragma once
-#include "minecraft/src/common/world/Container.hpp"
 #include "minecraft/src/common/ActorUniqueID.hpp"
 #include "minecraft/src/common/world/level/BlockPos.hpp"
 #include "minecraft/src-client/common/client/gui/screens/controllers/ContainerScreenController.hpp"
+#include "minecraft/src/common/world/item/ItemInstance.hpp"
+#include "minecraft/src/common/world/Container.hpp"
 
 class SparseContainer;
+class Container;
 
 enum class ContainerCategory : int {
     Default = 0x0000,
@@ -15,13 +17,41 @@ enum class ContainerCategory : int {
     Unknown = 0x0004,
 };
 
-class ContainerWeakRef;
+enum ContainerExpandStatus : int {
+    Normal = 0x0000,
+    Expanded = 0x0001,
+    Contracted = 0x0002,
+    Child = 0x0003,
+    Count = 0x0004,
+};
+
+enum class ActorContainerType : int {
+    Armor = 0x0000,
+    Hand = 0x0001,
+    ContainerComponent = 0x0002,
+    PlayerUI = 0x0003,
+    PlayerInventory = 0x0004,
+    PlayerEnderChest = 0x0005,
+};
+
+class ContainerWeakRef {
+public:
+    ActorUniqueID mContainerActor;
+    ActorContainerType mActorContainerType;
+    BlockPos mBlockPosition;
+    uint32_t mContainerRuntimeId; // <- actually a TypedRuntimeId<ContainerRuntimeIdTag, unsigned int, 0>
+
+    /// @signature {48 83 EC ? 4C 8B D9 83 FA ? 0F 87}
+    MC static Container* tryGetActorContainer(Actor& actor, ActorContainerType type);
+};
 
 /// @vptr {0x4DE9508}
 class ContainerModel : 
 	public ContainerContentChangeListener 
 {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     const bool mIsClientSide;
     std::string mContainerStringName;
     const ContainerEnumName mContainerEnumName;
@@ -44,39 +74,39 @@ public:
     /// @vidx {3}
     MC virtual void releaseResources();
     /// @vidx {4}
-    MC virtual void getContainerSize();
+    MC virtual int getContainerSize();
     /// @vidx {5}
-    MC virtual void getFilteredContainerSize();
+    MC virtual int getFilteredContainerSize();
     /// @vidx {6}
     MC virtual void tick(int);
     /// @vidx {7}
     MC virtual ContainerWeakRef getContainerWeakRef();
     /// @vidx {8}
-    MC virtual void getItemStack(int);
+    MC virtual const ItemStack& getItemStack(int slot);
     /// @vidx {9}
-    MC virtual void getItems();
+    MC virtual const std::vector<ItemStack>& getItems();
     /// @vidx {10}
-    MC virtual void getItemInstance(int);
+    MC virtual const ItemInstance& getItemInstance(int slot);
     /// @vidx {11}
-    MC virtual void getItemStackBase(int);
+    MC virtual const ItemStackBase& getItemStackBase(int slot);
     /// @vidx {12}
-    MC virtual void isItemInstanceBased();
+    MC virtual bool isItemInstanceBased();
     /// @vidx {13}
-    MC virtual void setItem(int, const ItemStack&);
+    MC virtual void setItem(int slot, const ItemStack& stack);
     /// @vidx {14}
     MC virtual bool isValid();
     /// @vidx {15}
-    MC virtual void isItemFiltered(const ItemStackBase&);
+    MC virtual bool isItemFiltered(const ItemStackBase& stack);
     /// @vidx {16}
-    MC virtual void isExpanableItemFiltered(int);
+    MC virtual bool isExpanableItemFiltered(int slot);
     /// @vidx {17}
-    MC virtual void getItemExpandStatus(int);
+    MC virtual ContainerExpandStatus getItemExpandStatus(int slot);
     /// @vidx {18}
-    MC virtual void getItemGroupName(int);
+    MC virtual std::string getItemGroupName(int slot);
     /// @vidx {19}
-    MC virtual void switchItemExpando(int);
+    MC virtual void switchItemExpando(int slot);
     /// @vidx {20}
-    MC virtual void isSlotDisabled(int);
+    MC virtual bool isSlotDisabled(int slot);
     /// @vidx {21}
     MC virtual Container* _getContainer();
     /// @vidx {22}
@@ -84,7 +114,7 @@ public:
     /// @vidx {23}
     MC virtual void _init();
     /// @vidx {24}
-    MC virtual void _onItemChanged(int, const ItemStack&, const ItemStack&);
+    MC virtual void _onItemChanged(int slot, const ItemStack& a, const ItemStack& b);
 
 // Non-virtuals
 public:
