@@ -5,39 +5,39 @@
 class OverworldDimension : public Dimension {
 public:
     /**
-	* @vIndex {0} 
+	* @vidx {0} 
 	* @symbol {??1OverworldDimension@@UEAA@XZ}
 	*/
 	virtual ~OverworldDimension();
 
-	/**@vIndex {8} */
+	/**@vidx {8} */
     virtual Vec3 translatePosAcrossDimension(const Vec3&, DimensionType) const override;
 
-    /**@vIndex {14} */
+    /**@vidx {14} */
 	virtual std::unique_ptr<class WorldGenerator> createGenerator(const br::worldgen::StructureSetRegistry&) override;
 
-    /**@vIndex {15} */
+    /**@vidx {15} */
 	virtual void upgradeLevelChunk(class ChunkSource& source, class LevelChunk& lc, class LevelChunk& generatedChunk) override;
 
-    /**@vIndex {16} */
+    /**@vidx {16} */
 	virtual void fixWallChunk(class ChunkSource&, class LevelChunk&) override;
 
-    /**@vIndex {17} */
+    /**@vidx {17} */
 	virtual bool levelChunkNeedsUpgrade(const LevelChunk&) const override;
 
-	/**@vIndex {19} */
+	/**@vidx {19} */
     virtual class mce::Color getBrightnessDependentFogColor(const mce::Color& baseColor, float brightness) const override;
 
-	/**@vIndex {20} */
+	/**@vidx {20} */
     virtual bool hasPrecipitationFog() const override;
 
-	/**@vIndex {21} */
+	/**@vidx {21} */
     virtual short getCloudHeight() const override;
 
-    /**@vIndex {39} */
+    /**@vidx {39} */
 	virtual void _upgradeOldLimboEntity(class CompoundTag& tag, LimboEntitiesVersion vers) override;
 
-    /**@vIndex {40} */
+    /**@vidx {40} */
 	virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) override;
 
 	/**@asmName {OverworldDimension_ctor}*/

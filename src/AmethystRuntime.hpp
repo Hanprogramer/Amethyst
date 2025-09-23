@@ -15,7 +15,7 @@
 
 namespace fs = std::filesystem;
 
-typedef void (*ModInitialize)(AmethystContext* context, const Mod* mod);
+typedef void (*ModInitialize)(AmethystContext& context, const Mod& mod);
 extern HMODULE hModule;
 
 /*

@@ -1,3 +1,4 @@
+/// @symbolgeneration
 #pragma once
 #include "minecraft/src/common/network/NetworkBlockPosition.hpp"
 #include "minecraft/src/common/world/Facing.hpp"
@@ -6,6 +7,15 @@
 #include "minecraft/src/common/world/phys/Vec3.hpp"
 
 class Player;
+
+enum class InventoryTransactionError : uint64_t {
+    Unknown0 = 0,
+    Success = 1,
+    Unknown2 = 2,
+    ProbablyError = 3,
+
+    StateMismatch = 7
+};
 
 class ItemUseInventoryTransaction : public ComplexInventoryTransaction {
 public:
@@ -36,6 +46,9 @@ public:
     {
         NetworkItemStackDescriptor networkDescriptor(stack);
     }*/
+
+    /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 0F B6 E0}
+    MC InventoryTransactionError handle(Player& player, bool isSenderAuthority);
 
     void resendPlayerState(Player& player) const {
         using function = decltype(&ItemUseInventoryTransaction::resendPlayerState);

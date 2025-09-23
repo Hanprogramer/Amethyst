@@ -14,6 +14,6 @@ public:
     virtual void unknown6();
     virtual void unknown7();
 
-    /// @vIndex { 8 }
+    /// @vidx { 8 }
     virtual DirectoryPackSource& createDirectoryPackSource(const Core::Path& path, PackType type, PackOrigin origin, bool isDevDirectory);
 };

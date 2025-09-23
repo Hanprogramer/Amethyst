@@ -107,7 +107,7 @@ void AmethystRuntime::LoadModDlls()
 
     // Invoke mods to initialize and setup hooks, etc..
     for (auto& [mod, initialize] : mModInitialize)
-        initialize(&mAmethystContext, mod);
+        initialize(mAmethystContext, *mod);
 
     // Allow mods to add listeners to eachothers events
     AddModEventListenersEvent event;

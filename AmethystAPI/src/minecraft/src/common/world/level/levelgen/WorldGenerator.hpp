@@ -32,53 +32,53 @@ public:
 public:
     /**
     * @symbol {??1WorldGenerator@@UEAA@XZ}
-    * @vIndex {0} 
+    * @vidx {0} 
     */
     virtual ~WorldGenerator();
 
-    /**@vIndex {12} */
+    /**@vidx {12} */
     virtual void postProcessMobsAt(class BlockSource& region, int chunkWestBlock, int chunkNorthBlock, Random& random) override;
 
-    /**@vIndex {33} */
+    /**@vidx {33} */
     virtual void init();
 
-    /**@vIndex {34} */
+    /**@vidx {34} */
     virtual StructureFeatureType findStructureFeatureTypeAt(class BlockPos const& pos);
 
-    /**@vIndex {35} */
+    /**@vidx {35} */
     virtual bool isStructureFeatureTypeAt(class BlockPos const& pos, StructureFeatureType type) const;
     
-    /**@vIndex {36} */
+    /**@vidx {36} */
     virtual bool findNearestStructureFeature(StructureFeatureType, class BlockPos const&, class BlockPos&, bool, std::optional<class HashedString>);
 
-    /**@vIndex {37} */
+    /**@vidx {37} */
     virtual void garbageCollectBlueprints(class buffer_span<class ChunkPos> activeChunks);
 
-    /**@vIndex {38} */
+    /**@vidx {38} */
     virtual void prepareHeights(class BlockVolume& box, class ChunkPos const& chunkPos, bool factorInBeardsAndShavers) = 0;
     
-    /**@vIndex {39} */
+    /**@vidx {39} */
     virtual void prepareAndComputeHeights(class BlockVolume& box, class ChunkPos const& chunkPos, std::vector<short>& ZXheights, bool factorInBeardsAndShavers, int skipTopN) = 0;
 
-    /**@vIndex {40} */
+    /**@vidx {40} */
     virtual class BiomeArea getBiomeArea(class BoundingBox const& area, uint32_t scale) const = 0;
 
-    /**@vIndex {41} */
+    /**@vidx {41} */
     virtual class BiomeSource const& getBiomeSource() const = 0;
 
-    /**@vIndex {42} */
+    /**@vidx {42} */
     virtual struct BlockVolumeDimensions getBlockVolumeDimensions() const = 0;
 
-    /**@vIndex {43} */
+    /**@vidx {43} */
     virtual class BlockPos findSpawnPosition() const = 0;
 
-    /**@vIndex {44} */
+    /**@vidx {44} */
     virtual void addHardcodedSpawnAreas(class LevelChunk& lc);
 
-    /**@vIndex {45} */
+    /**@vidx {45} */
     virtual void debugRender();
 
-    /**@vIndex {46} */
+    /**@vidx {46} */
     virtual void decorateWorldGenLoadChunk(
         class Biome const& biome,
         class LevelChunk& lc,
@@ -86,7 +86,7 @@ public:
         class Random& random,
         class ChunkPos const& pos) const = 0;
 
-    /**@vIndex {47} */
+    /**@vidx {47} */
     virtual void decorateWorldGenPostProcess(
         class Biome const& biome,
         class LevelChunk& lc,
