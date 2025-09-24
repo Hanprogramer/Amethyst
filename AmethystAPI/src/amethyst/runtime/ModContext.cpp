@@ -3,7 +3,7 @@
 #include <minecraft/src/common/Minecraft.hpp>
 
 static AmethystContext* _AmethystContextInstance;
-static const Mod* _OwnMod;
+static const Amethyst::Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
@@ -64,7 +64,7 @@ ClientInstance* Amethyst::GetClientInstance()
     return _AmethystContextInstance->mClientInstance;
 }
 
-const Mod* Amethyst::GetOwnMod()
+const Amethyst::Mod* Amethyst::GetOwnMod()
 {
     return _OwnMod;
 }

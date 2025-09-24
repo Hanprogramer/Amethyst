@@ -1,10 +1,11 @@
 #include "Mod.hpp"
 #include <fstream>
 
-Mod::Mod(std::string modName)
+namespace Amethyst {
+Mod::Mod(const std::string& modName) : 
+    info(GetInfo(modName))
 {
-    this->modName = modName;
-    fs::path dllPath = GetTempDll();
+    fs::path dllPath = GetTemporaryLibrary(modName);
 
     // Loads the mod in a temporary directory so that the original DLL can still be built to
     hModule = LoadLibrary(dllPath.string().c_str());
@@ -12,22 +13,36 @@ Mod::Mod(std::string modName)
         DWORD error = GetLastError();
 
         switch (error) {
-            case ERROR_ACCESS_DENIED:
-                Assert(false, "'{}' does not have the required privileges!", dllPath.string());
-            case ERROR_MOD_NOT_FOUND:
-                Assert(false, "Failed to find '{}'", dllPath.string());
-            default:
-                Assert(false, "Failed to load '{}.dll', error code: 0x{:x}", modName, error);
+        case ERROR_ACCESS_DENIED:
+            Assert(false, "'{}' does not have the required privileges!", dllPath.string());
+            break;
+        case ERROR_MOD_NOT_FOUND:
+            Assert(false, "Failed to find '{}'", dllPath.string());
+            break;
+        default:
+            Assert(false, "Failed to load '{}.dll', error code: 0x{:x}", modName, error);
+            break;
         }
     }
-
-    // Load the metadata
-    this->metadata = Mod::GetMetadata(modName);
 }
 
-FARPROC Mod::GetFunction(const char* functionName) const
+Mod::Mod(const std::string& modInfo, HMODULE moduleHandle) : 
+    Mod(modInfo)
 {
-    return GetProcAddress(hModule, functionName);
+    hModule = moduleHandle;
+}
+
+Mod::Mod(Mod&& other) noexcept :
+    info(other.info),
+    mRuntimeImporter(std::move(other.mRuntimeImporter)),
+    hModule(std::exchange(other.hModule, nullptr))
+{
+}
+
+Mod::~Mod()
+{
+    mRuntimeImporter.reset();
+    FreeLibrary(hModule);
 }
 
 HMODULE Mod::GetModule() const
@@ -40,23 +55,21 @@ Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
     return *mRuntimeImporter;
 }
 
-void Mod::Shutdown()
+bool Mod::operator==(const Mod& other) const
 {
-    mRuntimeImporter->Shutdown();
-    FreeLibrary(hModule);
+    return info == other.info;
 }
 
-Mod::Metadata Mod::GetMetadata(std::string modName)
+Mod::Info Amethyst::Mod::GetInfo(const std::string& modName)
 {
     // Ensure the mod exists
     fs::path modConfigPath = GetAmethystFolder() / L"mods" / modName / L"mod.json";
-    Assert(fs::exists(modConfigPath), "mod.json could not be found, for {}!", modName);
+    Assert(fs::exists(modConfigPath), "mod.json could not be found, for '{}'", modName);
 
     // Try to read it to a std::string
     std::ifstream modConfigFile(modConfigPath);
 
-    Assert(modConfigFile.is_open(), "Failed to open mod.json, for {}!", modName);
-    
+    Assert(modConfigFile.is_open(), "Failed to open mod.json, for '{}'", modName);
 
     // Read into a std::string
     std::stringstream buffer;
@@ -64,55 +77,10 @@ Mod::Metadata Mod::GetMetadata(std::string modName)
     modConfigFile.close();
     std::string fileContents = buffer.str();
 
-    return Mod::ParseMetadata(modName, fileContents);
+    return Mod::Info::FromJson(fileContents);
 }
 
-Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
-{
-    // Parse config.json into json
-    json data;
-
-    try {
-        data = json::parse(fileContents);
-    }
-    catch (std::exception e) {
-        Log::Error("Failed to parse mod.json, for {}\n Error: {}", modName, e.what());
-        throw e;
-    }
-
-    // Verify all fields are correct in config.json
-    Assert(data["meta"].is_object(), "Required field \"meta\" should be of type \"object\" in mod.json, for {}", modName);
-    Assert(data["meta"]["namespace"].is_string(), "Required field \"namespace\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-    Assert(data["meta"]["name"].is_string(), "Required field \"name\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-
-    std::vector<std::string> authors = {};
-
-    if (data["meta"]["author"].is_string()) {
-        authors.push_back(data["meta"]["author"]);
-    }
-    else if (data["meta"]["author"].is_array()) {
-        for (const auto& element : data["meta"]["author"]) {
-            Assert(element.is_string(), "Array \"author\" in \"meta\" should only contain fields of type \"string\" in mod.json, for {}", modName);
-            authors.push_back(element);
-        }
-    }
-
-    Assert(data["meta"]["version"].is_string(), "Required field \"version\" in \"meta\" should be of type \"string\" in mod.json, for {}", modName);
-
-    // Set values
-    Metadata meta{
-        data["meta"]["namespace"],
-        data["meta"]["name"],
-        data["meta"].contains("logname") && data["meta"]["logname"].is_string() ? data["meta"]["logname"] : data["meta"]["name"],
-        data["meta"].contains("friendlyname") && data["meta"]["friendlyname"].is_string() ? data["meta"]["friendlyname"] : data["meta"]["name"],
-        data["meta"]["version"],
-        authors
-    };
-
-    return meta;
-}
-
-fs::path Mod::GetTempDll()
+fs::path Mod::GetTemporaryLibrary(const std::string& modName)
 {
     std::string modShortened = modName;
     size_t atPos = modShortened.find("@");
@@ -127,7 +95,7 @@ fs::path Mod::GetTempDll()
 
     fs::path originalDll = GetAmethystFolder() / L"Mods" / modName / std::string(modShortened + ".dll");
     Assert(fs::exists(originalDll), "Could not find '{}.dll'", modShortened);
-    
+
     fs::path tempDll = tempDir.string() + modShortened + ".dll";
 
     try {
@@ -139,3 +107,4 @@ fs::path Mod::GetTempDll()
 
     return tempDll;
 }
+} // namespace Amethyst

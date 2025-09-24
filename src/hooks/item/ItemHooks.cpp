@@ -18,13 +18,13 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
 
     std::string itemNamespace = self->mNamespace;
     std::string modName;
-    Mod* mod;
+    Amethyst::Mod* mod;
     if (itemNamespace.empty() || itemNamespace == "minecraft")
     {
         modName = "Minecraft";
     }
     else if ((mod = AmethystRuntime::getContext()->GetModByNamespace(itemNamespace)) != nullptr) {
-        modName = mod->metadata.friendlyName;
+        modName = mod->info.FriendlyName;
     }
     else {
         modName.reserve(itemNamespace.size());

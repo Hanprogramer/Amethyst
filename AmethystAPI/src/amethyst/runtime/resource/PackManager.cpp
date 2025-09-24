@@ -11,11 +11,11 @@ Amethyst::PackManager::PackManager(AmethystContext* amethyst) :
 
 Amethyst::PackManager::~PackManager() {}
 
-void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type, PackPriority priority)
+void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority)
 {
-	std::string key = metadata.GetVersionedName();
-    fs::path resourcesPath = GetAmethystFolder() / "mods" / metadata.GetVersionedName() / "resource_packs";
-    fs::path behaviorPath = GetAmethystFolder() / "mods" / metadata.GetVersionedName() / "behavior_packs";
+	std::string key = owner->info.GetVersionedName();
+    fs::path resourcesPath = GetAmethystFolder() / "mods" / key / "resource_packs";
+    fs::path behaviorPath = GetAmethystFolder() / "mods" / key / "behavior_packs";
     auto packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
 
 	// Check if the mod is on the list of packs, if not add it
@@ -43,7 +43,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
     std::string manifestContents((std::istreambuf_iterator<char>(manifestFile)), std::istreambuf_iterator<char>());
 
     // Try to parse the manifest.json
-    auto manifestJson = json::parse(manifestContents);
+    auto manifestJson = nlohmann::json::parse(manifestContents);
     if (!manifestJson.is_object()) {
         Log::Warning("manifest.json for pack '{}' of '{}' is not a valid json object, skipping.", path, key);
         return;
@@ -74,7 +74,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod::Metadata& metadata, const
     SemVersion semVersion = {version[0].get<uint16_t>(), version[1].get<uint16_t>(), version[2].get<uint16_t>()};
 
 	// Insert the new pack
-    mPacks[key].insert({path, Pack{metadata, path, packUuid, semVersion, type, priority}});
+    mPacks[key].insert({path, Pack{owner, path, packUuid, semVersion, type, priority}});
     Log::Info("Registered pack '{}' for '{}'.", path, key);
 }
 

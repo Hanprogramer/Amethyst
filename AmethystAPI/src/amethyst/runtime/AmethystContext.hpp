@@ -25,7 +25,7 @@ public:
     std::unique_ptr<Amethyst::EnumAllocator> mEnumAllocator;
     std::unique_ptr<Amethyst::PackManager> mPackManager;
     std::unique_ptr<Amethyst::NetworkManager> mNetworkManager;
-    std::vector<Mod> mMods;
+    std::vector<Amethyst::Mod> mMods;
 
     // Non-volatile
     Amethyst::MinecraftPackageInfo mPackageInfo;
@@ -41,20 +41,20 @@ public:
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
 
-    const Mod* GetModByNamespace(const std::string& modNamespace) const 
+    const Amethyst::Mod* GetModByNamespace(const std::string& modNamespace) const 
     {
         for (const auto& mod : mMods) {
-            if (mod.metadata.modNamespace == modNamespace) {
+            if (mod.info.Namespace == modNamespace) {
                 return &mod;
             }
         }
         return nullptr;
     }
 
-    Mod* GetModByNamespace(const std::string& modNamespace)
+    Amethyst::Mod* GetModByNamespace(const std::string& modNamespace)
     {
         for (auto& mod : mMods) {
-            if (mod.metadata.modNamespace == modNamespace) {
+            if (mod.info.Namespace == modNamespace) {
                 return &mod;
             }
         }

@@ -15,7 +15,7 @@
 
 namespace fs = std::filesystem;
 
-typedef void (*ModInitialize)(AmethystContext* context, const Mod* mod);
+typedef void (*ModInitialize)(AmethystContext* context, const Amethyst::Mod* mod);
 extern HMODULE hModule;
 
 /*
@@ -33,9 +33,8 @@ class AmethystRuntime {
 private:
     // AmethystRuntime is a Singleton so don't allow creating from outside
     AmethystRuntime() : 
-        mAmethystMod(std::format("AmethystRuntime@{}", MOD_VERSION))
+        mAmethystMod(std::format("AmethystRuntime@{}", MOD_VERSION), ::hModule)
     {
-        mAmethystMod.hModule = ::hModule;
     }
 
     AmethystRuntime(const AmethystRuntime&);
@@ -79,9 +78,9 @@ public:
         return AmethystRuntime::getInstance()->mAmethystContext.mEnumAllocator.get();
     }
 
-    static std::vector<Mod>* getMods()
+    static std::vector<Amethyst::Mod>& getMods()
     {
-        return &AmethystRuntime::getInstance()->mAmethystContext.mMods;
+        return AmethystRuntime::getInstance()->mAmethystContext.mMods;
     }
 
     static Amethyst::MinecraftPackageInfo* getMinecraftPackageInfo()
@@ -94,7 +93,7 @@ public:
         return &AmethystRuntime::getInstance()->mAmethystMod.GetRuntimeImporter();
     }
 
-    static Mod* getAmethystMod() 
+    static Amethyst::Mod* getAmethystMod() 
     {
         return &AmethystRuntime::getInstance()->mAmethystMod;
     }
@@ -113,13 +112,13 @@ private:
     void PauseGameThread();
 
     template <typename T>
-    void _LoadModFunc(std::unordered_map<Mod*, T>& map, Mod& mod, const char* functionName);
+    void _LoadModFunc(std::unordered_map<Amethyst::Mod*, T>& map, Amethyst::Mod& mod, const char* functionName);
 
 private:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
 
 public:
-    std::unordered_map<Mod*, ModInitialize> mModInitialize;
-    Mod mAmethystMod;
+    std::unordered_map<Amethyst::Mod*, ModInitialize> mModInitialize;
+    Amethyst::Mod mAmethystMod;
 };

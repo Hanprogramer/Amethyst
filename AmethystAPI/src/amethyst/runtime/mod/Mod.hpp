@@ -1,69 +1,50 @@
 #pragma once
-#include "Json.hpp"
 #include <Windows.h>
-#include <amethyst/Log.hpp>
-#include <amethyst/Utility.hpp>
 #include <filesystem>
 #include <iostream>
 #include <shlobj.h>
 #include <vector>
+
+#include "Json.hpp"
+
+#include <amethyst/Log.hpp>
+#include <amethyst/Utility.hpp>
+#include <amethyst/runtime/mod/ModInfo.hpp>
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
-using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
+namespace Amethyst {
 class Mod {
+    // Friend isn't working for some reason
     friend class AmethystRuntime;
 
-private:
+public:
     HMODULE hModule = nullptr;
     std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter = nullptr;
 
-public:
-    struct Metadata {
-        std::string modNamespace;
-        std::string name;
-        std::string logName;
-        std::string friendlyName;
-        std::string version;
-        std::vector<std::string> author;
+    using Info = Amethyst::ModInfo;
+    Amethyst::ModInfo info;
 
-        std::string GetVersionedName() const {
-            return name + "@" + version;
-        }
-    };
+    Mod(const std::string& modInfo);
+    Mod(const std::string& modInfo, HMODULE moduleHandle);
+    Mod(const Mod&) = delete;
+    Mod& operator=(const Mod&) = delete;
+    Mod(Mod&& other) noexcept;
+    Mod& operator=(Mod&&) noexcept = delete;
+    ~Mod();
 
-public:
-    std::string modName;
-    Metadata metadata;
-
-public:
-    Mod(std::string modName);
-    FARPROC GetFunction(const char* functionName) const;
     HMODULE GetModule() const;
     Amethyst::RuntimeImporter& GetRuntimeImporter() const;
-    void Shutdown();
 
-    bool operator==(const Mod& other) const {
-        return metadata.modNamespace == other.metadata.modNamespace && metadata.version == other.metadata.version;
+    template <typename T = FARPROC>
+    T GetFunction(const char* functionName) const
+    {
+        return reinterpret_cast<T>(GetProcAddress(hModule, functionName));
     }
 
-public:
-    static Mod::Metadata GetMetadata(std::string modName);
-    static Mod::Metadata ParseMetadata(std::string modName, std::string fileContents);
-
-private:
-    fs::path GetTempDll();
+    bool operator==(const Mod& other) const;
+    static Mod::Info GetInfo(const std::string& modName);
+    static fs::path GetTemporaryLibrary(const std::string& modName);
 };
-
-namespace std {
-    template<>
-    struct hash<Mod> {
-        std::size_t operator()(const Mod& s) const noexcept
-        {
-            std::size_t h1 = std::hash<std::string>{}(s.metadata.modNamespace);
-            std::size_t h2 = std::hash<std::string>{}(s.metadata.name);
-            return h1 ^ (h2 << 1);
-        }
-    };
-}
+} // namespace Amethyst

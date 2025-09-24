@@ -88,15 +88,16 @@ void AmethystRuntime::LoadModDlls()
 
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
-        Log::Info("Loading '{}'", mod.modName);
+        auto versionedName = mod.info.GetVersionedName();
+        Log::Info("Loading '{}'", versionedName);
 
         // Check if the mod has a resource pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "resource_packs" / "main_rp" / "manifest.json")))
-            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_rp", PackType::Resources);
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "resource_packs" / "main_rp" / "manifest.json")))
+            mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);
         
         // Check if the mod has a behavior pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / mod.modName / "behavior_packs" / "main_bp" / "manifest.json")))
-            mAmethystContext.mPackManager->RegisterNewPack(mod.metadata, "main_bp", PackType::Behavior);
+        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "behavior_packs" / "main_bp" / "manifest.json")))
+            mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
         
         // Create runtime importer instance and initialize it
         mod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mod.GetModule());
@@ -115,7 +116,7 @@ void AmethystRuntime::LoadModDlls()
 }
 
 template <typename T>
-void AmethystRuntime::_LoadModFunc(std::unordered_map<Mod*, T>& map, Mod& mod, const char* functionName)
+void AmethystRuntime::_LoadModFunc(std::unordered_map<Amethyst::Mod*, T>& map, Amethyst::Mod& mod, const char* functionName)
 {
     FARPROC address = mod.GetFunction(functionName);
     if (address == NULL) return;
@@ -132,7 +133,7 @@ void AmethystRuntime::PromptDebugger()
 void AmethystRuntime::AddOwnResources()
 {
     // Add our own resource pack
-    mAmethystContext.mPackManager->RegisterNewPack(mAmethystMod.metadata, "main_rp", PackType::Resources, Amethyst::PackPriority::Lowest);
+    mAmethystContext.mPackManager->RegisterNewPack(&mAmethystMod, "main_rp", PackType::Resources, Amethyst::PackPriority::Lowest);
 }
 
 void AmethystRuntime::CreateOwnHooks()
@@ -180,11 +181,6 @@ void AmethystRuntime::Shutdown()
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
     getContext()->Shutdown();
-
-    // Unload all mod dll's.
-    for (auto& mod : mAmethystContext.mMods) {
-        mod.Shutdown();
-    }
 
     // Clear lists of mods & functions.
     mModInitialize.clear();
