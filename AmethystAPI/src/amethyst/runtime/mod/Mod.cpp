@@ -3,13 +3,13 @@
 
 namespace Amethyst {
 Mod::Mod(const std::string& modName) : 
-    info(GetInfo(modName))
+    mInfo(GetInfo(modName))
 {
     fs::path dllPath = GetTemporaryLibrary(modName);
 
     // Loads the mod in a temporary directory so that the original DLL can still be built to
-    hModule = LoadLibrary(dllPath.string().c_str());
-    if (hModule == NULL) {
+    mHandle.Reset(LoadLibrary(dllPath.string().c_str()));
+    if (!mHandle) {
         DWORD error = GetLastError();
 
         switch (error) {
@@ -24,30 +24,34 @@ Mod::Mod(const std::string& modName) :
             break;
         }
     }
+
+    Assert(mHandle, "Module handle cannot be null");
+    mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mHandle);
 }
 
-Mod::Mod(const std::string& modInfo, HMODULE moduleHandle) : 
-    Mod(modInfo)
+Mod::Mod(const std::string& modName, HMODULE moduleHandle) : 
+    mInfo(GetInfo(modName)),
+    mHandle(moduleHandle),
+    mRuntimeImporter(std::make_unique<Amethyst::RuntimeImporter>(moduleHandle))
 {
-    hModule = moduleHandle;
+    Assert(mHandle, "Module handle cannot be null");
 }
 
 Mod::Mod(Mod&& other) noexcept :
-    info(other.info),
+    mInfo(other.mInfo),
     mRuntimeImporter(std::move(other.mRuntimeImporter)),
-    hModule(std::exchange(other.hModule, nullptr))
+    mHandle(std::move(other.mHandle))
 {
 }
 
 Mod::~Mod()
 {
     mRuntimeImporter.reset();
-    FreeLibrary(hModule);
 }
 
-HMODULE Mod::GetModule() const
+const ModuleHandle& Mod::GetHandle() const
 {
-    return hModule;
+    return mHandle;
 }
 
 Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
@@ -57,7 +61,7 @@ Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
 
 bool Mod::operator==(const Mod& other) const
 {
-    return info == other.info;
+    return mInfo == other.mInfo;
 }
 
 Mod::Info Amethyst::Mod::GetInfo(const std::string& modName)

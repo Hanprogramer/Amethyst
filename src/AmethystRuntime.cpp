@@ -43,7 +43,6 @@ void AmethystRuntime::Start()
         PromptDebugger();
 
     // Initialize our runtime importer
-    mAmethystMod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mAmethystMod.GetModule());
     mAmethystMod.GetRuntimeImporter().Initialize();
 
     // Add our resources before loading mods
@@ -88,7 +87,7 @@ void AmethystRuntime::LoadModDlls()
 
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
-        auto versionedName = mod.info.GetVersionedName();
+        auto versionedName = mod.mInfo.GetVersionedName();
         Log::Info("Loading '{}'", versionedName);
 
         // Check if the mod has a resource pack and register it if it does
@@ -100,7 +99,6 @@ void AmethystRuntime::LoadModDlls()
             mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
         
         // Create runtime importer instance and initialize it
-        mod.mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mod.GetModule());
         mod.GetRuntimeImporter().Initialize();
 
         _LoadModFunc(mModInitialize, mod, "Initialize");
@@ -108,7 +106,7 @@ void AmethystRuntime::LoadModDlls()
 
     // Invoke mods to initialize and setup hooks, etc..
     for (auto& [mod, initialize] : mModInitialize)
-        initialize(mAmethystContext, *mod);
+        initialize(&mAmethystContext, mod);
 
     // Allow mods to add listeners to eachothers events
     AddModEventListenersEvent event;

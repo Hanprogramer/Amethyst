@@ -43,7 +43,11 @@ public:
     }
 
     bool operator!=(const ModInfo& other) const {
-        return !Equals(other, true);
+        return !(*this == other);
+    }
+
+    bool operator<(const ModInfo& other) const {
+        return std::tie(Namespace, UUID, Version) < std::tie(other.Namespace, other.UUID, other.Version);
     }
 
     bool IsSameMod(const ModInfo& other) const {
@@ -59,11 +63,10 @@ namespace std {
     template<>
     struct hash<Amethyst::ModInfo> {
         size_t operator()(const Amethyst::ModInfo& modInfo) const {
-            return (
-                (hash<std::string>()(modInfo.UUID) << 0) ^ 
-                (hash<std::string>()(modInfo.Namespace) << 1) ^ 
-                (hash<std::string>()(modInfo.Version) << 2)
-            );
+            size_t h = hash<std::string>{}(modInfo.UUID);
+            h ^= hash<std::string>{}(modInfo.Namespace) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            h ^= hash<std::string>{}(modInfo.Version) + 0x9e3779b9 + (h << 6) + (h >> 2);
+            return h;
         }
     };
 } // namespace std

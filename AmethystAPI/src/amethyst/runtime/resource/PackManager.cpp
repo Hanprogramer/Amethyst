@@ -13,10 +13,10 @@ Amethyst::PackManager::~PackManager() {}
 
 void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority)
 {
-	std::string key = owner->info.GetVersionedName();
+    std::string key = owner->mInfo.GetVersionedName();
     fs::path resourcesPath = GetAmethystFolder() / "mods" / key / "resource_packs";
     fs::path behaviorPath = GetAmethystFolder() / "mods" / key / "behavior_packs";
-    auto packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
+    auto& packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
 
 	// Check if the mod is on the list of packs, if not add it
 	if (!mPacks.contains(key)) {

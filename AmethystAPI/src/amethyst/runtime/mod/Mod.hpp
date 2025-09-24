@@ -10,37 +10,40 @@
 #include <amethyst/Log.hpp>
 #include <amethyst/Utility.hpp>
 #include <amethyst/runtime/mod/ModInfo.hpp>
+#include <amethyst/runtime/mod/ModuleHandle.hpp>
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
 
 namespace fs = std::filesystem;
 
 namespace Amethyst {
 class Mod {
-    // Friend isn't working for some reason
-    friend class AmethystRuntime;
-
 public:
-    HMODULE hModule = nullptr;
-    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter = nullptr;
-
     using Info = Amethyst::ModInfo;
-    Amethyst::ModInfo info;
 
-    Mod(const std::string& modInfo);
-    Mod(const std::string& modInfo, HMODULE moduleHandle);
+    // Strict order of members
+    // We want mHandle to be destructed after mRuntimeImporter so that the module is still loaded when the importer is destructed
+    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
+    ModuleHandle mHandle;
+
+    // Metadata and stuff
+    Amethyst::ModInfo mInfo;
+
+    Mod() = delete;
+    Mod(const std::string& modName);
+    Mod(const std::string& modName, HMODULE moduleHandle);
     Mod(const Mod&) = delete;
     Mod& operator=(const Mod&) = delete;
     Mod(Mod&& other) noexcept;
     Mod& operator=(Mod&&) noexcept = delete;
     ~Mod();
 
-    HMODULE GetModule() const;
+    const ModuleHandle& GetHandle() const;
     Amethyst::RuntimeImporter& GetRuntimeImporter() const;
 
     template <typename T = FARPROC>
     T GetFunction(const char* functionName) const
     {
-        return reinterpret_cast<T>(GetProcAddress(hModule, functionName));
+        return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
     }
 
     bool operator==(const Mod& other) const;
