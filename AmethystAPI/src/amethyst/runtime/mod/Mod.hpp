@@ -20,8 +20,6 @@ class Mod {
 public:
     using Info = Amethyst::ModInfo;
 
-    // Strict order of members
-    // We want mHandle to be destructed after mRuntimeImporter so that the module is still loaded when the importer is destructed
     std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
     ModuleHandle mHandle;
 
