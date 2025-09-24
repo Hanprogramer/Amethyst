@@ -2,10 +2,34 @@
 #include <fstream>
 
 namespace Amethyst {
-Mod::Mod(const std::string& modName) : 
-    mInfo(GetInfo(modName))
+Mod::Mod(const Mod::Info& info) : 
+    mInfo(info)
 {
-    fs::path dllPath = GetTemporaryLibrary(modName);
+}
+
+Mod::Mod(Mod&& other) noexcept :
+    mInfo(other.mInfo),
+    mRuntimeImporter(std::move(other.mRuntimeImporter)),
+    mHandle(std::move(other.mHandle)),
+    mIsLoaded(std::move(other.mIsLoaded))
+{
+}
+
+Mod::~Mod()
+{
+    if (IsLoaded())
+        Unload();
+
+    mRuntimeImporter.reset();
+}
+
+void Mod::Load()
+{
+    if (IsLoaded())
+        return;
+
+    std::string versionedName = mInfo.GetVersionedName();
+    fs::path dllPath = GetTemporaryLibrary(versionedName);
 
     // Loads the mod in a temporary directory so that the original DLL can still be built to
     mHandle.Reset(LoadLibrary(dllPath.string().c_str()));
@@ -20,33 +44,41 @@ Mod::Mod(const std::string& modName) :
             Assert(false, "Failed to find '{}'", dllPath.string());
             break;
         default:
-            Assert(false, "Failed to load '{}.dll', error code: 0x{:x}", modName, error);
+            Assert(false, "Failed to load '{}.dll', error code: 0x{:x}", versionedName, error);
             break;
         }
     }
 
     Assert(mHandle, "Module handle cannot be null");
-    mRuntimeImporter = std::make_unique<Amethyst::RuntimeImporter>(mHandle);
+    mRuntimeImporter = RuntimeImporter::GetImporter(mHandle);
+
+    Assert(mRuntimeImporter != nullptr, "Failed to get runtime importer for '{}'", versionedName);
+    mRuntimeImporter->Initialize();
+    mIsLoaded = true;
 }
 
-Mod::Mod(const std::string& modName, HMODULE moduleHandle) : 
-    mInfo(GetInfo(modName)),
-    mHandle(moduleHandle),
-    mRuntimeImporter(std::make_unique<Amethyst::RuntimeImporter>(moduleHandle))
+void Mod::Unload()
 {
-    Assert(mHandle, "Module handle cannot be null");
-}
+    if (!IsLoaded())
+        return;
 
-Mod::Mod(Mod&& other) noexcept :
-    mInfo(other.mInfo),
-    mRuntimeImporter(std::move(other.mRuntimeImporter)),
-    mHandle(std::move(other.mHandle))
-{
-}
-
-Mod::~Mod()
-{
+    if (mRuntimeImporter) {
+        mRuntimeImporter->Shutdown();
+    }
     mRuntimeImporter.reset();
+    mHandle.Reset();
+    mIsLoaded = false;
+}
+
+void Mod::Attach(HMODULE moduleHandle)
+{
+    if (IsLoaded())
+        Unload();
+
+    mHandle.Reset(moduleHandle);
+    mRuntimeImporter = RuntimeImporter::GetImporter(moduleHandle);
+    mRuntimeImporter->Initialize();
+    mIsLoaded = true;
 }
 
 const ModuleHandle& Mod::GetHandle() const
@@ -59,6 +91,11 @@ Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
     return *mRuntimeImporter;
 }
 
+bool Mod::IsLoaded() const
+{
+    return mIsLoaded;
+}
+
 bool Mod::operator==(const Mod& other) const
 {
     return mInfo == other.mInfo;
@@ -66,22 +103,9 @@ bool Mod::operator==(const Mod& other) const
 
 Mod::Info Amethyst::Mod::GetInfo(const std::string& modName)
 {
-    // Ensure the mod exists
     fs::path modConfigPath = GetAmethystFolder() / L"mods" / modName / L"mod.json";
     Assert(fs::exists(modConfigPath), "mod.json could not be found, for '{}'", modName);
-
-    // Try to read it to a std::string
-    std::ifstream modConfigFile(modConfigPath);
-
-    Assert(modConfigFile.is_open(), "Failed to open mod.json, for '{}'", modName);
-
-    // Read into a std::string
-    std::stringstream buffer;
-    buffer << modConfigFile.rdbuf();
-    modConfigFile.close();
-    std::string fileContents = buffer.str();
-
-    return Mod::Info::FromJson(fileContents);
+    return Mod::Info::FromFile(modConfigPath);
 }
 
 fs::path Mod::GetTemporaryLibrary(const std::string& modName)

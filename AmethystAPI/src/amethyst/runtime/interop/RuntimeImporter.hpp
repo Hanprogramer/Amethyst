@@ -5,8 +5,12 @@
 #include "amethyst-deps/safetyhook.hpp"
 
 namespace Amethyst {
-class RuntimeImporter {
+class RuntimeImporter : 
+    std::enable_shared_from_this<RuntimeImporter> 
+{
 private:
+    static std::unordered_map<HMODULE, RuntimeImporter*> sImporters;
+
     HMODULE mModule = nullptr;
     bool mInitialized = false;
 
@@ -19,8 +23,8 @@ private:
     std::unordered_map<std::string, uintptr_t> mVtableToVarStorage{};
     std::shared_ptr<safetyhook::Allocator> mAllocator = nullptr;
 
+    explicit RuntimeImporter(HMODULE moduleHandle);
 public:
-    RuntimeImporter(HMODULE moduleHandle);
     RuntimeImporter(const RuntimeImporter&) = delete;
     RuntimeImporter(RuntimeImporter&&) = delete;
     RuntimeImporter& operator=(const RuntimeImporter&) = delete;
@@ -46,5 +50,7 @@ public:
     static void UninitializedFunctionHandler();
     static void UninitializedDestructorHandler();
     static bool IsDestructor(const std::string& name);
+    static bool HasImporter(HMODULE moduleHandle);
+    static std::shared_ptr<RuntimeImporter> GetImporter(HMODULE moduleHandle);
 };
 }; // namespace Amethyst

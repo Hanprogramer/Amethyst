@@ -17,23 +17,28 @@ namespace fs = std::filesystem;
 
 namespace Amethyst {
 class Mod {
+    ModuleHandle mHandle;
+    std::shared_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
+    bool mIsLoaded = false;
+
 public:
     using Info = Amethyst::ModInfo;
-
-    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
-    ModuleHandle mHandle;
 
     // Metadata and stuff
     Amethyst::ModInfo mInfo;
 
     Mod() = delete;
-    Mod(const std::string& modName);
-    Mod(const std::string& modName, HMODULE moduleHandle);
     Mod(const Mod&) = delete;
     Mod& operator=(const Mod&) = delete;
-    Mod(Mod&& other) noexcept;
     Mod& operator=(Mod&&) noexcept = delete;
+
+    explicit Mod(const Mod::Info& info);
+    Mod(Mod&& other) noexcept;
     ~Mod();
+
+    void Load();
+    void Unload();
+    void Attach(HMODULE moduleHandle);
 
     const ModuleHandle& GetHandle() const;
     Amethyst::RuntimeImporter& GetRuntimeImporter() const;
@@ -43,6 +48,8 @@ public:
     {
         return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
     }
+
+    bool IsLoaded() const;
 
     bool operator==(const Mod& other) const;
     static Mod::Info GetInfo(const std::string& modName);

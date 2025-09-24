@@ -4,6 +4,11 @@
 #include <format>
 
 namespace Amethyst {
+class ModDependency {
+public:
+
+};
+
 class ModInfo {
 public:
     const std::string UUID;
@@ -13,6 +18,8 @@ public:
     const std::string FriendlyName;
     const std::string Version;
     const std::vector<std::string> Authors;
+    const fs::path Directory;
+    const std::string LibraryName;
 
     ModInfo() = delete;
     ModInfo(
@@ -22,7 +29,9 @@ public:
         const std::string& loggingName,
         const std::string& friendlyName,
         const std::string& version,
-        const std::vector<std::string>& authors
+        const std::vector<std::string>& authors,
+        const fs::path& directory,
+        const std::string& libraryName
     );
 
     ModInfo(const ModInfo& other);
@@ -54,8 +63,7 @@ public:
         return Equals(other, false);
     }
 
-    static ModInfo FromJson(const std::string& jsonString);
-    std::string ToJson() const;
+    static ModInfo FromFile(const fs::path& jsonFile);
 };
 } // namespace Amethyst
 

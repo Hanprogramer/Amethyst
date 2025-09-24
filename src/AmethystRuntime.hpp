@@ -33,8 +33,9 @@ class AmethystRuntime {
 private:
     // AmethystRuntime is a Singleton so don't allow creating from outside
     AmethystRuntime() : 
-        mAmethystMod(std::format("AmethystRuntime@{}", MOD_VERSION), ::hModule)
+        mAmethystMod(Amethyst::Mod::GetInfo(std::format("AmethystRuntime@{}", MOD_VERSION)))
     {
+        mAmethystMod.Attach(::hModule);
     }
 
     AmethystRuntime(const AmethystRuntime&);

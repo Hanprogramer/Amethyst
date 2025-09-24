@@ -47,10 +47,12 @@ void AmethystRuntime::Start()
 
     // Add our resources before loading mods
     AddOwnResources();
-    LoadModDlls(); 
 
-    // Create our hooks then run the mods
+    // Create our hooks
     CreateOwnHooks();
+
+    // Load all mod DLLs and call their initialize functions
+    LoadModDlls(); 
     RunMods();
 } 
 
@@ -82,13 +84,14 @@ void AmethystRuntime::LoadModDlls()
 {
     // Load all mods from the launcher_config.json
     for (auto& modName : mLauncherConfig.mods) {
-        mAmethystContext.mMods.emplace_back(modName);
+        mAmethystContext.mMods.emplace_back(Amethyst::Mod::GetInfo(modName));
     }
 
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
         auto versionedName = mod.mInfo.GetVersionedName();
         Log::Info("Loading '{}'", versionedName);
+        mod.Load();
 
         // Check if the mod has a resource pack and register it if it does
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "resource_packs" / "main_rp" / "manifest.json")))
@@ -97,9 +100,6 @@ void AmethystRuntime::LoadModDlls()
         // Check if the mod has a behavior pack and register it if it does
         if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "behavior_packs" / "main_bp" / "manifest.json")))
             mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
-        
-        // Create runtime importer instance and initialize it
-        mod.GetRuntimeImporter().Initialize();
 
         _LoadModFunc(mModInitialize, mod, "Initialize");
     }

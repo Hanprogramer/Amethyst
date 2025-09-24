@@ -1,6 +1,7 @@
 #include "ModInfo.hpp"
 #include "Json.hpp"
 #include "amethyst/Log.hpp"
+#include <fstream>
 
 namespace Amethyst {
 ModInfo::ModInfo(
@@ -10,14 +11,18 @@ ModInfo::ModInfo(
     const std::string& loggingName,
     const std::string& friendlyName,
     const std::string& version,
-    const std::vector<std::string>& authors) : 
+    const std::vector<std::string>& authors,
+    const fs::path& directory,
+    const std::string& libraryName) : 
     UUID(uuid),
     Namespace(modNamespace),
     Name(name),
     LoggingName(loggingName),
     FriendlyName(friendlyName),
     Version(version),
-    Authors(authors)
+    Authors(authors),
+    Directory(directory),
+    LibraryName(libraryName)
 {
 }
 
@@ -28,13 +33,24 @@ ModInfo::ModInfo(const ModInfo& other) :
     LoggingName(other.LoggingName),
     FriendlyName(other.FriendlyName),
     Version(other.Version),
-    Authors(other.Authors)
+    Authors(other.Authors),
+    Directory(other.Directory),
+    LibraryName(other.LibraryName)
 {
 }
 
-ModInfo ModInfo::FromJson(const std::string& jsonString)
+ModInfo ModInfo::FromFile(const fs::path& jsonFile)
 {
-    nlohmann::json j = nlohmann::json::parse(jsonString);
+    std::ifstream modConfigFile(jsonFile);
+
+    Assert(modConfigFile.is_open(), "Failed to open mod.json, at '{}'", jsonFile.generic_string());
+
+    std::stringstream buffer;
+    buffer << modConfigFile.rdbuf();
+    modConfigFile.close();
+    std::string fileContents = buffer.str();
+
+    nlohmann::json j = nlohmann::json::parse(fileContents);
     Assert(j["meta"].is_object(), "Invalid mod info JSON: 'meta' is not an object");
     nlohmann::json meta = j["meta"];
     Assert(meta["uuid"].is_string(), "Invalid mod info JSON: 'meta.uuid' is not a string");
@@ -71,21 +87,12 @@ ModInfo ModInfo::FromJson(const std::string& jsonString)
         }
     }
 
-    return ModInfo(uuid, modNamespace, name, loggingName, friendlyName, version, authors);
-}
+    std::string versionedName = std::format("{}@{}", name, version);
+    fs::path directory = jsonFile.parent_path();
+    std::string libraryName = std::format("{}.dll", versionedName);
 
-std::string ModInfo::ToJson() const
-{
-    nlohmann::json j;
-    j["meta"] = {
-        {"uuid", UUID},
-        {"namespace", Namespace},
-        {"name", Name},
-        {"logname", LoggingName},
-        {"friendlyname", FriendlyName},
-        {"version", Version},
-        {"author", Authors}
-    };
-    return j.dump(4);
+    Assert(fs::exists(directory / libraryName), "Could not find '{}', for mod '{}'.", (directory / libraryName).generic_string(), versionedName);
+
+    return ModInfo(uuid, modNamespace, name, loggingName, friendlyName, version, authors, directory, libraryName);
 }
 } // namespace Amethyst

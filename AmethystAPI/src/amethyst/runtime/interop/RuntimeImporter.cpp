@@ -75,15 +75,19 @@ static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
     0xFF, 0xE0                                                  // jmp rax
 };
 
+std::unordered_map<HMODULE, Amethyst::RuntimeImporter*> Amethyst::RuntimeImporter::sImporters = {};
+
 Amethyst::RuntimeImporter::RuntimeImporter(HMODULE moduleHandle) : 
 	mModule(moduleHandle),
     mInitialized(false),
     mAllocator(safetyhook::Allocator::create())
 {
+    sImporters.insert({moduleHandle, this});
 }
 
 Amethyst::RuntimeImporter::~RuntimeImporter()
 {
+    sImporters.erase(mModule);
     Shutdown();
 }
 
@@ -123,6 +127,19 @@ bool Amethyst::RuntimeImporter::IsDestructor(const std::string& name)
     return name.starts_with("??1") || name.starts_with("?_G") || name.starts_with("?_E");
 }
 
+bool Amethyst::RuntimeImporter::HasImporter(HMODULE moduleHandle)
+{
+    return sImporters.find(moduleHandle) != sImporters.end();
+}
+
+std::shared_ptr<Amethyst::RuntimeImporter> Amethyst::RuntimeImporter::GetImporter(HMODULE moduleHandle)
+{
+    if (HasImporter(moduleHandle)) {
+        return sImporters.find(moduleHandle)->second->shared_from_this();
+    }
+    return std::shared_ptr<Amethyst::RuntimeImporter>(new Amethyst::RuntimeImporter(moduleHandle));
+}
+
 uintptr_t Amethyst::RuntimeImporter::GetVirtualTableAddress(const std::string& name) const
 {
     if (mVirtualTables.count(name) == 0)
@@ -137,7 +154,7 @@ void Amethyst::RuntimeImporter::Initialize()
     }
 
     if (mModule == nullptr) {
-        Log::Error("[RuntimeImporter] Module handle is null, cannot initialize!");
+        Log::Error("Module handle is null, cannot initialize!");
         return;
     }
 
@@ -156,7 +173,7 @@ void Amethyst::RuntimeImporter::Initialize()
         &variableDescSection, 
         &vtableDescSection)) 
     {
-        Log::Warning("[RuntimeImporter] Failed to find required sections in module, cannot initialize.");
+        Log::Warning("Failed to find required sections in module, cannot initialize.");
         return;
     }
 
@@ -186,7 +203,7 @@ void Amethyst::RuntimeImporter::Initialize()
             address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
             auto nameIt = mStringTable.find(functionDesc->nameIndex);
             if (nameIt == mStringTable.end()) {
-                Log::Warning("[RuntimeImporter] Function descriptor has invalid name index: {}", functionDesc->nameIndex);
+                Log::Warning("Function descriptor has invalid name index: {}", functionDesc->nameIndex);
                 continue;
             }
 
@@ -194,7 +211,7 @@ void Amethyst::RuntimeImporter::Initialize()
             if (functionDesc->usesSig) {
                 auto sigIt = mStringTable.find(static_cast<uint32_t>(functionDesc->signatureIndex));
                 if (sigIt == mStringTable.end()) {
-                    Log::Warning("[RuntimeImporter] Function descriptor '{}' has invalid signature index: {}", name, functionDesc->signatureIndex);
+                    Log::Warning("Function descriptor '{}' has invalid signature index: {}", name, functionDesc->signatureIndex);
                     address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
                     continue;
                 }
@@ -202,7 +219,7 @@ void Amethyst::RuntimeImporter::Initialize()
                 std::string& signature = sigIt->second;
                 auto resolvedAddress = SigScanSafe(signature);
                 if (!resolvedAddress.has_value()) {
-                    Log::Warning("[RuntimeImporter] Failed to resolve signature for function '{}': {}", name, signature);
+                    Log::Warning("Failed to resolve signature for function '{}': {}", name, signature);
                     address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
                     continue;
                 }
@@ -228,7 +245,7 @@ void Amethyst::RuntimeImporter::Initialize()
             address = 0x0;
             auto nameIt = mStringTable.find(variableDesc->nameIndex);
             if (nameIt == mStringTable.end()) {
-                Log::Warning("[RuntimeImporter] Variable descriptor has invalid name index: {}", variableDesc->nameIndex);
+                Log::Warning("Variable descriptor has invalid name index: {}", variableDesc->nameIndex);
                 continue;
             }
 
@@ -253,13 +270,13 @@ void Amethyst::RuntimeImporter::Initialize()
         for (auto i = 0; i < virtualTableDescTable.length; i++, virtualTableDesc++) {
             auto nameIt = mStringTable.find(virtualTableDesc->nameIndex);
             if (nameIt == mStringTable.end()) {
-                Log::Warning("[RuntimeImporter] Virtual table descriptor has invalid name index: {}", virtualTableDesc->nameIndex);
+                Log::Warning("Virtual table descriptor has invalid name index: {}", virtualTableDesc->nameIndex);
                 continue;
             }
 
             std::string& name = nameIt->second;
             if (virtualTableDesc->address == 0x0) {
-                Log::Warning("[RuntimeImporter] Virtual table '{}' has nullptr address, keep in mind this will probably cause BIG problems.", name);
+                Log::Warning("Virtual table '{}' has nullptr address, keep in mind this will probably cause BIG problems.", name);
             }
 
             mVirtualTables[name] = SlideAddress(virtualTableDesc->address);
@@ -277,14 +294,14 @@ void Amethyst::RuntimeImporter::Initialize()
             address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
             auto nameIt = mStringTable.find(virtualFunctionDesc->nameIndex);
             if (nameIt == mStringTable.end()) {
-                Log::Warning("[RuntimeImporter] Virtual function descriptor has invalid name index: {}", virtualFunctionDesc->nameIndex);
+                Log::Warning("Virtual function descriptor has invalid name index: {}", virtualFunctionDesc->nameIndex);
                 continue;
             }
 
             std::string& name = nameIt->second;
             auto vtableNameIt = mStringTable.find(virtualFunctionDesc->vtableNameIndex);
             if (vtableNameIt == mStringTable.end()) {
-                Log::Warning("[RuntimeImporter] Virtual function descriptor for '{}' has invalid virtual table name index: {}", name, virtualFunctionDesc->vtableNameIndex);
+                Log::Warning("Virtual function descriptor for '{}' has invalid virtual table name index: {}", name, virtualFunctionDesc->vtableNameIndex);
                 continue;
             }
 
@@ -298,7 +315,7 @@ void Amethyst::RuntimeImporter::Initialize()
                 auto allocationExp = mAllocator->allocate(sizeof(VirtualDestructorDeletingDisableBlock));
                 
                 if (!allocationExp.has_value()) {
-                    Log::Warning("[RuntimeImporter] Failed to allocate memory of virtual destructor block for '{}'", name);
+                    Log::Warning("Failed to allocate memory of virtual destructor block for '{}'", name);
                     address = reinterpret_cast<uintptr_t>(&UninitializedDestructorHandler);
                     continue;
                 }
@@ -352,8 +369,8 @@ bool Amethyst::RuntimeImporter::GetSections(
     // Grab the ancient DOS header
     IMAGE_DOS_HEADER* dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(base);
     if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE) {
-        Log::Error("[RuntimeImporter] DOS header signature is NOT 'MZ'...");
-        Log::Error("[RuntimeImporter] What the fuck did you do to make this happen?");
+        Log::Error("DOS header signature is NOT 'MZ'...");
+        Log::Error("What the fuck did you do to make this happen?");
         return false;
     }
 
@@ -412,10 +429,10 @@ bool Amethyst::RuntimeImporter::GetSections(
 
 void Amethyst::RuntimeImporter::UninitializedFunctionHandler()
 {
-    Log::Warning("[RuntimeImporter] Attempted to call an uninitialized function, don't expect happy endings...");
+    Log::Warning("Attempted to call an uninitialized function, don't expect happy endings...");
 }
 
 void Amethyst::RuntimeImporter::UninitializedDestructorHandler()
 {
-    Log::Warning("[RuntimeImporter] Attempted to call an uninitialized destructor, expect leaks...");
+    Log::Warning("Attempted to call an uninitialized destructor, expect leaks...");
 }
