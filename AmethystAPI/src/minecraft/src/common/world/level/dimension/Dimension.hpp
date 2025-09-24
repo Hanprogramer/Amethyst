@@ -124,148 +124,148 @@ public:
     /* this + 1568 */ bool mRunChunkGenWatchDog;
 
 public:
-    /**@vIndex {0} */
+    /**@vidx {0} */
 	virtual ~Dimension();
 
-    /**@vIndex {1} */
+    /**@vidx {1} */
 	virtual bool isNaturalDimension() const override;
 
-    /**@vIndex {2} */
+    /**@vidx {2} */
 	virtual DimensionType getDimensionId() const override;
 
-    /**@vIndex {3} */
+    /**@vidx {3} */
 	virtual void sendPacketForPosition(const BlockPos&, const Packet&, const Player*) override;
 
-    /**@vIndex {4} */
+    /**@vidx {4} */
 	virtual void flushLevelChunkGarbageCollector() override;
 
-    /**@vIndex {5} */
+    /**@vidx {5} */
 	virtual void initializeWithLevelStorageManager(class LevelStorageManager&) override;
 
-    /**@vIndex {6} */
+    /**@vidx {6} */
 	virtual BiomeRegistry& getBiomeRegistry() override;
 
-    /**@vIndex {7} */
+    /**@vidx {7} */
 	virtual const BiomeRegistry& getBiomeRegistry() const override;
 
-    /**@vIndex {8} */
+    /**@vidx {8} */
 	virtual Vec3 translatePosAcrossDimension(const Vec3&, DimensionType) const override;
 
-    /**@vIndex {9} */
+    /**@vidx {9} */
 	virtual void forEachPlayer(std::function<bool(class Player&)> callback) const override;
 
-    /**@vIndex {10} */
+    /**@vidx {10} */
 	virtual Actor* fetchEntity(ActorUniqueID actorID, bool getRemoved) const override;
 
-    /**@vIndex {11} */
+    /**@vidx {11} */
 	virtual void init(const br::worldgen::StructureSetRegistry&);
 
-    /**@vIndex {12} */
+    /**@vidx {12} */
 	virtual void tick();
     
-    /**@vIndex {13} */
+    /**@vidx {13} */
 	virtual void tickRedstone();
     
-    /**@vIndex {14} */
+    /**@vidx {14} */
 	virtual std::unique_ptr<class WorldGenerator> createGenerator(const br::worldgen::StructureSetRegistry&) = 0;
     
-    /**@vIndex {15} */
+    /**@vidx {15} */
 	virtual void upgradeLevelChunk(class ChunkSource& source, class LevelChunk& lc, class LevelChunk& generatedChunk) = 0;
     
-    /**@vIndex {16} */
+    /**@vidx {16} */
 	virtual void fixWallChunk(class ChunkSource&, class LevelChunk&) = 0;
     
-    /**@vIndex {17} */
+    /**@vidx {17} */
 	virtual bool levelChunkNeedsUpgrade(const LevelChunk&) const = 0;
     
-    /**@vIndex {18} */
+    /**@vidx {18} */
 	virtual bool isValidSpawn(int x, int z) const;
     
-    /**@vIndex {19} */
+    /**@vidx {19} */
 	virtual class mce::Color getBrightnessDependentFogColor(const mce::Color& baseColor, float brightness) const;
     
-    /**@vIndex {20} */
+    /**@vidx {20} */
 	virtual bool hasPrecipitationFog() const;
     
-    /**@vIndex {21} */
+    /**@vidx {21} */
 	virtual short getCloudHeight() const;
     
-    /**@vIndex {22} */
+    /**@vidx {22} */
 	virtual class HashedString getDefaultBiome() const;
     
-    /**@vIndex {23} */
+    /**@vidx {23} */
 	virtual bool hasGround() const;
     
-    /**@vIndex {24} */
+    /**@vidx {24} */
 	virtual bool showSky() const;
     
-    /**@vIndex {25} */
+    /**@vidx {25} */
 	virtual class BlockPos getSpawnPos() const;
     
-    /**@vIndex {26} */
+    /**@vidx {26} */
 	virtual int getSpawnYPosition() const;
     
-    /**@vIndex {27} */
+    /**@vidx {27} */
 	virtual bool mayRespawnViaBed(void) const;
     
-    /**@vIndex {28} */
+    /**@vidx {28} */
 	virtual bool isDay() const;
     
-    /**@vIndex {29} */
+    /**@vidx {29} */
 	virtual float getTimeOfDay(int time, float a) const;
     
-    /**@vIndex {30} */
+    /**@vidx {30} */
 	virtual float getSunIntensity(float a, const Vec3& viewVector, float minInfluenceAngle) const;
     
-    /**@vIndex {31} */
+    /**@vidx {31} */
 	virtual bool forceCheckAllNeighChunkSavedStat() const;
     
-    /**@vIndex {32} */
+    /**@vidx {32} */
 	virtual void sendBroadcast(const Packet& packet, class Player* except);
     
-    /**@vIndex {33} */
+    /**@vidx {33} */
 	virtual bool is2DPositionRelevantForPlayer(const BlockPos& position, class Player& player) const;
     
-    /**@vIndex {34} */
+    /**@vidx {34} */
 	virtual bool isActorRelevantForPlayer(class Player& player, const Actor& actor) const;
     
-    /**@vIndex {35} */
+    /**@vidx {35} */
 	virtual class BaseLightTextureImageBuilder* getLightTextureImageBuilder() const;
     
-    /**@vIndex {36} */
+    /**@vidx {36} */
 	virtual const DimensionBrightnessRamp& getBrightnessRamp() const;
     
-    /**@vIndex {37} */
+    /**@vidx {37} */
 	virtual void startLeaveGame();
     
-    /**@vIndex {38} */
+    /**@vidx {38} */
 	virtual std::unique_ptr<class ChunkBuildOrderPolicyBase> _createChunkBuildOrderPolicy();
     
-    /**@vIndex {39} */
+    /**@vidx {39} */
 	virtual void _upgradeOldLimboEntity(class CompoundTag& tag, LimboEntitiesVersion vers) = 0;
     
-    /**@vIndex {40} */
+    /**@vidx {40} */
 	virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) = 0;
 
-    /** @vIndex {1} @for {SavedData} */
+    /** @vidx {1} @for {SavedData} */
     virtual void deserialize(const CompoundTag&) override;
 
-    /** @vIndex {2} @for {SavedData} */
+    /** @vidx {2} @for {SavedData} */
     virtual void serialize(CompoundTag&) const override;
 
-    /** @vIndex {4} @for {LevelListener} */
+    /** @vidx {4} @for {LevelListener} */
     virtual void onBlockChanged(BlockSource& source, const BlockPos& pos, uint32_t layer, const Block& block, const Block& oldBlock, int updateFlags, const ActorBlockSyncMessage* syncMsg, BlockChangedEventTarget eventTarget, Actor* blockChangeSource) override;
 
-    /** @vIndex {5} @for {LevelListener} */
+    /** @vidx {5} @for {LevelListener} */
     virtual void onBrightnessChanged(BlockSource& source, const BlockPos& pos) override;
 
-    /** @vIndex {8} @for {LevelListener} */
+    /** @vidx {8} @for {LevelListener} */
     virtual void onBlockEvent(BlockSource& source, int x, int y, int z, int b0, int b1) override;
 
-    /** @vIndex {19} @for {LevelListener} */
+    /** @vidx {19} @for {LevelListener} */
     virtual void onChunkLoaded(class ChunkSource& source, class LevelChunk& lc) override;
 
-    /** @vIndex {23} @for {LevelListener} */
+    /** @vidx {23} @for {LevelListener} */
     virtual void onLevelDestruction(const std::string& levelId) override;
 
     /**@asmName {Dimension_ctor}*/

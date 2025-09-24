@@ -149,457 +149,457 @@ public:
 
     ActorUniqueID getUniqueID() const;
 
-    /**@vIndex {0}*/
+    /**@vidx {0}*/
     virtual bool getStatusFlag(ActorFlags unk0) const;
 
-    /**@vIndex {1}*/
+    /**@vidx {1}*/
     virtual void setStatusFlag(ActorFlags unk0, bool unk1);
 
-    /**@vIndex {2}*/
+    /**@vidx {2}*/
     virtual bool hasComponent(const HashedString& unk0) const;
 
-    /**@vIndex {3}*/
+    /**@vidx {3}*/
     virtual void outOfWorld();
 
-    /**@vIndex {4}*/
+    /**@vidx {4}*/
     virtual void reloadHardcoded(ActorInitializationMethod unk0, const VariantParameterList& unk1);
 
-    /**@vIndex {5}*/
+    /**@vidx {5}*/
     virtual void reloadHardcodedClient(ActorInitializationMethod unk0, const VariantParameterList& unk1);
 
-    /**@vIndex {6}*/
+    /**@vidx {6}*/
     virtual void initializeComponents(ActorInitializationMethod unk0, const VariantParameterList& unk1);
 
-    /**@vIndex {7}*/
+    /**@vidx {7}*/
     virtual void reloadComponents(ActorInitializationMethod unk0, const VariantParameterList& unk1);
 
-    /**@vIndex {8}*/
+    /**@vidx {8}*/
     virtual void _serverInitItemStackIds();
 
-    /**@vIndex {9}*/
+    /**@vidx {9}*/
     virtual void _doInitialMove();
 
-    /**@vIndex {10}*/
+    /**@vidx {10}*/
     virtual ~Actor();
 
-    /**@vIndex {11}*/
+    /**@vidx {11}*/
     virtual void _unknown_11(); // resetUserPos
 
-    /**@vIndex {12}*/
+    /**@vidx {12}*/
     virtual ActorType getOwnerEntityType();
 
-    /**@vIndex {13}*/
+    /**@vidx {13}*/
     virtual void remove();
 
-    /**@vIndex {14}*/
+    /**@vidx {14}*/
     virtual Vec3 getFiringPos() const;
 
-    /**@vIndex {15}*/
+    /**@vidx {15}*/
     virtual float getInterpolatedBodyRot(float unk0) const;
 
-    /**@vIndex {16}*/
+    /**@vidx {16}*/
     virtual float getInterpolatedHeadRot(float unk0) const;
 
-    /**@vIndex {17}*/
+    /**@vidx {17}*/
     virtual float getInterpolatedBodyYaw(float unk0) const;
 
-    /**@vIndex {18}*/
+    /**@vidx {18}*/
     virtual float getYawSpeedInDegreesPerSecond() const;
 
-    /**@vIndex {19}*/
+    /**@vidx {19}*/
     virtual Vec3 getInterpolatedRidingOffset(float unk0, int unk1) const;
 
-    /**@vIndex {20}*/
+    /**@vidx {20}*/
     virtual bool isFireImmune() const;
 
-    /**@vIndex {21}*/
+    /**@vidx {21}*/
     virtual void blockedByShield(const ActorDamageSource& unk0, Actor& unk1);
 
-    /**@vIndex {22}*/
+    /**@vidx {22}*/
     virtual bool canDisableShield();
 
-    /**@vIndex {23}*/
+    /**@vidx {23}*/
     virtual void teleportTo(const Vec3& unk0, bool unk1, int unk2, int unk3, bool unk4);
 
-    /**@vIndex {24}*/
+    /**@vidx {24}*/
     virtual void lerpMotion(const Vec3& unk0);
 
-    /**@vIndex {25}*/
+    /**@vidx {25}*/
     virtual std::unique_ptr<AddActorBasePacket> tryCreateAddActorPacket();
 
-    /**@vIndex {26}*/
+    /**@vidx {26}*/
     virtual void normalTick();
 
-    /**@vIndex {27}*/
+    /**@vidx {27}*/
     virtual void baseTick();
 
-    /**@vIndex {28}*/
+    /**@vidx {28}*/
     virtual void passengerTick();
 
-    /**@vIndex {29}*/
+    /**@vidx {29}*/
     virtual bool startRiding(Actor& unk0);
 
-    /**@vIndex {30}*/
+    /**@vidx {30}*/
     virtual void addPassenger(Actor& unk0);
 
-    /**@vIndex {31}*/
+    /**@vidx {31}*/
     virtual std::string getExitTip(const std::string& unk0, InputMode unk1, NewInteractionModel unk2) const;
 
-    /**@vIndex {32}*/
+    /**@vidx {32}*/
     virtual std::string getEntityLocNameString() const;
 
-    /**@vIndex {33}*/
+    /**@vidx {33}*/
     virtual bool isInWall() const;
 
-    /**@vIndex {34}*/
+    /**@vidx {34}*/
     virtual bool isInvisible() const;
 
-    /**@vIndex {35}*/
+    /**@vidx {35}*/
     virtual bool canShowNameTag() const;
 
-    /**@vIndex {36}*/
+    /**@vidx {36}*/
     virtual std::string getFormattedNameTag() const;
 
-    /**@vIndex {37}*/
+    /**@vidx {37}*/
     virtual mce::Color getNameTagTextColor() const;
 
-    /**@vIndex {38}*/
+    /**@vidx {38}*/
     virtual float getShadowRadius() const;
 
-    /**@vIndex {39}*/
+    /**@vidx {39}*/
     virtual Vec3 getHeadLookVector(float unk0) const;
 
-    /**@vIndex {40}*/
+    /**@vidx {40}*/
     virtual void _unknown_40();
 
-    /**@vIndex {41}*/
+    /**@vidx {41}*/
     virtual float getBrightness(float unk0, const IConstBlockSource& unk1) const;
 
-    /**@vIndex {42}*/
+    /**@vidx {42}*/
     virtual void playerTouch(Player& unk0);
 
-    /**@vIndex {43}*/
+    /**@vidx {43}*/
     virtual bool isImmobile() const;
 
-    /**@vIndex {44}*/
+    /**@vidx {44}*/
     virtual void _unknown_44();
 
-    /**@vIndex {45}*/
+    /**@vidx {45}*/
     virtual bool isSleeping() const;
 
-    /**@vIndex {46}*/
+    /**@vidx {46}*/
     virtual void setSleeping(bool unk0);
 
-    /**@vIndex {47}*/
+    /**@vidx {47}*/
     virtual void setSneaking(bool unk0);
 
-    /**@vIndex {48}*/
+    /**@vidx {48}*/
     virtual bool isBlocking() const;
 
-    /**@vIndex {49}*/
+    /**@vidx {49}*/
     virtual void _unknown_49();
 
-    /**@vIndex {50}*/
+    /**@vidx {50}*/
     virtual bool isAlive() const;
 
-    /**@vIndex {51}*/
+    /**@vidx {51}*/
     virtual bool isOnFire() const;
 
-    /**@vIndex {52}*/
+    /**@vidx {52}*/
     virtual bool isSurfaceMob() const;
 
-    /**@vIndex {53}*/
+    /**@vidx {53}*/
     virtual void _unknown_53();
 
-    /**@vIndex {54}*/
+    /**@vidx {54}*/
     virtual bool canAttack(Actor* unk0, bool unk1) const;
 
-    /**@vIndex {55}*/
+    /**@vidx {55}*/
     virtual void setTarget(Actor* unk0);
 
-    /**@vIndex {56}*/
+    /**@vidx {56}*/
     virtual void _unknown_56();
 
-    /**@vIndex {57}*/
+    /**@vidx {57}*/
     virtual bool attack(Actor& unk0, const ActorDamageCause& unk1);
 
-    /**@vIndex {58}*/
+    /**@vidx {58}*/
     virtual void performRangedAttack(Actor& unk0, float unk1);
 
-    /**@vIndex {59}*/
+    /**@vidx {59}*/
     virtual void setOwner(ActorUniqueID unk0);
 
-    /**@vIndex {60}*/
+    /**@vidx {60}*/
     virtual void setSitting(bool unk0);
 
-    /**@vIndex {61}*/
+    /**@vidx {61}*/
     virtual void _unknown_61();
 
-    /**@vIndex {62}*/
+    /**@vidx {62}*/
     virtual void _unknown_62();
 
-    /**@vIndex {63}*/
+    /**@vidx {63}*/
     virtual void setStanding(bool unk0);
 
-    /**@vIndex {64}*/
+    /**@vidx {64}*/
     virtual bool canPowerJump() const;
 
-    /**@vIndex {65}*/
+    /**@vidx {65}*/
     virtual bool isEnchanted() const;
 
-    /**@vIndex {66}*/
+    /**@vidx {66}*/
     virtual bool shouldRender() const;
 
-    /**@vIndex {67}*/
+    /**@vidx {67}*/
     virtual void playAmbientSound();
 
-    /**@vIndex {68}*/
+    /**@vidx {68}*/
     virtual Puv::Legacy::LevelSoundEvent getAmbientSound() const;
 
-    /**@vIndex {69}*/
+    /**@vidx {69}*/
     virtual bool isInvulnerableTo(const ActorDamageSource& unk0) const;
 
-    /**@vIndex {70}*/
+    /**@vidx {70}*/
     virtual ActorDamageCause getBlockDamageCause(const Block& unk0) const;
 
-    /**@vIndex {71}*/
+    /**@vidx {71}*/
     virtual bool doFireHurt(int unk0);
 
-    /**@vIndex {72}*/
+    /**@vidx {72}*/
     virtual void onLightningHit();
 
-    /**@vIndex {73}*/
+    /**@vidx {73}*/
     virtual void feed(int unk0);
 
-    /**@vIndex {74}*/
+    /**@vidx {74}*/
     virtual void handleEntityEvent(ActorEvent unk0, int unk1);
 
-    /**@vIndex {75}*/
+    /**@vidx {75}*/
     virtual const HashedString& getActorRendererId() const;
 
-    /**@vIndex {76}*/
+    /**@vidx {76}*/
     virtual void despawn();
 
-    /**@vIndex {77}*/
+    /**@vidx {77}*/
     virtual void setArmor(ArmorSlot unk0, const ItemStack& unk1);
 
-    /**@vIndex {78}*/
+    /**@vidx {78}*/
     virtual ArmorMaterialType getArmorMaterialTypeInSlot(ArmorSlot unk0) const;
 
-    /**@vIndex {79}*/
+    /**@vidx {79}*/
     virtual int getArmorTextureIndexInSlot(ArmorSlot unk0) const;
 
-    /**@vIndex {80}*/
+    /**@vidx {80}*/
     virtual float getArmorColorInSlot(ArmorSlot unk0, int unk1) const;
 
-    /**@vIndex {81}*/
+    /**@vidx {81}*/
     virtual void setEquippedSlot(Puv::Legacy::EquipmentSlot unk0, const ItemStack& unk1);
 
-    /**@vIndex {82}*/
+    /**@vidx {82}*/
     virtual void setCarriedItem(const ItemStack& unk0);
 
-    /**@vIndex {83}*/
+    /**@vidx {83}*/
     virtual const ItemStack& getCarriedItem() const;
 
-    /**@vIndex {84}*/
+    /**@vidx {84}*/
     virtual void setOffhandSlot(const ItemStack& unk0);
 
-    /**@vIndex {85}*/
+    /**@vidx {85}*/
     virtual const ItemStack& getEquippedTotem() const;
 
-    /**@vIndex {86}*/
+    /**@vidx {86}*/
     virtual bool consumeTotem();
 
-    /**@vIndex {87}*/
+    /**@vidx {87}*/
     virtual bool save(CompoundTag& unk0) const;
 
-    /**@vIndex {88}*/
+    /**@vidx {88}*/
     virtual bool load(const CompoundTag& unk0, DataLoadHelper& unk1);
 
-    /**@vIndex {89}*/
+    /**@vidx {89}*/
     virtual const HashedString& queryEntityRenderer() const;
 
-    /**@vIndex {90}*/
+    /**@vidx {90}*/
     virtual ActorUniqueID getSourceUniqueID() const;
 
-    /**@vIndex {91}*/
+    /**@vidx {91}*/
     virtual bool canFreeze() const;
 
-    /**@vIndex {92}*/
+    /**@vidx {92}*/
     virtual AABB getLiquidAABB(MaterialType unk0) const;
 
-    /**@vIndex {93}*/
+    /**@vidx {93}*/
     virtual void handleInsidePortal(const BlockPos& unk0);
 
-    /**@vIndex {94}*/
+    /**@vidx {94}*/
     virtual bool canChangeDimensionsUsingPortal() const;
 
-    /**@vIndex {95}*/
+    /**@vidx {95}*/
     virtual void _unknown_95();
 
-    /**@vIndex {96}*/
+    /**@vidx {96}*/
     virtual void changeDimension(AutomaticID<Dimension, int> unk0);
 
-    /**@vIndex {97}*/
+    /**@vidx {97}*/
     virtual ActorUniqueID getControllingPlayer() const;
 
-    /**@vIndex {98}*/
+    /**@vidx {98}*/
     virtual float causeFallDamageToActor(float unk0, float unk1, ActorDamageSource unk2);
 
-    /**@vIndex {99}*/
+    /**@vidx {99}*/
     virtual void onSynchedDataUpdate(int unk0);
 
-    /**@vIndex {100}*/
+    /**@vidx {100}*/
     virtual bool canAddPassenger(Actor& unk0) const;
 
-    /**@vIndex {101}*/
+    /**@vidx {101}*/
     virtual void _unknown_101();
 
-    /**@vIndex {102}*/
+    /**@vidx {102}*/
     virtual bool canBePulledIntoVehicle() const;
 
-    /**@vIndex {103}*/
+    /**@vidx {103}*/
     virtual bool inCaravan() const;
 
-    /**@vIndex {104}*/
+    /**@vidx {104}*/
     virtual void sendMotionPacketIfNeeded(const PlayerMovementSettings& unk0);
 
-    /**@vIndex {105}*/
+    /**@vidx {105}*/
     virtual bool canSynchronizeNewEntity() const;
 
-    /**@vIndex {106}*/
+    /**@vidx {106}*/
     virtual void startSwimming();
 
-    /**@vIndex {107}*/
+    /**@vidx {107}*/
     virtual void stopSwimming();
 
-    /**@vIndex {108}*/
+    /**@vidx {108}*/
     virtual void buildDebugInfo(std::string& unk0) const;
 
-    /**@vIndex {109}*/
+    /**@vidx {109}*/
     virtual CommandPermissionLevel getCommandPermissionLevel() const;
 
-    /**@vIndex {110}*/
+    /**@vidx {110}*/
     virtual int getDeathTime() const;
 
-    /**@vIndex {111}*/
+    /**@vidx {111}*/
     virtual bool canBeAffected(unsigned int unk0) const;
 
-    /**@vIndex {112}*/
+    /**@vidx {112}*/
     virtual bool canBeAffectedByArrow(const MobEffectInstance& unk0) const;
 
-    /**@vIndex {113}*/
+    /**@vidx {113}*/
     virtual void onEffectRemoved(MobEffectInstance& unk0);
 
-    /**@vIndex {114}*/
+    /**@vidx {114}*/
     virtual bool canObstructSpawningAndBlockPlacement() const;
 
-    /**@vIndex {115}*/
+    /**@vidx {115}*/
     virtual AnimationComponent& getAnimationComponent();
 
-    /**@vIndex {116}*/
+    /**@vidx {116}*/
     virtual void openContainerComponent(Player& unk0);
 
-    /**@vIndex {117}*/
+    /**@vidx {117}*/
     virtual void swing();
 
-    /**@vIndex {118}*/
+    /**@vidx {118}*/
     virtual void useItem(ItemStackBase& unk0, ItemUseMethod unk1, bool unk2);
 
-    /**@vIndex {119}*/
+    /**@vidx {119}*/
     virtual void getDebugText(std::vector<std::string>& unk0);
 
-    /**@vIndex {120}*/
+    /**@vidx {120}*/
     virtual float getMapDecorationRotation() const;
 
-    /**@vIndex {121}*/
+    /**@vidx {121}*/
     virtual float getPassengerYRotation(const Actor& unk0) const;
 
-    /**@vIndex {122}*/
+    /**@vidx {122}*/
     virtual bool add(ItemStack& unk0);
 
-    /**@vIndex {123}*/
+    /**@vidx {123}*/
     virtual bool drop(const ItemStack& unk0, bool unk1);
 
-    /**@vIndex {124}*/
+    /**@vidx {124}*/
     virtual bool getInteraction(Player& unk0, ActorInteraction& unk1, const Vec3& unk2);
 
-    /**@vIndex {125}*/
+    /**@vidx {125}*/
     virtual void _unknown_125();
 
-    /**@vIndex {126}*/
+    /**@vidx {126}*/
     virtual void _unknown_126();
 
-    /**@vIndex {127}*/
+    /**@vidx {127}*/
     virtual void startSpinAttack();
 
-    /**@vIndex {128}*/
+    /**@vidx {128}*/
     virtual void _unknown_128();
 
-    /**@vIndex {129}*/
+    /**@vidx {129}*/
     virtual void _unknown_129();
 
-    /**@vIndex {130}*/
+    /**@vidx {130}*/
     virtual void kill();
 
-    /**@vIndex {131}*/
+    /**@vidx {131}*/
     virtual void die(const ActorDamageSource& unk0);
 
-    /**@vIndex {132}*/
+    /**@vidx {132}*/
     virtual bool shouldDropDeathLoot() const;
 
-    /**@vIndex {133}*/
+    /**@vidx {133}*/
     virtual void applySnapshot(const EntityContext& unk0, const EntityContext& unk1);
 
-    /**@vIndex {134}*/
+    /**@vidx {134}*/
     virtual float getNextStep(float unk0);
 
-    /**@vIndex {135}*/
+    /**@vidx {135}*/
     virtual void _unknown_135();
 
-    /**@vIndex {136}*/
+    /**@vidx {136}*/
     virtual std::optional<BlockPos> getLastDeathPos() const;
 
-    /**@vIndex {137}*/
+    /**@vidx {137}*/
     virtual std::optional<AutomaticID<Dimension, int>> getLastDeathDimension() const;
 
-    /**@vIndex {138}*/
+    /**@vidx {138}*/
     virtual void _unknown_138();
 
-    /**@vIndex {139}*/
+    /**@vidx {139}*/
     virtual void _unknown_139();
 
-    /**@vIndex {140}*/
+    /**@vidx {140}*/
     virtual void _unknown_140();
 
-    /**@vIndex {141}*/
+    /**@vidx {141}*/
     virtual void doWaterSplashEffect();
 
-    /**@vIndex {142}*/
+    /**@vidx {142}*/
     virtual bool _shouldProvideFeedbackOnHandContainerItemSet(HandSlot unk0, const ItemStack& unk1) const;
 
-    /**@vIndex {143}*/
+    /**@vidx {143}*/
     virtual bool _shouldProvideFeedbackOnArmorSet(ArmorSlot unk0, const ItemStack& unk1) const;
 
-    /**@vIndex {144}*/
+    /**@vidx {144}*/
     virtual void updateEntitySpecificMolangVariables(RenderParams& unk0);
 
-    /**@vIndex {145}*/
+    /**@vidx {145}*/
     virtual bool shouldTryMakeStepSound();
 
-    /**@vIndex {146}*/
+    /**@vidx {146}*/
     virtual bool _hurt(const ActorDamageSource& unk0, float unk1, bool unk2, bool unk3);
 
-    /**@vIndex {147}*/
+    /**@vidx {147}*/
     virtual void readAdditionalSaveData(const CompoundTag& unk0, DataLoadHelper& unk1);
 
-    /**@vIndex {148}*/
+    /**@vidx {148}*/
     virtual void addAdditionalSaveData(CompoundTag& unk0) const;
 
-    /**@vIndex {149}*/
+    /**@vidx {149}*/
     virtual void _playStepSound(const BlockPos& unk0, const Block& unk1);
 
-    /**@vIndex {150}*/
+    /**@vidx {150}*/
     virtual void _unknown_150();
 };
 #pragma pack(pop)   

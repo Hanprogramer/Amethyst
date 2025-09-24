@@ -1,16 +1,21 @@
+///@symbolgeneration
 #pragma once
+#include <amethyst/Imports.hpp>
 #include <memory>
 #include <chrono>
+#include <functional>
 #include "minecraft/src/common/world/level/BlockPos.hpp"
 #include "minecraft/src/common/world/phys/Vec3.hpp"
 #include "minecraft/src/common/world/Facing.hpp"
 #include "minecraft/src/common/world/item/Item.hpp"
+#include <minecraft/src-deps/input/InputMode.hpp>
 
 class Player;
 class IGameModeTimer;
 class IGameModeMessenger;
 class ItemStack;
 
+/// @vptr {0x4DE5338}
 class GameMode {
 public:
     class BuildContext {
@@ -48,21 +53,64 @@ public:
     std::unique_ptr<IGameModeTimer> mTimer;
     std::unique_ptr<IGameModeMessenger> mMessenger;
 
-    BlockPos _calculatePlacePos(ItemStack& heldStack, const BlockPos& pos, FacingID& face);
+    /// @vidx {0}
+    MC virtual ~GameMode();
 
-    virtual ~GameMode() = default;
-    virtual void ukn1();
-    virtual void ukn2();
-    virtual void ukn3();
-    virtual void ukn4();
-    virtual void ukn5();
-    virtual void ukn6();
-    virtual void ukn7();
-    virtual void ukn8();
-    virtual void ukn9();
-    virtual void ukn10();
-    virtual void ukn11();
-    virtual InteractionResult useItemOn(ItemStack& item, const BlockPos& pos, FacingID face, const Vec3& clickPos, const Block* block);
+    /// @vidx {1}
+    MC virtual bool startDestroyBlock(const BlockPos& unk0, unsigned char unk1, bool& unk2);
+
+    /// @vidx {2}
+    MC virtual bool destroyBlock(const BlockPos& unk0, unsigned char unk1);
+
+    /// @vidx {3}
+    MC virtual bool continueDestroyBlock(const BlockPos& unk0, unsigned char unk1, const Vec3& unk2, bool& unk3);
+
+    /// @vidx {4}
+    MC virtual void stopDestroyBlock(const BlockPos& unk0);
+
+    /// @vidx {5}
+    MC virtual void startBuildBlock(const BlockPos& unk0, FacingID unk1);
+
+    /// @vidx {6}
+    MC virtual bool buildBlock(const BlockPos& unk0, FacingID unk1, bool unk2);
+
+    /// @vidx {7}
+    MC virtual void continueBuildBlock(const BlockPos& unk0, FacingID unk1);
+
+    /// @vidx {8}
+    MC virtual void stopBuildBlock();
+
+    /// @vidx {9}
+    MC virtual void tick();
+
+    /// @vidx {10}
+    MC virtual float getPickRange(const InputMode& unk0, bool unk1);
+
+    /// @vidx {11}
+    MC virtual bool useItem(ItemStack& unk0);
+
+    /// @vidx {12}
+    MC virtual InteractionResult useItemOn(ItemStack& item, const BlockPos pos, FacingID face, const Vec3& clickPos, const Block* block);
+
+    /// @vidx {13}
+    MC virtual bool interact(Actor& unk0, const Vec3& unk1);
+
+    /// @vidx {14}
+    MC virtual bool attack(Actor& unk0);
+
+    /// @vidx {15}
+    MC virtual void releaseUsingItem();
+
+    /// @vidx {16}
+    MC virtual void setTrialMode(bool unk0);
+
+    /// @vidx {17}
+    MC virtual bool isInTrialMode();
+
+    /// @vidx {18}
+    MC virtual void registerUpsellScreenCallback(std::function<void(bool)> unk0);
+
+    MC static uintptr_t $vtable_for_this;
 
     __declspec(noinline) InteractionResult _sendUseItemOnEvents(ItemStack& item, const BlockPos& pos, FacingID face, const Vec3& clickPos) const
     {
@@ -82,4 +130,6 @@ public:
     bool isLastBuildBlockInteractive() const {
         return mBuildContext.mLastBuildBlockWasInteractive;
     }
+
+    BlockPos _calculatePlacePos(ItemStack& heldStack, const BlockPos& pos, FacingID& face);
 };
