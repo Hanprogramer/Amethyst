@@ -4,7 +4,8 @@
 #include "amethyst/runtime/input/InputManager.hpp"
 #include "amethyst/runtime/minecraft/MinecraftPackageInfo.hpp"
 #include "amethyst/runtime/mod/Mod.hpp"
-#include "amethyst/runtime/mod/ModRegistry.hpp"
+#include "amethyst/runtime/mod/ModRepository.hpp"
+#include "amethyst/runtime/mod/ModGraph.hpp"
 #include "amethyst/runtime/patchManager/PatchManager.hpp"
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
@@ -26,7 +27,8 @@ public:
     std::unique_ptr<Amethyst::EnumAllocator> mEnumAllocator;
     std::unique_ptr<Amethyst::PackManager> mPackManager;
     std::unique_ptr<Amethyst::NetworkManager> mNetworkManager;
-    std::unique_ptr<Amethyst::ModRegistry> mModRegistry;
+    std::unique_ptr<Amethyst::ModRepository> mModRepository;
+    std::unique_ptr<Amethyst::ModGraph> mModGraph;
     std::vector<Amethyst::Mod> mMods;
 
     // Non-volatile

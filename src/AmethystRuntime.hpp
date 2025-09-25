@@ -102,10 +102,10 @@ public:
     void Start();
     void Shutdown();
 
+    static void PromptDebugger();
 private:
     void ReadLauncherConfig();
     void LoadModDlls();
-    void PromptDebugger();
     void AddOwnResources();
     void CreateOwnHooks();
     void RunMods();

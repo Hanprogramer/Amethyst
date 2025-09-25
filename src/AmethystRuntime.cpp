@@ -82,35 +82,21 @@ void AmethystRuntime::ReadLauncherConfig()
 
 void AmethystRuntime::LoadModDlls()
 {
-    // Load all mods from the launcher_config.json
-    mAmethystContext.mModRegistry->ScanForMods(&mAmethystMod);
-    for (auto& info : mAmethystContext.mModRegistry->GetModsToLoad(mLauncherConfig.mods, &mAmethystMod)) {
-        mAmethystContext.mMods.emplace_back(*info);
+    Amethyst::ModRepository& repository = *mAmethystContext.mModRepository;
+    Amethyst::ModGraph& modGraph = *mAmethystContext.mModGraph;
+
+    repository.ScanDirectory(GetAmethystFolder() / "mods", true);
+    for (const auto& error : repository.GetErrors()) {
+        Log::Error("{}", error.toString());
     }
 
-    for (const auto& error : mAmethystContext.mModRegistry->GetErrors()) {
-        std::string errorType;
-        switch (error.type) {
-            case Amethyst::ModRegistry::Error::Type::DependencyFailed:
-                errorType = "DependencyFailed";
-                break;
-            case Amethyst::ModRegistry::Error::Type::MissingDependency:
-                errorType = "MissingDependency";
-                break;
-            case Amethyst::ModRegistry::Error::Type::CircularDependency:
-                errorType = "CircularDependency";
-                break;
-            default:
-                errorType = "Unknown";
-                break;
-        }
-        Log::Error("Failed to load mod '{}': {} (type: {})", error.uuid, error.message, errorType);
-        if (!error.data.empty()) {
-            Log::Error("  Additional Info:");
-            for (const auto& info : error.data) {
-                Log::Error("    - {}", info);
-            }
-        }
+    modGraph.SortAndValidate(repository, mLauncherConfig.mods);
+    for (const auto& error : modGraph.GetErrors()) {
+        Log::Error("{}", error.toString());
+    }
+
+    for (const auto& info : modGraph.GetMods()) {
+        mAmethystContext.mMods.emplace_back(info);
     }
 
     // Add packs for each mod and load all mod functions

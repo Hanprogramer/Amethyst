@@ -3,9 +3,11 @@
 #include <vector>
 #include <format>
 #include <filesystem>
+#include <expected>
 
 #include "amethyst/runtime/utility/Version.hpp"
 #include "amethyst/runtime/mod/ModDependency.hpp"
+#include "amethyst/runtime/mod/ModError.hpp"
 
 namespace fs = std::filesystem;
 namespace Amethyst {
@@ -19,6 +21,7 @@ public:
     Version Version;
     std::vector<std::string> Authors;
     std::vector<ModDependency> Dependencies;
+    bool IsRuntime;
     fs::path Directory;
     std::string LibraryName;
 
@@ -32,6 +35,7 @@ public:
         const Amethyst::Version& version,
         const std::vector<std::string>& authors,
         const std::vector<ModDependency>& dependencies,
+        bool isRuntime,
         const fs::path& directory,
         const std::string& libraryName
     );
@@ -49,7 +53,7 @@ public:
     bool operator!=(const ModInfo& other) const;
     bool operator<(const ModInfo& other) const;
 
-    static ModInfo FromFile(const fs::path& jsonFile);
+    static std::expected<ModInfo, ModError> FromFile(const fs::path& jsonFile);
 };
 } // namespace Amethyst
 

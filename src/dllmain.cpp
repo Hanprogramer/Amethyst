@@ -39,6 +39,7 @@ DWORD WINAPI Main()
 {
     Log::InitializeConsole();
     SetUnhandledExceptionFilter(AmethystUnhandledExceptionsHandler);
+    //AmethystRuntime::PromptDebugger();
 
     // Create an instance of AmethystRuntime and invoke it to start
     AmethystRuntime* runtime = AmethystRuntime::getInstance();

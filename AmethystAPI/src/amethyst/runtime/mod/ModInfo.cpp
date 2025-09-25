@@ -14,6 +14,7 @@ ModInfo::ModInfo(
     const Amethyst::Version& version,
     const std::vector<std::string>& authors,
     const std::vector<ModDependency>& dependencies,
+    bool isRuntime,
     const fs::path& directory,
     const std::string& libraryName) : 
     UUID(uuid),
@@ -24,6 +25,7 @@ ModInfo::ModInfo(
     Version(version),
     Authors(authors),
     Dependencies(dependencies),
+    IsRuntime(isRuntime),
     Directory(directory),
     LibraryName(libraryName)
 {
@@ -59,11 +61,22 @@ inline bool ModInfo::IsSameMod(const ModInfo& other) const
     return Equals(other, false);
 }
 
-ModInfo ModInfo::FromFile(const fs::path& jsonFile)
+std::expected<ModInfo, ModError> ModInfo::FromFile(const fs::path& jsonFile)
 {
     std::ifstream modConfigFile(jsonFile);
+    std::optional<std::string> uuid;
 
-    Assert(modConfigFile.is_open(), "Failed to open mod.json, at '{}'", jsonFile.generic_string());
+    if (!modConfigFile.is_open()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::IOError,
+            uuid,
+            "Failed to open mod.json, at '{path}'",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
 
     std::stringstream buffer;
     buffer << modConfigFile.rdbuf();
@@ -71,25 +84,89 @@ ModInfo ModInfo::FromFile(const fs::path& jsonFile)
     std::string fileContents = buffer.str();
 
     nlohmann::json j = nlohmann::json::parse(fileContents);
-    Assert(j["meta"].is_object(), "Invalid mod info JSON: 'meta' is not an object");
-    nlohmann::json meta = j["meta"];
-    Assert(meta["uuid"].is_string(), "Invalid mod info JSON: 'meta.uuid' is not a string");
-    Assert(meta["namespace"].is_string(), "Invalid mod info JSON: 'meta.namespace' is not a string");
-    Assert(meta["name"].is_string(), "Invalid mod info JSON: 'meta.name' is not a string");
-    Assert(meta["version"].is_string(), "Invalid mod info JSON: 'meta.version' is not a string");
-
-    std::string uuid = meta["uuid"].get<std::string>();
-    std::string modNamespace = meta["namespace"].get<std::string>();
-    std::string name = meta["name"].get<std::string>();
-    Amethyst::Version version;
-    if (!semver::parse(meta["version"].get<std::string>(), version)) {
-        Assert(false, "Invalid mod info JSON: 'meta.version' is not a valid semantic version");
+    if (!j["meta"].is_object()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta' is not an object",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
     }
 
+    nlohmann::json meta = j["meta"];
+
+    if (!meta["uuid"].is_string()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta.uuid' is not a string",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
+    uuid = meta["uuid"].get<std::string>();
+
+    if (!meta["namespace"].is_string()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta.namespace' is not a string",
+            { 
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
+
+    if (!meta["name"].is_string()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta.name' is not a string",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
+
+    if (!meta["version"].is_string()) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta.version' is not a string",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
+
+    Amethyst::Version version;
+    if (!semver::parse(meta["version"].get<std::string>(), version)) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::ParseError,
+            uuid,
+            "Invalid mod info JSON: 'meta.version' is not a valid semantic version",
+            {
+                { "{path}", jsonFile.generic_string() }
+            }
+        });
+    }
+
+    std::string modNamespace = meta["namespace"].get<std::string>();
+    std::string name = meta["name"].get<std::string>();
     std::string loggingName = name;
     std::string friendlyName = name;
     std::vector<std::string> authors;
     std::vector<ModDependency> dependencies;
+    bool isRuntime = meta.value("is_runtime", false);
 
     if (meta.contains("logname") && meta["logname"].is_string()) {
         loggingName = meta["logname"].get<std::string>();
@@ -134,8 +211,19 @@ ModInfo ModInfo::FromFile(const fs::path& jsonFile)
     fs::path directory = jsonFile.parent_path();
     std::string libraryName = std::format("{}.dll", name);
 
-    Assert(fs::exists(directory / libraryName), "Could not find '{}', for mod '{}'.", (directory / libraryName).generic_string(), versionedName);
+    if (!fs::exists(directory / libraryName)) {
+        return std::unexpected(ModError{
+            ModErrorStep::Collecting,
+            ModErrorType::IOError,
+            uuid,
+            "Could not find library for '{mod}'!",
+            {
+                { "{path}", (directory / libraryName).generic_string() },
+                { "{mod}", versionedName }
+            }
+        });
+    }
 
-    return ModInfo(uuid, modNamespace, name, loggingName, friendlyName, version, authors, dependencies, directory, libraryName);
+    return ModInfo(uuid.value(), modNamespace, name, loggingName, friendlyName, version, authors, dependencies, isRuntime, directory, libraryName);
 }
 } // namespace Amethyst
