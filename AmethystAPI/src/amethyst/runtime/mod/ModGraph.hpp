@@ -6,8 +6,8 @@ namespace Amethyst {
 template <typename T>
 struct StackGuard {
     std::vector<T>& mStack;
-    T& mValue;
-    StackGuard(std::vector<T>& stack, T& value) : 
+    T mValue;
+    StackGuard(std::vector<T>& stack, T value) : 
         mStack(stack),
         mValue(value)
     {
@@ -23,13 +23,12 @@ struct StackGuard {
     StackGuard(StackGuard&& other) noexcept = delete;
     StackGuard& operator=(StackGuard&& other) noexcept = delete;
 };
+
 class ModGraph {
-    std::vector<ModInfo> mMods;
+    std::vector<std::shared_ptr<const ModInfo>> mMods;
     std::vector<ModError> mErrors;
 
 public:
-    
-
     ModGraph() = default;
     ~ModGraph() = default;
 
@@ -41,7 +40,7 @@ public:
     void Clear();
     void SortAndValidate(const ModRepository& repository, const std::vector<std::string>& launcherMods);
 
-    const std::vector<ModInfo>& GetMods() const;
+    const std::vector<std::shared_ptr<const ModInfo>>& GetMods() const;
     const std::vector<ModError>& GetErrors() const;
 
     bool HasErrors() const;

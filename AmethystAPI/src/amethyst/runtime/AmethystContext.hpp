@@ -48,7 +48,7 @@ public:
     const Amethyst::Mod* GetModByNamespace(const std::string& modNamespace) const 
     {
         for (const auto& mod : mMods) {
-            if (mod.mInfo.Namespace == modNamespace) {
+            if (mod.mInfo->Namespace == modNamespace) {
                 return &mod;
             }
         }
@@ -58,7 +58,7 @@ public:
     Amethyst::Mod* GetModByNamespace(const std::string& modNamespace)
     {
         for (auto& mod : mMods) {
-            if (mod.mInfo.Namespace == modNamespace) {
+            if (mod.mInfo->Namespace == modNamespace) {
                 return &mod;
             }
         }

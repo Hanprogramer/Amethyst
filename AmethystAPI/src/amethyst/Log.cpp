@@ -39,6 +39,6 @@ namespace Log {
             static std::string unknown = "AmethystRuntime";
             return unknown;
         }
-        return mod->mInfo.LoggingName;
+        return mod->mInfo->LoggingName;
     }
 } // namespace Log

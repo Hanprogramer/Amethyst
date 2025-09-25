@@ -22,17 +22,15 @@ class Mod {
     bool mIsLoaded = false;
 
 public:
-    using Info = Amethyst::ModInfo;
-
     // Metadata and stuff
-    Amethyst::ModInfo mInfo;
+    std::shared_ptr<const ModInfo> mInfo;
 
     Mod() = delete;
     Mod(const Mod&) = delete;
     Mod& operator=(const Mod&) = delete;
     Mod& operator=(Mod&&) noexcept = delete;
 
-    explicit Mod(const Mod::Info& info);
+    explicit Mod(const std::shared_ptr<const ModInfo>& info);
     Mod(Mod&& other) noexcept;
     ~Mod();
 
@@ -52,7 +50,7 @@ public:
     bool IsLoaded() const;
 
     bool operator==(const Mod& other) const;
-    static Mod::Info GetInfo(const std::string& modName);
+    static std::shared_ptr<const ModInfo> GetInfo(const std::string& modName);
     static fs::path GetTemporaryLibrary(const std::string& modName);
 };
 } // namespace Amethyst

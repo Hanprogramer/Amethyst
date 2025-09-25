@@ -86,11 +86,20 @@ void AmethystRuntime::LoadModDlls()
     Amethyst::ModGraph& modGraph = *mAmethystContext.mModGraph;
 
     repository.ScanDirectory(GetAmethystFolder() / "mods", true);
+    for (const auto& modPair : repository.GetMods()) {
+        const auto& modInfo = modPair.second;
+        Log::Info("Collected '{}' (UUID '{}')", modInfo->GetVersionedName(), modInfo->UUID);
+    }
+
     for (const auto& error : repository.GetErrors()) {
         Log::Error("{}", error.toString());
     }
 
     modGraph.SortAndValidate(repository, mLauncherConfig.mods);
+    for (const auto& modInfo : modGraph.GetMods()) {
+        Log::Info("Resolved '{}' (UUID '{}')", modInfo->GetVersionedName(), modInfo->UUID);
+    }
+
     for (const auto& error : modGraph.GetErrors()) {
         Log::Error("{}", error.toString());
     }
@@ -101,8 +110,8 @@ void AmethystRuntime::LoadModDlls()
 
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
-        auto versionedName = mod.mInfo.GetVersionedName();
-        Log::Info("Loading '{}'", versionedName);
+        auto versionedName = mod.mInfo->GetVersionedName();
+        Log::Info("Loading '{}' (UUID '{}')", versionedName, mod.mInfo->UUID);
         mod.Load();
 
         // Check if the mod has a resource pack and register it if it does

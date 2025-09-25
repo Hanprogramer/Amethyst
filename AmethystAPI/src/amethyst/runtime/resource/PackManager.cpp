@@ -13,7 +13,7 @@ Amethyst::PackManager::~PackManager() {}
 
 void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority)
 {
-    std::string key = owner->mInfo.GetVersionedName();
+    std::string key = owner->mInfo->GetVersionedName();
     fs::path resourcesPath = GetAmethystFolder() / "mods" / key / "resource_packs";
     fs::path behaviorPath = GetAmethystFolder() / "mods" / key / "behavior_packs";
     auto& packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
@@ -25,7 +25,6 @@ void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string&
 
 	// Check if the pack path is already registered for this mod
     if (mPacks[key].contains(path)) {
-		Log::Warning("Pack '{}' of type {} for '{}' is already registered, skipping.", path, static_cast<int>(type), key);
 		return;
     }
 
@@ -33,7 +32,6 @@ void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string&
 
     // Check if the pack contains a manifest.json
     if (!fs::exists(manifestPath)) {
-        Log::Warning("Pack '{}' for '{}' does not contain a manifest.json, skipping.", path, key);
         return;
     }
 
@@ -45,28 +43,24 @@ void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string&
     // Try to parse the manifest.json
     auto manifestJson = nlohmann::json::parse(manifestContents);
     if (!manifestJson.is_object()) {
-        Log::Warning("manifest.json for pack '{}' of '{}' is not a valid json object, skipping.", path, key);
         return;
     }
 
     // Ensure it has a header object
     auto& header = manifestJson["header"];
     if (!header.is_object()) {
-        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"header\" object, skipping.", path, key);
         return;
     }
 
     // Ensure it has a uuid string in the header
     auto& uuid = header["uuid"];
     if (!uuid.is_string()) {
-        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"uuid\" string in the \"header\" object, skipping.", path, key);
         return;
     }
     
     // Ensure it has a version array in the header
     auto& version = header["version"];
     if (!version.is_array() || version.size() != 3 || !version[0].is_number_unsigned() || !version[1].is_number_unsigned() || !version[2].is_number_unsigned()) {
-        Log::Warning("manifest.json for pack '{}' of '{}' does not contain a valid \"version\" array in the \"header\" object, skipping.", path, key);
         return;
     }
 
@@ -75,7 +69,6 @@ void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string&
 
 	// Insert the new pack
     mPacks[key].insert({path, Pack{owner, path, packUuid, semVersion, type, priority}});
-    Log::Info("Registered pack '{}' for '{}'.", path, key);
 }
 
 const std::unordered_map<std::string, std::unordered_map<std::string, Amethyst::Pack>>& Amethyst::PackManager::GetPacks() const

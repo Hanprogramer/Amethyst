@@ -2,13 +2,13 @@
 #include <fstream>
 
 namespace Amethyst {
-Mod::Mod(const Mod::Info& info) : 
+Mod::Mod(const std::shared_ptr<const ModInfo>& info) : 
     mInfo(info)
 {
 }
 
 Mod::Mod(Mod&& other) noexcept :
-    mInfo(other.mInfo),
+    mInfo(std::move(other.mInfo)),
     mRuntimeImporter(std::move(other.mRuntimeImporter)),
     mHandle(std::move(other.mHandle)),
     mIsLoaded(std::move(other.mIsLoaded))
@@ -28,7 +28,7 @@ void Mod::Load()
     if (IsLoaded())
         return;
 
-    std::string versionedName = mInfo.GetVersionedName();
+    std::string versionedName = mInfo->GetVersionedName();
     fs::path dllPath = GetTemporaryLibrary(versionedName);
 
     // Loads the mod in a temporary directory so that the original DLL can still be built to
@@ -101,14 +101,14 @@ bool Mod::operator==(const Mod& other) const
     return mInfo == other.mInfo;
 }
 
-Mod::Info Amethyst::Mod::GetInfo(const std::string& modName)
+std::shared_ptr<const ModInfo> Amethyst::Mod::GetInfo(const std::string& modName)
 {
     fs::path modConfigPath = GetAmethystFolder() / L"mods" / modName / L"mod.json";
     Assert(fs::exists(modConfigPath), "mod.json could not be found, for '{}'", modName);
-    auto result = Mod::Info::FromFile(modConfigPath);
+    auto result = ModInfo::FromFile(modConfigPath);
     if (!result.has_value())
         Assert(result.has_value(), "Failed to read mod info for '{}': {}", modName, result.error().toString());
-    return *result;
+    return std::make_shared<const Amethyst::ModInfo>(std::move(*result));
 }
 
 fs::path Mod::GetTemporaryLibrary(const std::string& modName)

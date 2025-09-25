@@ -9,14 +9,14 @@ void ModRepository::ScanDirectory(const fs::path& directory, bool skipRuntimes)
         throw std::invalid_argument("Provided path is not a valid directory: " + directory.generic_string());
 	}
 	for (const auto& entry : fs::recursive_directory_iterator(directory)) {
-        if (entry.is_directory() || entry.path().filename() != "mod.json" || !fs::exists(entry))
+        if (entry.is_directory() || entry.path().filename() != "mod.json")
             continue;
         auto result = ModInfo::FromFile(entry.path());
         if (!result) {
             mErrors.push_back(result.error());
             continue;
         }
-        const auto& modInfo = *result;
+        auto& modInfo = *result;
         if (modInfo.IsRuntime && skipRuntimes) {
             continue;
         }
@@ -24,7 +24,7 @@ void ModRepository::ScanDirectory(const fs::path& directory, bool skipRuntimes)
             Log::Warning("Mod with UUID '{}' already exists in repository, skipping duplicate from '{}'", modInfo.UUID, entry.path().generic_string());
             continue;
         }
-        mMods.emplace(modInfo.UUID, modInfo);
+        mMods.emplace(modInfo.UUID, std::make_shared<const ModInfo>(modInfo));
 	}
 }
 
@@ -41,18 +41,20 @@ const std::vector<ModError>& ModRepository::GetErrors() const {
     return mErrors;
 }
 
-const ModInfo* ModRepository::GetModByUUID(const std::string& uuid) const {
+std::shared_ptr<const ModInfo> ModRepository::GetModByUUID(const std::string& uuid) const
+{
     auto it = mMods.find(uuid);
     if (it != mMods.end()) {
-        return &it->second;
+        return it->second;
     }
     return nullptr;
 }
 
-const ModInfo* ModRepository::GetModByNamespace(const std::string& modNamespace) const {
+std::shared_ptr<const ModInfo> ModRepository::GetModByNamespace(const std::string& modNamespace) const
+{
     for (const auto& [uuid, mod] : mMods) {
-        if (mod.Namespace == modNamespace) {
-            return &mod;
+        if (mod->Namespace == modNamespace) {
+            return mod;
         }
     }
     return nullptr;
@@ -64,7 +66,7 @@ bool ModRepository::HasModUUID(const std::string& uuid) const {
 
 bool ModRepository::HasModNamespace(const std::string& modNamespace) const {
     for (const auto& [uuid, mod] : mMods) {
-        if (mod.Namespace == modNamespace) {
+        if (mod->Namespace == modNamespace) {
             return true;
         }
     }

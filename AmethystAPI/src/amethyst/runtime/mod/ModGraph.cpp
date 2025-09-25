@@ -18,7 +18,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
 
     // Helper to push a ModError
     auto pushError = [&](
-        const ModInfo* info, 
+        const ModInfo& info, 
         ModErrorType type, 
         const std::string& message,
         std::unordered_map<std::string, std::string> data) 
@@ -26,16 +26,15 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
         mErrors.push_back(ModError{
             ModErrorStep::Resolving,
             type,
-            info->UUID,
+            info.UUID,
             message,
             std::move(data)
         });
     };
 
-    std::function<bool(const ModInfo*)> visit = [&](const ModInfo* info) -> bool {
-        if (visited.contains(info)) return true;
-
-        if (visiting.contains(info)) {
+    std::function<bool(const std::shared_ptr<const ModInfo>&)> visit = [&](const std::shared_ptr<const ModInfo>& info) -> bool {
+        if (visited.contains(info.get())) return true;
+        if (visiting.contains(info.get())) {
             // Detected a cycle
             std::string cycle;
             for (const auto* modInStack : stack) {
@@ -44,7 +43,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
             cycle += info->GetVersionedName();
 
             pushError(
-                info, 
+                *info, 
                 ModErrorType::CircularDependency,
                 "Cyclic dependency detected: {cycle}",
                 {
@@ -55,8 +54,8 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
             return false;
         }
 
-        visiting.insert(info);
-        StackGuard<const ModInfo*> guard(stack, info); // RAII push/pop
+        visiting.insert(info.get());
+        StackGuard<const ModInfo*> guard(stack, info.get()); // RAII push/pop
         bool success = true;
 
         // Visit dependencies
@@ -65,20 +64,20 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
 
             // Find matching mod in repo
             for (const auto& [uuid, mod] : repoMods) {
-                if (mod.Namespace == dep.Namespace && dep.MatchesMod(mod, false)) {
-                    found = &mod;
+                if (mod->Namespace == dep.Namespace && dep.MatchesMod(*mod, false)) {
+                    found = mod.get();
                     // Check version
-                    if (!dep.MatchesVersion(mod.Version)) {
+                    if (!dep.MatchesVersion(mod->Version)) {
                         if (!dep.IsSoft) {
                             pushError(
-                                info,
+                                *info,
                                 ModErrorType::WrongDependencyVersion,
                                 "Mod '{mod}' requires '{dep}' version '{ver}' or higher, but found version '{found_ver}'",
                                 {
                                     { "{mod}", info->GetVersionedName() },
                                     { "{dep}", dep.Namespace },
                                     { "{ver}", dep.MinVersion.to_string() },
-                                    { "{found_ver}", mod.Version.to_string() }
+                                    { "{found_ver}", mod->Version.to_string() }
                                 }
                             );
                             success = false;
@@ -87,7 +86,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
                     }
 
                     // Recurse into the dependency
-                    if (!visit(&mod)) success = false;
+                    if (!visit(mod)) success = false;
                     break; // Found the dependency
                 }
             }
@@ -95,7 +94,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
             // If no matching mod found and dependency is required
             if (!found && !dep.IsSoft) {
                 pushError(
-                    info, 
+                    *info, 
                     ModErrorType::MissingDependency,
                     "Mod '{mod}' requires '{dep}', but it was not found",
                     {
@@ -107,10 +106,10 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
             }
         }
 
-        visiting.erase(info);
-        visited.insert(info);
+        visiting.erase(info.get());
+        visited.insert(info.get());
         if (success) {
-            mMods.emplace_back(*info);
+            mMods.emplace_back(info);
         }
         return success;
     };
@@ -118,17 +117,15 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
     // Visit all launcher mods
     for (const std::string& modVerName : launcherMods) {
         for (const auto& [uuid, mod] : repoMods) {
-            if (mod.GetVersionedName() == modVerName) {
-                visit(&mod);
+            if (mod->GetVersionedName() == modVerName) {
+                visit(mod);
                 break;
             }
         }
     }
-
-    //std::reverse(mMods.begin(), mMods.end());
 }
 
-const std::vector<ModInfo>& ModGraph::GetMods() const {
+const std::vector<std::shared_ptr<const ModInfo>>& ModGraph::GetMods() const {
     return mMods;
 }
 
