@@ -12,6 +12,7 @@ void RuntimeContext::Start()
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
     mPackManager = std::make_unique<Amethyst::PackManager>(this);
     mNetworkManager = std::make_unique<Amethyst::NetworkManager>();
+    mModRegistry = std::make_unique<Amethyst::ModRegistry>(GetAmethystFolder() / L"mods");
 }
 
 void RuntimeContext::Shutdown()
@@ -23,4 +24,5 @@ void RuntimeContext::Shutdown()
     mEnumAllocator.reset();
     mPackManager.reset();
     mNetworkManager.reset();
+    mModRegistry.reset();
 }

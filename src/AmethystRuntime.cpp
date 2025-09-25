@@ -83,8 +83,34 @@ void AmethystRuntime::ReadLauncherConfig()
 void AmethystRuntime::LoadModDlls()
 {
     // Load all mods from the launcher_config.json
-    for (auto& modName : mLauncherConfig.mods) {
-        mAmethystContext.mMods.emplace_back(Amethyst::Mod::GetInfo(modName));
+    mAmethystContext.mModRegistry->ScanForMods(&mAmethystMod);
+    for (auto& info : mAmethystContext.mModRegistry->GetModsToLoad(mLauncherConfig.mods, &mAmethystMod)) {
+        mAmethystContext.mMods.emplace_back(*info);
+    }
+
+    for (const auto& error : mAmethystContext.mModRegistry->GetErrors()) {
+        std::string errorType;
+        switch (error.type) {
+            case Amethyst::ModRegistry::Error::Type::DependencyFailed:
+                errorType = "DependencyFailed";
+                break;
+            case Amethyst::ModRegistry::Error::Type::MissingDependency:
+                errorType = "MissingDependency";
+                break;
+            case Amethyst::ModRegistry::Error::Type::CircularDependency:
+                errorType = "CircularDependency";
+                break;
+            default:
+                errorType = "Unknown";
+                break;
+        }
+        Log::Error("Failed to load mod '{}': {} (type: {})", error.uuid, error.message, errorType);
+        if (!error.data.empty()) {
+            Log::Error("  Additional Info:");
+            for (const auto& info : error.data) {
+                Log::Error("    - {}", info);
+            }
+        }
     }
 
     // Add packs for each mod and load all mod functions
