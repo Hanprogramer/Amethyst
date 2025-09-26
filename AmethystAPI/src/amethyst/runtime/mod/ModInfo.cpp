@@ -198,8 +198,8 @@ std::expected<ModInfo, ModError> ModInfo::FromFile(const fs::path& jsonFile)
                     continue;
 
                 dependencies.push_back(ModDependency(
-                    dependencyObj.value("uuid", ""),
-                    dependencyObj.value("namespace", ""),
+                    dependencyObj.value("dependency_uuid", ""),
+                    dependencyObj.value("dependency_namespace", ""),
                     depVer,
                     dependencyObj.value("is_soft", false)
                 ));

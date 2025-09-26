@@ -19,7 +19,6 @@ class AmethystContext;
 namespace Amethyst {
 class Mod {
     using InitializeFunction = void(*)(AmethystContext&, const Mod&);
-    using ShutdownFunction = void(*)(AmethystContext&, const Mod&);
 
     ModuleHandle mHandle;
     std::shared_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
@@ -27,7 +26,6 @@ class Mod {
     bool mIsInitialized = false;
 
     InitializeFunction mInitializeFunction = nullptr;
-    ShutdownFunction mShutdownFunction = nullptr;
 
 public:
     // Metadata and stuff
@@ -56,10 +54,7 @@ public:
     }
 
     InitializeFunction GetInitializeFunction();
-    ShutdownFunction GetShutdownFunction();
-
     std::optional<ModError> CallInitialize(AmethystContext& ctx);
-    std::optional<ModError> CallShutdown(AmethystContext& ctx);
 
     bool IsLoaded() const;
 

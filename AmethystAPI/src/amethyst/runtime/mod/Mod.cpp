@@ -132,14 +132,6 @@ Mod::InitializeFunction Mod::GetInitializeFunction()
     return mInitializeFunction;
 }
 
-Mod::ShutdownFunction Mod::GetShutdownFunction()
-{
-    if (mShutdownFunction != nullptr)
-        return mShutdownFunction;
-    mShutdownFunction = GetFunction<ShutdownFunction>("Shutdown");
-    return mShutdownFunction;
-}
-
 std::optional<ModError> Mod::CallInitialize(AmethystContext& ctx)
 {
     try {
@@ -166,37 +158,6 @@ std::optional<ModError> Mod::CallInitialize(AmethystContext& ctx)
         error.Type = ModErrorType::UnhandledException;
         error.UUID = mInfo->UUID;
         error.Message = "An unknown unhandled exception occurred while initializing the mod.";
-        return error;
-    }
-    return std::nullopt;
-}
-
-std::optional<ModError> Mod::CallShutdown(AmethystContext& ctx)
-{
-    try {
-        if (!mIsInitialized)
-            return std::nullopt;
-        auto shutdownFunc = GetShutdownFunction();
-        if (shutdownFunc != nullptr) {
-            shutdownFunc(ctx, *this);
-            mIsInitialized = false;
-        }
-    }
-    catch (const std::exception& e) {
-        ModError error;
-        error.Step = ModErrorStep::Loading;
-        error.Type = ModErrorType::UnhandledException;
-        error.UUID = mInfo->UUID;
-        error.Message = "An unhandled exception occurred while shutting down the mod: {exception}";
-        error.Data["{exception}"] = e.what();
-        return error;
-    }
-    catch (...) {
-        ModError error;
-        error.Step = ModErrorStep::Loading;
-        error.Type = ModErrorType::UnhandledException;
-        error.UUID = mInfo->UUID;
-        error.Message = "An unknown unhandled exception occurred while shutting down the mod.";
         return error;
     }
     return std::nullopt;

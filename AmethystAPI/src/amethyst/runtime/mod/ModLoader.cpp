@@ -38,7 +38,7 @@ void ModLoader::LoadGraph(const ModGraph& graph)
 std::weak_ptr<const Mod> ModLoader::LoadSingle(const std::shared_ptr<const ModInfo>& info)
 {
     auto mod = std::make_shared<Mod>(info);
-    Log::Info("Loading '{}'", info->GetVersionedName(), info->UUID);
+    Log::Info("Loading '{}'", info->GetVersionedName());
     auto error = mod->Load();
     if (error.has_value()) {
         mErrors.push_back(*error);
@@ -73,10 +73,6 @@ void ModLoader::Unload(const std::string& uuid)
     });
     if (it != mMods.end()) {
         auto& mod = *it;
-        auto error = mod->CallShutdown(*mContext);
-        if (error.has_value()) {
-            mErrors.push_back(*error);
-        }
         mod->Unload();
         mMods.erase(it);
     }

@@ -1,6 +1,7 @@
 #include "mod/AmethystMod.hpp"
 
 #include "amethyst/runtime/ModContext.hpp"
+#include "amethyst/runtime/events/ModEvents.hpp"
 
 #include "hooks/ui/UIHooks.hpp"
 #include "hooks/item/ItemHooks.hpp"
@@ -10,9 +11,20 @@
 #include "hooks/ResourceHooks.hpp"
 #include "hooks/NetworkingHooks.hpp"
 
+extern AmethystContext* _AmethystContextInstance;
+extern const Amethyst::Mod* _OwnMod;
+
 ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 {
     Amethyst::InitializeAmethystMod(ctx, mod);
+
+    Amethyst::EventBus& events = *ctx.mEventBus;
+    events.AddListener<BeforeModShutdownEvent>([&](const BeforeModShutdownEvent& e) {
+        Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
+        _AmethystContextInstance = nullptr;
+        _OwnMod = nullptr;
+    });
+
     Log::Info("Initializing runtime mod: '{}'", mod.mInfo->GetVersionedName());
     SemVersion version = ctx.mPackageInfo.mVersion;
 
@@ -34,10 +46,4 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     CreateUIHooks();
     CreateItemHooks();
     CreateRenderingHooks();
-}
-
-ModFunction void Shutdown(AmethystContext& ctx, const Amethyst::Mod& mod)
-{
-    Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
-    Amethyst::ShutdownAmethystMod();
 }

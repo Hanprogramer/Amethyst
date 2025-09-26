@@ -2,8 +2,8 @@
 #include <amethyst/MinecraftVtables.hpp>
 #include <minecraft/src/common/Minecraft.hpp>
 
-static AmethystContext* _AmethystContextInstance;
-static const Amethyst::Mod* _OwnMod;
+AmethystContext* _AmethystContextInstance;
+const Amethyst::Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
@@ -23,12 +23,6 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 
     // Store our own mod info for later retrieval
     _OwnMod = &mod;
-}
-
-void Amethyst::ShutdownAmethystMod()
-{
-    _AmethystContextInstance = nullptr;
-    _OwnMod = nullptr;
 }
 
 AmethystContext& Amethyst::GetContext()

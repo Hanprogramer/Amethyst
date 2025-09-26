@@ -55,6 +55,19 @@ public:
         }
     }
 
+    template <typename EventType>
+    void ReverseInvoke(EventType& event) 
+    {
+        static_assert(std::is_base_of<BaseEvent, EventType>::value, "EventType must inherit BaseEvent");
+        auto typeId = std::type_index(typeid(EventType));
+
+        if (mHandlers.find(typeId) != mHandlers.end()) {
+            for (auto it = mHandlers[typeId].crbegin(); it != mHandlers[typeId].crend(); ++it) {
+                (*it)(event);
+            }
+        }
+    }
+
 private:
     std::unordered_map<std::type_index, std::vector<std::function<void(BaseEvent&)>>> mHandlers;
 };

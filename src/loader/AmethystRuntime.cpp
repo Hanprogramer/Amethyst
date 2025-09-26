@@ -64,6 +64,14 @@ void AmethystRuntime::LoadModDlls()
     Amethyst::ModGraph& modGraph = *mAmethystContext.mModGraph;
     Amethyst::ModLoader& modLoader = *mAmethystContext.mModLoader;
 
+    // Register mod inputs
+    // On game start mOptions will be nullptr, but the register inputs event gets called when options is created.
+    // When hot-reloading we will have options already so we can register inputs here.
+    if (AmethystRuntime::getContext()->mOptions != nullptr) {
+        RegisterInputsEvent event(*AmethystRuntime::getInputManager());
+        AmethystRuntime::getEventBus()->Invoke(event);
+    }
+
     // Scan the mods directory for mod.json files and load them into the repository
     repository.ScanDirectory(GetAmethystFolder() / "mods", true);
 
@@ -99,14 +107,6 @@ void AmethystRuntime::PromptDebugger()
 
 void AmethystRuntime::RunMods()
 {
-    // Register mod inputs
-    // On game start mOptions will be nullptr, but the register inputs event gets called when options is created.
-    // When hot-reloading we will have options already so we can register inputs here.
-    if (AmethystRuntime::getContext()->mOptions != nullptr) {
-        RegisterInputsEvent event(*AmethystRuntime::getInputManager());
-        AmethystRuntime::getEventBus()->Invoke(event);
-    }
-
     ResumeGameThread();
 
     // Listen for hot-reload and keep Amethyst running until the end
@@ -130,7 +130,7 @@ void AmethystRuntime::Shutdown()
         return;
 
     BeforeModShutdownEvent shutdownEvent;
-    getEventBus()->Invoke(shutdownEvent);
+    getEventBus()->ReverseInvoke(shutdownEvent);
 
     // Clear lists of mods & functions.
     getContext()->Shutdown();
