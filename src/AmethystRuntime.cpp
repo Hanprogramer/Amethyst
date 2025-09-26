@@ -169,7 +169,7 @@ void AmethystRuntime::Shutdown()
 
 void AmethystRuntime::ResumeGameThread()
 {
-    typedef NTSTATUS(NTAPI * NtResumeThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
+    typedef NTSTATUS(NTAPI* NtResumeThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
     static NtResumeThreadPtr NtResumeThread = (NtResumeThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread");
     NtResumeThread(gMcThreadHandle, NULL);
 
@@ -178,7 +178,7 @@ void AmethystRuntime::ResumeGameThread()
 
 void AmethystRuntime::PauseGameThread()
 {
-    typedef NTSTATUS(NTAPI * NtSuspendThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
+    typedef NTSTATUS(NTAPI* NtSuspendThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
     static NtSuspendThreadPtr NtSuspendThread = (NtSuspendThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSuspendThread");
     NtSuspendThread(gMcThreadHandle, NULL);
 
