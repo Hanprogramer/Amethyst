@@ -27,6 +27,7 @@ public:
 
     std::shared_ptr<const ModInfo> GetModByUUID(const std::string& uuid) const;
     std::shared_ptr<const ModInfo> GetModByNamespace(const std::string& modNamespace) const;
+    void AddMod(const ModInfoMap::const_iterator& pos, const std::shared_ptr<const ModInfo>& modInfo);
 
     bool HasModUUID(const std::string& uuid) const;
     bool HasModNamespace(const std::string& modNamespace) const;

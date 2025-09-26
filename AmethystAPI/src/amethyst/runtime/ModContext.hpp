@@ -11,6 +11,7 @@ namespace Amethyst {
 	 - This should be the first thing called in the ModFunction Initialize().
 	*/
     void InitializeAmethystMod(AmethystContext& context, const Mod& mod);
+	void ResetAmethystMod();
 
 	AmethystContext& GetContext();
 	Amethyst::EventBus& GetEventBus();

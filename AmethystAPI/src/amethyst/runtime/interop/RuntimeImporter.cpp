@@ -69,6 +69,9 @@ static constexpr const char* FunctionDescSectionName = ".fndt";
 static constexpr const char* VirtualFunctionDescSectionName = ".vfndt";
 static constexpr const char* VariableDescSectionName = ".vardt";
 static constexpr const char* VtableDescSectionName = ".vtbdt";
+
+// YES this looks insane. It's literally a tiny trampoline to disable MSVC's deleting thunk
+// because the generated thunk that calls this already deletes, and double-free = sad. Keep it. Do not touch.
 static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
     0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
     0x30, 0xD2,                                                 // xor dl, dl (sets delete flag to false)
@@ -427,6 +430,8 @@ bool Amethyst::RuntimeImporter::GetSections(
            foundVtableDesc;
 }
 
+// This is our safety net for “lol did you forget to init this function?”
+// It’s ugly, it’s a runtime trap, but better than crashing immediately.
 void Amethyst::RuntimeImporter::UninitializedFunctionHandler()
 {
     Log::Warning("Attempted to call an uninitialized function, don't expect happy endings...");

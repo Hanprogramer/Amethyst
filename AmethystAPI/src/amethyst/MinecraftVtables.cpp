@@ -77,6 +77,9 @@ ItemStack& ItemStack::EMPTY_ITEM = *reinterpret_cast<ItemStack*>(SlideAddress(0x
 
 //48 89 5C 24 ? 48 89 
 
+/// <summary>
+/// Legacy stuff, initializes vtable and constructor pointers.
+/// </summary>
 void InitializeVtablePtrs()
 {
     InitializeVtbl(Item_vtable, "48 8D 05 ? ? ? ? 48 89 01 48 83 C1 ? 0F 57 C0 0F 11 01 4C 89 61 ? 4C 89 61 ? 45 8D 44 24");

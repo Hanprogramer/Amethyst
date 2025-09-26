@@ -10,23 +10,23 @@
 #include "hooks/ui/UIHooks.hpp"
 #include "hooks/item/ItemHooks.hpp"
 #include "hooks/RenderingHooks.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
-void AmethystRuntime::Start()
+extern "C" __declspec(dllexport)
+void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 {
-    getContext()->Start();
-    Log::Info("Using 'AmethystRuntime@{}'", MOD_VERSION);
+    Amethyst::InitializeAmethystMod(ctx, mod);
+    Log::Info("Initializing runtime mod: '{}'", mod.mInfo->GetVersionedName());
+    SemVersion version = ctx.mPackageInfo.mVersion;
 
-    SemVersion version = getMinecraftPackageInfo()->mVersion;
-
-    if (version.mMajor != MOD_TARGET_VERSION_MAJOR || version.mMinor != MOD_TARGET_VERSION_MINOR || version.mPatch != MOD_TARGET_VERSION_PATCH) 
-    {
-        Log::Warning("\nAmethystRuntime@{} has been made for Minecraft version {}.{}.{}, detected version {}.{}.{}\n\t> It should be expected that things may break on this version.\n\t> We will not provide support for unintended versions.\n", 
-            MOD_VERSION, 
+    if (version.mMajor != MOD_TARGET_VERSION_MAJOR || version.mMinor != MOD_TARGET_VERSION_MINOR || version.mPatch != MOD_TARGET_VERSION_PATCH) {
+        Log::Warning("{} has been made for Minecraft version {}.{}.{}, detected version {}.{}.{}\n\t> It should be expected that things may break on this version.\n\t> We will not provide support for unintended versions.",
+            mod.mInfo->GetVersionedName(),
             MOD_TARGET_VERSION_MAJOR, MOD_TARGET_VERSION_MINOR, MOD_TARGET_VERSION_PATCH,
             version.mMajor, version.mMinor, version.mPatch
         );
@@ -35,21 +35,33 @@ void AmethystRuntime::Start()
         Log::Info("Minecraft Version: {}.{}.{}", version.mMajor, version.mMinor, version.mPatch);
     }
 
+    CreateInputHooks();
+    CreateResourceHooks();
+    CreateStartScreenHooks();
+    CreateModFunctionHooks();
+    CreateNetworkingHooks();
+    CreateUIHooks();
+    CreateItemHooks();
+    CreateRenderingHooks();
+}
+
+extern "C" __declspec(dllexport)
+void Shutdown(AmethystContext& ctx, const Amethyst::Mod& mod)
+{
+    Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
+    Amethyst::ResetAmethystMod();
+}
+
+void AmethystRuntime::Start()
+{
+    getContext()->Start();
+
     // read the config file and load in any mods
     ReadLauncherConfig();
 
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger) 
         PromptDebugger();
-
-    // Initialize our runtime importer
-    mAmethystMod.GetRuntimeImporter().Initialize();
-
-    // Add our resources before loading mods
-    AddOwnResources();
-
-    // Create our hooks
-    CreateOwnHooks();
 
     // Load all mod DLLs and call their initialize functions
     LoadModDlls(); 
@@ -78,6 +90,7 @@ void AmethystRuntime::ReadLauncherConfig()
     std::string fileContents = buffer.str();
 
     mLauncherConfig = Config(fileContents);
+    mLauncherConfig.mods.insert(mLauncherConfig.mods.begin(), mLauncherConfig.injectedMod);
 }
 
 void AmethystRuntime::LoadModDlls()
@@ -85,19 +98,16 @@ void AmethystRuntime::LoadModDlls()
     Amethyst::ModRepository& repository = *mAmethystContext.mModRepository;
     Amethyst::ModGraph& modGraph = *mAmethystContext.mModGraph;
 
+    // Scan the mods directory for mod.json files and load them into the repository
     repository.ScanDirectory(GetAmethystFolder() / "mods", true);
-    for (const auto& modPair : repository.GetMods()) {
-        const auto& modInfo = modPair.second;
-        Log::Info("Collected '{}' (UUID '{}')", modInfo->GetVersionedName(), modInfo->UUID);
-    }
 
-    for (const auto& error : repository.GetErrors()) {
-        Log::Error("{}", error.toString());
-    }
+    // Add itself as a mod to the repository to resolve dependencies against
+    auto info = Amethyst::Mod::GetInfo(mLauncherConfig.injectedMod);
+    repository.AddMod(repository.GetMods().cbegin(), info);
 
     modGraph.SortAndValidate(repository, mLauncherConfig.mods);
     for (const auto& modInfo : modGraph.GetMods()) {
-        Log::Info("Resolved '{}' (UUID '{}')", modInfo->GetVersionedName(), modInfo->UUID);
+        Log::Info("Resolved '{}'", modInfo->GetVersionedName(), modInfo->UUID);
     }
 
     for (const auto& error : modGraph.GetErrors()) {
@@ -111,35 +121,14 @@ void AmethystRuntime::LoadModDlls()
     // Add packs for each mod and load all mod functions
     for (auto& mod : mAmethystContext.mMods) {
         auto versionedName = mod.mInfo->GetVersionedName();
-        Log::Info("Loading '{}' (UUID '{}')", versionedName, mod.mInfo->UUID);
+        Log::Info("Loading '{}'", versionedName, mod.mInfo->UUID);
         mod.Load();
-
-        // Check if the mod has a resource pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "resource_packs" / "main_rp" / "manifest.json")))
-            mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);
-        
-        // Check if the mod has a behavior pack and register it if it does
-        if (fs::exists(fs::path(GetAmethystFolder() / "mods" / versionedName / "behavior_packs" / "main_bp" / "manifest.json")))
-            mAmethystContext.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
-
-        _LoadModFunc(mModInitialize, mod, "Initialize");
+        mod.CallInitialize(*getContext(), mod);
     }
-
-    // Invoke mods to initialize and setup hooks, etc..
-    for (auto& [mod, initialize] : mModInitialize)
-        initialize(&mAmethystContext, mod);
 
     // Allow mods to add listeners to eachothers events
     AddModEventListenersEvent event;
     AmethystRuntime::getEventBus()->Invoke<AddModEventListenersEvent>(event);
-}
-
-template <typename T>
-void AmethystRuntime::_LoadModFunc(std::unordered_map<Amethyst::Mod*, T>& map, Amethyst::Mod& mod, const char* functionName)
-{
-    FARPROC address = mod.GetFunction(functionName);
-    if (address == NULL) return;
-    map[&mod] = reinterpret_cast<T>(address);
 }
 
 void AmethystRuntime::PromptDebugger()
@@ -147,26 +136,6 @@ void AmethystRuntime::PromptDebugger()
     Log::Info("Minecraft's Base: 0x{:x}", GetMinecraftBaseAddress());
     std::string command = std::format("vsjitdebugger -p {:d}", GetCurrentProcessId());
     system(command.c_str());
-}
-
-void AmethystRuntime::AddOwnResources()
-{
-    // Add our own resource pack
-    mAmethystContext.mPackManager->RegisterNewPack(&mAmethystMod, "main_rp", PackType::Resources, Amethyst::PackPriority::Lowest);
-}
-
-void AmethystRuntime::CreateOwnHooks()
-{
-    Amethyst::InitializeAmethystMod(*getContext(), mAmethystMod);
-
-    CreateInputHooks();
-    CreateResourceHooks();
-    CreateStartScreenHooks();
-    CreateModFunctionHooks();
-    CreateNetworkingHooks();
-    CreateUIHooks();
-    CreateItemHooks();
-    CreateRenderingHooks();
 }
 
 void AmethystRuntime::RunMods()
@@ -199,14 +168,15 @@ void AmethystRuntime::Shutdown()
 {
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
-    getContext()->Shutdown();
+
+    for (auto& mod : mAmethystContext.mMods) {
+        mod.CallShutdown(*getContext(), mod);
+    }
 
     // Clear lists of mods & functions.
-    mModInitialize.clear();
-    mAmethystContext.mMods.clear();
+    getContext()->Shutdown();
 
-    // Shutdown our runtime importer
-    mAmethystMod.GetRuntimeImporter().Shutdown();
+    mAmethystContext.mMods.clear();
 }
 
 void AmethystRuntime::ResumeGameThread()
@@ -227,7 +197,8 @@ void AmethystRuntime::PauseGameThread()
     Log::Info("Paused game thread!");
 }
 
-extern "C" __declspec(dllexport) AmethystContext* GetContextInstance()
+extern "C" __declspec(dllexport) 
+AmethystContext* GetContextInstance()
 {
     return AmethystRuntime::getContext();
 }

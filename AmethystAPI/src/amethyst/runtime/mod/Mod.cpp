@@ -29,10 +29,15 @@ void Mod::Load()
         return;
 
     std::string versionedName = mInfo->GetVersionedName();
-    fs::path dllPath = GetTemporaryLibrary(versionedName);
+    fs::path dllPath = mInfo->Directory / mInfo->LibraryName;
 
-    // Loads the mod in a temporary directory so that the original DLL can still be built to
-    mHandle.Reset(LoadLibrary(dllPath.string().c_str()));
+    // Loads the mod in a temporary directory if it's not a runtime so that the original DLL can still be built to
+    if (!mInfo->IsRuntime)
+        dllPath = GetTemporaryLibrary(versionedName);
+
+    HMODULE handle = LoadLibrary(dllPath.string().c_str());
+
+    mHandle.Reset(handle);
     if (!mHandle) {
         DWORD error = GetLastError();
 
@@ -89,6 +94,44 @@ const ModuleHandle& Mod::GetHandle() const
 Amethyst::RuntimeImporter& Mod::GetRuntimeImporter() const
 {
     return *mRuntimeImporter;
+}
+
+Mod::InitializeFunction Mod::GetInitializeFunction()
+{
+    if (mInitializeFunction != nullptr)
+        return mInitializeFunction;
+    mInitializeFunction = GetFunction<InitializeFunction>("Initialize");
+    return mInitializeFunction;
+}
+
+Mod::ShutdownFunction Mod::GetShutdownFunction()
+{
+    if (mShutdownFunction != nullptr)
+        return mShutdownFunction;
+    mShutdownFunction = GetFunction<ShutdownFunction>("Shutdown");
+    return mShutdownFunction;
+}
+
+void Mod::CallInitialize(AmethystContext& ctx, const Mod& mod)
+{
+    if (mIsInitialized)
+        return;
+    auto initFunc = GetInitializeFunction();
+    if (initFunc != nullptr) {
+        initFunc(ctx, mod);
+        mIsInitialized = true;
+    }
+}
+
+void Mod::CallShutdown(AmethystContext& ctx, const Mod& mod)
+{
+    if (!mIsInitialized)
+        return;
+    auto shutdownFunc = GetShutdownFunction();
+    if (shutdownFunc != nullptr) {
+        shutdownFunc(ctx, mod);
+        mIsInitialized = false;
+    }
 }
 
 bool Mod::IsLoaded() const

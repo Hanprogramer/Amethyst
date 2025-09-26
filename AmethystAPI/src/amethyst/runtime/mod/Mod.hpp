@@ -15,11 +15,19 @@
 
 namespace fs = std::filesystem;
 
+class AmethystContext;
 namespace Amethyst {
 class Mod {
+    using InitializeFunction = void(*)(AmethystContext&, const Mod&);
+    using ShutdownFunction = void(*)(AmethystContext&, const Mod&);
+
     ModuleHandle mHandle;
     std::shared_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
     bool mIsLoaded = false;
+    bool mIsInitialized = false;
+
+    InitializeFunction mInitializeFunction = nullptr;
+    ShutdownFunction mShutdownFunction = nullptr;
 
 public:
     // Metadata and stuff
@@ -46,6 +54,12 @@ public:
     {
         return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
     }
+
+    InitializeFunction GetInitializeFunction();
+    ShutdownFunction GetShutdownFunction();
+
+    void CallInitialize(AmethystContext& ctx, const Mod& mod);
+    void CallShutdown(AmethystContext& ctx, const Mod& mod);
 
     bool IsLoaded() const;
 

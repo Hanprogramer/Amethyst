@@ -60,6 +60,11 @@ std::shared_ptr<const ModInfo> ModRepository::GetModByNamespace(const std::strin
     return nullptr;
 }
 
+void Amethyst::ModRepository::AddMod(const ModInfoMap::const_iterator& pos, const std::shared_ptr<const ModInfo>& modInfo)
+{
+    mMods.insert(pos, { modInfo->UUID, modInfo });
+}
+
 bool ModRepository::HasModUUID(const std::string& uuid) const {
     return mMods.contains(uuid);
 }
