@@ -29,7 +29,7 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     self->bindString({StringToNameId("#amethyst_version")}, []() { return std::format("Amethyst Runtime v{}", MOD_VERSION); }, []() { return true; });
 
     // Register '#mods_loaded' binding
-    self->bindString({StringToNameId("#mods_loaded")}, [&context]() { return std::format("Mods Loaded: {}", context.mMods.size()); }, []() { return true; });
+    self->bindString({StringToNameId("#mods_loaded")}, [&context]() { return std::format("Mods Loaded: {}", context.mModLoader->GetModCount()); }, []() { return true; });
 }
 
 

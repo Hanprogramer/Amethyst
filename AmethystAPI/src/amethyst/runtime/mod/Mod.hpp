@@ -42,7 +42,7 @@ public:
     Mod(Mod&& other) noexcept;
     ~Mod();
 
-    void Load();
+    std::optional<ModError> Load();
     void Unload();
     void Attach(HMODULE moduleHandle);
 
@@ -58,8 +58,8 @@ public:
     InitializeFunction GetInitializeFunction();
     ShutdownFunction GetShutdownFunction();
 
-    void CallInitialize(AmethystContext& ctx, const Mod& mod);
-    void CallShutdown(AmethystContext& ctx, const Mod& mod);
+    std::optional<ModError> CallInitialize(AmethystContext& ctx);
+    std::optional<ModError> CallShutdown(AmethystContext& ctx);
 
     bool IsLoaded() const;
 

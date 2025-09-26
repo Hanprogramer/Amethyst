@@ -7,7 +7,8 @@
 enum class ModErrorStep {
 	Unknown,
 	Collecting,
-    Resolving
+    Resolving,
+    Loading
 };
 
 enum class ModErrorType {
@@ -16,15 +17,16 @@ enum class ModErrorType {
     ParseError,
     CircularDependency,
     WrongDependencyVersion,
-    MissingDependency
+    MissingDependency,
+    UnhandledException
 };
 
 struct ModError {
     ModErrorStep Step;
     ModErrorType Type;
-    std::optional<std::string> UUID;
+    std::optional<std::string> UUID = std::nullopt;
     std::string Message;
-    std::unordered_map<std::string, std::string> Data;
+    std::unordered_map<std::string, std::string> Data = {};
 
     std::string getFormattedMessage() const {
         std::string message = Message;

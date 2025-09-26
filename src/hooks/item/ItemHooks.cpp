@@ -4,6 +4,7 @@
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <minecraft/src/common/world/item/ItemStack.hpp>
 #include <minecraft/src/common/world/level/Level.hpp>
+#include <memory>
 
 SafetyHookInline _Item_appendFormattedHovertext;
 void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory)
@@ -14,17 +15,18 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         const ItemStackBase&,
         Level&,
         std::string&,
-        bool>(self, stack, level, hovertext, showCategory);
+        bool>(self, stack, level, hovertext, showCategory
+    );
 
     std::string itemNamespace = self->mNamespace;
     std::string modName;
-    Amethyst::Mod* mod;
+    std::weak_ptr<const Amethyst::Mod> mod;
     if (itemNamespace.empty() || itemNamespace == "minecraft")
     {
         modName = "Minecraft";
     }
-    else if ((mod = AmethystRuntime::getContext()->GetModByNamespace(itemNamespace)) != nullptr) {
-        modName = mod->mInfo->FriendlyName;
+    else if (!(mod = AmethystRuntime::getContext()->mModLoader->GetModByNamespace(itemNamespace)).expired()) {
+        modName = mod.lock()->mInfo->FriendlyName;
     }
     else {
         modName.reserve(itemNamespace.size());

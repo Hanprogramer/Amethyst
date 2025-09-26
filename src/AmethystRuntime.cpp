@@ -97,6 +97,7 @@ void AmethystRuntime::LoadModDlls()
 {
     Amethyst::ModRepository& repository = *mAmethystContext.mModRepository;
     Amethyst::ModGraph& modGraph = *mAmethystContext.mModGraph;
+    Amethyst::ModLoader& modLoader = *mAmethystContext.mModLoader;
 
     // Scan the mods directory for mod.json files and load them into the repository
     repository.ScanDirectory(GetAmethystFolder() / "mods", true);
@@ -114,16 +115,9 @@ void AmethystRuntime::LoadModDlls()
         Log::Error("{}", error.toString());
     }
 
-    for (const auto& info : modGraph.GetMods()) {
-        mAmethystContext.mMods.emplace_back(info);
-    }
-
-    // Add packs for each mod and load all mod functions
-    for (auto& mod : mAmethystContext.mMods) {
-        auto versionedName = mod.mInfo->GetVersionedName();
-        Log::Info("Loading '{}'", versionedName, mod.mInfo->UUID);
-        mod.Load();
-        mod.CallInitialize(*getContext(), mod);
+    modLoader.LoadGraph(modGraph);
+    for (const auto& error : modLoader.GetErrors()) {
+        Log::Error("{}", error.toString());
     }
 
     // Allow mods to add listeners to eachothers events
@@ -169,14 +163,8 @@ void AmethystRuntime::Shutdown()
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
 
-    for (auto& mod : mAmethystContext.mMods) {
-        mod.CallShutdown(*getContext(), mod);
-    }
-
     // Clear lists of mods & functions.
     getContext()->Shutdown();
-
-    mAmethystContext.mMods.clear();
 }
 
 void AmethystRuntime::ResumeGameThread()

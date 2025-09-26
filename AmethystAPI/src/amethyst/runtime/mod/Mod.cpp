@@ -23,10 +23,10 @@ Mod::~Mod()
     mRuntimeImporter.reset();
 }
 
-void Mod::Load()
+std::optional<ModError> Mod::Load()
 {
     if (IsLoaded())
-        return;
+        return std::nullopt;
 
     std::string versionedName = mInfo->GetVersionedName();
     fs::path dllPath = mInfo->Directory / mInfo->LibraryName;
@@ -39,27 +39,55 @@ void Mod::Load()
 
     mHandle.Reset(handle);
     if (!mHandle) {
-        DWORD error = GetLastError();
-
-        switch (error) {
+        DWORD errorCode = GetLastError();
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::Unknown;
+        error.UUID = mInfo->UUID;
+        error.Message = "Failed to load '{dll}', unknown error code: 0x{error}";
+        error.Data["{dll}"] = dllPath.string();
+        error.Data["{error}"] = std::to_string(errorCode);
+        switch (errorCode) {
         case ERROR_ACCESS_DENIED:
-            Assert(false, "'{}' does not have the required privileges!", dllPath.string());
+            error.Step = ModErrorStep::Loading;
+            error.Type = ModErrorType::IOError;
+            error.UUID = mInfo->UUID;
+            error.Message = "'{dll}' does not have the required privileges!";
+            error.Data["{dll}"] = dllPath.string();
             break;
         case ERROR_MOD_NOT_FOUND:
-            Assert(false, "Failed to find '{}'", dllPath.string());
+            error.Step = ModErrorStep::Loading;
+            error.Type = ModErrorType::IOError;
+            error.UUID = mInfo->UUID;
+            error.Message = "'{dll}' could not be found!";
+            error.Data["{dll}"] = dllPath.string();
             break;
         default:
-            Assert(false, "Failed to load '{}.dll', error code: 0x{:x}", versionedName, error);
+            error.Step = ModErrorStep::Loading;
+            error.Type = ModErrorType::IOError;
+            error.UUID = mInfo->UUID;
+            error.Message = "Failed to load '{dll}', error code: 0x{error}";
+            error.Data["{dll}"] = dllPath.string();
+            error.Data["{error}"] = std::to_string(errorCode);
             break;
         }
+        return error;
     }
 
-    Assert(mHandle, "Module handle cannot be null");
     mRuntimeImporter = RuntimeImporter::GetImporter(mHandle);
+    if (!mRuntimeImporter) {
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::IOError;
+        error.UUID = mInfo->UUID;
+        error.Message = "Failed to get runtime importer for '{mod}'!";
+        error.Data["{mod}"] = versionedName;
+        return error;
+    }
 
-    Assert(mRuntimeImporter != nullptr, "Failed to get runtime importer for '{}'", versionedName);
     mRuntimeImporter->Initialize();
     mIsLoaded = true;
+    return std::nullopt;
 }
 
 void Mod::Unload()
@@ -112,26 +140,66 @@ Mod::ShutdownFunction Mod::GetShutdownFunction()
     return mShutdownFunction;
 }
 
-void Mod::CallInitialize(AmethystContext& ctx, const Mod& mod)
+std::optional<ModError> Mod::CallInitialize(AmethystContext& ctx)
 {
-    if (mIsInitialized)
-        return;
-    auto initFunc = GetInitializeFunction();
-    if (initFunc != nullptr) {
-        initFunc(ctx, mod);
-        mIsInitialized = true;
+    try {
+        if (mIsInitialized)
+            return std::nullopt;
+        auto initFunc = GetInitializeFunction();
+        if (initFunc != nullptr) {
+            initFunc(ctx, *this);
+            mIsInitialized = true;
+        }
     }
+    catch (const std::exception& e) {
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::UnhandledException;
+        error.UUID = mInfo->UUID;
+        error.Message = "An unhandled exception occurred while initializing the mod: {exception}";
+        error.Data["{exception}"] = e.what();
+        return error;
+    }
+    catch (...) {
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::UnhandledException;
+        error.UUID = mInfo->UUID;
+        error.Message = "An unknown unhandled exception occurred while initializing the mod.";
+        return error;
+    }
+    return std::nullopt;
 }
 
-void Mod::CallShutdown(AmethystContext& ctx, const Mod& mod)
+std::optional<ModError> Mod::CallShutdown(AmethystContext& ctx)
 {
-    if (!mIsInitialized)
-        return;
-    auto shutdownFunc = GetShutdownFunction();
-    if (shutdownFunc != nullptr) {
-        shutdownFunc(ctx, mod);
-        mIsInitialized = false;
+    try {
+        if (!mIsInitialized)
+            return std::nullopt;
+        auto shutdownFunc = GetShutdownFunction();
+        if (shutdownFunc != nullptr) {
+            shutdownFunc(ctx, *this);
+            mIsInitialized = false;
+        }
     }
+    catch (const std::exception& e) {
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::UnhandledException;
+        error.UUID = mInfo->UUID;
+        error.Message = "An unhandled exception occurred while shutting down the mod: {exception}";
+        error.Data["{exception}"] = e.what();
+        return error;
+    }
+    catch (...) {
+        ModError error;
+        error.Step = ModErrorStep::Loading;
+        error.Type = ModErrorType::UnhandledException;
+        error.UUID = mInfo->UUID;
+        error.Message = "An unknown unhandled exception occurred while shutting down the mod.";
+        return error;
+    }
+    return std::nullopt;
 }
 
 bool Mod::IsLoaded() const

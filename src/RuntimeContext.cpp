@@ -14,6 +14,7 @@ void RuntimeContext::Start()
     mNetworkManager = std::make_unique<Amethyst::NetworkManager>();
     mModRepository = std::make_unique<Amethyst::ModRepository>();
     mModGraph = std::make_unique<Amethyst::ModGraph>();
+    mModLoader = std::make_unique<Amethyst::ModLoader>(this);
 }
 
 void RuntimeContext::Shutdown()
@@ -27,4 +28,5 @@ void RuntimeContext::Shutdown()
     mNetworkManager.reset();
     mModRepository.reset();
     mModGraph.reset();
+    mModLoader.reset();
 }

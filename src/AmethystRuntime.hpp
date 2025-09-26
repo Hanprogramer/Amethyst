@@ -75,11 +75,6 @@ public:
         return AmethystRuntime::getInstance()->mAmethystContext.mEnumAllocator.get();
     }
 
-    static std::vector<Amethyst::Mod>& getMods()
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mMods;
-    }
-
     static Amethyst::MinecraftPackageInfo* getMinecraftPackageInfo()
     {
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
