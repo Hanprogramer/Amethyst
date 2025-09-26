@@ -25,7 +25,7 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
     _OwnMod = &mod;
 }
 
-void Amethyst::ResetAmethystMod()
+void Amethyst::ShutdownAmethystMod()
 {
     _AmethystContextInstance = nullptr;
     _OwnMod = nullptr;

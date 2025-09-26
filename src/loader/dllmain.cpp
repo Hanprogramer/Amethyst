@@ -1,5 +1,5 @@
 #include "dllmain.hpp"
-#include <debug/AmethystDebugging.hpp>
+#include "debug/AmethystDebugging.hpp"
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
@@ -72,7 +72,7 @@ void Shutdown()
 
 void ShutdownWait()
 {
-    Log::Info("Press Numpad0 to close...");
+    Log::Info("Press Numpad0/End to close...");
 
     while (1) {
         Sleep(10);

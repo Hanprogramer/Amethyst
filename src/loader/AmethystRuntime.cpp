@@ -1,59 +1,23 @@
 #include "AmethystRuntime.hpp"
+
+#include "amethyst/Log.hpp"
+#include "amethyst/runtime/ModContext.hpp"
+#include "amethyst/runtime/events/ModEvents.hpp"
+#include "amethyst/runtime/events/InputEvents.hpp"
+#include "amethyst/runtime/interop/RuntimeImporter.hpp"
+
 #include "debug/AmethystDebugging.hpp"
-#include <amethyst/runtime/events/ModEvents.hpp>
-#include <amethyst/runtime/events/InputEvents.hpp>
-#include <amethyst/runtime/interop/RuntimeImporter.hpp>
-#include <amethyst/Log.hpp>
-#include <format>
-#include "hooks/NetworkingHooks.hpp"
-#include "amethyst/runtime/ModContext.hpp"
-#include "hooks/ui/UIHooks.hpp"
-#include "hooks/item/ItemHooks.hpp"
-#include "hooks/RenderingHooks.hpp"
-#include "amethyst/runtime/ModContext.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
-extern "C" __declspec(dllexport)
-void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
-{
-    Amethyst::InitializeAmethystMod(ctx, mod);
-    Log::Info("Initializing runtime mod: '{}'", mod.mInfo->GetVersionedName());
-    SemVersion version = ctx.mPackageInfo.mVersion;
-
-    if (version.mMajor != MOD_TARGET_VERSION_MAJOR || version.mMinor != MOD_TARGET_VERSION_MINOR || version.mPatch != MOD_TARGET_VERSION_PATCH) {
-        Log::Warning("{} has been made for Minecraft version {}.{}.{}, detected version {}.{}.{}\n\t> It should be expected that things may break on this version.\n\t> We will not provide support for unintended versions.",
-            mod.mInfo->GetVersionedName(),
-            MOD_TARGET_VERSION_MAJOR, MOD_TARGET_VERSION_MINOR, MOD_TARGET_VERSION_PATCH,
-            version.mMajor, version.mMinor, version.mPatch
-        );
-    }
-    else {
-        Log::Info("Minecraft Version: {}.{}.{}", version.mMajor, version.mMinor, version.mPatch);
-    }
-
-    CreateInputHooks();
-    CreateResourceHooks();
-    CreateStartScreenHooks();
-    CreateModFunctionHooks();
-    CreateNetworkingHooks();
-    CreateUIHooks();
-    CreateItemHooks();
-    CreateRenderingHooks();
-}
-
-extern "C" __declspec(dllexport)
-void Shutdown(AmethystContext& ctx, const Amethyst::Mod& mod)
-{
-    Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
-    Amethyst::ResetAmethystMod();
-}
-
 void AmethystRuntime::Start()
 {
+    if (mRunning)
+        return;
+
     getContext()->Start();
 
     // read the config file and load in any mods
@@ -65,6 +29,7 @@ void AmethystRuntime::Start()
 
     // Load all mod DLLs and call their initialize functions
     LoadModDlls(); 
+    mRunning = true;
     RunMods();
 } 
 
@@ -148,9 +113,10 @@ void AmethystRuntime::RunMods()
     while (true) {
         Sleep(1000 / 20);
 
-        if (GetAsyncKeyState(VK_NUMPAD0)) break;
-        if (GetAsyncKeyState('R') & 0x8000) {
-            Log::Info("\n========================= Beginning hot-reload! =========================");
+        if (GetAsyncKeyState(VK_NUMPAD0) || GetAsyncKeyState(VK_END)) 
+            break;
+        if ((GetAsyncKeyState('R') & 0x8000) && mRunning == true) {
+            Log::Info("\n========================= Starting hot-reload! =========================");
 
             Shutdown();
             return Start();
@@ -160,11 +126,15 @@ void AmethystRuntime::RunMods()
 
 void AmethystRuntime::Shutdown()
 {
+    if (!mRunning)
+        return;
+
     BeforeModShutdownEvent shutdownEvent;
     getEventBus()->Invoke(shutdownEvent);
 
     // Clear lists of mods & functions.
     getContext()->Shutdown();
+    mRunning = false;
 }
 
 void AmethystRuntime::ResumeGameThread()

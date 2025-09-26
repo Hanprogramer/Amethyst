@@ -1,8 +1,11 @@
+#include "loader/AmethystRuntime.hpp"
+
 #include "hooks/NetworkingHooks.hpp"
-#include "AmethystRuntime.hpp"
+
 #include "minecraft/src/common/network/packet/Packet.hpp"
 #include "minecraft/src/common/network/PacketHandlerDispatcherInstance.hpp"
 #include "minecraft/src/common/network/ServerNetworkHandler.hpp"
+
 #include "amethyst/runtime/ModContext.hpp"
 
 class NetworkIdentifier;

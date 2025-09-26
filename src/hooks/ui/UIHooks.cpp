@@ -1,7 +1,8 @@
 #include "hooks/ui/UIHooks.hpp"
-#include "AmethystRuntime.hpp"
-#include <amethyst/runtime/events/UiEvents.hpp>
-#include <amethyst/Log.hpp>
+#include "loader/AmethystRuntime.hpp"
+
+#include "amethyst/runtime/events/UiEvents.hpp"
+#include "amethyst/Log.hpp"
 
 #include "minecraft/src-client/common/client/gui/screens/ScreenController.hpp"
 #include "minecraft/src-client/common/client/gui/screens/ScreenEvent.hpp"
@@ -26,13 +27,23 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     auto& context = *AmethystRuntime::getContext();
 
     // Register '#amethyst_version' binding
-    self->bindString({StringToNameId("#amethyst_version")}, []() { return std::format("Amethyst Runtime v{}", MOD_VERSION); }, []() { return true; });
+    self->bindString({StringToNameId("#amethyst_version")}, []() { 
+        return std::format("Amethyst Runtime v{}", MOD_VERSION); 
+    }, []() { 
+        return true; 
+    });
 
     // Register '#mods_loaded' binding
-    self->bindString({StringToNameId("#mods_loaded")}, [&context]() { return std::format("Mods Loaded: {}", context.mModLoader->GetModCount()); }, []() { return true; });
+    self->bindString({StringToNameId("#mods_loaded")}, [&context]() { 
+        size_t count = 0;
+        if (context.mModLoader) {
+            count = context.mModLoader->GetModCount();
+        }
+        return std::format("Mods Loaded: {}", count); 
+    }, []() { 
+        return true; 
+    });
 }
-
-
 
 void CreateUIHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();

@@ -1,9 +1,12 @@
+#include "loader/AmethystRuntime.hpp"
+
 #include "hooks/item/ItemHooks.hpp"
-#include "AmethystRuntime.hpp"
+
 #include <amethyst/runtime/HookManager.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <minecraft/src/common/world/item/ItemStack.hpp>
 #include <minecraft/src/common/world/level/Level.hpp>
+
 #include <memory>
 
 SafetyHookInline _Item_appendFormattedHovertext;

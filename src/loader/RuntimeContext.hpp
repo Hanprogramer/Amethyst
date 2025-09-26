@@ -1,5 +1,5 @@
 #pragma once
-#include <amethyst/runtime/AmethystContext.hpp>
+#include "amethyst/runtime/AmethystContext.hpp"
 
 class RuntimeContext : public AmethystContext {
 public:

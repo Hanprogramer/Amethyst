@@ -1,17 +1,17 @@
 #pragma once
-#include "hooks/Hooks.hpp"
-#include "hooks/InputHooks.hpp"
-#include "hooks/ResourceHooks.hpp"
-#include <amethyst/Config.hpp>
-#include <amethyst/Log.hpp>
-#include <amethyst/MinecraftVtables.hpp>
-#include <amethyst/runtime/AmethystContext.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <minecraft/src/common/world/item/Item.hpp>
 #include <vector>
-#include <RuntimeContext.hpp>
+#include <format>
+
+#include "amethyst/Log.hpp"
+#include "amethyst/Config.hpp"
+#include "amethyst/MinecraftVtables.hpp"
+#include "amethyst/runtime/AmethystContext.hpp"
+#include "minecraft/src/common/world/item/Item.hpp"
+
+#include "loader/RuntimeContext.hpp"
 
 namespace fs = std::filesystem;
 extern HMODULE hModule;
@@ -88,10 +88,12 @@ private:
     void ReadLauncherConfig();
     void LoadModDlls();
     void RunMods();
-    void ResumeGameThread();
-    void PauseGameThread();
+
+    static void ResumeGameThread();
+    static void PauseGameThread();
 
 private:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
+    bool mRunning = false;
 };
