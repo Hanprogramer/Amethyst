@@ -1,4 +1,6 @@
 #pragma once
+#include <unordered_set>
+
 #include "amethyst/runtime/mod/ModRepository.hpp"
 #include "amethyst/runtime/mod/ModInfo.hpp"
 
@@ -38,7 +40,7 @@ public:
     ModGraph& operator=(ModGraph&& other) noexcept = delete;
 
     void Clear();
-    void SortAndValidate(const ModRepository& repository, const std::vector<std::string>& launcherMods);
+    void SortAndValidate(const ModRepository& repository, const std::unordered_set<std::string>& profileMods);
 
     const std::vector<std::shared_ptr<const ModInfo>>& GetMods() const;
     const std::vector<ModError>& GetErrors() const;

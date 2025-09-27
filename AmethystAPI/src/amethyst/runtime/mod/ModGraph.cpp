@@ -1,5 +1,4 @@
 #include "amethyst/runtime/mod/ModGraph.hpp"
-#include <unordered_set>
 #include <functional>
 
 namespace Amethyst {
@@ -8,14 +7,13 @@ void ModGraph::Clear() {
 	mErrors.clear();
 }
 
-void ModGraph::SortAndValidate(const ModRepository& repository, const std::vector<std::string>& launcherMods) {
+void ModGraph::SortAndValidate(const ModRepository& repository, const std::unordered_set<std::string>& profileMods) {
     Clear();
     const ModInfoMap& repoMods = repository.GetMods();
 
     std::unordered_set<const ModInfo*> visited;
     std::unordered_set<const ModInfo*> visiting;
     std::vector<const ModInfo*> stack;
-    std::unordered_set<std::string> launcherModsSet(launcherMods.begin(), launcherMods.end());
 
     // Helper to push a ModError
     auto pushError = [&](
@@ -65,7 +63,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
 
             // Find matching mod in repo
             for (const auto& [uuid, mod] : repoMods) {
-                if (!launcherModsSet.contains(mod->GetVersionedName()))
+                if (!profileMods.contains(mod->GetVersionedName()))
                     continue; // Don't force-load non-launcher mods
                 if (mod->Namespace == dep.Namespace && dep.MatchesMod(*mod, false)) {
                     found = mod.get();
@@ -120,7 +118,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
 
     // Visit all launcher mods
     for (const auto& [uuid, mod] : repoMods) {
-        if (!launcherModsSet.contains(mod->GetVersionedName()))
+        if (!profileMods.contains(mod->GetVersionedName()))
             continue;
         visit(mod);
     }
