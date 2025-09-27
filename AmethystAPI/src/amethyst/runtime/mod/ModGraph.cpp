@@ -15,6 +15,7 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
     std::unordered_set<const ModInfo*> visited;
     std::unordered_set<const ModInfo*> visiting;
     std::vector<const ModInfo*> stack;
+    std::unordered_set<std::string> launcherModsSet(launcherMods.begin(), launcherMods.end());
 
     // Helper to push a ModError
     auto pushError = [&](
@@ -64,6 +65,8 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
 
             // Find matching mod in repo
             for (const auto& [uuid, mod] : repoMods) {
+                if (!launcherModsSet.contains(mod->GetVersionedName()))
+                    continue; // Don't force-load non-launcher mods
                 if (mod->Namespace == dep.Namespace && dep.MatchesMod(*mod, false)) {
                     found = mod.get();
                     // Check version
@@ -72,11 +75,11 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
                             pushError(
                                 *info,
                                 ModErrorType::WrongDependencyVersion,
-                                "Mod '{mod}' requires '{dep}' version '{ver}' or higher, but found version '{found_ver}'",
+                                "Mod '{mod}' requires '{dep}' version '{ver}', but found version '{found_ver}'",
                                 {
                                     { "{mod}", info->GetVersionedName() },
-                                    { "{dep}", dep.Namespace },
-                                    { "{ver}", dep.MinVersion.to_string() },
+                                    { "{dep}", std::format("{} (aka {})", dep.Namespace, mod->Name) },
+                                    { "{ver}", dep.RangeString },
                                     { "{found_ver}", mod->Version.to_string() }
                                 }
                             );
@@ -86,7 +89,8 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
                     }
 
                     // Recurse into the dependency
-                    if (!visit(mod)) success = false;
+                    if (!visit(mod)) 
+                        success = false;
                     break; // Found the dependency
                 }
             }
@@ -115,13 +119,10 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::vecto
     };
 
     // Visit all launcher mods
-    for (const std::string& modVerName : launcherMods) {
-        for (const auto& [uuid, mod] : repoMods) {
-            if (mod->GetVersionedName() == modVerName) {
-                visit(mod);
-                break;
-            }
-        }
+    for (const auto& [uuid, mod] : repoMods) {
+        if (!launcherModsSet.contains(mod->GetVersionedName()))
+            continue;
+        visit(mod);
     }
 }
 
