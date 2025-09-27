@@ -5,13 +5,16 @@ namespace Amethyst {
 ModDependency::ModDependency(
     const std::string& uuid, 
     const std::string& modNamespace, 
-    const Version& minVersion, 
+    const std::string& range, 
     bool isSoft) :
     UUID(uuid),
     Namespace(modNamespace),
-    MinVersion(minVersion),
+    RangeString(range),
     IsSoft(isSoft)
 {
+    if (!semver::parse(range, Range) || range.empty()) {
+        semver::parse(">=0.0.0", Range);
+    }
 }
 
 bool ModDependency::IsNamespaceDependency() const
@@ -42,7 +45,7 @@ bool ModDependency::operator<(const ModDependency& other) const
     if (Namespace != other.Namespace) {
         return Namespace < other.Namespace;
     }
-    return MinVersion < other.MinVersion;
+    return RangeString < other.RangeString;
 }
 
 bool ModDependency::MatchesMod(const ModInfo& mod, bool checkVersion) const
@@ -55,7 +58,7 @@ bool ModDependency::MatchesMod(const ModInfo& mod, bool checkVersion) const
 
 bool ModDependency::MatchesVersion(const Version& version) const
 {
-    return version >= MinVersion;
+    return version.prerelease_tag() == "dev" || Range.contains(version);
 }
 
 std::string ModDependency::GetDependencyIdentification() const

@@ -191,16 +191,11 @@ std::expected<ModInfo, ModError> ModInfo::FromFile(const fs::path& jsonFile)
 
     if (meta.contains("dependencies") && meta["dependencies"].is_array()) {
         for (const auto& dependencyObj : meta["dependencies"]) {
-            if (dependencyObj.is_object() && dependencyObj.contains("min_version")) {
-                auto verStr = dependencyObj["min_version"].get<std::string>();
-                Amethyst::Version depVer;
-                if (!semver::parse(verStr, depVer))
-                    continue;
-
+            if (dependencyObj.is_object()) {
                 dependencies.push_back(ModDependency(
                     dependencyObj.value("dependency_uuid", ""),
                     dependencyObj.value("dependency_namespace", ""),
-                    depVer,
+                    dependencyObj.value("version_range", ""),
                     dependencyObj.value("is_soft", false)
                 ));
             }

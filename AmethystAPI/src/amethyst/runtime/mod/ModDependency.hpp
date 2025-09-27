@@ -9,14 +9,15 @@ class ModDependency {
 public:
     std::string UUID;
     std::string Namespace;
-    Version MinVersion;
+    std::string RangeString;
+    Range Range;
     bool IsSoft;
 
     ModDependency() = delete;
     ModDependency(
         const std::string& uuid,
         const std::string& modNamespace,
-        const Version& minVersion,
+        const std::string& range,
         bool isSoft
     );
 
