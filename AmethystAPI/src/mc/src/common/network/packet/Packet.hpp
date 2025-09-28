@@ -1,7 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include <chrono>
-#include <cstdint>
+#include <amethyst/Imports.hpp>
 #include <mc/src-deps/raknet/raknet/PacketPriority.hpp>
 #include <mc/src/common/CommonTypes.hpp>
 #include <mc/src/common/network/NetworkPeer.hpp>
@@ -9,7 +8,6 @@
 #include <mc/src-deps/core/utility/ErrorInfo.hpp>
 #include <amethyst/Log.hpp>
 #include <mc/src-deps/core/utility/BinaryStream.hpp>
-#include <amethyst/Imports.hpp>
 
 class IPacketHandlerDispatcher;
 class BinaryStream;
@@ -227,8 +225,7 @@ enum class MinecraftPacketIds {
     EndId = 309
 };
 
-// Packet vtable 0x5389A20
-
+/// @vptr {0x5389A20}
 class Packet {
 public:
     PacketPriority mPriority;
@@ -240,15 +237,32 @@ public:
     Compressibility mCompressible;
 
 public:
-    virtual ~Packet() = default;
-    virtual MinecraftPacketIds getId() const = 0;
-    virtual std::string getName() const = 0;
-    virtual Bedrock::Result<void, std::error_code> checkSize(uint64_t packetSize, bool receiverIsServer) const;
-    virtual void write(BinaryStream& out) = 0;
-    virtual Bedrock::Result<void, std::error_code> read(ReadOnlyBinaryStream& in);
-    virtual bool dissallowBatching();
-    virtual bool isValid();
-    virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream& in) = 0;
+    /// @vidx {0}
+	MC virtual ~Packet();
+
+	/// @vidx {1}
+	MC virtual MinecraftPacketIds getId() const = 0;
+
+	/// @vidx {2}
+	MC virtual std::string getName() const = 0;
+
+	/// @vidx {3}
+	MC virtual Bedrock::Result<void, std::error_code> checkSize(unsigned long unk0, bool unk1) const;
+
+	/// @vidx {4}
+	MC virtual void write(BinaryStream& unk0) const = 0;
+
+	/// @vidx {5}
+	MC virtual Bedrock::Result<void, std::error_code> read(ReadOnlyBinaryStream& unk0);
+
+	/// @vidx {6}
+	MC virtual bool disallowBatching() const;
+
+	/// @vidx {7}
+	MC virtual bool isValid() const;
+
+	/// @vidx {8}
+	MC virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream& unk0) = 0;
 
 public:
     Packet();

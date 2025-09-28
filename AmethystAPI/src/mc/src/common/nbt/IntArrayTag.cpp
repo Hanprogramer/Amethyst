@@ -3,10 +3,6 @@
 #include "mc/src/common/nbt/IntArrayTag.hpp"
 #include "mc/src-deps/core/math/Math.hpp"
 
-#ifdef min
-#undef min
-#endif
-
 IntArrayTag::IntArrayTag() : Tag(), data() {}
 
 IntArrayTag::IntArrayTag(TagMemoryChunk data) : Tag(), data(std::move(data)) {}

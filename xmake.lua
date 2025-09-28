@@ -101,7 +101,7 @@ add_requires("Runtime-Importer", {system = false})
 
 target("AmethystRuntime")
     set_kind("shared")
-    set_toolchains("nasm")
+    -- set_toolchains("nasm")
     add_deps("AmethystAPI", {public = true})
     set_default(true)
     add_files("src/**.cpp")
@@ -117,7 +117,13 @@ target("AmethystRuntime")
     -- Deps
     add_packages("Runtime-Importer")
     add_packages("AmethystAPI", "libhat")
-    add_links("user32", "oleaut32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
+    add_links(
+        "user32", -- Windows GUI
+        -- "oleaut32", 
+        "windowsapp", -- WinRT stuff
+        path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib")
+    )
+
     add_includedirs("src", {public = true})
 
     add_headerfiles("src/**.hpp")
@@ -132,7 +138,7 @@ target("AmethystRuntime")
             ".importer/bin/Amethyst.SymbolGenerator.exe",
             "--input", string.format("%s", input_dir),
             "--output", string.format("%s", generated_dir),
-            "--filters", "minecraft",
+            "--filters", "mc",
             "--",
             "-x c++",
             "-include-pch", path.join(generated_dir, "pch.hpp.pch"),

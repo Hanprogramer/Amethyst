@@ -54,13 +54,22 @@
 #include <vector>             // STL dynamic array container
 #include <future>             // STL future
 
+// MC Deps
 #include <entt/entt.hpp>
 #include <mc/src-deps/core/headerIncludes/gsl_includes.hpp>
 #include <glm/glm.hpp>
 #include <json/json.h>
 
+// common MC types
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src/common/world/phys/Vec2.hpp>
 #include <mc/src/common/world/level/BlockPos.hpp>
+#include <mc/src-deps/core/string/StringHash.hpp>
+#include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
+
+// Common amethyst types
+// #include <amethyst/runtime/ModContext.hpp>
+#include <amethyst/runtime/HookManager.hpp>
+#include <amethyst/Memory.hpp>
 
 using UnknownReturn = void; // placeholder for unknown return types

@@ -29,12 +29,16 @@ public:
 
     /// @vidx {0}
     MC virtual ~ContainerOpenPacket() override;
+    
     /// @vidx {1}
     MC virtual MinecraftPacketIds getId() const override;
+
     /// @vidx {2}
     MC virtual std::string getName() const override;
+    
     /// @vidx {4}
-    MC virtual void write(BinaryStream& out) override;
+    MC virtual void write(BinaryStream& out) const override;
+
     /// @vidx {8}
     MC virtual Bedrock::Result<void, std::error_code> _read(ReadOnlyBinaryStream& in) override;
 };

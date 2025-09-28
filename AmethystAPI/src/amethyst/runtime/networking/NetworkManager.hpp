@@ -46,7 +46,7 @@ public:
         return mPacket->getName();
     }
 
-    virtual void write(BinaryStream& out) override {
+    virtual void write(BinaryStream& out) const override {
         Assert(mTypeId != 0, "Attempted to write a CustomPacketInternal with a typeId of 0!");
         out.write<uint64_t>(mTypeId);
         Assert(mPacket != nullptr, "Attempted to write a CustomPacketInternal with a null mPacket!");

@@ -93,13 +93,6 @@ std::shared_ptr<Allocator> Allocator::create() {
     return std::shared_ptr<Allocator>{new Allocator{}};
 }
 
-#ifdef max
-#undef max
-#endif
-#ifdef min
-#undef min
-#endif
-
 std::expected<Allocation, Allocator::Error> Allocator::allocate(size_t size) {
     return allocate_near({}, size, std::numeric_limits<size_t>::max());
 }

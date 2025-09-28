@@ -15,6 +15,8 @@
 #include "mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
 #include "amethyst/Imports.hpp"
 
+class Minecraft;
+
 class AmethystContext {
 public:
     // Volatile between mod loads

@@ -4,10 +4,6 @@
 #include "mc/src-deps/core/math/Math.hpp"
 #include "mc/src/common/util/DataIO.hpp"
 
-#ifdef min
-#undef min
-#endif
-
 ByteArrayTag::ByteArrayTag() : Tag(), data() {}
 
 ByteArrayTag::ByteArrayTag(TagMemoryChunk data) : Tag(), data(std::move(data)) {}
