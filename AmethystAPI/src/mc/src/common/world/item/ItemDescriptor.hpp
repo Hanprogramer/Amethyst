@@ -12,6 +12,10 @@ public:
     class BaseDescriptor {
     public:
         virtual std::unique_ptr<BaseDescriptor> clone() const = 0;
+        virtual void unknown_1() = 0;
+        virtual void unknown_2() = 0;
+        virtual void unknown_3() = 0;
+        virtual ItemEntry getItem() const = 0;
     };
 
     std::unique_ptr<BaseDescriptor> mImpl;
