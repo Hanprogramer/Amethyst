@@ -1,8 +1,12 @@
 #pragma once
 #include <string>
 #include <unordered_map>
-#include <Windows.h>
 #include "amethyst-deps/safetyhook.hpp"
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <Windows.h>
 
 namespace Amethyst {
 class RuntimeImporter {

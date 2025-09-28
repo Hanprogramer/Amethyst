@@ -17,6 +17,9 @@ target("AmethystAPI")
         set_toolset("as", "nasm")
         add_asflags("-f win64", { force = true })
 
+    -- PCH
+    set_pcxxheader("src/amethyst/Imports.hpp", {pchheader = "amethyst/Imports.hpp"})
+
     -- Deps
     add_deps("libhat")
 

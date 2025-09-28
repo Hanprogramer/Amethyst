@@ -1,6 +1,5 @@
 #pragma once
 #include "Json.hpp"
-#include <Windows.h>
 #include <amethyst/Log.hpp>
 #include <amethyst/Utility.hpp>
 #include <filesystem>
@@ -8,6 +7,12 @@
 #include <shlobj.h>
 #include <vector>
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <Windows.h>
+
 using json = nlohmann::json;
 
 namespace fs = std::filesystem;

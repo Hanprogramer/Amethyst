@@ -1,8 +1,12 @@
 #pragma once
 #include "Utility.hpp"
-#include <Windows.h>
 #include <iostream>
 #include <format>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <Windows.h>
 
 namespace Log {
     void InitializeConsole();
