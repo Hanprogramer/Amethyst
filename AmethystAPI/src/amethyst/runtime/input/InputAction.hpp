@@ -2,8 +2,8 @@
 #include <string> 
 #include <vector>
 #include <functional>
-#include <minecraft/src-deps/input/InputHandler.hpp>
-#include <minecraft/src-client/common/client/game/IClientInstance.hpp>
+#include <mc/src-deps/input/InputHandler.hpp>
+#include <mc/src-client/common/client/game/IClientInstance.hpp>
 
 namespace Amethyst {
 

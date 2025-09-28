@@ -1,6 +1,5 @@
 #include <amethyst/runtime/ModContext.hpp>
-#include <amethyst/MinecraftVtables.hpp>
-#include <minecraft/src/common/Minecraft.hpp>
+#include <mc/src/common/Minecraft.hpp>
 
 AmethystContext* _AmethystContextInstance;
 const Amethyst::Mod* _OwnMod;
@@ -14,9 +13,6 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
     // Check if the mod has a behavior pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "behavior_packs" / "main_bp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
-
-    // Initialize vtbl pointers & ctor pointers.
-    InitializeVtablePtrs();
 
     // Store a persistent AmethystContext instance
     _AmethystContextInstance = &context;

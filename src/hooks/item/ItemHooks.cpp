@@ -4,8 +4,8 @@
 
 #include <amethyst/runtime/HookManager.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
-#include <minecraft/src/common/world/item/ItemStack.hpp>
-#include <minecraft/src/common/world/level/Level.hpp>
+#include <mc/src/common/world/item/ItemStack.hpp>
+#include <mc/src/common/world/level/Level.hpp>
 
 #include <memory>
 

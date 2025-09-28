@@ -2,10 +2,15 @@
 #include <winrt/Windows.Storage.h>
 #include <winrt/base.h>
 #include <shlobj_core.h>
-#include "windows.h"
 #include <filesystem>
 #include <amethyst/Log.hpp>
 #include <fstream>
+
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#include "windows.h"
 
 using namespace winrt;
 using namespace Windows::Storage;

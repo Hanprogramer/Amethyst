@@ -1,5 +1,5 @@
 #pragma once
-#include <minecraft/src-deps/core/string/StringHash.hpp>
+#include <mc/src-deps/core/string/StringHash.hpp>
 #include <cstdint>
 #include <map>
 

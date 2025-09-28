@@ -1,7 +1,7 @@
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/AmethystContext.hpp"
-#include "minecraft/src-client/common/client/game/MinecraftGame.hpp"
-#include "minecraft/src/common/resources/ResourcePackRepository.hpp"
+#include "mc/src-client/common/client/game/MinecraftGame.hpp"
+#include "mc/src/common/resources/ResourcePackRepository.hpp"
 #include <winrt/Windows.Storage.h>
 #include <fstream>
 

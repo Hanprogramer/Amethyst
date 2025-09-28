@@ -2,9 +2,9 @@
 #include <amethyst/runtime/HookManager.hpp>
 #include "amethyst/runtime/networking/CustomPacket.hpp"
 #include <amethyst/Log.hpp>
-#include <minecraft/src/common/network/packet/Packet.hpp>
-#include <minecraft/src/common/network/PacketSender.hpp>
-#include <minecraft/src/common/CommonTypes.hpp>
+#include <mc/src/common/network/packet/Packet.hpp>
+#include <mc/src/common/network/PacketSender.hpp>
+#include <mc/src/common/CommonTypes.hpp>
 
 class UserEntityIdentifierComponent;
 
@@ -46,7 +46,7 @@ public:
         return mPacket->getName();
     }
 
-    virtual void write(BinaryStream& out) override {
+    virtual void write(BinaryStream& out) const override {
         Assert(mTypeId != 0, "Attempted to write a CustomPacketInternal with a typeId of 0!");
         out.write<uint64_t>(mTypeId);
         Assert(mPacket != nullptr, "Attempted to write a CustomPacketInternal with a null mPacket!");

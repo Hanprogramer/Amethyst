@@ -1,9 +1,9 @@
 #include "hooks/Hooks.hpp"
 #include <amethyst/runtime/events/RenderingEvents.hpp>
-#include <minecraft/src/common/world/level/block/definition/BlockDefinitionGroup.hpp>
+#include <mc/src/common/world/level/block/definition/BlockDefinitionGroup.hpp>
 #include <amethyst/runtime/events/RegisterEvents.hpp>
 #include <amethyst/runtime/events/GameEvents.hpp>
-#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
+#include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
 
 SafetyHookInline _ScreenView_setupAndRender;
 SafetyHookInline _ClientInstance_onStartJoinGame;

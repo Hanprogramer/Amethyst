@@ -2,7 +2,7 @@
 #include "amethyst-deps/safetyhook.hpp"
 #include "amethyst/Log.hpp"
 #include "amethyst/Memory.hpp"
-#include "minecraft/src-deps/core/string/StringHash.hpp"
+#include "mc/src-deps/core/string/StringHash.hpp"
 #include <unordered_map>
 #include <vector>
 

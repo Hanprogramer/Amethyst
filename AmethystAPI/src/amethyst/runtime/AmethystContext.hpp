@@ -2,7 +2,7 @@
 #include "amethyst/runtime/HookManager.hpp"
 #include "amethyst/runtime/events/EventBus.hpp"
 #include "amethyst/runtime/input/InputManager.hpp"
-#include "amethyst/runtime/minecraft/MinecraftPackageInfo.hpp"
+#include "amethyst/runtime/mc/MinecraftPackageInfo.hpp"
 #include "amethyst/runtime/mod/Mod.hpp"
 #include "amethyst/runtime/mod/ModRepository.hpp"
 #include "amethyst/runtime/mod/ModGraph.hpp"
@@ -11,12 +11,13 @@
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
 #include "amethyst/runtime/networking/NetworkManager.hpp"
-#include "amethyst/MinecraftVtables.hpp"
-#include "minecraft/src-client/common/client/game/ClientInstance.hpp"
-#include "minecraft/src-client/common/client/input/MinecraftInputHandler.hpp"
-#include "minecraft/src-client/common/client/options/Options.hpp"
-#include "minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
+#include "mc/src-client/common/client/game/ClientInstance.hpp"
+#include "mc/src-client/common/client/input/MinecraftInputHandler.hpp"
+#include "mc/src-client/common/client/options/Options.hpp"
+#include "mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
 #include "amethyst/Imports.hpp"
+
+class Minecraft;
 
 class AmethystContext {
 public:

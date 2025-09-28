@@ -4,10 +4,10 @@
 #include "amethyst/runtime/events/UiEvents.hpp"
 #include "amethyst/Log.hpp"
 
-#include "minecraft/src-client/common/client/gui/screens/ScreenController.hpp"
-#include "minecraft/src-client/common/client/gui/screens/ScreenEvent.hpp"
-#include "minecraft/src-client/common/client/gui/screens/controllers/StartMenuScreenController.hpp"
-#include "minecraft/src-deps/core/string/StringHash.hpp"
+#include "mc/src-client/common/client/gui/screens/ScreenController.hpp"
+#include "mc/src-client/common/client/gui/screens/ScreenEvent.hpp"
+#include "mc/src-client/common/client/gui/screens/controllers/StartMenuScreenController.hpp"
+#include "mc/src-deps/core/string/StringHash.hpp"
 
 SafetyHookInline _ScreenController__handleButtonEvent;
 SafetyHookInline _StartMenuScreenController__registerBindings;

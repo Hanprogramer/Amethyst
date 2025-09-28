@@ -4,7 +4,7 @@
 #include "loader/AmethystRuntime.hpp"
 
 #include "amethyst/Memory.hpp"
-#include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
+#include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
 
 class IResourcePackRepository;
 class ResourcePackStack;
