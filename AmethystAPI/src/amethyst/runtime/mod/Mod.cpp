@@ -199,7 +199,7 @@ fs::path Mod::GetTemporaryLibrary(const std::string& modName)
     fs::path originalDll = GetAmethystFolder() / L"Mods" / modName / std::string(modShortened + ".dll");
     Assert(fs::exists(originalDll), "Could not find '{}.dll'", modShortened);
 
-    fs::path tempDll = tempDir.string() + modShortened + ".dll";
+    fs::path tempDll = tempDir / (modShortened + ".dll");
 
     try {
         fs::copy_file(originalDll, tempDll, fs::copy_options::overwrite_existing);
