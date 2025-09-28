@@ -1,8 +1,8 @@
 #include "hooks/ResourceHooks.hpp"
-#include "minecraft/src-vanilla/vanilla_shared/common/resources/VanillaInPackagePacks.hpp"
-#include "minecraft/src-vanilla/vanilla_client/common/module/VanillaGameModuleClient.hpp"
-#include "minecraft/src-vanilla/vanilla_shared/common/server/module/VanillaGameModuleServer.hpp"
-#include "minecraft/src/common/resources/ResourcePackRepository.hpp"
+#include "mc/src-vanilla/vanilla_shared/common/resources/VanillaInPackagePacks.hpp"
+#include "mc/src-vanilla/vanilla_client/common/module/VanillaGameModuleClient.hpp"
+#include "mc/src-vanilla/vanilla_shared/common/server/module/VanillaGameModuleServer.hpp"
+#include "mc/src/common/resources/ResourcePackRepository.hpp"
 
 SafetyHookInline _VanillaGameModuleClient_initializeResourceStack;
 SafetyHookInline _VanillaGameModuleServer_initializeBehaviorStack;

@@ -1,7 +1,7 @@
 #include "amethyst/MinecraftVtables.hpp"
-#include "minecraft/src/common/world/level/block/BlockLegacy.hpp"
-#include "minecraft/src/common/world/item/ItemStack.hpp"
-#include "minecraft/src-client/common/client/renderer/RenderMaterialGroup.hpp"
+#include "mc/src/common/world/level/block/BlockLegacy.hpp"
+#include "mc/src/common/world/item/ItemStack.hpp"
+#include "mc/src-client/common/client/renderer/RenderMaterialGroup.hpp"
 
 // Helper functions
 void InitializeCtorImpl(void*& ctorPtr, std::string signature, std::string ctorName)

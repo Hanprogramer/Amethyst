@@ -1,8 +1,8 @@
 #include "hooks/InputHooks.hpp"
 #include <amethyst/runtime/events/InputEvents.hpp>
-#include <minecraft/src-deps/input/MouseDevice.hpp>
+#include <mc/src-deps/input/MouseDevice.hpp>
 #include <amethyst/Log.hpp>
-#include <minecraft/src-client/common/client/input/VanillaClientInputMappingFactory.hpp>
+#include <mc/src-client/common/client/input/VanillaClientInputMappingFactory.hpp>
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
 SafetyHookInline _VanillaClientInputMappingFactory_createInputMappingTemplates;

@@ -3,8 +3,8 @@
 #include "amethyst/runtime/input/InputManager.hpp"
 #include "amethyst/runtime/AmethystContext.hpp"
 #include "amethyst/runtime/input/InputAction.hpp"
-#include "minecraft/src-client/common/client/game/IClientInstance.hpp"
-#include "minecraft/src-client/common/client/input/VanillaClientInputMappingFactory.hpp"
+#include "mc/src-client/common/client/game/IClientInstance.hpp"
+#include "mc/src-client/common/client/input/VanillaClientInputMappingFactory.hpp"
 
 Amethyst::InputManager::InputManager(AmethystContext *amethyst) {
     mAmethyst = amethyst;

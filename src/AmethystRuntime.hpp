@@ -9,7 +9,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <minecraft/src/common/world/item/Item.hpp>
+#include <mc/src/common/world/item/Item.hpp>
 #include <vector>
 #include <RuntimeContext.hpp>
 

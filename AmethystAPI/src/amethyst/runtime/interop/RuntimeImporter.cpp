@@ -1,7 +1,7 @@
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
 #include <amethyst/Log.hpp>
 #include <amethyst/Memory.hpp>
-#include "minecraft/src-client/common/client/world/WorldCreationHelper.hpp"
+#include "mc/src-client/common/client/world/WorldCreationHelper.hpp"
 
 #pragma pack(push, 1)
 struct StringTable {

@@ -1,6 +1,6 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <amethyst/MinecraftVtables.hpp>
-#include <minecraft/src/common/Minecraft.hpp>
+#include <mc/src/common/Minecraft.hpp>
 
 static AmethystContext* _AmethystContextInstance;
 static const Mod* _OwnMod;

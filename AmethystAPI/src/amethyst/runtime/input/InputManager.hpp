@@ -1,10 +1,10 @@
 #pragma once
 #include <vector>
 #include <map>
-#include "minecraft/src-client/common/client/options/Options.hpp"
-#include <minecraft/src-client/common/client/input/ClientInputHandler.hpp>
+#include "mc/src-client/common/client/options/Options.hpp"
+#include <mc/src-client/common/client/input/ClientInputHandler.hpp>
 #include "amethyst/runtime/input/InputAction.hpp"
-#include <minecraft/src-deps/input/InputHandler.hpp>
+#include <mc/src-deps/input/InputHandler.hpp>
 
 class VanillaClientInputMappingFactory;
 class KeyboardInputMapping;

@@ -1,6 +1,6 @@
 #pragma once
-#include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
-#include "minecraft/src-deps/core/resource/ResourceHelper.hpp"
+#include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
+#include "mc/src-deps/core/resource/ResourceHelper.hpp"
 #include "amethyst/runtime/mod/Mod.hpp"
 #include "amethyst/Memory.hpp"
 

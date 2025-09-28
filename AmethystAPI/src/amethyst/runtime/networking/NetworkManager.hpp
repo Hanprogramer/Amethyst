@@ -2,9 +2,9 @@
 #include <amethyst/runtime/HookManager.hpp>
 #include "amethyst/runtime/networking/CustomPacket.hpp"
 #include <amethyst/Log.hpp>
-#include <minecraft/src/common/network/packet/Packet.hpp>
-#include <minecraft/src/common/network/PacketSender.hpp>
-#include <minecraft/src/common/CommonTypes.hpp>
+#include <mc/src/common/network/packet/Packet.hpp>
+#include <mc/src/common/network/PacketSender.hpp>
+#include <mc/src/common/CommonTypes.hpp>
 
 class UserEntityIdentifierComponent;
 

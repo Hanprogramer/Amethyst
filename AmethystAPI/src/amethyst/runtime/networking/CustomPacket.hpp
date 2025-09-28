@@ -1,8 +1,8 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <minecraft/src-deps/core/utility/Result.hpp>
-#include <minecraft/src-deps/core/utility/BinaryStream.hpp>
+#include <mc/src-deps/core/utility/Result.hpp>
+#include <mc/src-deps/core/utility/BinaryStream.hpp>
 
 class NetworkIdentifier;
 class NetEventCallback;

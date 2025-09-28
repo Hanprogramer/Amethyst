@@ -1,5 +1,5 @@
 #include "InputAction.hpp"
-#include <minecraft/src-deps/input/InputHandler.hpp>
+#include <mc/src-deps/input/InputHandler.hpp>
 
 class ClientInstance;
 

@@ -1,8 +1,8 @@
 #pragma once
 #include <format>
-#include <minecraft/src/common/world/item/ItemStack.hpp>  
-#include <minecraft/src/common/world/item/Item.hpp>  
-#include <minecraft/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
+#include <mc/src/common/world/item/ItemStack.hpp>  
+#include <mc/src/common/world/item/Item.hpp>  
+#include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
 
 template <>
 struct std::formatter<ItemStack> {
