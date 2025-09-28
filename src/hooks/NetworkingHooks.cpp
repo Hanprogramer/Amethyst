@@ -1,7 +1,7 @@
 #include "loader/AmethystRuntime.hpp"
 
 #include "hooks/NetworkingHooks.hpp"
-#include "AmethystRuntime.hpp"
+#include "loader/AmethystRuntime.hpp"
 #include "mc/src/common/network/packet/Packet.hpp"
 #include "mc/src/common/network/PacketHandlerDispatcherInstance.hpp"
 #include "mc/src/common/network/ServerNetworkHandler.hpp"

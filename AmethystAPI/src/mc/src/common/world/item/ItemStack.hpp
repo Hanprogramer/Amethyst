@@ -1,4 +1,6 @@
+/// @symbolgeneration
 #pragma once
+#include "amethyst/Imports.hpp"
 #include <format>
 #include "mc/src/common/world/item/ItemStackBase.hpp"
 #include "mc/src/common/world/inventory/network/ItemStackNetIdVariant.hpp"
@@ -13,7 +15,8 @@ class NetworkItemStackDescriptor;
 
 class ItemStack : public ItemStackBase {
 public:
-    static ItemStack& EMPTY_ITEM;
+    /// @address {0x57CF0A0}
+    MC static ItemStack& EMPTY_ITEM;
     
 public:
     ItemStackNetIdVariant mNetIdVariant;

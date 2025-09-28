@@ -1,4 +1,4 @@
-#include "AmethystRuntime.hpp"
+#include "loader/AmethystRuntime.hpp"
 
 #include "amethyst/Log.hpp"
 #include "amethyst/runtime/ModContext.hpp"

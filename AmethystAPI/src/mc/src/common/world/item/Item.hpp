@@ -410,10 +410,10 @@ public:
 	/// @vidx {91}
 	MC virtual int getCooldownTime() const;
 
-	/// @vidx {92}
+	/// @vidx {93}
 	MC virtual void fixupCommon(ItemStackBase& unk0) const;
 
-	/// @vidx {93}
+	/// @vidx {92}
 	MC virtual void fixupCommon(ItemStackBase& unk0, Level& unk1) const;
 
 	/// @vidx {94}

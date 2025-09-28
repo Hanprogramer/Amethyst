@@ -1,8 +1,8 @@
 /// @symbolgeneration
 #pragma once
 #include <amethyst/Imports.hpp>
-#include "minecraft/src-deps/core/utility/NonOwnerPointer.hpp"
-#include "minecraft/src-client/common/module/GameModuleClient.hpp"
+#include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
+#include "mc/src-client/common/module/GameModuleClient.hpp"
 #include "gsl/gsl"
 
 class Experiments;

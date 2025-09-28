@@ -200,7 +200,7 @@ void Amethyst::RuntimeImporter::Initialize()
         FunctionDescTable& functionDescTable = *reinterpret_cast<FunctionDescTable*>(base + functionDescSection->VirtualAddress);
         FunctionDesc* functionDesc = &functionDescTable.entries;
         uintptr_t* iat = reinterpret_cast<uintptr_t*>(base + functionDescTable.iatRva);
-        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), functionDescTable.iatSize, nullptr);
+        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), functionDescTable.iatSize * sizeof(void*), nullptr);
         for (auto i = 0; i < functionDescTable.length; i++, functionDesc++) {
             uintptr_t& address = iat[functionDesc->iatIndex];
             address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);
@@ -242,7 +242,7 @@ void Amethyst::RuntimeImporter::Initialize()
         VariableDescTable& variableDescTable = *reinterpret_cast<VariableDescTable*>(base + variableDescSection->VirtualAddress);
         VariableDesc* variableDesc = &variableDescTable.entries;
         uintptr_t* iat = reinterpret_cast<uintptr_t*>(base + variableDescTable.iatRva);
-        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), variableDescTable.iatSize, nullptr);
+        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), variableDescTable.iatSize * sizeof(void*), nullptr);
         for (auto i = 0; i < variableDescTable.length; i++, variableDesc++) {
             uintptr_t& address = iat[variableDesc->iatIndex];
             address = 0x0;
@@ -291,7 +291,7 @@ void Amethyst::RuntimeImporter::Initialize()
         VirtualFunctionDescTable& virtualFunctionDescTable = *reinterpret_cast<VirtualFunctionDescTable*>(base + virtualFunctionDescSection->VirtualAddress);
         VirtualFunctionDesc* virtualFunctionDesc = &virtualFunctionDescTable.entries;
         uintptr_t* iat = reinterpret_cast<uintptr_t*>(base + virtualFunctionDescTable.iatRva);
-        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), virtualFunctionDescTable.iatSize, nullptr);
+        UnprotectMemory(reinterpret_cast<uintptr_t>(iat), virtualFunctionDescTable.iatSize * sizeof(void*), nullptr);
         for (auto i = 0; i < virtualFunctionDescTable.length; i++, virtualFunctionDesc++) {
             uintptr_t& address = iat[virtualFunctionDesc->iatIndex];
             address = reinterpret_cast<uintptr_t>(&UninitializedFunctionHandler);

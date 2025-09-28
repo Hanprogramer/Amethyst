@@ -1,4 +1,6 @@
+/// @symbolgeneration
 #pragma once
+#include "amethyst/Imports.hpp"
 #include <cstdint>
 #include <unordered_set>
 #include <deque>
@@ -73,22 +75,23 @@ enum class ContainerID : unsigned char {
 
 class ContainerCloseListener {
 public:
-    virtual void containerClosed(Player& player) = 0;
-    virtual ~ContainerCloseListener() = default;
+    MC virtual void containerClosed(Player& player) = 0;
+    MC virtual ~ContainerCloseListener() = default;
 };
 
 class ContainerSizeChangeListener {
 public:
-    virtual void containerSizeChanged(int) = 0;
-    virtual ~ContainerSizeChangeListener() = default;
+    MC virtual void containerSizeChanged(int) = 0;
+    MC virtual ~ContainerSizeChangeListener() = default;
 };
 
 class ContainerContentChangeListener {
 public:
-    virtual void containerContentChanged(int) = 0;
-    virtual ~ContainerContentChangeListener() = default;
+    MC virtual void containerContentChanged(int) = 0;
+    MC virtual ~ContainerContentChangeListener() = default;
 };
 
+/// @vptr {0x4DC0F70}
 class Container {
 public:
     ContainerType mContainerType;
@@ -103,52 +106,96 @@ public:
     ContainerRuntimeId mContainerRuntimeId;
 
 public:
-    Container(ContainerType type);
-    Container(ContainerType type, const std::string& containerName, bool hasCustomName);
-    virtual ~Container();
-    
+    /// @signature {48 89 5C 24 ? 48 89 4C 24 ? 57 48 83 EC ? 48 8B D9 48 8D 05 ? ? ? ? 48 89 01 88 51}
+    MC Container(ContainerType type);
+    /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 4C 24 ? 57 48 83 EC ? 41 0F B6 F1 49 8B F8 48 8B D9 48 8D 05}
+    MC Container(ContainerType type, const std::string& containerName, bool hasCustomName);
+
 public:
-    virtual void init();
-    virtual void serverInitItemStackIds(int, int, std::function<void(int, const ItemStack&)>) = 0;
-    virtual void addContentChangeListener(ContainerContentChangeListener*);
-    virtual void removeContentChangeListener(ContainerContentChangeListener*);
-    virtual void addRemovedListener(ContainerRemovedListener*);
-    virtual void removeRemovedListener(ContainerRemovedListener*);
-    virtual const ItemStack& getItem(int) const = 0;
-    virtual bool hasRoomForItem(const ItemStack&);
-    virtual void addItem(ItemStack&);
-    virtual void addItemWithForceBalance(ItemStack&);
-    virtual bool addItemToFirstEmptySlot(const ItemStack&);
-    virtual void setItem(int, const ItemStack&) = 0;
-    virtual void setItemWithForceBalance(int, const ItemStack&, bool);
-    virtual void removeItem(int, int);
-    virtual void removeAllItems();
-    virtual void removeAllItemsWithForceBalance();
-    virtual void containerRemoved();
-    virtual void dropSlotContent(BlockSource&, const Vec3&, bool, int);
-    virtual void dropContents(BlockSource&, const Vec3&, bool);
-    virtual int getContainerSize() const = 0;
-    virtual int getMaxStackSize() const = 0;
-    virtual void startOpen(Player&) = 0;
-    virtual void stopOpen(Player&);
-    virtual std::vector<ItemStack> getSlotCopies() const;
-    virtual const std::vector<const ItemStack*> getSlots() const;
-    virtual int getEmptySlotsCount() const;
-    virtual int getItemCount(const ItemStack&);
-    virtual int findFirstSlotForItem(const ItemStack&) const;
-    virtual bool canPushInItem(int, int, const ItemStack&) const;
-    virtual bool canPullOutItem(int, int, const ItemStack&) const;
-    virtual void setContainerChanged(int);
-    virtual void setContainerMoved();
-    virtual void setCustomName(const std::string& name);
-    virtual bool hasCustomName() const;
-    virtual void readAdditionalSaveData(const CompoundTag&);
-    virtual void addAdditionalSaveData(CompoundTag&);
-    virtual void createTransactionContext(std::function<void (Container&, int, ItemStack const&, ItemStack const&)>, std::function<void()>);
-    virtual void initializeContainerContents(BlockSource&);
-    virtual bool isEmpty() const;
-    virtual bool isSlotDisabled(int slot);
-    virtual bool hasGetStrictParsingVersion();
+    /// @vidx {0}
+    MC virtual ~Container();
+    /// @vidx {1}
+    MC virtual void init();
+    /// @vidx {2}
+    MC virtual void serverInitItemStackIds(int, int, std::function<void(int, const ItemStack&)>) = 0;
+    /// @vidx {3}
+    MC virtual void addContentChangeListener(ContainerContentChangeListener*);
+    /// @vidx {4}
+    MC virtual void removeContentChangeListener(ContainerContentChangeListener*);
+    /// @vidx {5}
+    MC virtual void addRemovedListener(ContainerRemovedListener*);
+    /// @vidx {6}
+    MC virtual void removeRemovedListener(ContainerRemovedListener*);
+    /// @vidx {7}
+    MC virtual const ItemStack& getItem(int) const = 0;
+    /// @vidx {8}
+    MC virtual bool hasRoomForItem(const ItemStack&);
+    /// @vidx {9}
+    MC virtual void addItem(ItemStack&);
+    /// @vidx {10}
+    MC virtual void addItemWithForceBalance(ItemStack&);
+    /// @vidx {11}
+    MC virtual bool addItemToFirstEmptySlot(const ItemStack&);
+    /// @vidx {12}
+    MC virtual void setItem(int, const ItemStack&) = 0;
+    /// @vidx {13}
+    MC virtual void setItemWithForceBalance(int, const ItemStack&, bool);
+    /// @vidx {14}
+    MC virtual void removeItem(int, int);
+    /// @vidx {15}
+    MC virtual void removeAllItems();
+    /// @vidx {16}
+    MC virtual void removeAllItemsWithForceBalance();
+    /// @vidx {17}
+    MC virtual void containerRemoved();
+    /// @vidx {18}
+    MC virtual void dropSlotContent(BlockSource&, const Vec3&, bool, int);
+    /// @vidx {19}
+    MC virtual void dropContents(BlockSource&, const Vec3&, bool);
+    /// @vidx {20}
+    MC virtual int getContainerSize() const = 0;
+    /// @vidx {21}
+    MC virtual int getMaxStackSize() const = 0;
+    /// @vidx {22}
+    MC virtual void startOpen(Player&) = 0;
+    /// @vidx {23}
+    MC virtual void stopOpen(Player&);
+    /// @vidx {24}
+    MC virtual std::vector<ItemStack> getSlotCopies() const;
+    /// @vidx {25}
+    MC virtual const std::vector<const ItemStack*> getSlots() const;
+    /// @vidx {26}
+    MC virtual int getEmptySlotsCount() const;
+    /// @vidx {27}
+    MC virtual int getItemCount(const ItemStack&);
+    /// @vidx {28}
+    MC virtual int findFirstSlotForItem(const ItemStack&) const;
+    /// @vidx {29}
+    MC virtual bool canPushInItem(int, int, const ItemStack&) const;
+    /// @vidx {30}
+    MC virtual bool canPullOutItem(int, int, const ItemStack&) const;
+    /// @vidx {31}
+    MC virtual void setContainerChanged(int);
+    /// @vidx {32}
+    MC virtual void setContainerMoved();
+    /// @vidx {33}
+    MC virtual void setCustomName(const std::string& name);
+    /// @vidx {34}
+    MC virtual bool hasCustomName() const;
+    /// @vidx {35}
+    MC virtual void readAdditionalSaveData(const CompoundTag&);
+    /// @vidx {36}
+    MC virtual void addAdditionalSaveData(CompoundTag&);
+    /// @vidx {37}
+    MC virtual void createTransactionContext(std::function<void (Container&, int, ItemStack const&, ItemStack const&)>, std::function<void()>);
+    /// @vidx {38}
+    MC virtual void initializeContainerContents(BlockSource&);
+    /// @vidx {39}
+    MC virtual bool isEmpty() const;
+    /// @vidx {40}
+    MC virtual bool isSlotDisabled(int slot);
+    /// @vidx {41}
+    MC virtual bool hasGetStrictParsingVersion();
 };
 
 // 1.21.0.3
