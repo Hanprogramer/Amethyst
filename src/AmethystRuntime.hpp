@@ -4,7 +4,6 @@
 #include "hooks/ResourceHooks.hpp"
 #include <amethyst/Config.hpp>
 #include <amethyst/Log.hpp>
-#include <amethyst/MinecraftVtables.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <filesystem>
 #include <fstream>

@@ -1,6 +1,5 @@
 #include <mc/src/common/world/level/chunk/ChunkSource.hpp>
 #include <amethyst/Memory.hpp>
-#include <amethyst/MinecraftVtables.hpp>
 #include <mc/src/common/world/level/dimension/Dimension.hpp>
 
 ChunkSource::ChunkSource(Dimension* dimension, int side) : Bedrock::EnableNonOwnerReferences()

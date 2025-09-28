@@ -8,7 +8,6 @@
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
 #include "amethyst/runtime/networking/NetworkManager.hpp"
-#include "amethyst/MinecraftVtables.hpp"
 #include "mc/src-client/common/client/game/ClientInstance.hpp"
 #include "mc/src-client/common/client/input/MinecraftInputHandler.hpp"
 #include "mc/src-client/common/client/options/Options.hpp"

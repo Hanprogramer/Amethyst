@@ -1,5 +1,4 @@
 #include <amethyst/runtime/ModContext.hpp>
-#include <amethyst/MinecraftVtables.hpp>
 #include <mc/src/common/Minecraft.hpp>
 
 static AmethystContext* _AmethystContextInstance;
@@ -7,9 +6,6 @@ static const Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
-    // Initialize vtbl pointers & ctor pointers.
-    InitializeVtablePtrs();
-
     // Store a persistent AmethystContext instance
     _AmethystContextInstance = &context;
 

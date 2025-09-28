@@ -1,5 +1,4 @@
 #include <mc/src/common/dataloadhelper/DefaultDataLoadHelper.hpp>
-#include <amethyst/MinecraftVtables.hpp>
 
 DefaultDataLoadHelper::DefaultDataLoadHelper()
 {
