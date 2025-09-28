@@ -50,6 +50,8 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     }
 
     hovertext += std::format("\n§8{}§r", self->mFullName.getString());
+    if (stack.mUserData)
+        hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
     hovertext += std::format("\n§o§9{}§r", modName);
 }
 

@@ -25,6 +25,10 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
         _OwnMod = nullptr;
     });
 
+    events.AddListener<AddModEventListenersEvent>([&](const AddModEventListenersEvent& e) {
+        CreateItemHooks();
+    });
+
     Log::Info("Initializing runtime mod: '{}'", mod.mInfo->GetVersionedName());
     SemVersion version = ctx.mPackageInfo.mVersion;
 
@@ -44,6 +48,5 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     CreateModFunctionHooks();
     CreateNetworkingHooks();
     CreateUIHooks();
-    CreateItemHooks();
     CreateRenderingHooks();
 }
