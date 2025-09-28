@@ -1,10 +1,5 @@
 #include "mc/src/common/world/level/block/BlockLegacy.hpp"
 
-
-BlockLegacy::~BlockLegacy() {
-
-}
-
 // 1.21.0.3 - Re-Implemented
 bool BlockLegacy::isContainerBlock() const
 {
@@ -30,7 +25,7 @@ bool BlockLegacy::hasComparatorSignal() const
 }
 
 // 1.21.0.3 - Re-Implemented
-bool BlockLegacy::isInteractive() const
+bool BlockLegacy::isInteractiveBlock() const
 {
     return false;
 }

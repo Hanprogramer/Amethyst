@@ -34,7 +34,7 @@ public:
     BlockLegacy& init() override;
     void onRemove(BlockSource& region, const BlockPos& pos) const override;
     void onPlace(BlockSource& region, const BlockPos& pos) const override;
-    bool isInteractive() const override;
+    bool isInteractiveBlock() const override;
     bool use(Player& player, const BlockPos& pos, unsigned char face) const override;
 };
 #pragma pack(pop)

@@ -8,7 +8,7 @@
 #include <mc/src-deps/core/math/Color.hpp>
 #include <mc/src/common/SharedPtr.hpp>
 #include <mc/src/common/nbt/CompoundTag.hpp>
-#include <mc/src/common/world/item/ItemCategory.hpp>
+#include <mc/src/common/world/item/CreativeItemCategory.hpp>
 #include <mc/src/common/world/level/block/BlockLegacy.hpp>
 #include <mc/src/common/world/item/registry/ItemRegistryRef.hpp>
 #include <mc/src/common/CommonTypes.hpp>
@@ -492,13 +492,15 @@ public:
 	MC virtual InteractionResult _useOn(ItemStack& unk0, Actor& unk1, BlockPos unk2, FacingID unk3, const Vec3& unk4) const;
 
 public:
-    Item(const std::string&, short);
+	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 0F B7 D8}
+    MC Item(const std::string&, short);
+
     short getDamageValue(CompoundTag* mUserData) const;
     const std::string& getRawNameId() const;
     void setAllowOffhand(bool allowsOffhand);
 
-    // 1.20.51.1 - 48 89 4C 24 ? 53 48 81 EC ? ? ? ? 48 8B D9 45 33 C9
-    static void addCreativeItem(ItemRegistryRef*, const Block*);
+    /// @signature {48 89 4C 24 ? 53 48 81 EC ? ? ? ? 48 8B D9 45 33 C9}
+    MC static void addCreativeItem(ItemRegistryRef*, const Block*);
     
     bool hasTag(const HashedString& tag) const;
     UseAnim getUseAnim() const;

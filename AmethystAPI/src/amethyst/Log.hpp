@@ -84,3 +84,5 @@ namespace Log {
 }; // namespace Log
 
 #define Assert(condition, ...) Log::_Assert(condition, __FUNCTION__, __LINE__, __VA_ARGS__)
+
+#define AssertFail(...) Log::_AssertFail(__FUNCTION__, __LINE__, __VA_ARGS__)

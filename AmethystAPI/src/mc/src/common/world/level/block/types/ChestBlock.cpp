@@ -43,7 +43,7 @@ bool ChestBlock::hasComparatorSignal() const
 }
 
 // 1.21.0.3 - Re-Implemented
-bool ChestBlock::isInteractive() const
+bool ChestBlock::isInteractiveBlock() const
 {
     return true;
 }

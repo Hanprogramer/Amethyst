@@ -14,6 +14,6 @@ uint32_t cg::ImageDescription::getStrideFromFormat(const mce::TextureFormat form
         return 1;
 
     default:
-        Assert(false, "Case {} has not been implemented in getStrideFromFormat", (int)format);
+        AssertFail("Case {} has not been implemented in getStrideFromFormat", (int)format);
     }
 }

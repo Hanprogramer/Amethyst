@@ -110,7 +110,12 @@
         "random": "cpp",
         "multi_span": "cpp",
         "gsl_assert": "cpp",
-        "*.rh": "cpp"
+        "*.rh": "cpp",
+        "complex": "cpp",
+        "cwctype": "cpp",
+        "resumable": "cpp",
+        "future": "cpp",
+        "numbers": "cpp"
     },
     "cmake.sourceDirectory": "C:/Users/blake/Documents/Modding/Amethyst/AmethystAPI/include/glm"
 }
