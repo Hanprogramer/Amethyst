@@ -35,7 +35,6 @@ class Mod {
     bool mIsInitialized = false;
 
     InitializeFunction mInitializeFunction = nullptr;
-
 public:
     // Metadata and stuff
     std::shared_ptr<const ModInfo> mInfo;

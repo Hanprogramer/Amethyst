@@ -1,9 +1,6 @@
 /// @symbolgeneration
 #pragma once
 #include <amethyst/Imports.hpp>
-#include <memory>
-#include <string>
-#include <vector>
 
 #include <mc/src-deps/core/math/Color.hpp>
 #include <mc/src/common/SharedPtr.hpp>
@@ -16,6 +13,7 @@
 #include <mc/src/common/world/item/ResolvedItemIconInfo.hpp>
 #include <mc/src/common/world/item/UseAnim.hpp>
 #include <mc/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
+#include <mc/src/common/world/item/ItemCommandVisibility.hpp>
 
 // Auto-generated: Unknown complete types
 enum ItemColor {};
@@ -82,27 +80,24 @@ class Item {
 public:
     MC static uintptr_t $vtable_for_this;
 
-    /* this + 8   */ std::string mTextureAtlasFile;
-    /* this + 40  */ int mFrameCount;
-    /* this + 44  */ bool mAnimatesInToolbar;
-    /* this + 45  */ bool mIsMirroredArt;
-    /* this + 46  */ UseAnim mUseAnim;
-    /* this + 64  */ std::string mHoverTextColorFormat;
-
+    std::string mTextureAtlasFile;
+    int mFrameCount;
+    bool mAnimatesInToolbar;
+    bool mIsMirroredArt;
+    UseAnim mUseAnim;
+    std::string mHoverTextColorFormat;
     int mIconFrame;
     int mAtlasFrame;
     int mAtlasTotalFrames;
     std::string mIconName;
     std::string mAtlasName;
     uint8_t mMaxStackSize;
-
-    /* this + 162 */ short mId;
-    /* this + 168 */ std::string mDescriptionId;
-    /* this + 200 */ HashedString mRawNameId;
-    /* this + 248 */ std::string mNamespace;
-    /* this + 280 */ HashedString mFullName;
-    /* this + 328 */ short mMaxDamage;
-
+    short mId;
+    std::string mDescriptionId;
+    HashedString mRawNameId;
+    std::string mNamespace;
+    HashedString mFullName;
+    short mMaxDamage;
     bool mIsGlint : 1;
     bool mHandEquipped : 1;
     bool mIsStackedByData : 1;
@@ -112,51 +107,46 @@ public:
     bool mShouldDespawn : 1;
     bool mAllowOffhand : 1;
     bool mIgnoresPermissions : 1;
-
     int mMaxUseDuration;
     BaseGameVersion mMinRequiredBaseGameVersion;
-
-    /* this + 456 */ WeakPtr<BlockLegacy> mLegacyBlock;
-    /* this + 464 */ CreativeItemCategory mCreativeCategory;
-
+    WeakPtr<BlockLegacy> mLegacyBlock;
+    CreativeItemCategory mCreativeCategory;
     Item* mCraftingRemainingItem;
     std::string mCreativeGroup;
     float mFurnaceBurnIntervalModifier;
     float mFurnaceXPmultiplier;
     bool mIsHiddenInCommands;
-
     Interactions::Mining::MineBlockItemEffectType mMineBlockType;
     std::unique_ptr<FoodItemComponentLegacy> mFoodComponentLegacy;
     std::unique_ptr<SeedItemComponentLegacy> mSeedComponent;
     std::unique_ptr<CameraItemComponentLegacy> mCameraComponentLegacy;
     std::vector<std::function<void __cdecl(void)>> mOnResetBAIcallbacks;
     std::vector<ItemTag> mTags;
-    std::byte padding596[4]; // idk why the size is 600 not 596
 
 public:
     /// @vidx {0}
 	MC virtual ~Item();
 
 	/// @vidx {1}
-	MC virtual bool initServer(const Json::Value& unk0, const SemVersion& unk1, bool unk2, const Experiments& unk3);
+	MC virtual bool initServer(const Json::Value& config, const SemVersion& version, bool unk2, const Experiments& experiments);
 
 	/// @vidx {2}
 	MC virtual void tearDown();
 
 	/// @vidx {3}
-	MC virtual Item& setDescriptionId(const std::string& unk0);
+	MC virtual Item& setDescriptionId(const std::string& descriptionId);
 
 	/// @vidx {4}
 	MC virtual const std::string& getDescriptionId() const;
 
 	/// @vidx {5}
-	MC virtual int getMaxUseDuration(const ItemStack* unk0) const;
+	MC virtual int getMaxUseDuration(const ItemStack* item) const;
 
 	/// @vidx {6}
 	MC virtual bool isMusicDisk() const;
 
 	/// @vidx {7}
-	MC virtual void executeEvent(ItemStackBase& unk0, const std::string& unk1, RenderParams& unk2) const;
+	MC virtual void executeEvent(ItemStackBase& stack, const std::string& eventName, RenderParams& renderParams) const;
 
 	/// @vidx {8}
 	MC virtual bool isComponentBased() const;
@@ -201,25 +191,25 @@ public:
 	MC virtual bool isTrimAllowed() const;
 
 	/// @vidx {22}
-	MC virtual ItemComponent* getComponent(const HashedString& unk0) const;
+	MC virtual ItemComponent* getComponent(const HashedString& componentName) const;
 
 	/// @vidx {23}
 	MC virtual IFoodItemComponent* getFood() const;
 
 	/// @vidx {24}
-	MC virtual Item& setMaxDamage(int unk0);
+	MC virtual Item& setMaxDamage(int maxDamage);
 
 	/// @vidx {25}
-	MC virtual Item& setMaxUseDuration(int unk0);
+	MC virtual Item& setMaxUseDuration(int duration);
 
 	/// @vidx {26}
 	MC virtual std::unique_ptr<CompoundTag> buildNetworkTag() const;
 
 	/// @vidx {27}
-	MC virtual void initializeFromNetwork(const CompoundTag& unk0);
+	MC virtual void initializeFromNetwork(const CompoundTag& userData);
 
 	/// @vidx {28}
-	MC virtual std::vector<std::string> validateFromNetwork(const CompoundTag& unk0);
+	MC virtual std::vector<std::string> validateFromNetwork(const CompoundTag& userData);
 
 	/// @vidx {29}
 	MC virtual BlockShape getBlockShape() const;
@@ -228,10 +218,10 @@ public:
 	MC virtual bool canBeDepleted() const;
 
 	/// @vidx {31}
-	MC virtual bool canDestroySpecial(const Block& unk0) const;
+	MC virtual bool canDestroySpecial(const Block& block) const;
 
 	/// @vidx {32}
-	MC virtual int getLevelDataForAuxValue(int unk0) const;
+	MC virtual int getLevelDataForAuxValue(int auxValue) const;
 
 	/// @vidx {33}
 	MC virtual bool isStackedByData() const;
@@ -243,13 +233,13 @@ public:
 	MC virtual int getAttackDamage() const;
 
 	/// @vidx {36}
-	MC virtual float getAttackDamageBonus(const Actor& unk0, float unk1) const;
+	MC virtual float getAttackDamageBonus(const Actor& actor, float unk1) const;
 
 	/// @vidx {37}
 	MC virtual bool isHandEquipped() const;
 
 	/// @vidx {38}
-	MC virtual bool isGlint(const ItemStackBase& unk0) const;
+	MC virtual bool isGlint(const ItemStackBase& stack) const;
 
 	/// @vidx {39}
 	MC virtual bool isPattern() const;
@@ -273,16 +263,16 @@ public:
 	MC virtual bool isLiquidClipItem() const;
 
 	/// @vidx {46}
-	MC virtual bool shouldInteractionWithBlockBypassLiquid(const Block& unk0) const;
+	MC virtual bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
 
 	/// @vidx {47}
 	MC virtual bool requiresInteract() const;
 
 	/// @vidx {48}
-	MC virtual void appendFormattedHovertext(const ItemStackBase& unk0, Level& unk1, std::string& unk2, bool unk3) const;
+	MC virtual void appendFormattedHovertext(const ItemStackBase& stack, Level& level, std::string& outText, bool unk3) const;
 
 	/// @vidx {49}
-	MC virtual bool isValidRepairItem(const ItemStackBase& unk0, const ItemStackBase& unk1, const BaseGameVersion& unk2) const;
+	MC virtual bool isValidRepairItem(const ItemStackBase& targetStack, const ItemStackBase& repairStack, const BaseGameVersion& version) const;
 
 	/// @vidx {50}
 	MC virtual int getEnchantSlot() const;
@@ -303,7 +293,7 @@ public:
 	MC virtual bool isComplex() const;
 
 	/// @vidx {56}
-	MC virtual bool isValidAuxValue(int unk0) const;
+	MC virtual bool isValidAuxValue(int auxValue) const;
 
 	/// @vidx {57}
 	MC virtual int getDamageChance(int unk0) const;
@@ -318,31 +308,31 @@ public:
 	MC virtual bool isActorPlacerItem() const;
 
 	/// @vidx {61}
-	MC virtual bool isMultiColorTinted(const ItemStack& unk0) const;
+	MC virtual bool isMultiColorTinted(const ItemStack& stack) const;
 
 	/// @vidx {62}
-	MC virtual mce::Color getColor(const CompoundTag* unk0, const ItemDescriptor& unk1) const;
-
-	/// @vidx {63}
-	MC virtual bool hasCustomColor(const ItemStackBase& unk0) const;
+	MC virtual mce::Color getColor(const CompoundTag* unk0, const ItemDescriptor& descriptor) const;
 
 	/// @vidx {64}
+	MC virtual bool hasCustomColor(const ItemStackBase& stack) const;
+
+	/// @vidx {63}
 	MC virtual bool hasCustomColor(const CompoundTag* unk0) const;
 
 	/// @vidx {65}
-	MC virtual void clearColor(ItemStackBase& unk0) const;
+	MC virtual void clearColor(ItemStackBase& stack) const;
 
 	/// @vidx {66}
-	MC virtual void setColor(ItemStackBase& unk0, const mce::Color& unk1) const;
+	MC virtual void setColor(ItemStackBase& stack, const mce::Color& color) const;
 
 	/// @vidx {67}
-	MC virtual mce::Color getBaseColor(const ItemStack& unk0) const;
+	MC virtual mce::Color getBaseColor(const ItemStack& stack) const;
 
 	/// @vidx {68}
-	MC virtual mce::Color getSecondaryColor(const ItemStack& unk0) const;
+	MC virtual mce::Color getSecondaryColor(const ItemStack& stack) const;
 
 	/// @vidx {69}
-	MC virtual ActorDefinitionIdentifier getActorIdentifier(const ItemStack& unk0) const;
+	MC virtual ActorDefinitionIdentifier getActorIdentifier(const ItemStack& stack) const;
 
 	/// @vidx {70}
 	MC virtual int buildIdAux(short unk0, const CompoundTag* unk1) const;
@@ -351,58 +341,58 @@ public:
 	MC virtual bool canUseOnSimTick() const;
 
 	/// @vidx {72}
-	MC virtual ItemStack& use(ItemStack& unk0, Player& unk1) const;
+	MC virtual ItemStack& use(ItemStack& stack, Player& player) const;
 
 	/// @vidx {73}
-	MC virtual Actor* createProjectileActor(BlockSource& unk0, const ItemStack& unk1, const Vec3& unk2, const Vec3& unk3) const;
+	MC virtual Actor* createProjectileActor(BlockSource& source, const ItemStack& stack, const Vec3& pos, const Vec3& velocity) const;
 
 	/// @vidx {74}
-	MC virtual bool dispense(BlockSource& unk0, Container& unk1, int unk2, const Vec3& unk3, FacingID unk4) const;
+	MC virtual bool dispense(BlockSource& source, Container& container, int slot, const Vec3& pos, FacingID facing) const;
 
 	/// @vidx {75}
-	MC virtual ItemUseMethod useTimeDepleted(ItemStack& unk0, Level* unk1, Player* unk2) const;
+	MC virtual ItemUseMethod useTimeDepleted(ItemStack& stack, Level* level, Player* player) const;
 
 	/// @vidx {76}
-	MC virtual void releaseUsing(ItemStack& unk0, Player* unk1, int unk2) const;
+	MC virtual void releaseUsing(ItemStack& stack, Player* player, int duration) const;
 
 	/// @vidx {77}
-	MC virtual float getDestroySpeed(const ItemStackBase& unk0, const Block& unk1) const;
+	MC virtual float getDestroySpeed(const ItemStackBase& stack, const Block& block) const;
 
 	/// @vidx {78}
-	MC virtual void hurtActor(ItemStack& unk0, Actor& unk1, Mob& unk2) const;
+	MC virtual void hurtActor(ItemStack& stack, Actor& actor, Mob& mob) const;
 
 	/// @vidx {79}
-	MC virtual void hitActor(ItemStack& unk0, Actor& unk1, Mob& unk2) const;
+	MC virtual void hitActor(ItemStack& stack, Actor& actor, Mob& mob) const;
 
 	/// @vidx {80}
-	MC virtual void hitBlock(ItemStack& unk0, const Block& unk1, const BlockPos& unk2, Mob& unk3) const;
+	MC virtual void hitBlock(ItemStack& stack, const Block& block, const BlockPos& pos, Mob& mob) const;
 
 	/// @vidx {81}
-	MC virtual bool mineBlock(ItemStack& unk0, const Block& unk1, int unk2, int unk3, int unk4, Actor* unk5) const;
+	MC virtual bool mineBlock(ItemStack& stack, const Block& block, int unk2, int unk3, int unk4, Actor* actor) const;
 
 	/// @vidx {82}
-	MC virtual std::string buildDescriptionName(const ItemStackBase& unk0) const;
+	MC virtual std::string buildDescriptionName(const ItemStackBase& stack) const;
 
 	/// @vidx {83}
-	MC virtual std::string buildDescriptionId(const ItemDescriptor& unk0, const CompoundTag* unk1) const;
+	MC virtual std::string buildDescriptionId(const ItemDescriptor& descriptor, const CompoundTag* tag) const;
 
 	/// @vidx {84}
-	MC virtual std::string buildEffectDescriptionName(const ItemStackBase& unk0) const;
+	MC virtual std::string buildEffectDescriptionName(const ItemStackBase& stack) const;
 
 	/// @vidx {85}
-	MC virtual void readUserData(ItemStackBase& unk0, IDataInput& unk1, ReadOnlyBinaryStream& unk2) const;
+	MC virtual void readUserData(ItemStackBase& stack, IDataInput& input, ReadOnlyBinaryStream& stream) const;
 
 	/// @vidx {86}
-	MC virtual void writeUserData(const ItemStackBase& unk0, IDataOutput& unk1) const;
+	MC virtual void writeUserData(const ItemStackBase& stack, IDataOutput& output) const;
 
 	/// @vidx {87}
-	MC virtual FacingID getMaxStackSize(const ItemDescriptor& unk0) const;
+	MC virtual FacingID getMaxStackSize(const ItemDescriptor& descriptor) const;
 
 	/// @vidx {88}
-	MC virtual bool inventoryTick(ItemStack& unk0, Level& unk1, Actor& unk2, int unk3, bool unk4) const;
+	MC virtual bool inventoryTick(ItemStack& stack, Level& level, Actor& actor, int unk3, bool unk4) const;
 
 	/// @vidx {89}
-	MC virtual void refreshedInContainer(const ItemStackBase& unk0, Level& unk1) const;
+	MC virtual void refreshedInContainer(const ItemStackBase& stack, Level& level) const;
 
 	/// @vidx {90}
 	MC virtual const HashedString& getCooldownType() const;
@@ -417,13 +407,13 @@ public:
 	MC virtual void fixupCommon(ItemStackBase& unk0, Level& unk1) const;
 
 	/// @vidx {94}
-	MC virtual InHandUpdateType getInHandUpdateType(const Player& unk0, const ItemStack& unk1, const ItemStack& unk2, bool unk3, bool unk4) const;
+	MC virtual InHandUpdateType getInHandUpdateType(const Player& player, const ItemStack& currentStack, const ItemStack& prevStack, bool unk3, bool unk4) const;
 
 	/// @vidx {95}
 	MC virtual bool validFishInteraction(int unk0) const;
 
 	/// @vidx {96}
-	MC virtual void enchantProjectile(const ItemStackBase& unk0, Actor& unk1) const;
+	MC virtual void enchantProjectile(const ItemStackBase& stack, Actor& actor) const;
 
 	/// @vidx {97}
 	MC virtual ActorLocation getEquipLocation() const;
@@ -438,22 +428,22 @@ public:
 	MC virtual bool useInterruptedByAttacking() const;
 
 	/// @vidx {101}
-	MC virtual bool hasSameRelevantUserData(const ItemStackBase& unk0, const ItemStackBase& unk1) const;
+	MC virtual bool hasSameRelevantUserData(const ItemStackBase& stack, const ItemStackBase& prevStack) const;
 
 	/// @vidx {102}
-	MC virtual void initClient(const Json::Value& unk0, const SemVersion& unk1, bool unk2, const Experiments& unk3);
+	MC virtual void initClient(const Json::Value& config, const SemVersion& version, bool unk2, const Experiments& experiments);
 
 	/// @vidx {103}
-	MC virtual Item& setIconInfo(const std::string& unk0, int unk1);
+	MC virtual Item& setIconInfo(const std::string& iconName, int iconFrame);
 
 	/// @vidx {104}
-	MC virtual ResolvedItemIconInfo getIconInfo(const ItemStackBase& unk0, int unk1, bool unk2) const;
+	MC virtual ResolvedItemIconInfo getIconInfo(const ItemStackBase& stack, int unk1, bool unk2) const;
 
 	/// @vidx {105}
-	MC virtual std::string getInteractText(const Player& unk0) const;
+	MC virtual std::string getInteractText(const Player& player) const;
 
 	/// @vidx {106}
-	MC virtual int getAnimationFrameFor(Mob* unk0, bool unk1, const ItemStack* unk2, bool unk3) const;
+	MC virtual int getAnimationFrameFor(Mob* mob, bool unk1, const ItemStack* stack, bool unk3) const;
 
 	/// @vidx {107}
 	MC virtual bool isEmissive(int unk0) const;
@@ -468,42 +458,219 @@ public:
 	MC virtual bool canBeCharged() const;
 
 	/// @vidx {111}
-	MC virtual void playSoundIncrementally(const ItemStack& unk0, Mob& unk1) const;
+	MC virtual void playSoundIncrementally(const ItemStack& stack, Mob& mob) const;
 
 	/// @vidx {112}
-	MC virtual float getFurnaceXPmultiplier(const ItemStackBase& unk0) const;
+	MC virtual float getFurnaceXPmultiplier(const ItemStackBase& stack) const;
 
 	/// @vidx {113}
 	MC virtual std::string getAuxValuesDescription() const;
 
 	/// @vidx {114}
-	MC virtual bool calculatePlacePos(ItemStackBase& unk0, Actor& unk1, FacingID& unk2, BlockPos& unk3) const;
+	MC virtual bool calculatePlacePos(ItemStackBase& stack, Actor& actor, FacingID& face, BlockPos& pos) const;
 
 	/// @vidx {115}
-	MC virtual bool _checkUseOnPermissions(Actor& unk0, ItemStackBase& unk1, const FacingID& unk2, const BlockPos& unk3) const;
+	MC virtual bool _checkUseOnPermissions(Actor& actor, ItemStackBase& stack, const FacingID& face, const BlockPos& pos) const;
 
 	/// @vidx {116}
-	MC virtual bool _calculatePlacePos(ItemStackBase& unk0, Actor& unk1, FacingID& unk2, BlockPos& unk3) const;
+	MC virtual bool _calculatePlacePos(ItemStackBase& stack, Actor& actor, FacingID& face, BlockPos& pos) const;
 
 	/// @vidx {117}
 	MC virtual bool _shouldAutoCalculatePlacePos() const;
 
 	/// @vidx {118}
-	MC virtual InteractionResult _useOn(ItemStack& unk0, Actor& unk1, BlockPos unk2, FacingID unk3, const Vec3& unk4) const;
+	MC virtual InteractionResult _useOn(ItemStack& stack, Actor& actor, BlockPos pos, FacingID face, const Vec3& hit) const;
 
 public:
 	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 0F B7 D8}
-    MC Item(const std::string&, short);
+    MC Item(const std::string& identifier, short numId);
 
-    short getDamageValue(CompoundTag* mUserData) const;
-    const std::string& getRawNameId() const;
-    void setAllowOffhand(bool allowsOffhand);
+	// UnknownReturn getBaseRarity() const;
+
+	// ICameraItemComponent* getCamera() const;
+
+	// std::vector<CommandName> getCommandNames() const;
+
+	CreativeItemCategory getCreativeCategory() const;
+
+	const std::string& getCreativeGroup() const;
+
+	short getDamageValue(const CompoundTag* userData) const;
+
+	int getFrameCount() const;
+
+	const std::string& getFullItemName() const;
+
+	const HashedString& getFullNameHash() const;
+
+	float getFurnaceBurnIntervalMultipler() const;
+
+	std::string getHoverTextColor(const ItemStackBase& stack) const;
+
+	short getId() const;
+
+	const WeakPtr<const BlockLegacy>& getLegacyBlock() const;
+
+	// UnknownReturn getLegacyBlockForRendering() const;
+
+	// int getMaxUseDuration(const ItemInstance* item) const;
+
+	Interactions::Mining::MineBlockItemEffectType getMineBlockType() const;
+
+	const std::string& getNamespace() const;
+
+	// UnknownReturn getRarity(const ItemStackBase& stack) const;
+
+	const HashedString& getRawNameHash() const;
+
+	const std::string& getRawNameId() const;
+
+	// UnknownReturn getRendererId() const;
+
+	const BaseGameVersion& getRequiredBaseGameVersion() const;
+
+	// UnknownReturn getSeed() const;
+
+	// std::string getSerializedName() const;
+
+	UseAnim getUseAnimation() const;
+	
+	void setDamageValue(ItemStackBase& stack, short value) const;
+	
+	Item& setAllowOffhand(bool allowOffhand);
+	
+	Item& setCategory(CreativeItemCategory category);
+
+	Item& setCreativeGroup(const std::string& group);
+
+	Item& setExplodable(bool isExplodable);
+
+	Item& setFireResistant(bool isFireResistant);
+
+	Item& setFurnaceBurnIntervalMultiplier(float multiplier);
+
+	Item& setFurnaceXPmultiplier(float multiplier);
+
+	Item& setHandEquipped();
+
+	Item& setHoverTextColorFormat(std::string_view format);
+
+	Item& setIsGlint(bool isGlint);
+
+	Item& setIsHiddenInCommands(ItemCommandVisibility visibility);
+
+	Item& setIsMirroredArt(bool isMirroredArt);
+
+	Item& setMaxStackSize(uint8_t maxStackSize);
+
+	Item& setMinRequiredBaseGameVersion(const BaseGameVersion& version);
+
+	Item& setRequiresWorldBuilder(bool requiresWorldBuilder);
+
+	Item& setShouldDespawn(bool shouldDespawn);
+
+	Item& setStackedByData(bool stackedByData);
+
+	Item& addTag(const ItemTag& tag);
+
+	Item& addTag(const HashedString& tag);
+
+	Item& addTags(std::initializer_list<std::reference_wrapper<const ItemTag>> tags);
+
+	Item& setUseAnimation(UseAnim useAnim);
+
+	// void removeDamageValue(ItemStackBase& stack) const;
+
+	// bool canBeUsedInCommands(const BaseGameVersion& unk0) const;
+
+	// bool canUseSeed(Actor& actor, BlockPos at, FacingID unk2) const;
+
+	// bool hasDamageValue(const CompoundTag* unk0) const;
+
+	bool hasTag(const ItemTag& unk0) const;
+
+	bool hasTag(const HashedString& unk0) const;
+
+	bool isAnimatedInToolbar() const;
+
+	bool isCamera() const;
+
+	// bool isCommandOnly(const BaseGameVersion& unk0) const;
+
+	// bool isElytra() const;
+
+	// UnknownReturn isElytra(const ItemDescriptor& unk0);
+
+	// static bool isElytraBroken(int unk0);
+
+	bool isExplodable() const;
+
+	bool isFireResistant() const;
+
+	// static bool isFlyEnabled(const ItemInstance& unk0);
+
+	bool isMirroredArt() const;
+
+	// bool isNameTag() const;
+
+	// static bool isSameTypeAndItem(const ItemStackBase& stack, const ItemStackBase& stack);
+
+	bool isSeed() const;
+
+	bool shouldDespawn() const;
+
+	// std::string buildCategoryDescriptionName() const;
+
+	// ItemDescriptor buildDescriptor(short unk0, const CompoundTag* unk1) const;
+
+	// UnknownReturn buildRedactedDescriptionName(const ItemStackBase& stack) const;
+
+	// bool _dispenseHoneycombItem(BlockSource& unk0, Container& unk1, int unk2, const Vec3& unk3) const;
+
+	// UnknownReturn _getUpgradedRarityForEnchantedItem(Rarity unk0);
+
+	// void _helpChangeInventoryItemInPlace(Actor& actor, ItemStack& unk1, ItemStack& unk2, ItemAcquisitionMethod unk3) const;
+
+	// CoordinatorResult _sendTryPlaceBlockEvent(const Block& unk0, const BlockSource& unk1, const Actor& actor, const BlockPos& at, FacingID unk4, const Vec3& unk5) const;
+
+	// UnknownReturn _textMatch(const std::string& unk0, const std::string& unk1, bool unk2);
+
+	// UnknownReturn _tryCorrectAnyAuxValue(ItemStackBase& stack) const;
+
+	bool allowOffhand() const;
+
+	void clearTags();
+
+	// float destroySpeedBonus(const ItemStackBase& stack) const;
+
+	// UnknownReturn executeOnResetBAIcallbacks() const;
+
+	// void fixupOnLoad(ItemStackBase& stack) const;
+
+	// void fixupOnLoad(ItemStackBase& stack, Level& unk1) const;
+
+	// UnknownReturn ignoresPermissions() const;
+
+	// UnknownReturn initClient(const Json::Value& unk0, const SemVersion& unk1, JsonBetaState unk2, IPackLoadContext& unk3);
+
+	// UnknownReturn initServer(const Json::Value& unk0, const SemVersion& unk1, IPackLoadContext& unk2, JsonBetaState unk3);
+
+	// bool operator==(const Item& unk0) const;
+
+	// UnknownReturn operator(const Item& unk0) const;
+
+	// UnknownReturn reloadIcon();
+
+	// UnknownReturn resetId(short unk0);
+
+	// static NewBlockID toBlockId(short unk0);
+
+	// bool updateCustomBlockEntityTag(BlockSource& unk0, ItemStackBase& stack, const BlockPos& at) const;
+
+	// void useOn(ItemStack& unk0, Actor& actor, int unk2, int unk3, int unk4, FacingID unk5, const Vec3& unk6, ItemUsedOnEventContext unk7) const;
 
     /// @signature {48 89 4C 24 ? 53 48 81 EC ? ? ? ? 48 8B D9 45 33 C9}
     MC static void addCreativeItem(ItemRegistryRef*, const Block*);
-    
-    bool hasTag(const HashedString& tag) const;
-    UseAnim getUseAnim() const;
 };
 
 // 1.21.0.3
