@@ -26,6 +26,7 @@ private:
 
 public:
     struct Metadata {
+        std::string folderName;
         std::string modNamespace;
         std::string name;
         std::string logName;

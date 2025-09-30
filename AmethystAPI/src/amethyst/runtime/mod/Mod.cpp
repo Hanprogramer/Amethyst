@@ -101,6 +101,7 @@ Mod::Metadata Mod::ParseMetadata(std::string modName, std::string fileContents)
 
     // Set values
     Metadata meta{
+        modName,
         data["meta"]["namespace"],
         data["meta"]["name"],
         data["meta"].contains("logname") && data["meta"]["logname"].is_string() ? data["meta"]["logname"] : data["meta"]["name"],

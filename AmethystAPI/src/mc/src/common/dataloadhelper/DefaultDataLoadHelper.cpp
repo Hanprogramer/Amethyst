@@ -1,4 +1,5 @@
 #include <mc/src/common/dataloadhelper/DefaultDataLoadHelper.hpp>
+#include <amethyst/Memory.hpp>
 
 DefaultDataLoadHelper::DefaultDataLoadHelper()
 {
