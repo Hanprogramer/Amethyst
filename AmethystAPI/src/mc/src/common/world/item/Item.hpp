@@ -313,10 +313,10 @@ public:
 	/// @vidx {62}
 	MC virtual mce::Color getColor(const CompoundTag* unk0, const ItemDescriptor& descriptor) const;
 
-	/// @vidx {63}
+	/// @vidx {64}
 	MC virtual bool hasCustomColor(const ItemStackBase& stack) const;
 
-	/// @vidx {64}
+	/// @vidx {63}
 	MC virtual bool hasCustomColor(const CompoundTag* unk0) const;
 
 	/// @vidx {65}
@@ -400,10 +400,10 @@ public:
 	/// @vidx {91}
 	MC virtual int getCooldownTime() const;
 
-	/// @vidx {92}
+	/// @vidx {93}
 	MC virtual void fixupCommon(ItemStackBase& stack) const;
 
-	/// @vidx {93}
+	/// @vidx {92}
 	MC virtual void fixupCommon(ItemStackBase& stack, Level& level) const;
 
 	/// @vidx {94}

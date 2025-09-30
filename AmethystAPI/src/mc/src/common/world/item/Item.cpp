@@ -129,6 +129,9 @@ Item& Item::setIsMirroredArt(bool isMirroredArt) {
 }
 
 Item& Item::setMaxStackSize(unsigned char maxStackSize) {
+    if (maxStackSize == 0) Log::Warning("Setting max stack size to 0 will cause crashes!");
+    if (maxStackSize > 64) Log::Info("Setting max stack size over 64 will cause weird bugs");
+
     mMaxStackSize = maxStackSize;
     return *this;
 }
