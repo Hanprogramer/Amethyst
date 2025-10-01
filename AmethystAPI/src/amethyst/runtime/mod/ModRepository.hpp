@@ -6,6 +6,7 @@
 
 namespace Amethyst {
 using ModInfoMap = std::unordered_map<std::string, std::shared_ptr<const ModInfo>>;
+
 class ModRepository {
     ModInfoMap mMods;
     std::vector<ModError> mErrors;

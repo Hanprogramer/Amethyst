@@ -77,9 +77,10 @@ void AmethystRuntime::LoadModDlls()
 
     // Add itself as a mod to the repository to resolve dependencies against
     auto info = Amethyst::Mod::GetInfo(mLauncherConfig.injectedMod);
+    
     repository.AddMod(repository.GetMods().cbegin(), info);
-
     modGraph.SortAndValidate(repository, mLauncherConfig.mods);
+
     for (const auto& modInfo : modGraph.GetMods()) {
         Log::Info("Resolved '{}'", modInfo->GetVersionedName(), modInfo->UUID);
     }
