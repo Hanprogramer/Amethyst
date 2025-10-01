@@ -6,6 +6,13 @@
 #include <iostream>
 #include <shlobj.h>
 #include <vector>
+
+#include "Json.hpp"
+
+#include <amethyst/Log.hpp>
+#include <amethyst/Utility.hpp>
+#include <amethyst/runtime/mod/ModInfo.hpp>
+#include <amethyst/runtime/mod/ModuleHandle.hpp>
 #include <amethyst/runtime/interop/RuntimeImporter.hpp>
 
 #ifndef NOMINMAX
@@ -17,59 +24,50 @@ using json = nlohmann::json;
 
 namespace fs = std::filesystem;
 
+class AmethystContext;
+namespace Amethyst {
 class Mod {
-    friend class AmethystRuntime;
+    using InitializeFunction = void(*)(AmethystContext&, const Mod&);
 
-private:
-    HMODULE hModule = nullptr;
-    std::unique_ptr<Amethyst::RuntimeImporter> mRuntimeImporter = nullptr;
+    ModuleHandle mHandle;
+    std::shared_ptr<Amethyst::RuntimeImporter> mRuntimeImporter;
+    bool mIsLoaded = false;
+    bool mIsInitialized = false;
 
+    InitializeFunction mInitializeFunction = nullptr;
 public:
-    struct Metadata {
-        std::string folderName;
-        std::string modNamespace;
-        std::string name;
-        std::string logName;
-        std::string friendlyName;
-        std::string version;
-        std::vector<std::string> author;
+    // Metadata and stuff
+    std::shared_ptr<const ModInfo> mInfo;
 
-        std::string GetVersionedName() const {
-            return name + "@" + version;
-        }
-    };
+    Mod() = delete;
+    Mod(const Mod&) = delete;
+    Mod& operator=(const Mod&) = delete;
+    Mod& operator=(Mod&&) noexcept = delete;
 
-public:
-    std::string modName;
-    Metadata metadata;
+    explicit Mod(const std::shared_ptr<const ModInfo>& info);
+    Mod(Mod&& other) noexcept;
+    ~Mod();
 
-public:
-    Mod(std::string modName);
-    FARPROC GetFunction(const char* functionName) const;
-    HMODULE GetModule() const;
+    std::optional<ModError> Load();
+    void Unload();
+    void Attach(HMODULE moduleHandle);
+
+    const ModuleHandle& GetHandle() const;
     Amethyst::RuntimeImporter& GetRuntimeImporter() const;
-    void Shutdown();
 
-    bool operator==(const Mod& other) const {
-        return metadata.modNamespace == other.metadata.modNamespace && metadata.version == other.metadata.version;
+    template <typename T = FARPROC>
+    T GetFunction(const char* functionName) const
+    {
+        return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
     }
 
-public:
-    static Mod::Metadata GetMetadata(std::string modName);
-    static Mod::Metadata ParseMetadata(std::string modName, std::string fileContents);
+    InitializeFunction GetInitializeFunction();
+    std::optional<ModError> CallInitialize(AmethystContext& ctx);
 
-private:
-    fs::path GetTempDll();
+    bool IsLoaded() const;
+
+    bool operator==(const Mod& other) const;
+    static std::shared_ptr<const ModInfo> GetInfo(const std::string& modName);
+    static fs::path GetTemporaryLibrary(const std::string& modName);
 };
-
-namespace std {
-    template<>
-    struct hash<Mod> {
-        std::size_t operator()(const Mod& s) const noexcept
-        {
-            std::size_t h1 = std::hash<std::string>{}(s.metadata.modNamespace);
-            std::size_t h2 = std::hash<std::string>{}(s.metadata.name);
-            return h1 ^ (h2 << 1);
-        }
-    };
-}
+} // namespace Amethyst

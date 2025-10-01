@@ -13,6 +13,8 @@ class BaseGameVersion;
 /// @vptr { 0x4EBD550, this }
 class VanillaGameModuleClient {
 public:
+    MC static uintptr_t $vtable_for_this;
+
     /// @vidx { 0, this }
     MC virtual ~VanillaGameModuleClient();
 

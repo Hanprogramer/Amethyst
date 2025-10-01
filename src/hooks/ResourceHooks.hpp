@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
-#include "AmethystRuntime.hpp"
+
+#include "loader/AmethystRuntime.hpp"
+
 #include "amethyst/Memory.hpp"
 #include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
 

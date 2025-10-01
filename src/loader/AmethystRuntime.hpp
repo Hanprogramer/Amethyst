@@ -1,20 +1,18 @@
 #pragma once
-#include "hooks/Hooks.hpp"
-#include "hooks/InputHooks.hpp"
-#include "hooks/ResourceHooks.hpp"
-#include <amethyst/Config.hpp>
-#include <amethyst/Log.hpp>
-#include <amethyst/runtime/AmethystContext.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <mc/src/common/world/item/Item.hpp>
 #include <vector>
-#include <RuntimeContext.hpp>
+#include <format>
+
+#include "amethyst/Log.hpp"
+#include "amethyst/Config.hpp"
+#include "amethyst/runtime/AmethystContext.hpp"
+#include "mc/src/common/world/item/Item.hpp"
+
+#include "loader/RuntimeContext.hpp"
 
 namespace fs = std::filesystem;
-
-typedef void (*ModInitialize)(AmethystContext& context, const Mod& mod);
 extern HMODULE hModule;
 
 /*
@@ -31,10 +29,8 @@ extern HMODULE hModule;
 class AmethystRuntime {
 private:
     // AmethystRuntime is a Singleton so don't allow creating from outside
-    AmethystRuntime() : 
-        mAmethystMod(std::format("AmethystRuntime@{}", MOD_VERSION))
+    AmethystRuntime()
     {
-        mAmethystMod.hModule = ::hModule;
     }
 
     AmethystRuntime(const AmethystRuntime&);
@@ -78,47 +74,25 @@ public:
         return AmethystRuntime::getInstance()->mAmethystContext.mEnumAllocator.get();
     }
 
-    static std::vector<Mod>* getMods()
-    {
-        return &AmethystRuntime::getInstance()->mAmethystContext.mMods;
-    }
-
     static Amethyst::MinecraftPackageInfo* getMinecraftPackageInfo()
     {
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
     }
 
-    static Amethyst::RuntimeImporter* getRuntimeImporter() 
-    {
-        return &AmethystRuntime::getInstance()->mAmethystMod.GetRuntimeImporter();
-    }
-
-    static Mod* getAmethystMod() 
-    {
-        return &AmethystRuntime::getInstance()->mAmethystMod;
-    }
-
     void Start();
     void Shutdown();
 
+    static void PromptDebugger();
 private:
     void ReadLauncherConfig();
     void LoadModDlls();
-    void PromptDebugger();
-    void AddOwnResources();
-    void CreateOwnHooks();
     void RunMods();
-    void ResumeGameThread();
-    void PauseGameThread();
 
-    template <typename T>
-    void _LoadModFunc(std::unordered_map<Mod*, T>& map, Mod& mod, const char* functionName);
+    static void ResumeGameThread();
+    static void PauseGameThread();
 
 private:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
-
-public:
-    std::unordered_map<Mod*, ModInitialize> mModInitialize;
-    Mod mAmethystMod;
+    bool mRunning = false;
 };

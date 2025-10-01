@@ -51,7 +51,6 @@ void InputHandler_handleButtonEvent(InputHandler* self, const ButtonEventData& b
 void CreateInputHooks()
 {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-    Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
     hooks.CreateVirtualHook<&VanillaClientInputMappingFactory::createInputMappingTemplates>(
         VanillaClientInputMappingFactory::$vtable_for_this,

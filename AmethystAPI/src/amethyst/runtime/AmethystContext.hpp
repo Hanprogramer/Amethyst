@@ -4,6 +4,9 @@
 #include "amethyst/runtime/input/InputManager.hpp"
 #include "amethyst/runtime/mc/MinecraftPackageInfo.hpp"
 #include "amethyst/runtime/mod/Mod.hpp"
+#include "amethyst/runtime/mod/ModRepository.hpp"
+#include "amethyst/runtime/mod/ModGraph.hpp"
+#include "amethyst/runtime/mod/ModLoader.hpp"
 #include "amethyst/runtime/patchManager/PatchManager.hpp"
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
@@ -26,7 +29,9 @@ public:
     std::unique_ptr<Amethyst::EnumAllocator> mEnumAllocator;
     std::unique_ptr<Amethyst::PackManager> mPackManager;
     std::unique_ptr<Amethyst::NetworkManager> mNetworkManager;
-    std::vector<Mod> mMods;
+    std::unique_ptr<Amethyst::ModRepository> mModRepository;
+    std::unique_ptr<Amethyst::ModGraph> mModGraph;
+    std::unique_ptr<Amethyst::ModLoader> mModLoader;
 
     // Non-volatile
     Amethyst::MinecraftPackageInfo mPackageInfo;
@@ -35,32 +40,12 @@ public:
     Options* mOptions = nullptr;
     bool mIsInWorldOrLoading = false;
 
-    Minecraft* mClientMinecraft;
-    Minecraft* mServerMinecraft;
+    Minecraft* mClientMinecraft = nullptr;
+    Minecraft* mServerMinecraft = nullptr;
 
     // prevent copying
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
-
-    const Mod* GetModByNamespace(const std::string& modNamespace) const 
-    {
-        for (const auto& mod : mMods) {
-            if (mod.metadata.modNamespace == modNamespace) {
-                return &mod;
-            }
-        }
-        return nullptr;
-    }
-
-    Mod* GetModByNamespace(const std::string& modNamespace)
-    {
-        for (auto& mod : mMods) {
-            if (mod.metadata.modNamespace == modNamespace) {
-                return &mod;
-            }
-        }
-        return nullptr;
-    }
 
 protected:
     virtual void Start() = 0;

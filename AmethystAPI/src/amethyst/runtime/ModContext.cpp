@@ -1,11 +1,19 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/Minecraft.hpp>
 
-static AmethystContext* _AmethystContextInstance;
-static const Mod* _OwnMod;
+AmethystContext* _AmethystContextInstance;
+const Amethyst::Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
+    // Check if the mod has a resource pack and register it if it does
+    if (fs::exists(mod.mInfo->Directory / "resource_packs" / "main_rp" / "manifest.json"))
+        context.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);
+
+    // Check if the mod has a behavior pack and register it if it does
+    if (fs::exists(mod.mInfo->Directory / "behavior_packs" / "main_bp" / "manifest.json"))
+        context.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
+
     // Store a persistent AmethystContext instance
     _AmethystContextInstance = &context;
 
@@ -60,7 +68,7 @@ ClientInstance* Amethyst::GetClientInstance()
     return _AmethystContextInstance->mClientInstance;
 }
 
-const Mod* Amethyst::GetOwnMod()
+const Amethyst::Mod* Amethyst::GetOwnMod()
 {
     return _OwnMod;
 }

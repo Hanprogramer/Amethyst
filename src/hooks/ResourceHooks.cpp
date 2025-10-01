@@ -59,16 +59,15 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
 
 void CreateResourceHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-    Amethyst::RuntimeImporter& importer = *AmethystRuntime::getRuntimeImporter();
 
     hooks.CreateVirtualHook<&VanillaGameModuleClient::initializeResourceStack>(
-        importer.GetVirtualTableAddress("VanillaGameModuleClient::vtable::'this'"),
+        VanillaGameModuleClient::$vtable_for_this,
         _VanillaGameModuleClient_initializeResourceStack,
         VanillaGameModuleClient_initializeResourceStack
     );
 
     hooks.CreateVirtualHook<&VanillaGameModuleServer::initializeBehaviorStack>(
-        importer.GetVirtualTableAddress("VanillaGameModuleServer::vtable::'this'"),
+        VanillaGameModuleServer::$vtable_for_this,
         _VanillaGameModuleServer_initializeBehaviorStack,
         VanillaGameModuleServer_initializeBehaviorStack
     );

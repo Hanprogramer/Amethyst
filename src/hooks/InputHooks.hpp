@@ -1,5 +1,5 @@
 #pragma once
-#include "AmethystRuntime.hpp"
+#include "loader/AmethystRuntime.hpp"
 #include <mc/src-client/common/client/game/ClientInstance.hpp>
 #include <mc/src-client/common/client/input/ClientInputHandler.hpp>
 #include <mc/src-client/common/client/input/MinecraftInputHandler.hpp>

@@ -1,5 +1,5 @@
 #pragma once
-#include "AmethystRuntime.hpp"
+#include "loader/AmethystRuntime.hpp"
 
 void CreateUIHooks();
 void CreateStartScreenHooks();

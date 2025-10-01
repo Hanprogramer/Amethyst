@@ -20,7 +20,7 @@ enum class PackPriority {
 };
 
 struct Pack {
-    Mod::Metadata metadata;
+    const Mod* owner;
     std::string path;
     mce::UUID uuid;
     SemVersion version;
@@ -37,7 +37,7 @@ public:
     PackManager& operator=(PackManager&&) = delete;
     ~PackManager();
 
-    void RegisterNewPack(const Mod::Metadata& metadata, const std::string& path, PackType type, PackPriority priority = PackPriority::Normal);
+    void RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority = PackPriority::Normal);
     const std::unordered_map<std::string, std::unordered_map<std::string, Pack>>& GetPacks() const;
     void AddResourcePacksToStack(const Bedrock::NonOwnerPointer<ResourcePackRepository>& repository, ResourcePackStack& stack);
     void AddBehaviorPacksToStack(const Bedrock::NonOwnerPointer<ResourcePackRepository>& repository, ResourcePackStack& stack);

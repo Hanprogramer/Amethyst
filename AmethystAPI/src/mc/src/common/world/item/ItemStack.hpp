@@ -1,6 +1,6 @@
 /// @symbolgeneration
 #pragma once
-#include <amethyst/Imports.hpp>
+#include "amethyst/Imports.hpp"
 #include <format>
 #include "mc/src/common/world/item/ItemStackBase.hpp"
 #include "mc/src/common/world/inventory/network/ItemStackNetIdVariant.hpp"

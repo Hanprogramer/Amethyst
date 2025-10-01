@@ -33,12 +33,11 @@ namespace Log {
         ShowWindow(consoleWindow, SW_HIDE);
     }
 
-    const std::string& GetModName() {
-        const Mod* mod = Amethyst::GetOwnMod();
+    std::string GetModName() {
+        const Amethyst::Mod* mod = Amethyst::GetOwnMod();
         if (mod == nullptr) {
-            static std::string unknown = "AmethystRuntime";
-            return unknown;
+            return "AmethystRuntime";
         }
-        return mod->metadata.logName;
+        return mod->mInfo->LoggingName;
     }
 } // namespace Log

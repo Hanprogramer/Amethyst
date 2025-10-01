@@ -401,10 +401,10 @@ public:
 	MC virtual int getCooldownTime() const;
 
 	/// @vidx {93}
-	MC virtual void fixupCommon(ItemStackBase& stack) const;
+	MC virtual void fixupCommon(ItemStackBase& unk0) const;
 
 	/// @vidx {92}
-	MC virtual void fixupCommon(ItemStackBase& stack, Level& level) const;
+	MC virtual void fixupCommon(ItemStackBase& unk0, Level& unk1) const;
 
 	/// @vidx {94}
 	MC virtual InHandUpdateType getInHandUpdateType(const Player& player, const ItemStack& currentStack, const ItemStack& prevStack, bool unk3, bool unk4) const;

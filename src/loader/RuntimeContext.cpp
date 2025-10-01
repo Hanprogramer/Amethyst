@@ -1,4 +1,4 @@
-#include "RuntimeContext.hpp"
+#include "loader/RuntimeContext.hpp"
 
 RuntimeContext::RuntimeContext() { } 
 
@@ -12,6 +12,9 @@ void RuntimeContext::Start()
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
     mPackManager = std::make_unique<Amethyst::PackManager>(this);
     mNetworkManager = std::make_unique<Amethyst::NetworkManager>();
+    mModRepository = std::make_unique<Amethyst::ModRepository>();
+    mModGraph = std::make_unique<Amethyst::ModGraph>();
+    mModLoader = std::make_unique<Amethyst::ModLoader>(this);
 }
 
 void RuntimeContext::Shutdown()
@@ -23,4 +26,7 @@ void RuntimeContext::Shutdown()
     mEnumAllocator.reset();
     mPackManager.reset();
     mNetworkManager.reset();
+    mModRepository.reset();
+    mModGraph.reset();
+    mModLoader.reset();
 }

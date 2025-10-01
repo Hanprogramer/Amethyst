@@ -12,7 +12,7 @@ namespace Log {
     void InitializeConsole();
     void DestroyConsole();
     void HideConsole();
-    const std::string& GetModName();
+    std::string GetModName();
 
     constexpr const char* RESET   = "\033[0m";
     constexpr const char* YELLOW  = "\033[1;33m";

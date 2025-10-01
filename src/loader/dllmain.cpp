@@ -1,5 +1,5 @@
 #include "dllmain.hpp"
-#include <debug/AmethystDebugging.hpp>
+#include "debug/AmethystDebugging.hpp"
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
@@ -39,6 +39,7 @@ DWORD WINAPI Main()
 {
     Log::InitializeConsole();
     SetUnhandledExceptionFilter(AmethystUnhandledExceptionsHandler);
+    //AmethystRuntime::PromptDebugger();
 
     // Create an instance of AmethystRuntime and invoke it to start
     AmethystRuntime* runtime = AmethystRuntime::getInstance();
@@ -71,7 +72,7 @@ void Shutdown()
 
 void ShutdownWait()
 {
-    Log::Info("Press Numpad0 to close...");
+    Log::Info("Press Numpad0/End to close...");
 
     while (1) {
         Sleep(10);
