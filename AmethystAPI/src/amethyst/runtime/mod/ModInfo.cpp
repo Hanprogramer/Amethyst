@@ -33,7 +33,11 @@ ModInfo::ModInfo(
 
 std::string ModInfo::GetVersionedName() const
 {
-    return std::format("{}@{}", Name, Version.to_string());
+    std::string versionedName = std::format("{}@{}", Name, Version.to_string());
+    if (!fs::exists(GetAmethystFolder() / "mods" / versionedName)) {
+        return std::format("{}@0.0.0-dev", Name);
+    }
+    return versionedName;
 }
 
 bool ModInfo::Equals(const ModInfo& other, bool compareVersions) const

@@ -116,11 +116,23 @@ void ModGraph::SortAndValidate(const ModRepository& repository, const std::unord
         return success;
     };
 
+    std::unordered_set<std::string> allLoadedMods = std::unordered_set<std::string>();
+
     // Visit all launcher mods
     for (const auto& [uuid, mod] : repoMods) {
-        if (!profileMods.contains(mod->GetVersionedName()))
+        std::string versionedName = mod->GetVersionedName();
+
+        if (!profileMods.contains(versionedName))
             continue;
+
         visit(mod);
+        allLoadedMods.insert(versionedName);
+    }
+
+    // Verify all mods in the profile were loaded
+    for (const auto& mod : profileMods) {
+        if (allLoadedMods.contains(mod)) continue;
+        AssertFail("Failed to find mod with ID '{}' in mods folder", mod);
     }
 }
 

@@ -77,11 +77,16 @@ void AmethystRuntime::LoadModDlls()
 
     // Add itself as a mod to the repository to resolve dependencies against
     auto info = Amethyst::Mod::GetInfo(mLauncherConfig.injectedMod);
+    
     repository.AddMod(repository.GetMods().cbegin(), info);
-
     modGraph.SortAndValidate(repository, mLauncherConfig.mods);
+
     for (const auto& modInfo : modGraph.GetMods()) {
         Log::Info("Resolved '{}'", modInfo->GetVersionedName(), modInfo->UUID);
+
+        if (modInfo->UUID == "00000000-0000-0000-0000-000000000000") {
+            Log::Warning("Mod '{}' has the default UUID of '00000000-0000-0000-0000-000000000000' in its mod.json! It is recommended to generate a new one", modInfo->GetVersionedName());
+        }
     }
 
     for (const auto& error : modGraph.GetErrors()) {

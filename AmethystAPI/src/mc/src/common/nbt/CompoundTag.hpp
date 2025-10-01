@@ -59,7 +59,6 @@ public:
     virtual size_t hash() const override;
     virtual bool equals(const Tag&) const override;
 
-private:
     template <typename T>
     const T* get(std::string_view) const;
 
