@@ -15,9 +15,17 @@ public:
         bool hasAux() const {
             return mAuxValue != 0;
         }
-    };
 
-    
+        bool equals(const ItemEntry& other) const {
+            if (isNull() || other.isNull()) 
+                return false;
+            if (mItem != other.mItem) 
+                return false;
+            if (mAuxValue != 0x7fff || other.mAuxValue != 0x7fff || mAuxValue != other.mAuxValue) 
+                return false;
+            return true;
+        }
+    };
 
     class BaseDescriptor {
     public:
@@ -93,4 +101,3 @@ class InternalItemDescriptor : ItemDescriptor::BaseDescriptor {
 public:
     ItemDescriptor::ItemEntry mItemEntry;
 };
-} // namespace std

@@ -13,12 +13,10 @@ Amethyst::PackManager::~PackManager() {}
 
 void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority)
 {
-    std::string key = metadata.folderName;
-    fs::path resourcesPath = GetAmethystFolder() / "mods" / metadata.folderName / "resource_packs";
-    fs::path behaviorPath = GetAmethystFolder() / "mods" / metadata.folderName / "behavior_packs";
-    auto packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
-
-    Log::Info("path: {}", path);
+    std::string key = owner->mInfo->GetVersionedName();
+    fs::path resourcesPath = GetAmethystFolder() / "mods" / key / "resource_packs";
+    fs::path behaviorPath = GetAmethystFolder() / "mods" / key / "behavior_packs";
+    auto& packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
 
 	// Check if the mod is on the list of packs, if not add it
 	if (!mPacks.contains(key)) {
@@ -39,7 +37,7 @@ void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string&
 
     // Try to read the manifest.json to ensure it's valid
     std::ifstream manifestFile(manifestPath, std::ios::binary);
-    Assert(manifestFile.is_open(), "Failed to open manifest.json for pack '{}' of '{}'", metadata.folderName, key);
+    Assert(manifestFile.is_open(), "Failed to open manifest.json for pack '{}' of '{}'", owner->mInfo->Directory.generic_string(), key);
     std::string manifestContents((std::istreambuf_iterator<char>(manifestFile)), std::istreambuf_iterator<char>());
 
     // Try to parse the manifest.json

@@ -9,6 +9,8 @@
 
 #include <memory>
 
+bool ShowAdvancedItemInfo = false;
+
 SafetyHookInline _Item_appendFormattedHovertext;
 void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack, Level& level, std::string& hovertext, bool showCategory)
 {
@@ -49,9 +51,20 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         }
     }
 
-    hovertext += std::format("\n§8{}§r", self->mFullName.getString());
-    if (stack.mUserData)
-        hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
+    if (ShowAdvancedItemInfo) {
+        hovertext += std::format("\n§8{}§r", self->mFullName.getString());
+        if (stack.mAuxValue != 0x7fff)
+            hovertext += std::format("\n§8Aux: #{:04}§r", stack.mAuxValue);
+        if (!self->mTags.empty()) {
+            hovertext += "\n§7Item Tags:§r";
+        }
+        for (const auto& tag : self->mTags) {
+            hovertext += std::format("\n§8  {}§r", tag.getString());
+        }
+        if (stack.mUserData)
+            hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
+    }
+
     hovertext += std::format("\n§o§9{}§r", modName);
 }
 

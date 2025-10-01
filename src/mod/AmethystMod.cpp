@@ -2,6 +2,7 @@
 
 #include "amethyst/runtime/ModContext.hpp"
 #include "amethyst/runtime/events/ModEvents.hpp"
+#include "amethyst/runtime/events/InputEvents.hpp"
 
 #include "hooks/ui/UIHooks.hpp"
 #include "hooks/item/ItemHooks.hpp"
@@ -13,6 +14,9 @@
 
 extern AmethystContext* _AmethystContextInstance;
 extern const Amethyst::Mod* _OwnMod;
+extern bool ShowAdvancedItemInfo;
+
+bool AdvancedCombinationKeyActive = false;
 
 ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 {
@@ -27,6 +31,16 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 
     events.AddListener<AddModEventListenersEvent>([&](const AddModEventListenersEvent& e) {
         CreateItemHooks();
+    });
+
+    events.AddListener<RegisterInputsEvent>([&](const RegisterInputsEvent& e) {
+        Amethyst::InputManager& input = e.inputManager;
+        auto& action = input.RegisterNewInput("amethyst.toggle_advanced_item_info", {'H'}, true, Amethyst::KeybindContext::Gameplay);
+        action.addButtonDownHandler([](FocusImpact, ClientInstance&) {
+            ShowAdvancedItemInfo = !ShowAdvancedItemInfo;
+            Log::Info("Advanced Item Info: {}", ShowAdvancedItemInfo ? "Enabled" : "Disabled");
+            return Amethyst::InputPassthrough::Passthrough;
+        });
     });
 
     Log::Info("Initializing runtime mod: '{}'", mod.mInfo->GetVersionedName());

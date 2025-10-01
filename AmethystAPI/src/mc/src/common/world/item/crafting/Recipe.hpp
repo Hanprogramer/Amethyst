@@ -25,10 +25,11 @@ public:
     virtual void unknown_9();
     virtual bool hasDataDrivenResult() const;
 
-    void forEachIngredient(const std::function<void(size_t x, size_t y, const RecipeIngredient& ingredient)>& callback) const {
+    void forEachIngredient(const std::function<bool(size_t x, size_t y, const RecipeIngredient& ingredient)>& callback) const {
         const size_t size = this->size();
         for (auto x = 0ull; x < size; x++)
             for (auto y = 0ull; y < size; y++)
-                callback(x, y, getIngredient(x, y));
+                if (!callback(x, y, getIngredient(x, y)))
+                    return;
     }
 };
