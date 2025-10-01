@@ -83,6 +83,10 @@ void AmethystRuntime::LoadModDlls()
 
     for (const auto& modInfo : modGraph.GetMods()) {
         Log::Info("Resolved '{}'", modInfo->GetVersionedName(), modInfo->UUID);
+
+        if (modInfo->UUID == "00000000-0000-0000-0000-000000000000") {
+            Log::Warning("Mod '{}' has the default UUID of '00000000-0000-0000-0000-000000000000' in its mod.json! It is recommended to generate a new one", modInfo->GetVersionedName());
+        }
     }
 
     for (const auto& error : modGraph.GetErrors()) {
