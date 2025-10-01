@@ -103,17 +103,6 @@ void Mod::Unload()
     mIsLoaded = false;
 }
 
-void Mod::Attach(HMODULE moduleHandle)
-{
-    if (IsLoaded())
-        Unload();
-
-    mHandle.Reset(moduleHandle);
-    mRuntimeImporter = RuntimeImporter::GetImporter(moduleHandle);
-    mRuntimeImporter->Initialize();
-    mIsLoaded = true;
-}
-
 const ModuleHandle& Mod::GetHandle() const
 {
     return mHandle;

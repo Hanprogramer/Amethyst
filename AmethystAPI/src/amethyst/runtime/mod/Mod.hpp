@@ -50,7 +50,6 @@ public:
 
     std::optional<ModError> Load();
     void Unload();
-    void Attach(HMODULE moduleHandle);
 
     const ModuleHandle& GetHandle() const;
     Amethyst::RuntimeImporter& GetRuntimeImporter() const;
