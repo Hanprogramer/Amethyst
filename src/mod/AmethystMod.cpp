@@ -16,8 +16,6 @@ extern AmethystContext* _AmethystContextInstance;
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;
 
-bool AdvancedCombinationKeyActive = false;
-
 ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 {
     Amethyst::InitializeAmethystMod(ctx, mod);
