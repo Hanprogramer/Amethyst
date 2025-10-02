@@ -684,7 +684,8 @@ public:
 	MC virtual void entityInside(BlockSource& unk0, const BlockPos& unk1, Actor& unk2) const;
 
 public:
-    BlockLegacy(const std::string& nameId, short id, const Material& material);
+	/// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 49 8B F9 48 8B F2}
+    MC BlockLegacy(const std::string& nameId, short id, const Material& material);
 
     short getBlockItemId();
 

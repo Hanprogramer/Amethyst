@@ -1,7 +1,6 @@
+/// @symbolgeneration
 #pragma once
-#include <map>
-#include <set>
-#include "mc/src-deps/core/string/StringHash.hpp"
+#include <amethyst/Imports.hpp>
 #include "mc/src/common/world/level/block/BlockLegacy.hpp"
 #include "mc/src/common/SharedPtr.hpp"
 #include "entt/container/dense_map.hpp"
@@ -30,17 +29,17 @@ public:
     };
 
     /// @address {0x59DF328}
-    static std::set<std::string> mKnownNamespaces;
+    MC static std::set<std::string> mKnownNamespaces;
 
     /// @address {0x59DF300}
-    static BlockLookupMap mBlockLookupMap;
+    MC static BlockLookupMap mBlockLookupMap;
 
     // Found in BlockTypeRegistry::getBlockNameFromNameHash
     /// @address {0x57D14E0}
-    static BlockNameHashToHashedStringMap mBlockNameHashToStringMap; 
+    MC static BlockNameHashToHashedStringMap mBlockNameHashToStringMap; 
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 48 8B EC 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B D9 0F 57 C0}
-    static const Block* getDefaultBlockState(const HashedString& name);
+    MC static const Block* getDefaultBlockState(const HashedString& name);
 
     // Re-Implemented
     template<typename T, typename... Args>
@@ -81,5 +80,5 @@ public:
     }
 
     /// @signature {40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B E0 44 89 44 24}
-    static LookupByNameImplReturnType _lookupByNameImpl(const HashedString& name, int data, LookupByNameImplResolve resolve);
+    MC static LookupByNameImplReturnType _lookupByNameImpl(const HashedString& name, int data, LookupByNameImplResolve resolve);
 };

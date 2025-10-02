@@ -1,4 +1,6 @@
+/// @symbolgeneration
 #pragma once
+#include <amethyst/Imports.hpp>
 #include "mc/src/common/world/level/material/MaterialType.hpp"
 
 class Material {
@@ -17,6 +19,9 @@ public:
     {
         return mLiquid;
     }
+
+    /// @address {0x59EF9F8}
+    MC static std::vector<std::unique_ptr<Material>> mMaterials;
 
     static Material& getMaterial(MaterialType type);
 };
