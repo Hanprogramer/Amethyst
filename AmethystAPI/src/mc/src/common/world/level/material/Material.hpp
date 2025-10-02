@@ -17,4 +17,6 @@ public:
     {
         return mLiquid;
     }
+
+    static Material& getMaterial(MaterialType type);
 };
