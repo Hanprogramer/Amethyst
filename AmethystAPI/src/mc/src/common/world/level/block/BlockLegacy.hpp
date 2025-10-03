@@ -72,7 +72,7 @@ enum class LavaFlammable : uint8_t {
     Never  = 0,
 };
 
-enum class TintMethod : uint8_t {
+enum class TintMethod : int32_t {
     None             = 0,
     DefaultFoliage   = 1,
     BirchFoliage     = 2,
@@ -100,9 +100,7 @@ enum class TintMethod : uint8_t {
 //        ("mce::Color", "mMapColor", 16, 396)]
 
 /// @vptr {0x4E0E500}
-class BlockLegacy : 
-	public BlockComponentStorage 
-{
+class BlockLegacy : public BlockComponentStorage {
 public:
     class AlteredStateCollection {
     public:
@@ -377,5 +375,5 @@ public:
 };
 
 // 1.21.0.3
-// Idk why those piece of shiet static_asserts work sometimes and sometimes don't
-//static_assert(sizeof(BlockLegacy) == 984);
+static_assert(sizeof(BlockLegacy) == 984);
+static_assert(offsetof(BlockLegacy, mID) == 422);

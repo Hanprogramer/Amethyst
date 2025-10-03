@@ -43,19 +43,19 @@ public:
 
     // Re-Implemented
     template<typename T, typename... Args>
-    static WeakPtr<T> registerBlock(const std::string& blockName, Args&&... args) {
-        HashedString hashedBlockName(blockName);
-        Log::Info("hashed: {}", hashedBlockName.getHash());
+    static WeakPtr<T> registerBlock(const HashedString& blockName, Args&&... args) {
+        // BlockTypeRegistry::_lockRegistryModifications()
+        const std::string& blockNameStr = blockName.getString();
 
         // Ensure the block has a name
         if (blockName.empty()) {
             throw std::exception("BlockTypeRegistry: attempting to register a block without a name!");
         }
 
-        SharedPtr<T> block = SharedPtr<T>::make(blockName, std::forward<Args>(args)...);
+        SharedPtr<T> block = SharedPtr<T>::make(blockNameStr, std::forward<Args>(args)...);
 
         // Convert the string to lowercase and validate its namespace
-        std::string lowercaseName = Util::toLower(blockName);
+        std::string lowercaseName = Util::toLower(blockNameStr);
         size_t separator = lowercaseName.find(':');
 
         if (separator == std::string::npos) {
@@ -71,10 +71,10 @@ public:
         BlockTypeRegistry::mKnownNamespaces.insert(blockNamespace);
 
         // Add the block to the lookup map
-        BlockTypeRegistry::mBlockLookupMap.emplace(std::make_pair(hashedBlockName, block));
+        BlockTypeRegistry::mBlockLookupMap.emplace(std::make_pair(blockName, block));
 
         // Add the hashed name to a lookup map
-        BlockTypeRegistry::mBlockNameHashToStringMap.emplace(std::make_pair(hashedBlockName.getHash(), hashedBlockName));
+        BlockTypeRegistry::mBlockNameHashToStringMap.emplace(std::make_pair(blockName.getHash(), blockName));
 
         return block;
     }
