@@ -14,6 +14,14 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
 
+            # Checkout AmethystAPI into /Amethyst
+            - name: Checkout AmethystAPI
+              uses: actions/checkout@v4
+              with:
+                  repository: FrederoxDev/Amethyst
+                  path: Amethyst
+                  submodules: recursive
+
             # Build dependencies
             - name: Install Build Tools
               shell: powershell
