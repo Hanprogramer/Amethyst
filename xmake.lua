@@ -16,7 +16,7 @@ local amethystApiPath
 
 if automated then
     modFolder = path.join(os.projectdir(), "dist")
-    amethystApiPath = path.join(os.projectdir(), "AmethystAPI")
+    amethystApiPath = "AmethystAPI"
 else
     set_symbols("debug")
     local amethystSrc = os.getenv("AMETHYST_SRC")
