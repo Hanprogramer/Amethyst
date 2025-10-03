@@ -4,6 +4,7 @@
 #include <amethyst/runtime/events/RegisterEvents.hpp>
 #include <amethyst/runtime/events/GameEvents.hpp>
 #include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
+#include <mc/src-client/common/client/renderer/blockActor/BlockActorRendererDispatcher.hpp>
 
 SafetyHookInline _ScreenView_setupAndRender;
 SafetyHookInline _ClientInstance_onStartJoinGame;
@@ -13,6 +14,7 @@ SafetyHookInline _VanillaItems_registerItems;
 SafetyHookInline _BlockDefinitionGroup_registerBlocks;
 SafetyHookInline _ClientInstance__ClientInstance;
 SafetyHookInline _BlockGraphics_initBlocks;
+SafetyHookInline _BlockActorRenderDispatcher_initializeBlockEntityRenderers;
 
 void ScreenView_setupAndRender(ScreenView* self, MinecraftUIRenderContext* ctx)
 {
@@ -119,6 +121,47 @@ void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments&
     AmethystRuntime::getEventBus()->Invoke(event);
 }
 
+void BlockActorRenderDispatcher_initializeBlockEntityRenderers(
+    BlockActorRenderDispatcher* self,
+    const Bedrock::NotNullNonOwnerPtr<GeometryGroup>& geometryGroup,
+    std::shared_ptr<mce::TextureGroup> textures,
+    BlockTessellator& blockTessellator,
+    const Bedrock::NotNullNonOwnerPtr<const ActorResourceDefinitionGroup>& entityResourceDefGroup,
+    ResourcePackManager& resourcePackManager,
+    MinecraftGameplayGraphicsResources& gameplayGraphicsResources,
+    Bedrock::NotNullNonOwnerPtr<ResourceLoadManager> resourceLoadManager,
+    const BaseGameVersion& version,
+    const Experiments& experiments)
+{
+    _BlockActorRenderDispatcher_initializeBlockEntityRenderers.thiscall<
+        void,
+        BlockActorRenderDispatcher*,
+        const Bedrock::NotNullNonOwnerPtr<GeometryGroup>&,
+        std::shared_ptr<mce::TextureGroup>,
+        BlockTessellator&,
+        const Bedrock::NotNullNonOwnerPtr<const ActorResourceDefinitionGroup>&,
+        ResourcePackManager&,
+        MinecraftGameplayGraphicsResources&,
+        Bedrock::NotNullNonOwnerPtr<ResourceLoadManager>,
+        const BaseGameVersion&,
+        const Experiments&
+    >(
+        self, 
+        geometryGroup, 
+        textures, 
+        blockTessellator, 
+        entityResourceDefGroup, 
+        resourcePackManager,
+        gameplayGraphicsResources, 
+        resourceLoadManager, 
+        version, 
+        experiments
+    );
+
+    InitBlockEntityRenderersEvent event(*self, geometryGroup, textures, blockTessellator, entityResourceDefGroup, resourcePackManager, gameplayGraphicsResources, resourceLoadManager, version, experiments);
+    AmethystRuntime::getEventBus()->Invoke(event);
+}
+
 void CreateModFunctionHooks() {
     Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
 
@@ -132,4 +175,5 @@ void CreateModFunctionHooks() {
     HOOK(BlockDefinitionGroup, registerBlocks);
     HOOK(BlockGraphics, initBlocks);
     HOOK(Minecraft, _Minecraft);
+    HOOK(BlockActorRenderDispatcher, initializeBlockEntityRenderers);
 }

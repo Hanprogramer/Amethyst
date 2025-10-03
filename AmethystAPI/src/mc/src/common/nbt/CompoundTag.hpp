@@ -30,6 +30,9 @@ public:
     void deepCopy(const CompoundTag& other);
     std::unique_ptr<CompoundTag> clone() const;
 
+    const CompoundTag* getCompound(std::string_view name) const;
+    CompoundTag* getCompound(std::string_view name);
+
     const ListTag* getList(std::string_view name) const;
     ListTag* getList(std::string_view name);
 
@@ -59,6 +62,7 @@ public:
     virtual size_t hash() const override;
     virtual bool equals(const Tag&) const override;
 
+private:
     template <typename T>
     const T* get(std::string_view) const;
 

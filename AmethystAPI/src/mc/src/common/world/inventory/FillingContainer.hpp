@@ -22,7 +22,7 @@ public:
     /// @vidx {inherit}
     MC virtual void serverInitItemStackIds(int, int, std::function<void(int, const ItemStack&)>) override;
     /// @vidx {inherit}
-    MC virtual ItemStack& getItem(int slot) const override;
+    MC virtual const ItemStack& getItem(int slot) const override;
     /// @vidx {inherit}
     MC virtual void setItem(int slot, const ItemStack& item) override;
     /// @vidx {inherit}

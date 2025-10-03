@@ -50,7 +50,7 @@ enum class BlockActorType : int {
 	SculkShrieker, 
 	HangingSign, 
 	ChiseledBookshelf, 
-	_count
+	Last
 };
 
 enum BlockActorRendererId {

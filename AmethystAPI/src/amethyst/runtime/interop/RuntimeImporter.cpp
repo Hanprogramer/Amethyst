@@ -73,8 +73,8 @@ static constexpr const char* VtableDescSectionName = ".vtbdt";
 // YES this looks insane. It's literally a tiny trampoline to disable MSVC's deleting thunk
 // because the generated thunk that calls this already deletes, and double-free = sad. Keep it. Do not touch.
 static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
-    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
-    0x30, 0xD2,                                                 // xor dl, dl (sets delete flag to false)
+    0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
+    0x31, 0xD2,                                                 // xor edx, edx (sets delete flag to false)
     0xFF, 0xE0                                                  // jmp rax
 };
 
