@@ -1,4 +1,3 @@
-#include "C:\Users\blake\Documents\Modding\Mods\Amethyst-Playground\build\.gens\AmethystAPI\windows\x64\release\__\__\Amethyst\AmethystAPI\src\amethyst\Imports.hpp"
 #include "Material.hpp"
 
 Material& Material::getMaterial(MaterialType type)
