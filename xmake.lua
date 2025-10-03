@@ -1,11 +1,6 @@
 -- Mod Options
-local mod_name = "AmethystRuntime"
+local mod_name = "Amethyst-Runtime"
 local targetMajor, targetMinor, targetPatch = 1, 21, 3
-
--- Minecraft version
-local major = 1
-local minor = 21
-local patch = 3
 
 option("automated_build")
     set_default(false)
@@ -138,8 +133,8 @@ target(mod_name)
 
     add_defines(
         string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
-        string.format('MOD_TARGET_VERSION_MINOR=%d', targetMajor),
-        string.format('MOD_TARGET_VERSION_PATCH=%d', targetMajor),
+        string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
+        string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
         'ENTT_PACKED_PAGE=128',
         'AMETHYST_EXPORTS'
     )
@@ -187,11 +182,18 @@ target(mod_name)
         local importer_dir = path.join(os.curdir(), ".importer");
         local generated_dir = path.join(importer_dir)
         local src_json = path.join("mod.json")
+
+        local mod_json = io.readfile(src_json)
+        if not automated then
+            mod_json = mod_json:gsub('("version"%s*:%s*")([^"]*)(")', '%1' .. "0.0.0-dev" .. '%3')
+        end
+
         local dst_json = path.join(modFolder, "mod.json")
         if not os.isdir(modFolder) then
             os.mkdir(modFolder)
         end
-        os.cp(src_json, dst_json)
+
+        io.writefile(dst_json, mod_json)
 
         local tweaker_args = {
             ".importer/bin/Amethyst.ModuleTweaker.exe",
