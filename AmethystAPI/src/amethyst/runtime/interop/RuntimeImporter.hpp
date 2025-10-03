@@ -24,12 +24,7 @@ private:
     std::unordered_map<std::string, uintptr_t> mVirtualTables{};
     std::unordered_map<std::string, uintptr_t> mVirtualDestructors{};
     std::unordered_map<std::string, safetyhook::Allocation> mAllocatedDestructorBlocks{};
-
-    // welcome to cursed C++
-    // this map holds vtable addresses
-    // probably gonna rehash and explode at runtime, but who cares
-    // UB is just a lifestyle
-    std::unordered_map<std::string, uintptr_t> mVtableToVarStorage{};
+    std::unordered_map<std::string, safetyhook::Allocation> mAllocatedVtableToVarStorage{};
 
     std::shared_ptr<safetyhook::Allocator> mAllocator = nullptr;
 

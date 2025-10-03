@@ -19,7 +19,7 @@ public:
     
     ChestType mChestType;
     
-    /** @signature {48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 8B D9 4C 8B 15 } */
+    /** @signature {48 89 5C 24 ? 48 89 74 24 ? 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 8B D9 4C 8B 15} */
     MC ChestBlock(const std::string& nameId, short id, ChestType type, MaterialType materialType);
 
     /** @vidx {i} */ MC virtual ~ChestBlock() override;
