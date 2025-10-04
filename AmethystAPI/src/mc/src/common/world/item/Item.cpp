@@ -67,6 +67,15 @@ UseAnim Item::getUseAnimation() const {
     return mUseAnim;
 }
 
+void Item::setDamageValue(ItemStackBase& stack, short value) const {
+    if (stack.mUserData == nullptr) {
+        stack.setUserData(std::make_unique<CompoundTag>());
+    }
+    if (stack.mUserData->contains("Damage"))
+        stack.mUserData->getIntTag("Damage")->data = value;
+    stack.mUserData->put("Damage", IntTag(value));
+}
+
 Item& Item::setAllowOffhand(bool allowOffhand) {
     mAllowOffhand = allowOffhand;
     return *this;

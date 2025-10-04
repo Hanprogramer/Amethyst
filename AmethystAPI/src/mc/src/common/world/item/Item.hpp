@@ -75,6 +75,9 @@ class ItemTag : public HashedString {
 
 };
 
+/*
+ * Represents a type of item in the game, including its properties, behaviors, and interactions.
+ */
 /** @vptr {0x4DFCE10} */
 class Item {
 public:
@@ -128,7 +131,7 @@ public:
     std::unique_ptr<FoodItemComponentLegacy> mFoodComponentLegacy;
     std::unique_ptr<SeedItemComponentLegacy> mSeedComponent;
     std::unique_ptr<CameraItemComponentLegacy> mCameraComponentLegacy;
-    std::vector<std::function<void __cdecl(void)>> mOnResetBAIcallbacks;
+    std::vector<std::function<void()>> mOnResetBAIcallbacks;
     std::vector<ItemTag> mTags;
 
 	/** @sig {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 0F B7 D8} */
@@ -226,8 +229,8 @@ public:
 	/** @vidx {089} */ MC virtual void refreshedInContainer(const ItemStackBase& stack, Level& level) const;
 	/** @vidx {090} */ MC virtual const HashedString& getCooldownType() const;
 	/** @vidx {091} */ MC virtual int getCooldownTime() const;
-	/** @vidx {093} */ MC virtual void fixupCommon(ItemStackBase& unk0) const;
-	/** @vidx {092} */ MC virtual void fixupCommon(ItemStackBase& unk0, Level& unk1) const;
+	/** @vidx {093} */ MC virtual void fixupCommon(ItemStackBase& stack) const;
+    /** @vidx {092} */ MC virtual void fixupCommon(ItemStackBase& stack, Level& level) const;
 	/** @vidx {094} */ MC virtual InHandUpdateType getInHandUpdateType(const Player& player, const ItemStack& currentStack, const ItemStack& prevStack, bool unk3, bool unk4) const;
 	/** @vidx {095} */ MC virtual bool validFishInteraction(int unk0) const;
 	/** @vidx {096} */ MC virtual void enchantProjectile(const ItemStackBase& stack, Actor& actor) const;
@@ -297,8 +300,8 @@ public:
 	Item& addTag(const HashedString& tag);
     Item& addTags(std::initializer_list<std::reference_wrapper<const ItemTag>> tags);
 	Item& setUseAnimation(UseAnim useAnim);
-	bool hasTag(const ItemTag& unk0) const;
-	bool hasTag(const HashedString& unk0) const;
+	bool hasTag(const ItemTag& tag) const;
+	bool hasTag(const HashedString& tag) const;
 	bool isAnimatedInToolbar() const;
 	bool isCamera() const;
 	bool isExplodable() const;
