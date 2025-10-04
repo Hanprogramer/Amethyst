@@ -1,3 +1,4 @@
+/// @symbols
 #pragma once
 #include <string>
 #include <vector>
@@ -19,16 +20,19 @@
 class UIProfanityContext {}; 
 
 // Auto-generated: Forward declarations
-class Level; 
-class CompoundTag; 
-class DataLoadHelper; 
-class BlockSource; 
-class BlockActor; 
-class BlockPos; 
-class IConstBlockSource; 
-class Player; 
+class Level;
+class CompoundTag;
+class DataLoadHelper;
+class BlockSource;
+class IConstBlockSource;
+class PistonBlockActor;
+class Container;
+class LevelChunk;
+class Player;
+class SaveContext;
 class BlockLegacy;
 
+/// @vptr {0x4E6F588}
 class BlockActor {
 public:
     /* this + 8   */ int mTickCount;
@@ -52,61 +56,139 @@ public:
     /* this + 192 */ bool mChanged;
 
 public:
-	virtual ~BlockActor();
-	virtual void load(Level& a2, const CompoundTag& tag, DataLoadHelper& a4);
-	virtual bool save(CompoundTag& tag) const;
-	virtual bool saveItemInstanceData(CompoundTag&) const;
-	virtual void setUgcStrings(CompoundTag&, const std::vector<std::string>&) const;
-	virtual void loadBlockData(const CompoundTag& a2, BlockSource& a3, DataLoadHelper& a4);
-	virtual void onCustomTagLoadDone(BlockSource& a2);
-	virtual void tick(BlockSource& region);
-	virtual void onChanged(BlockSource& a2);
-	virtual bool isMovable(BlockSource& a2);
-	virtual bool isCustomNameSaved();
+    /// @signature {48 83 EC ? 45 33 C9 0F 29 34 24}
+    MC BlockActor(BlockActorType type, const BlockPos& pos, const std::string& id);
 
-	/*
-	Called whenever the BlockActor is spawned in the world
-	- Called on both client and server side
-	*/
-	virtual void onPlace(BlockSource& a2);
+    /// @vidx {0}
+    MC virtual ~BlockActor();
 
-    virtual void onMove();
-	virtual void onRemoved(BlockSource& a2);
-	virtual bool isPreserved(BlockSource& a2) const;
-	virtual bool shouldPreserve(BlockSource& a2);
-	virtual void triggerEvent(int a2, int a3) const;
-	virtual void clearCache();
-	virtual void onNeighborChanged(BlockSource& region, BlockPos const& position) const;
-	virtual float getShadowRadius(BlockSource& a2) const;
-	virtual bool hasAlphaLayer() const;
-	virtual BlockActor* getCrackEntity(BlockSource& a2, const BlockPos& a3);
-	virtual AABB getCollisionShape(const IConstBlockSource& a3) const;
-	virtual void getDebugText(std::vector<std::string>& outputInfo, const BlockPos& debugPos);
-	virtual const std::string& getCustomName() const;
-	virtual const std::string& getFilteredCustomName(const gsl::not_null<Bedrock::NonOwnerPointer<UIProfanityContext>>&);
-	virtual std::string getName() const;
-	virtual void setCustomName(const std::string& name);
-	virtual std::string getImmersiveReaderText(BlockSource&);
-	virtual int getRepairCost() const;
-	virtual void _unknown_30();
-	virtual void _unknown_31();
-	virtual void _unknown_32();
-	virtual void _unknown_33();
-	virtual void eraseLootTable();
-	virtual void _unknown_35();
-	virtual void _unknown_36();
-	virtual std::vector<std::string> getUgcStrings(const CompoundTag&) const;
-	virtual void _unknown_38();
-	virtual void _unknown_39();
+    /// @vidx {1}
+    MC virtual void load(Level& unk0, const CompoundTag& unk1, DataLoadHelper& unk2);
 
-protected:
-	virtual std::unique_ptr<BlockActorDataPacket> _getUpdatePacket(BlockSource& a2);
-	virtual void _onUpdatePacket(const CompoundTag& a2, BlockSource& a3);
-	virtual bool _playerCanUpdate(const Player& fromPlayer) const;
+    /// @vidx {2}
+    MC virtual bool save(CompoundTag& unk0) const;
+
+    /// @vidx {3}
+    MC virtual bool saveItemInstanceData(CompoundTag& unk0) const;
+
+    /// @vidx {4}
+    MC virtual void saveBlockData(CompoundTag& unk0, BlockSource& unk1) const;
+
+    /// @vidx {5}
+    MC virtual void loadBlockData(const CompoundTag& unk0, BlockSource& unk1, DataLoadHelper& unk2);
+
+    /// @vidx {6}
+    MC virtual void onCustomTagLoadDone(BlockSource& unk0);
+
+    /// @vidx {7}
+    MC virtual void tick(BlockSource& unk0);
+
+    /// @vidx {8}
+    MC virtual void onChanged(BlockSource& unk0);
+
+    /// @vidx {9}
+    MC virtual bool isMovable(BlockSource& unk0);
+
+    /// @vidx {10}
+    MC virtual bool isCustomNameSaved();
+
+    /// @vidx {11}
+    MC virtual void onPlace(BlockSource& unk0);
+
+    /// @vidx {12}
+    MC virtual void onMove();
+
+    /// @vidx {13}
+    MC virtual void onRemoved(BlockSource& unk0);
+
+    /// @vidx {14}
+    MC virtual bool isPreserved(BlockSource& unk0) const;
+
+    /// @vidx {15}
+    MC virtual bool shouldPreserve(BlockSource& unk0);
+
+    /// @vidx {16}
+    MC virtual void triggerEvent(int unk0, int unk1);
+
+    /// @vidx {17}
+    MC virtual void clearCache();
+
+    /// @vidx {18}
+    MC virtual void onNeighborChanged(BlockSource& unk0, const BlockPos& unk1);
+
+    /// @vidx {19}
+    MC virtual float getShadowRadius(BlockSource& unk0) const;
+
+    /// @vidx {20}
+    MC virtual bool hasAlphaLayer() const;
+
+    /// @vidx {21}
+    MC virtual BlockActor* getCrackEntity(BlockSource& unk0, const BlockPos& unk1);
+
+    /// @vidx {22}
+    MC virtual AABB getCollisionShape(const IConstBlockSource& unk0) const;
+
+    /// @vidx {23}
+    MC virtual void getDebugText(std::vector<std::string>& unk0, const BlockPos& unk1);
+
+    /// @vidx {24}
+    MC virtual const std::string& getCustomName() const;
+
+    /// @vidx {25}
+    MC virtual const std::string& getFilteredCustomName(const gsl::not_null<Bedrock::NonOwnerPointer<UIProfanityContext>>& unk0);
+
+    /// @vidx {26}
+    MC virtual std::string getName() const;
+
+    /// @vidx {27}
+    MC virtual void setCustomName(const std::string& unk0);
+
+    /// @vidx {28}
+    MC virtual std::string getImmersiveReaderText(BlockSource& unk0);
+
+    /// @vidx {29}
+    MC virtual int getRepairCost() const;
+
+    /// @vidx {30}
+    MC virtual PistonBlockActor* getOwningPiston(BlockSource& unk0);
+
+    /// @vidx {31}
+    MC virtual const PistonBlockActor* getOwningPiston(BlockSource& unk0) const;
+
+    /// @vidx {32}
+    MC virtual Container* getContainer();
+
+    /// @vidx {33}
+    MC virtual const Container* getContainer() const;
+
+    /// @vidx {34}
+    MC virtual void eraseLootTable();
+
+    /// @vidx {35}
+    MC virtual void onChunkLoaded(LevelChunk& unk0);
+
+    /// @vidx {36}
+    MC virtual void onChunkUnloaded(LevelChunk& unk0);
+
+    /// @vidx {37}
+    MC virtual std::vector<std::string> getUgcStrings(const CompoundTag& unk0) const;
+
+    /// @vidx {38}
+    MC virtual void setUgcStrings(CompoundTag& unk0, const std::vector<std::string>& unk1) const;
+
+    /// @vidx {39}
+    MC virtual void fixupOnLoad(LevelChunk& unk0);
+
+    /// @vidx {40}
+    MC virtual std::unique_ptr<BlockActorDataPacket> _getUpdatePacket(BlockSource& unk0);
+
+    /// @vidx {41}
+    MC virtual void _onUpdatePacket(const CompoundTag& unk0, BlockSource& unk1);
+
+    /// @vidx {42}
+    MC virtual bool _playerCanUpdate(const Player& unk0) const;
 
 public:
-	// 1.20.71.1 - 48 83 EC ? 45 33 C9 0F 29 34 24
-	BlockActor(BlockActorType type, const BlockPos& pos, const std::string& id);
     void moveTo(const BlockPos& pos);
 };
 
@@ -114,5 +196,6 @@ static_assert(sizeof(BlockActor) == 200);
 
 class BlockActorFactory {
 public:
-    static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
+    /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 49 8B F8 44 8B EA}
+    MC static std::shared_ptr<BlockActor> createBlockEntity(BlockActorType type, const BlockPos& pos, const BlockLegacy& block);
 };

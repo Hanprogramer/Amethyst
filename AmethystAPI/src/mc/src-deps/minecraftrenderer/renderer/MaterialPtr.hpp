@@ -16,6 +16,7 @@ namespace mce {
     public:
         std::shared_ptr<RenderMaterialInfo> mRenderMaterialInfoPtr;
 
+        MaterialPtr() = default;
         MaterialPtr(mce::RenderMaterialGroupBase& materialGroup, const HashedString& materialName);
     };
 }

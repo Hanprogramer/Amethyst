@@ -73,8 +73,8 @@ static constexpr const char* VtableDescSectionName = ".vtbdt";
 // YES this looks insane. It's literally a tiny trampoline to disable MSVC's deleting thunk
 // because the generated thunk that calls this already deletes, and double-free = sad. Keep it. Do not touch.
 static constexpr const uint8_t VirtualDestructorDeletingDisableBlock[] = {
-    0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
-    0x30, 0xD2,                                                 // xor dl, dl (sets delete flag to false)
+    0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, // mov rax, 0x1000000000000000
+    0x31, 0xD2,                                                 // xor edx, edx (sets delete flag to false)
     0xFF, 0xE0                                                  // jmp rax
 };
 
@@ -236,7 +236,7 @@ void Amethyst::RuntimeImporter::Initialize()
         }
     }
 
-    mVtableToVarStorage.clear();
+    mAllocatedVtableToVarStorage.clear();
     // Parse and initialize the variable descriptor table
     {
         VariableDescTable& variableDescTable = *reinterpret_cast<VariableDescTable*>(base + variableDescSection->VirtualAddress);
@@ -254,8 +254,16 @@ void Amethyst::RuntimeImporter::Initialize()
 
             std::string& name = nameIt->second;
             if (name.starts_with("?$vtable_for_")) {
-                mVtableToVarStorage[name] = SlideAddress(variableDesc->address);
-                address = reinterpret_cast<uintptr_t>(&mVtableToVarStorage[name]);
+                auto allocationExp = mAllocator->allocate(sizeof(uintptr_t));
+                if (!allocationExp.has_value()) {
+                    Log::Warning("Failed to allocate memory of vtable to variable storage for '{}'", name);
+                    Log::Warning("Expect problems when trying to use it.", name);
+                    continue;
+                }
+
+                auto& allocation = (mAllocatedVtableToVarStorage[name] = std::move(*allocationExp));
+                (*reinterpret_cast<uintptr_t*>(allocation.address())) = SlideAddress(variableDesc->address);
+                address = allocation.address();
             }
             else {
                 address = SlideAddress(variableDesc->address);
@@ -355,7 +363,7 @@ void Amethyst::RuntimeImporter::Shutdown()
     mVirtualTables.clear();
     mVirtualDestructors.clear();
     mAllocatedDestructorBlocks.clear();
-    mVtableToVarStorage.clear();
+    mAllocatedVtableToVarStorage.clear();
     mInitialized = false;
 }
 

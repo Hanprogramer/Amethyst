@@ -1,3 +1,4 @@
+#include <amethyst/Imports.hpp>
 #include "Material.hpp"
 
 Material& Material::getMaterial(MaterialType type)

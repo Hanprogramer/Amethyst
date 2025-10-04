@@ -94,6 +94,14 @@ std::unique_ptr<CompoundTag> CompoundTag::clone() const
     return newCompound;
 }
 
+const CompoundTag* CompoundTag::getCompound(std::string_view name) const {
+    return get<CompoundTag>(name);
+}
+
+CompoundTag* CompoundTag::getCompound(std::string_view name) {
+    return get<CompoundTag>(name);
+}
+
 const ListTag* CompoundTag::getList(std::string_view name) const
 {
     return get<ListTag>(name);

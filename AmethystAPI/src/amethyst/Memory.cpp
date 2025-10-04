@@ -92,6 +92,7 @@ uintptr_t GetVtable(void* obj)
     return (uintptr_t)*reinterpret_cast<uintptr_t**>(obj);
 }
 
+#pragma optimize("", off)
 void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
 {
     Log::Info("Comparing virtual tables {:X} and {:X}", lhs, rhs);
@@ -115,3 +116,4 @@ void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
         }
     }
 }
+#pragma optimize("", on)
