@@ -225,7 +225,7 @@ enum class MinecraftPacketIds {
     EndId = 309
 };
 
-/// @vptr {0x5389A20}
+/// @vptr {0x4CB18D0}
 class Packet {
 public:
     PacketPriority mPriority;
@@ -238,7 +238,7 @@ public:
 
 public:
     /// @vidx {0}
-	MC virtual ~Packet();
+    MC virtual ~Packet();
 
 	/// @vidx {1}
 	MC virtual MinecraftPacketIds getId() const = 0;

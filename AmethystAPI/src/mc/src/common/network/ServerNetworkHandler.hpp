@@ -35,7 +35,7 @@ public:
 
 public:
     virtual ~ServerNetworkHandler();
-
+    virtual void _unknown_0();
     // virtuals: cba to deal with virtual inheritance
     virtual ServerPlayer* _getServerPlayer(const NetworkIdentifier& source, SubClientId subId);
 
