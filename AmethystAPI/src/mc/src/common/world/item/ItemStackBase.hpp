@@ -1,5 +1,7 @@
+/// @symbols
 #pragma once
-#include "amethyst/Memory.hpp"
+#include <amethyst/Imports.hpp>
+
 #include <cstdint>
 #include <string>
 #include <optional>
@@ -15,71 +17,49 @@ class Block;
 class ItemInstance;
 class HashedString;
 
-//is_virtual = True
-//    hide_vtable = True
-//        struct_size = 0x88
-//
-//#(Type, Name, Size(in bytes), Offset(in bytes))
-//    struct
-//    = [("WeakPtr<Item>", "mItem", 8, 8),
-//       ("CompoundTag*", "mUserData", 8, 16),
-//       ("short", "mAuxValue", 2, 32),
-//       ("byte", "mCount", 1, 34),
-//       ("bool", "mShowPickup", 1, 48),
-//       ("const Block*", "mBlock", 8, 24),
-//       ("std::vector<const BlockLegacy*>", "mCanPlaceOn", 24, 56),
-//       ("std::vector<const BlockLegacy*>", "mCanDestroy", 24, 88),
-//       ("std::unique_ptr<ItemInstance>", "mChargedItem", 8, 128),
-//       ("size_t", "mCanPlaceOnHash", 8, 80),
-//       ("Tick", "mBlockingTick", 8, 120),
-//       ("size_t", "mCanDestroyHash", 8, 112),
-//       ("std::chrono::steady_clock::time_point", "mPickupTime", 8, 40)]
-
+/*
+ * Represents a basic stack of items, including the item type, count, auxiliary value, and associated metadata.
+ */
+/** @vptr {0x4E2C5E8} */
 class ItemStackBase {
 public:
-    /* this + 0   */ uintptr_t** vtable;
-    /* this + 8   */ WeakPtr<Item> mItem;
-    /* this + 16  */ CompoundTag* mUserData;
-    /* this + 24  */ const Block* mBlock;
-    /* this + 32  */ unsigned short mAuxValue;
-    /* this + 34  */ byte mCount;
-    /* this + 35  */ bool mValid;
-    /* this + 40  */ std::chrono::steady_clock::time_point mPickupTime;
-    /* this + 48  */ bool mShowPickup;
-    /* this + 56  */ std::vector<const BlockLegacy*> mCanPlaceOn;
-    /* this + 80  */ size_t mCanPlaceOnHash;
-    /* this + 88  */ std::vector<const BlockLegacy*> mCanDestroy;
+    /* this + 008 */ WeakPtr<Item> mItem;
+    /* this + 016 */ CompoundTag* mUserData;
+    /* this + 024 */ const Block* mBlock;
+    /* this + 032 */ unsigned short mAuxValue;
+    /* this + 034 */ byte mCount;
+    /* this + 035 */ bool mValid;
+    /* this + 040 */ std::chrono::steady_clock::time_point mPickupTime;
+    /* this + 048 */ bool mShowPickup;
+    /* this + 056 */ std::vector<const BlockLegacy*> mCanPlaceOn;
+    /* this + 080 */ size_t mCanPlaceOnHash;
+    /* this + 088 */ std::vector<const BlockLegacy*> mCanDestroy;
     /* this + 112 */ size_t mCanDestroyHash;
     /* this + 120 */ Tick mBlockingTick;
     /* this + 128 */ std::unique_ptr<ItemInstance> mChargedItem;
-
-public:
-    /* Virtuals */
-    ~ItemStackBase();
-    void reinit(const Item& item, int count, int auxValue);
-    void reinit(const BlockLegacy& block, int count);
-    void reinit(std::string_view name, int count, int auxValue);
-    void setNull(std::optional<std::string> reason);
-    std::string toString() const;
-    std::string toDebugString() const;
 
 public:
     ItemStackBase();
     ItemStackBase(const ItemStackBase&);
     ItemStackBase& operator=(const ItemStackBase&);
 
-    // 1.20.51.1 - 48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 48 89 54 24 ? 57 48 83 EC ? 48 8B FA 48 8B E9 33 F6
-    // std::string getRawNameId() const;
+    /** @vidx {0} */ MC virtual ~ItemStackBase();
+    /** @vidx {1} */ MC virtual void reinit(const Item& item, int count, int auxValue);
+    /** @vidx {2} */ MC virtual void reinit(const BlockLegacy& block, int count);
+    /** @vidx {3} */ MC virtual void reinit(std::string_view name, int count, int auxValue);
+    /** @vidx {4} */ MC virtual void setNull(std::optional<std::string> reason);
+    /** @vidx {5} */ MC virtual std::string toString() const;
+    /** @vidx {6} */ MC virtual std::string toDebugString() const;
 
-    // 1.21.0.3 - 48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 48 89 8D
-    void _loadItem(const CompoundTag*);
+    /** @sig {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 48 89 8D} */
+    MC void _loadItem(const CompoundTag*);
+    /** @sig {48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA 48 8B F1 48 89 94 24 ? ? ? ? 48 8D 59} */
+    MC void setUserData(std::unique_ptr<CompoundTag> userData);
+
     const Item* getItem() const;
-
     bool isNull() const;
-    void setUserData(std::unique_ptr<CompoundTag> userData);
     bool isLiquidClipItem() const;
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
-
     bool isInstance(const HashedString& itemName, bool useItemLookup) const;
     bool isBlock() const;
     bool isOffhandItem() const;
@@ -87,7 +67,6 @@ public:
     operator bool() const;
     bool hasTag(const HashedString& tag) const;
     UseAnim getUseAnimation() const;
-
 private:
     bool _isInstance(std::string_view itemName) const;
 };
