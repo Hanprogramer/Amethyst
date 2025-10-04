@@ -45,8 +45,10 @@ void VanillaItems__addConstructionCategory(
     testTab.mCategory = (CreativeItemCategory)8;
     testTab.mTabName = "test_tab";
     testTab.mTabFactoryName = "test_tab_factory";
-    testTab.padding4 = 0;
-    testTab.padding8 = 0;
+    testTab.padding4 = 2; // idk made the same as items_tab
+    testTab.padding8 = 16; 
+
+    // padding8 is sometimes suspicously the length of "test_tab" + 1? but also sometimes not??
 
     // add a field once, if its not found
     auto it = std::find_if(CraftingScreenController::mCategoryTabs.begin(),
@@ -88,12 +90,12 @@ SafetyHookInline _lambda_ScreenController_registerTabNameBinding;
 void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
     uint32_t* something = (uint32_t*)((uintptr_t)a1 + 4680);
 
-    Log::Info("something: {}", *something); // seems to be some random thing each time for the test tab.
+    //Log::Info("something: {}", *something); // seems to be some random thing each time for the test tab.
 
     // construction 2742786064
 
     std::string* res = _lambda_ScreenController_registerTabNameBinding.call<std::string*, void*, void*>(a1, a2);
-    Log::Info("something res '{}'", *res);
+    //Log::Info("something res '{}'", *res);
 
     if (res->size() == 0) {
         *res = "craftingScreen.tab.test";
@@ -102,12 +104,57 @@ void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
     return (void*)res;
 }
 
+// This function is called sometimes on Keyboard + Mouse, but not everytime you change tab, so i dont think this is actually what handles changing the content.
+// Altho it does actually call everytime on controller when you use bumpers to switch category. 
+// called with recipe_(XYZ), 0
+//SafetyHookInline _CraftingScreenController__focusCollectionItem;
+//
+//void CraftingScreenController__focusCollectionItem(
+//    CraftingScreenController* self,
+//    const std::string& item,
+//    int unkn1)
+//{
+//    Log::Info("Focusing collection item: {}, unknown {}", item, unkn1);
+//
+//    _CraftingScreenController__focusCollectionItem.call<void, CraftingScreenController*, const std::string&, int>(
+//        self, item, unkn1);
+//}
+
+SafetyHookInline _CraftingScreenController__showCategoryTab;
+
+
+
+// Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
+// seems to allways call with someBool = false, someInt = 0
+// Called for all categories at once!
+void CraftingScreenController__showCategoryTab(
+    CraftingScreenController* self,
+    const CraftingScreenController::CategoryTabInfo& tabInfo,
+    bool someBool,
+    int someInt)
+{
+    Log::Info(
+        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, padding8: {}), someBool: {}, someInt: {}",
+        tabInfo.mTabName,
+        tabInfo.mTabFactoryName,
+        (uint32_t)tabInfo.mCategory,
+        tabInfo.padding4,
+        tabInfo.padding8,
+        someBool,
+        someInt);
+
+    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
+        self, tabInfo, someBool, someInt);
+}
+
 void CreateItemRegistryHooks()
 {
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
     HOOK(VanillaItems, serverInitCreativeItemsCallback);
     HOOK(VanillaItems, _addConstructionCategory);
     HOOK(CraftingScreenController, _tabIndexToCollectionName);
+    HOOK(CraftingScreenController, _showCategoryTab);
+    //HOOK(CraftingScreenController, _focusCollectionItem);
 
     hooks.CreateHookAbsolute(
         _lambda_ScreenController_registerTabNameBinding,
