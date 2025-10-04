@@ -174,7 +174,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         local src_json = path.join("mod.json")
 
         local mod_json = io.readfile(src_json)
-        if not automated then
+
+        if not automated_build then
             mod_json = mod_json:gsub('("version"%s*:%s*")([^"]*)(")', '%1' .. "0.0.0-dev" .. '%3')
         end
 
