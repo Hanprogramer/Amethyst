@@ -68,13 +68,50 @@ void VanillaItems__addConstructionCategory(
     Item::addCreativeItem(ref, *testBlock);
 }
 
+SafetyHookInline _CraftingScreenController__tabIndexToCollectionName;
+
+std::string* CraftingScreenController__tabIndexToCollectionName(CraftingScreenController* self, std::string* res, InventoryLeftTabIndex tabIdx)
+{
+    _CraftingScreenController__tabIndexToCollectionName.call<std::string*, CraftingScreenController*, std::string*, InventoryLeftTabIndex>(self, res, tabIdx);
+
+    if (tabIdx == (InventoryLeftTabIndex)8) {
+        *res = "recipe_test";
+    }
+
+    //Log::Info("_tabIndexToCollectionName: {} for tabIdx {}", *res, (int64_t)tabIdx);
+
+    return res;
+}
+
+SafetyHookInline _lambda_ScreenController_registerTabNameBinding;
+
+void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
+    uint32_t* something = (uint32_t*)((uintptr_t)a1 + 4680);
+
+    Log::Info("something: {}", *something); // seems to be some random thing each time for the test tab.
+
+    // construction 2742786064
+
+    std::string* res = _lambda_ScreenController_registerTabNameBinding.call<std::string*, void*, void*>(a1, a2);
+    Log::Info("something res '{}'", *res);
+
+    if (res->size() == 0) {
+        *res = "craftingScreen.tab.test";
+    }
+
+    return (void*)res;
+}
+
 void CreateItemRegistryHooks()
 {
-    // temporarily disable
-    return;
-
-
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
     HOOK(VanillaItems, serverInitCreativeItemsCallback);
     HOOK(VanillaItems, _addConstructionCategory);
+    HOOK(CraftingScreenController, _tabIndexToCollectionName);
+
+    hooks.CreateHookAbsolute(
+        _lambda_ScreenController_registerTabNameBinding,
+        SigScan("48 89 5C 24 ? 48 89 54 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 33 C0 89 44 24 ? 0F 57 C0 0F 11 02 48 89 42 ? 48 89 42 ? 48 8D 15"),
+        &lambda_ScreenController_registerTabNameBinding
+    );
 }
