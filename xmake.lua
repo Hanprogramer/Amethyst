@@ -1,6 +1,6 @@
 -- Mod Options
-local mod_name = "Amethyst-Runtime"
-local targetMajor, targetMinor, targetPatch = 1, 21, 3
+local mod_name = "Amethyst-Runtime" -- Replace with the name of your mod
+local targetMajor, targetMinor, targetPatch = 1, 21, 3 -- 1.21.0.3 (Other versions not supported by Amethyst)
 
 option("automated_build")
     set_default(false)
@@ -17,5 +17,9 @@ else
     build_script_path = path.join(os.getenv(("AMETHYST_SRC")), "AmethystAPI", "mod_build.lua")
 end
 
-includes(build_script_path)
-build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated)
+if not os.isfile(build_script_path) then
+    print("Failed to find build script!" .. build_script_path)
+else 
+    includes(build_script_path)
+    build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated)
+end
