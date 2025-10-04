@@ -117,5 +117,6 @@
         "future": "cpp",
         "numbers": "cpp"
     },
-    "cmake.sourceDirectory": "C:/Users/blake/Documents/Modding/Amethyst/AmethystAPI/include/glm"
+    "deno.enablePaths": ["./data/packs/RP/", "./data/packs/BP/"],
+    "deno.config": "./data/packs/data/generated/deno.json",
 }

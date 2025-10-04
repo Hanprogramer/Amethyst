@@ -1,5 +1,6 @@
 #pragma once
 #include <amethyst/runtime/events/EventBus.hpp>
+#include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 
 namespace mce {
 class TextureGroup;

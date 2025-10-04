@@ -11,6 +11,7 @@
 #include "hooks/InputHooks.hpp"
 #include "hooks/ResourceHooks.hpp"
 #include "hooks/NetworkingHooks.hpp"
+#include <hooks/item/ItemRegistryHooks.hpp>
 
 extern AmethystContext* _AmethystContextInstance;
 extern const Amethyst::Mod* _OwnMod;
@@ -61,4 +62,5 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     CreateNetworkingHooks();
     CreateUIHooks();
     CreateRenderingHooks();
+    CreateItemRegistryHooks();
 }
