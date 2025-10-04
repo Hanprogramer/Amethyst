@@ -1,22 +1,18 @@
+/// @symbolgeneration
 #pragma once
-#include <cstddef>
-#include <cstdint>
-#include <string>
+#include <amethyst/Imports.hpp>
 #include "mc/src-deps/core/threading/Mutex.hpp"
-#include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
 #include <mc/src/common/world/level/chunk/ChunkSource.hpp>
 #include "mc/src/common/world/level/dimension/DimensionHeightRange.hpp"
 #include "mc/src/common/world/level/dimension/IDimension.hpp"
 #include "mc/src/common/world/level/LevelListener.hpp"
 #include "mc/src/common/world/level/saveddata/SavedData.hpp"
-#include "mc/src/common/gamerefs/OwnerPtr.hpp"
 #include "mc/src/common/world/level/Level.hpp"
 #include "mc/src/common/world/level/storage/StorageVersion.hpp"
 #include "mc/src/common/world/level/ChunkPos.hpp"
 #include "mc/src/common/world/level/chunk/LevelChunkGarbageCollector.hpp"
 #include "mc/src/common/world/level/levelgen/v1/FeatureTerrainAdjustments.hpp"
 #include "mc/src/common/world/level/levelgen/structure/StructureSetRegistry.hpp"
-#include <set>
 #include <mc/src-deps/core/threading/TaskGroup.hpp>
 
 enum class LimboEntitiesVersion : char {
@@ -268,8 +264,11 @@ public:
     /** @vidx {23} @for {LevelListener} */
     virtual void onLevelDestruction(const std::string& levelId) override;
 
-    /**@asmName {Dimension_ctor}*/
-    Dimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName);
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 8B F9 41 8B D8}
+    MC Dimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName);
+
+    /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 8B F9 41 8B D8}
+    MC Dimension* $ctor(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName);
 
     BlockSource& getBlockSourceFromMainChunkSource() const;
 
