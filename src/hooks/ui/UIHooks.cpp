@@ -8,6 +8,7 @@
 #include "mc/src-client/common/client/gui/screens/ScreenEvent.hpp"
 #include "mc/src-client/common/client/gui/screens/controllers/StartMenuScreenController.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 SafetyHookInline _ScreenController__handleButtonEvent;
 SafetyHookInline _StartMenuScreenController__registerBindings;
@@ -28,7 +29,8 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
 
     // Register '#amethyst_version' binding
     self->bindString({StringToNameId("#amethyst_version")}, []() { 
-        return std::format("Amethyst Runtime v{}", MOD_VERSION); 
+        const Amethyst::Mod* self = Amethyst::GetOwnMod();
+        return std::format("Amethyst Runtime v{}", self->mInfo->Version.to_string());
     }, []() { 
         return true; 
     });

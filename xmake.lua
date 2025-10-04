@@ -1,41 +1,54 @@
 -- Mod Options
-local mod_name = "AmethystRuntime"
-local modMajor = 2
-local modMinor = 0
-local modPatch = 0
+local mod_name = "Amethyst-Runtime"
+local targetMajor, targetMinor, targetPatch = 1, 21, 3
 
--- Minecraft version
-local major = 1
-local minor = 21
-local patch = 3
+option("automated_build")
+    set_default(false)
+    set_showmenu(true)
+    set_description("Flag to indicate this is an automated build")
+option_end()
 
 set_languages("c++23")
-set_project(mod_name)
-set_version(string.format("%d.%d.%d", modMajor, modMinor, modPatch))
+
+local automated = is_config("automated_build", true)
+local modFolder
+local amethystApiPath
+
+if automated then
+    modFolder = path.join(os.projectdir(), "dist")
+    amethystApiPath = path.join(os.projectdir(), "Amethyst", "AmethystAPI")
+else
+    set_symbols("debug")
+    local amethystSrc = os.getenv("AMETHYST_SRC")
+    amethystApiPath = amethystSrc and path.join(amethystSrc, "AmethystAPI") or nil
+
+    local amethystFolder = path.join(
+        os.getenv("localappdata"),
+        "Packages",
+        "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
+        "LocalState",
+        "games",
+        "com.mojang",
+        "amethyst"
+    )
+
+    modFolder = path.join(
+        amethystFolder,
+        "mods",
+        string.format("%s@0.0.0-dev", mod_name)
+    )
+end
+
+-- Only include AmethystAPI if present on disk at configure-time
+if amethystApiPath and os.isdir(amethystApiPath) then
+    includes(amethystApiPath)
+    includes(path.join(amethystApiPath, "packages", "libhat"))
+end
 
 -- RelWithDebInfo flags
-add_cxxflags("/O2", "/Zi", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
-add_ldflags("/DEBUG", "/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
-includes(path.join(os.getenv("AMETHYST_SRC"), "AmethystAPI"))
+add_cxxflags("/O2", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
+add_ldflags("/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
 
--- Project dependencies
-local amethystFolder = path.join(
-    os.getenv("localappdata"),
-    "Packages",
-    "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
-    "LocalState",
-    "games",
-    "com.mojang",
-    "amethyst"
-)
-
-local modFolder = path.join(
-    amethystFolder,
-    "mods",
-    string.format("%s@%d.%d.%d", mod_name, modMajor, modMinor, modPatch)
-)
-
-set_symbols("debug")
 set_targetdir(modFolder)
 
 package("Runtime-Importer")
@@ -59,7 +72,6 @@ package("Runtime-Importer")
         local installed_version = os.isfile(installed_version_file) and io.readfile(installed_version_file) or "0.0.0"
         local should_reinstall = installed_version ~= latest_tag
         
-
         if should_reinstall then
             print("Runtime-Importer is outdated, reinstalling...")
             print("Latest version is " .. latest_tag)
@@ -99,40 +111,46 @@ package_end()
 
 add_requires("Runtime-Importer", {system = false})
 
-target("AmethystRuntime")
+set_project(mod_name)
+
+target(mod_name)
     set_kind("shared")
-    -- set_toolchains("nasm")
-    add_deps("AmethystAPI", {public = true})
-    set_default(true)
+    add_deps("AmethystAPI", "libhat")
+
+    -- Hard fail if AmethystAPI is missing
+    on_load(function (t)
+        if not (amethystApiPath and os.isdir(amethystApiPath)) then
+            raise("AmethystAPI not found at: " .. tostring(amethystApiPath) ..
+                  "\nCI: ensure repo is checked out to Amethyst/AmethystAPI" ..
+                  "\nLocal: set AMETHYST_SRC to point to your Amethyst clone.")
+        end
+    end)
+    
+    -- Force rebuild when any source file changes
+    set_policy("build.across_targets_in_parallel", true)
+
     add_files("src/**.cpp")
 
     add_defines(
-        string.format('MOD_VERSION="%d.%d.%d"', modMajor, modMinor, modPatch),
-        string.format('MOD_TARGET_VERSION_MAJOR=%d', major),
-        string.format('MOD_TARGET_VERSION_MINOR=%d', minor),
-        string.format('MOD_TARGET_VERSION_PATCH=%d', patch),
-        'ENTT_PACKED_PAGE=128'
+        string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
+        string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
+        string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
+        'ENTT_PACKED_PAGE=128',
+        'AMETHYST_EXPORTS'
     )
 
     -- Deps
-    add_packages("Runtime-Importer")
     add_packages("AmethystAPI", "libhat")
-    add_links(
-        "user32", -- Windows GUI
-        -- "oleaut32", 
-        "windowsapp", -- WinRT stuff
-        path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib")
-    )
+    add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
 
     add_includedirs("src", {public = true})
-
     add_headerfiles("src/**.hpp")
 
     before_build(function (target)
         local importer_dir = path.join(os.curdir(), ".importer");
         local generated_dir = path.join(importer_dir)
-        local input_dir = path.join(os.curdir(), "AmethystAPI/src"):gsub("\\", "/")
-        local include_dir = path.join(os.curdir(), "AmethystAPI/include"):gsub("\\", "/")
+        local input_dir = path.join(amethystApiPath, "src"):gsub("\\", "/")
+        local include_dir = path.join(amethystApiPath, "include"):gsub("\\", "/")
         
         local gen_sym_args = {
             ".importer/bin/Amethyst.SymbolGenerator.exe",
@@ -163,12 +181,19 @@ target("AmethystRuntime")
     after_build(function (target)
         local importer_dir = path.join(os.curdir(), ".importer");
         local generated_dir = path.join(importer_dir)
-        local src_json = path.join(os.curdir(), "mod.json")
+        local src_json = path.join("mod.json")
+
+        local mod_json = io.readfile(src_json)
+        if not automated then
+            mod_json = mod_json:gsub('("version"%s*:%s*")([^"]*)(")', '%1' .. "0.0.0-dev" .. '%3')
+        end
+
         local dst_json = path.join(modFolder, "mod.json")
         if not os.isdir(modFolder) then
             os.mkdir(modFolder)
         end
-        os.cp(src_json, dst_json)
+
+        io.writefile(dst_json, mod_json)
 
         local tweaker_args = {
             ".importer/bin/Amethyst.ModuleTweaker.exe",
