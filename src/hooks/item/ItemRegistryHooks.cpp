@@ -7,6 +7,13 @@
 #include <mc/src/common/world/level/block/registry/BlockTypeRegistry.hpp>
 #include <mc/src-client/common/client/gui/screens/controllers/CraftingScreenController.hpp>
 #include <algorithm>
+#include <mc/src-client/common/client/gui/screens/controllers/ContainerScreenController.hpp>
+#include <mc/src/common/world/containers/ContainerEnumName.hpp>
+#include <mc/src/common/world/containers/managers/models/CraftingContainerManagerModel.hpp>
+#include <mc/src/common/world/actor/player/Player.hpp>
+#include <mc/src/common/world/item/registry/ItemRegistry.hpp>
+#include <mc/src/common/world/containers/ContainerFactory.hpp>
+#include <mc/src/common/world/containers/managers/controllers/CreativeContainerController.hpp>
 
 SafetyHookInline _VanillaItems_serverInitCreativeItemsCallback;
 
@@ -38,29 +45,12 @@ void VanillaItems__addConstructionCategory(
     Log::Info("tabs size {}", CraftingScreenController::mCategoryTabs.size());
 
     for (auto& tab : CraftingScreenController::mCategoryTabs) {
-        Log::Info(" - {} {}, category: {}, padding4: {}, padding8: {}", tab.mTabName, tab.mTabFactoryName, (uint32_t)tab.mCategory, tab.padding4, tab.padding8);
+        Log::Info(" - {} {}, category: {}, padding4: {}, mContainerEnum: {}, padding12: {}", tab.mTabName, tab.mTabFactoryName, (uint32_t)tab.mCategory, tab.padding4, (uint64_t)tab.mContainerEnum, tab.padding12);
     }
 
-    CraftingScreenController::CategoryTabInfo testTab;
-    testTab.mCategory = (CreativeItemCategory)8;
-    testTab.mTabName = "test_tab";
-    testTab.mTabFactoryName = "test_tab_factory";
-    testTab.padding4 = 2; // idk made the same as items_tab
-    testTab.padding8 = 16; 
+    
 
     // padding8 is sometimes suspicously the length of "test_tab" + 1? but also sometimes not??
-
-    // add a field once, if its not found
-    auto it = std::find_if(CraftingScreenController::mCategoryTabs.begin(),
-                           CraftingScreenController::mCategoryTabs.end(),
-                           [](const CraftingScreenController::CategoryTabInfo& tab) {
-                               return tab.mTabName == "test_tab";
-                           });
-
-    // Insert only if not found
-    if (it == CraftingScreenController::mCategoryTabs.end()) {
-        CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
-    }
 
     Log::Info("VanillaItems::addConstructionCategory! {}", (uintptr_t)Item::mActiveCreativeItemCategory);
     Item::mActiveCreativeItemCategory = creative->newCreativeCategory("Test", (CreativeItemCategory)8);
@@ -79,6 +69,14 @@ std::string* CraftingScreenController__tabIndexToCollectionName(CraftingScreenCo
     if (tabIdx == (InventoryLeftTabIndex)8) {
         *res = "recipe_test";
     }
+
+    //Log::Info("{} offset {}", (uintptr_t)self, offsetof(CraftingScreenController, instance4848));
+
+    /*
+
+    for (auto& state : self->mTabStates) {
+        Log::Info("Tab state: {} {}", (uint64_t)state.first, (uint64_t)state.second);
+    }*/
 
     //Log::Info("_tabIndexToCollectionName: {} for tabIdx {}", *res, (int64_t)tabIdx);
 
@@ -120,31 +118,108 @@ void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
 //        self, item, unkn1);
 //}
 
-SafetyHookInline _CraftingScreenController__showCategoryTab;
 
 
+//SafetyHookInline _CraftingScreenController__showCategoryTab;
 
 // Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
 // seems to allways call with someBool = false, someInt = 0
 // Called for all categories at once!
-void CraftingScreenController__showCategoryTab(
-    CraftingScreenController* self,
-    const CraftingScreenController::CategoryTabInfo& tabInfo,
-    bool someBool,
-    int someInt)
-{
-    Log::Info(
-        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, padding8: {}), someBool: {}, someInt: {}",
-        tabInfo.mTabName,
-        tabInfo.mTabFactoryName,
-        (uint32_t)tabInfo.mCategory,
-        tabInfo.padding4,
-        tabInfo.padding8,
-        someBool,
-        someInt);
+//void CraftingScreenController__showCategoryTab(
+//    CraftingScreenController* self,
+//    const CraftingScreenController::CategoryTabInfo& tabInfo,
+//    bool someBool,
+//    int someInt)
+//{
+//    Log::Info(
+//        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, padding8: {}), someBool: {}, someInt: {}",
+//        tabInfo.mTabName,
+//        tabInfo.mTabFactoryName,
+//        (uint32_t)tabInfo.mCategory,
+//        tabInfo.padding4,
+//        tabInfo.padding8,
+//        someBool,
+//        someInt);
+//
+//    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
+//        self, tabInfo, someBool, someInt);
+//}
 
-    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
-        self, tabInfo, someBool, someInt);
+SafetyHookInline _CraftingContainerManagerModel__postInit;
+std::shared_ptr<FilteredContainerModel> testContainerModel = nullptr;
+
+ContainerScreenContext* CraftingContainerManagerModel__postInit(CraftingContainerManagerModel* self, ContainerScreenContext* res)
+{
+    _CraftingContainerManagerModel__postInit.call<ContainerScreenContext*, CraftingContainerManagerModel*, ContainerScreenContext*>(self, res);
+
+    Log::Info("CraftingContainerManagerModel__postInit: {}", (uint64_t)res->mScreenContainerType);
+    Level& level = *self->mPlayer.getLevel()->asLevel();
+
+    //ItemRegistryRef itemRegRef = level.getItemRegistry();
+    //std::shared_ptr<ItemRegistry> itemReg = itemRegRef._lockRegistry();
+
+    CreativeItemRegistry* creativeItemReg = CreativeItemRegistry::mCurrentRegistry.get();
+    
+    CreativeItemGroupCategory* testCategory = nullptr;
+
+    if (creativeItemReg) {
+        testCategory = creativeItemReg->getCreativeCategory((CreativeItemCategory)8);
+    }
+
+    ContainerEnumName testTabContainer = static_cast<ContainerEnumName>(static_cast<uint64_t>(ContainerEnumName::MAX) + 1);
+    bool isCreativeMode = true;
+
+     testContainerModel = self->_createContainerModel(testTabContainer, testCategory, isCreativeMode, [](const ItemInstance& item, bool someBool) {
+        Log::Info("Callback called with {} and {}", item.mItem->mFullName.getString(), someBool);
+        return FilterResult::Show;
+    });
+
+    Log::Info("Ran createContainerModel!");
+
+    return res;
+}
+
+class ContainerController;
+
+SafetyHookInline _ContainerFactory_createController;
+
+std::shared_ptr<ContainerController> ContainerFactory_createController(std::shared_ptr<ContainerModel> model)
+{
+    Assert(model != nullptr, "Invalid Model");
+
+    if ((uint64_t)model->mContainerEnumName == 63) {
+        Log::Info("model mContainerStringName starting {}", model->mContainerStringName);
+        model->mContainerStringName = "recipe_test";
+
+
+        Log::Info("Returning CreateiveContainerConttroller!");
+
+        std::shared_ptr<CreativeContainerController> controller = std::make_shared<CreativeContainerController>(model);
+
+        Log::Info("res: {}, container name: {}", (uintptr_t)controller.get(), controller->getContainerName());
+
+        return controller;
+    }
+
+    std::shared_ptr<ContainerController> res = _ContainerFactory_createController.call<std::shared_ptr<ContainerController>>(model);
+    
+    if (res.get() != nullptr) {
+        Log::Info("Others {}", res->getContainerName());
+    }
+    else {
+        Log::Info("others was nullptr!");
+    }
+
+    /*Log::Info("ContainerFactory::createController with mContainerName as enum name {} and string name '{}', is client side: {}, returned controller ptr: {}", 
+        (uintptr_t)model->mContainerEnumName, 
+        model->mContainerStringName,
+        model->mIsClientSide,
+        (uintptr_t)res.get()
+    );*/
+
+    //Log::Info("res: {}", (uintptr_t)(res->get()));
+
+    return res;
 }
 
 void CreateItemRegistryHooks()
@@ -153,12 +228,36 @@ void CreateItemRegistryHooks()
     HOOK(VanillaItems, serverInitCreativeItemsCallback);
     HOOK(VanillaItems, _addConstructionCategory);
     HOOK(CraftingScreenController, _tabIndexToCollectionName);
-    HOOK(CraftingScreenController, _showCategoryTab);
+    //HOOK(CraftingScreenController, _showCategoryTab);
     //HOOK(CraftingScreenController, _focusCollectionItem);
+    HOOK(ContainerFactory, createController);
+
+    VHOOK(CraftingContainerManagerModel, _postInit, this);
 
     hooks.CreateHookAbsolute(
         _lambda_ScreenController_registerTabNameBinding,
         SigScan("48 89 5C 24 ? 48 89 54 24 ? 57 48 83 EC ? 48 8B FA 48 8B D9 33 C0 89 44 24 ? 0F 57 C0 0F 11 02 48 89 42 ? 48 89 42 ? 48 8D 15"),
         &lambda_ScreenController_registerTabNameBinding
     );
+
+    ContainerEnumName testTabContainer = static_cast<ContainerEnumName>(static_cast<uint64_t>(ContainerEnumName::MAX) + 1);
+
+    CraftingScreenController::CategoryTabInfo testTab;
+    testTab.mCategory = (CreativeItemCategory)8;
+    testTab.mTabName = "test_tab";
+    testTab.mTabFactoryName = "test_tab_factory";
+    testTab.padding4 = 2; // idk made the same as items_tab
+    testTab.mContainerEnum = testTabContainer; 
+    testTab.padding12 = 4;
+
+    CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
+
+    ContainerScreenController::ContainerCollectionNameMap.emplace(
+        testTabContainer,
+        "recipe_test"
+    );
+
+    /*for (auto& container : ContainerScreenController::ContainerCollectionNameMap) {
+        Log::Info("container enum {} is '{}'", (uint64_t)container.first, container.second);
+    }*/
 }

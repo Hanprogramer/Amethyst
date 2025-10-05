@@ -11,9 +11,9 @@ public:
     virtual ContainerType getContainerType() = 0;
     virtual void setContainerType(ContainerType type) = 0;
     virtual void serverInitItemStackIds() = 0;
-    virtual std::vector<ItemStack> getItemCopies() = 0;
+    virtual std::vector<ItemStack> getItemCopies() const = 0;
     virtual void setSlot(int slot, const ItemStack& stack, bool) = 0;
-    virtual const ItemStack& getSlot(int slot) = 0;
+    virtual const ItemStack& getSlot(int slot) const = 0;
     virtual void setData(int, int) = 0;
     virtual void broadcastChanges() = 0;
     virtual void debitPlayerLevels(int amount) = 0;

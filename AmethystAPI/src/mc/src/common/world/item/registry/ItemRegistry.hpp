@@ -6,9 +6,7 @@
 #include "mc/src/common/world/item/Item.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
 
-class ItemRegistry : 
-    public std::enable_shared_from_this<ItemRegistry> 
-{
+class ItemRegistry : public std::enable_shared_from_this<ItemRegistry> {
 public:
     /* this + 0   */ std::byte padding0[0x18];
     /* this + 40  */ std::unordered_map<int32_t, WeakPtr<Item>> mIdToItemMap;
