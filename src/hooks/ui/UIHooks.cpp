@@ -28,7 +28,7 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     auto& context = *AmethystRuntime::getContext();
 
     // Register '#amethyst_version' binding
-    self->bindString({StringToNameId("#amethyst_version")}, []() { 
+    self->bindString(StringHash("#amethyst_version"), []() { 
         const Amethyst::Mod* self = Amethyst::GetOwnMod();
         return std::format("Amethyst Runtime v{}", self->mInfo->Version.to_string());
     }, []() { 
@@ -36,7 +36,7 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     });
 
     // Register '#mods_loaded' binding
-    self->bindString({StringToNameId("#mods_loaded")}, [&context]() { 
+    self->bindString(StringHash("#mods_loaded"), [&context]() { 
         size_t count = 0;
         if (context.mModLoader) {
             count = context.mModLoader->GetModCount();
