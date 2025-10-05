@@ -125,6 +125,9 @@ public:
     MC virtual void _onContainerScreenAction(const ContainerScreenActionResult&);
     /// @vidx {36}
     MC virtual void _updateItemStackRequest(ContainerScreenRequestActionType, const ContainerScreenActionResult&, ItemStackRequestScope&);
+
+    /** @sig {40 53 56 57 48 83 EC ? 48 83 7A ? ? 41 8B F0} */
+    MC const ItemStack& getItemStack(const std::string& collectionName, int index);
 };
 
 static_assert(sizeof(ContainerManagerController) == 0xA8);

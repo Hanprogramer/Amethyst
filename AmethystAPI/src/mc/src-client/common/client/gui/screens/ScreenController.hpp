@@ -173,7 +173,7 @@ public:
     /// @vidx {19}
     MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /// @vidx {18}
-    MC virtual bool bind(const std::string&, uint32_t, int, const std::string&, uint32_t, const std::string&, UIPropertyBag&);
+    MC virtual bool bind(const std::string& collectionName, uint32_t collectionNameHash, int collectionIndex, const std::string& bindingName, uint32_t bindingNameHash, const std::string& bindingNameOverride, UIPropertyBag& bag);
 
     /// @vidx {20}
     MC virtual void handleLicenseChanged();
