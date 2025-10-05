@@ -26,6 +26,19 @@ class ContainerScreenController :
     public ClientInstanceScreenController
 {
 public:
+    // Just to clarify, that doesn't really exist in the binary.
+    // It's just here to make it clear.
+    class Lambdas {
+    public:
+        class ShouldShowItemStackDurability {
+        public:
+            ContainerScreenController* mScreenController;
+
+            /** @sig {40 53 48 83 EC ? 48 8B 09 48 8B 01 48 8B 80 ? ? ? ? FF 15 ? ? ? ? 48 8B D8 80 78 ? ? 74 ? 48 8B 40 ? 48 85 C0 74 ? 48 83 38 ? 74 ? 48 8B CB E8 ? ? ? ? 84 C0 75 ? 38 43 ? 74 ? 48 8B CB} */
+            MC bool operator()(const std::string& collection, int index);
+        };
+    };
+
     MC static uintptr_t $vtable_for_this;
 
     std::byte padding3128[0x1010 - sizeof(ClientInstanceScreenController)];

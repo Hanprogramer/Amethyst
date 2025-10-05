@@ -9,6 +9,7 @@ class SceneStack;
 class IAdvancedGraphicsOptions;
 class SceneFactory;
 class Player;
+class ItemGroup;
 
 /// @vptr {0x4D01468}
 class MinecraftScreenModel : 
@@ -62,6 +63,9 @@ public:
 
     /// @signature {48 89 5C 24 ? 57 48 83 EC ? 48 8B D1 48 8B 41 ? 48 85 C0 74 ? 48 83 38 ? 74 ? 48 8B 41 ? 48 85 C0 74 ? F0 FF 40 ? 48 8B 49 ? 48 89 4C 24 ? 48 8B 5A ? 48 89 5C 24 ? 48 8B 09 48 8B 01 48 8B 80 ? ? ? ? FF 15 ? ? ? ? 48 8B F8 48 85 DB 74 ? 48 8B CB E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 83 C4 ? 5F C3 E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 57 48 83 EC ? 48 8B D1 48 8B 41 ? 48 85 C0 74 ? 48 83 38 ? 74 ? 48 8B 41 ? 48 85 C0 74 ? F0 FF 40 ? 48 8B 49 ? 48 89 4C 24 ? 48 8B 5A ? 48 89 5C 24 ? 48 8B 09 48 8B 01 48 8B 80 ? ? ? ? FF 15 ? ? ? ? 48 8D B8}
     MC Player* getPlayer();
+
+    /// @signature {48 89 5C 24 ? 57 48 83 EC ? 48 8B D1 48 8B 41 ? 48 85 C0 74 ? 48 83 38 ? 74 ? 48 8B 41 ? 48 85 C0 74 ? F0 FF 40 ? 48 8B 49 ? 48 89 4C 24 ? 48 8B 5A ? 48 89 5C 24 ? 48 8B 09 48 8B 01 48 8B 80 ? ? ? ? FF 15 ? ? ? ? 48 8D B8 ? ? ? ? 48 85 DB 74 ? 48 8B CB E8 ? ? ? ? 48 8B C7 48 8B 5C 24 ? 48 83 C4 ? 5F C3 E8 ? ? ? ? CC CC CC CC CC CC CC CC CC CC CC 48 89 5C 24 ? 48 89 74 24}
+    MC const ItemGroup& getCursorSelectedItemGroup() const;
 };
 
 static_assert(sizeof(MinecraftScreenModel) == 0xE8);
