@@ -1,0 +1,33 @@
+name: PR Build Check
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+    build:
+        runs-on: windows-latest
+        steps:
+            # Checkout current mod
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            # Checkout AmethystAPI into /Amethyst
+            - name: Clone AmethystAPI manually
+              run: git clone --recurse-submodules https://github.com/FrederoxDev/Amethyst.git Amethyst
+
+            # Build dependencies
+            - name: Install Build Tools
+              shell: powershell
+              run: |
+                choco install xmake -y
+
+            - name: Build
+              run: |
+                Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+                refreshenv
+
+                xmake f -y --automated_build=y
+                xmake
+              shell: powershell
