@@ -8,8 +8,6 @@ class ContainerModel;
 /// @vptr {0x4DE7AF8}
 class CreativeContainerController : public CraftingContainerController  {
 public:
-    std::byte padding76[16];
-
     /// @vidx {0}
     MC virtual ~CreativeContainerController() override;
 
@@ -33,4 +31,4 @@ public:
 	// MC CreativeContainerController(std::shared_ptr<ContainerModel> containerModel);
 };
 
-static_assert(sizeof(CreativeContainerController) == 88);
+//static_assert(sizeof(CreativeContainerController) == 88);

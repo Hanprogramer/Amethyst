@@ -183,32 +183,44 @@ class ContainerController;
 
 SafetyHookInline _ContainerFactory_createController;
 
+std::shared_ptr<CreativeContainerController> testPanelController = nullptr;
+
+//const std::string& reimplemented_getContainerName(ContainerController* controller) {
+//    Assert(!controller->mContainerModel.expired(), "Container model lifetime is managed by controller creation and destruction");
+//
+//    auto containerModel = controller->mContainerModel.lock();
+//    return containerModel->getContainerStringName();
+//}
+
 std::shared_ptr<ContainerController> ContainerFactory_createController(std::shared_ptr<ContainerModel> model)
 {
     Assert(model != nullptr, "Invalid Model");
 
     if ((uint64_t)model->mContainerEnumName == 63) {
-        Log::Info("model mContainerStringName starting {}", model->mContainerStringName);
+        Log::Info("model mContainerStringName starting '{}', item source: {}, items: {}, sparse container: {}", 
+            model->mContainerStringName, 
+            model->mItemSource.size(), 
+            model->mItems.size(),
+            model->mClientUIContainer == nullptr ? "nullptr" : "exists!"
+        );
+
+
         model->mContainerStringName = "recipe_test";
+        testPanelController = std::make_shared<CreativeContainerController>(model);
 
+        Log::Info("res: {}, container name: {}", (uintptr_t)testPanelController.get(), testPanelController->getContainerName());
 
-        Log::Info("Returning CreateiveContainerConttroller!");
-
-        std::shared_ptr<CreativeContainerController> controller = std::make_shared<CreativeContainerController>(model);
-
-        Log::Info("res: {}, container name: {}", (uintptr_t)controller.get(), controller->getContainerName());
-
-        return controller;
+        return testPanelController;
     }
 
     std::shared_ptr<ContainerController> res = _ContainerFactory_createController.call<std::shared_ptr<ContainerController>>(model);
     
-    if (res.get() != nullptr) {
-        Log::Info("Others {}", res->getContainerName());
-    }
-    else {
-        Log::Info("others was nullptr!");
-    }
+    //if (res.get() != nullptr) {
+    //    Log::Info("Others {}", res->getContainerName());
+    //}
+    //else {
+    //    Log::Info("others was nullptr!");
+    //}
 
     /*Log::Info("ContainerFactory::createController with mContainerName as enum name {} and string name '{}', is client side: {}, returned controller ptr: {}", 
         (uintptr_t)model->mContainerEnumName, 

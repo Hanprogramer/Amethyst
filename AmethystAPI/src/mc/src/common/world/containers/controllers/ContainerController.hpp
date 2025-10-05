@@ -52,6 +52,6 @@ public:
     /// @vidx {9}
     MC virtual void _onItemChanged(int);
 
-    /// @signature {48 89 5C 24 ? 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B FA 48 89 54 24 ? 48 8D 59}
+    /// @signature {40 53 48 83 EC ? 48 8B 51 ? 45 33 C0}
     MC const std::string& getContainerName() const;
 };
