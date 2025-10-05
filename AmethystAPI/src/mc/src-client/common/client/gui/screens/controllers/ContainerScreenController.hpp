@@ -21,6 +21,16 @@ enum class InteractionModel : int {
     SeparateInventoryAndHotbar = 0x0001,
 };
 
+struct MojangContainerEnumHasher {
+    size_t operator()(ContainerEnumName key) const noexcept
+    {
+        uint64_t h = 0xCBF29CE484222325ull;
+        h ^= static_cast<uint64_t>(key);
+        h *= 0x9FFAAC085635BC91ull;
+        return static_cast<size_t>(h);
+    }
+};
+
 /// @vptr {0x4CD2850}
 class ContainerScreenController :
     public ClientInstanceScreenController
@@ -36,7 +46,7 @@ public:
     std::shared_ptr<ContainerManagerController> mContainerManagerController;
 
     /// @address {0x59D9150}
-    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
+    MC static std::unordered_map<ContainerEnumName, std::string, MojangContainerEnumHasher> ContainerCollectionNameMap;
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
     MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
