@@ -4,11 +4,23 @@
 #include <cstddef>
 #include <string_view>
 
+extern int StringToNameId(const std::string& str);
+
 typedef uint64_t HashType64;
 
 class StringHash {
 public:
     int mHash;
+
+    StringHash(const char* str) : 
+        mHash(StringToNameId(str)) 
+    {
+    }
+
+    StringHash(const std::string& str) :
+        mHash(StringToNameId(str)) 
+    {
+    }
 };
 
 class HashedString {

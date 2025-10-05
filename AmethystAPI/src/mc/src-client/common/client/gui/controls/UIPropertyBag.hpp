@@ -1,0 +1,23 @@
+/// @symbols
+#pragma once
+#include <amethyst/Imports.hpp>
+#include <string_view>
+
+class UIPropertyBag {
+public:
+    /*
+     * Using the template without specialization will cause error.
+     */
+    template<typename T>
+    void set(std::string_view name, const T& value) {
+        static_assert(sizeof(T) == 0, "UIPropertyBag::set<T> is not imported for type T.");
+    }
+
+    /** @sig {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B EA 48 8B F9 FF 41} */
+    template<>
+    MC void set<bool>(std::string_view name, const bool& value);
+
+    /** @sig {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 0F 29 74 24 ? 49 8B F0} */
+    template<>
+    MC void set<float>(std::string_view name, const float& value);
+};
