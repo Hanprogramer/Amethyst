@@ -30,7 +30,7 @@ jobs:
               choco install xmake -y
           } else {
               Write-Host "xmake already installed, skipping..."
-          }
+          } 
 
       # Clone AmethystAPI based on PR branch
       - name: Clone AmethystAPI based on PR
