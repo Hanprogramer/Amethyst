@@ -14,7 +14,7 @@ namespace Amethyst {
 enum class KeybindContext {
     None = 0,
     Gameplay = 1 << 0,
-    //Screen = 1 << 1,
+    Screen = 1 << 1,
 };
 
 inline KeybindContext operator|(KeybindContext lhs, KeybindContext rhs)
