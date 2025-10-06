@@ -21,11 +21,13 @@ public:
         short itemId = itemReg->mId;
         auto it = mIdToItemMap.find(itemId);
 
-        Assert(it == mIdToItemMap.end(), "Existing item '{}' already exists with the same numerical ID ({}) as the item currently being registed '{}'. Use itemRegistry.getNextItemID() instead of itemRegistry.mMaxItemID++",
-            it->second->getFullItemName(),
-            itemId,
-            itemReg->getFullItemName()
-        );
+        if (it != mIdToItemMap.end()) {
+            AssertFail("Existing item '{}' already exists with the same numerical ID ({}) as the item currently being registed '{}'. Use itemRegistry.getNextItemID() instead of itemRegistry.mMaxItemID++",
+                   it->second->getFullItemName(),
+                   itemId,
+                   itemReg->getFullItemName());
+        }
+        
 
         registerItem(itemReg);
 
