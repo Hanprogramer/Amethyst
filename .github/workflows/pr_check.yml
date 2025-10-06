@@ -13,15 +13,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Cache xmake installation only
-      - name: Cache xmake
-        uses: actions/cache@v3
-        with:
-          path: C:\ProgramData\chocolatey\lib\xmake
-          key: xmake-${{ runner.os }}-v2.7.8
-          restore-keys: |
-            xmake-${{ runner.os }}-
-
       # Install xmake if not cached
       - name: Install xmake
         shell: powershell
@@ -31,13 +22,6 @@ jobs:
           } else {
               Write-Host "xmake already installed, skipping..."
           }
-      - name: Add xmake to PATH
-        shell: powershell
-        run: |
-          $xmakePath = "C:\ProgramData\chocolatey\lib\xmake\tools"
-          Write-Host "Adding $xmakePath to PATH"
-          $env:PATH = "$xmakePath;$env:PATH"
-          Write-Host "PATH is now: $env:PATH"
 
       # Clone AmethystAPI based on PR branch
       - name: Clone AmethystAPI based on PR
