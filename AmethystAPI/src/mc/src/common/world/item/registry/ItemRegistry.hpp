@@ -6,9 +6,7 @@
 #include "mc/src/common/world/item/Item.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
 
-class ItemRegistry : 
-    public std::enable_shared_from_this<ItemRegistry> 
-{
+class ItemRegistry : public std::enable_shared_from_this<ItemRegistry> {
 public:
     /* this + 0   */ std::byte padding0[0x18];
     /* this + 40  */ std::unordered_map<int32_t, WeakPtr<Item>> mIdToItemMap;
@@ -19,7 +17,18 @@ public:
     template<typename T, typename... Args>
     WeakPtr<T> registerItemShared(Args&&... args) {
         SharedPtr<T> itemReg = SharedPtr<T>::make(std::forward<Args>(args)...);
+
+        short itemId = itemReg->mId;
+        auto it = mIdToItemMap.find(itemId);
+
+        Assert(it == mIdToItemMap.end(), "Existing item '{}' already exists with the same numerical ID ({}) as the item currently being registed '{}'. Use itemRegistry.getNextItemID() instead of itemRegistry.mMaxItemID++",
+            it->second->getFullItemName(),
+            itemId,
+            itemReg->getFullItemName()
+        );
+
         registerItem(itemReg);
+
         return itemReg;
     }
 
