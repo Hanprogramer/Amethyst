@@ -6,42 +6,60 @@ on:
       - main
 
 jobs:
-    build:
-        runs-on: windows-latest
-        steps:
-            # Checkout current mod
-            - name: Checkout code
-              uses: actions/checkout@v4
+  build:
+    runs-on: windows-latest
+    steps:
+      # Checkout current mod
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-            # Checkout AmethystAPI into /Amethyst
-            - name: Clone AmethystAPI based on PR
-              shell: powershell
-              run: |
-                # Determine the PR head repo and branch
-                $pr_repo = "${{ github.event.pull_request.head.repo.clone_url }}"
-                $pr_branch = "${{ github.event.pull_request.head.ref }}"
+      # Cache Chocolatey packages (to speed up xmake install)
+      - name: Cache Chocolatey packages
+        uses: actions/cache@v3
+        with:
+          path: C:\ProgramData\chocolatey\lib
+          key: choco-packages-${{ runner.os }}-xmake
+          restore-keys: |
+            choco-packages-${{ runner.os }}-
 
-                Write-Host "Cloning Amethyst from PR branch $pr_branch at $pr_repo"
+      # Install xmake if not cached
+      - name: Install Build Tools
+        shell: powershell
+        run: |
+          if (!(Get-Command xmake -ErrorAction SilentlyContinue)) {
+              choco install xmake -y
+          } else {
+              Write-Host "xmake already installed, skipping..."
+          }
 
-                # Attempt to clone the PR branch
-                try {
-                    git clone --recurse-submodules --branch $pr_branch $pr_repo Amethyst
-                } catch {
-                    Write-Host "PR branch not found in Amethyst repo, falling back to main"
-                    git clone --recurse-submodules https://github.com/FrederoxDev/Amethyst.git Amethyst
-                }
+      # Clone AmethystAPI based on PR branch
+      - name: Clone AmethystAPI based on PR
+        shell: powershell
+        run: |
+          $pr_repo = "${{ github.event.pull_request.head.repo.clone_url }}"
+          $pr_branch = "${{ github.event.pull_request.head.ref }}"
 
-            # Build dependencies
-            - name: Install Build Tools
-              shell: powershell
-              run: |
-                choco install xmake -y
+          Write-Host "Cloning Amethyst from PR branch $pr_branch at $pr_repo"
 
-            - name: Build
-              run: |
-                Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
-                refreshenv
+          try {
+              git clone --depth 1 --recurse-submodules --branch $pr_branch $pr_repo Amethyst
+          } catch {
+              Write-Host "PR branch not found in Amethyst repo, falling back to main"
+              git clone --depth 1 --recurse-submodules https://github.com/FrederoxDev/Amethyst.git Amethyst
+          }
 
-                xmake f -y --automated_build=y
-                xmake
-              shell: powershell
+      # Configure with xmake
+      - name: Configure with xmake
+        shell: powershell
+        run: |
+          Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+          refreshenv
+          xmake f -y --automated_build=y
+
+      # Build with xmake
+      - name: Build with xmake
+        shell: powershell
+        run: |
+          Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+          refreshenv
+          xmake
