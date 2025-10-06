@@ -201,7 +201,7 @@ std::shared_ptr<ContainerController> ContainerFactory_createController(std::shar
 {
     Assert(model != nullptr, "Invalid Model");
 
-    Log::Info("model mContainerStringName, id {}, starting '{}', item source: {}, items: {}, sparse container: {}",
+    Log::Info("createController model, id {}, string name '{}', item source: {}, items: {}, sparse container: {}",
               (uintptr_t)model->mContainerEnumName,
               model->mContainerStringName,
               model->mItemSource.size(),
