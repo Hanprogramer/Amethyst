@@ -8,6 +8,11 @@ const PlayerInventory& Player::getSupplies() const
     return *this->playerInventory;
 }
 
+PlayerInventory& Player::getSupplies()
+{
+    return *this->playerInventory;
+}
+
 const ItemStack& Player::getSelectedItem() const
 {
     return playerInventory->getSelectedItem();
