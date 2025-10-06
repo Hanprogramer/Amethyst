@@ -13,17 +13,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Cache Chocolatey packages (to speed up xmake install)
-      - name: Cache Chocolatey packages
+      # Cache xmake installation only
+      - name: Cache xmake
         uses: actions/cache@v3
         with:
-          path: C:\ProgramData\chocolatey\lib
-          key: choco-packages-${{ runner.os }}-xmake
+          path: C:\ProgramData\chocolatey\lib\xmake
+          key: xmake-${{ runner.os }}-v2.7.8
           restore-keys: |
-            choco-packages-${{ runner.os }}-
+            xmake-${{ runner.os }}-
 
       # Install xmake if not cached
-      - name: Install Build Tools
+      - name: Install xmake
         shell: powershell
         run: |
           if (!(Get-Command xmake -ErrorAction SilentlyContinue)) {
