@@ -31,6 +31,13 @@ jobs:
           } else {
               Write-Host "xmake already installed, skipping..."
           }
+      - name: Add xmake to PATH
+        shell: powershell
+        run: |
+          $xmakePath = "C:\ProgramData\chocolatey\lib\xmake\tools"
+          Write-Host "Adding $xmakePath to PATH"
+          $env:PATH = "$xmakePath;$env:PATH"
+          Write-Host "PATH is now: $env:PATH"
 
       # Clone AmethystAPI based on PR branch
       - name: Clone AmethystAPI based on PR
