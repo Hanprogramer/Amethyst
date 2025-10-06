@@ -35,16 +35,16 @@ class BlockLegacy;
 /// @vptr {0x4E6F588}
 class BlockActor {
 public:
-    /* this + 8   */ int mTickCount;
-    /* this + 16  */ const Block* mBlock;
-    /* this + 24  */ float mDestroyTimer;
-    /* this + 28  */ Vec3 mDestroyDirection;
-    /* this + 40  */ float mDestroyProgress;
-    /* this + 44  */ BlockPos mPosition;
-    /* this + 56  */ AABB mBB;
-    /* this + 80  */ const BlockActorType mType;
-    /* this + 84  */ BlockActorRendererId mRendererId;
-    /* this + 88  */ std::string mCustomName;
+    /* this + 008 */ int mTickCount;
+    /* this + 016 */ const Block* mBlock;
+    /* this + 024 */ float mDestroyTimer;
+    /* this + 028 */ Vec3 mDestroyDirection;
+    /* this + 040 */ float mDestroyProgress;
+    /* this + 044 */ BlockPos mPosition;
+    /* this + 056 */ AABB mBB;
+    /* this + 080 */ const BlockActorType mType;
+    /* this + 084 */ BlockActorRendererId mRendererId;
+    /* this + 088 */ std::string mCustomName;
     /* this + 120 */ std::string mFilteredCustomName;
     /* this + 152 */ int mRepairCost;
     /* this + 156 */ bool mClientSideOnly;
