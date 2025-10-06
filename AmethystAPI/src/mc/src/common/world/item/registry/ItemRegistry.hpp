@@ -17,7 +17,20 @@ public:
     template<typename T, typename... Args>
     WeakPtr<T> registerItemShared(Args&&... args) {
         SharedPtr<T> itemReg = SharedPtr<T>::make(std::forward<Args>(args)...);
+
+        short itemId = itemReg->mId;
+        auto it = mIdToItemMap.find(itemId);
+
+        if (it != mIdToItemMap.end()) {
+            AssertFail("Existing item '{}' already exists with the same numerical ID ({}) as the item currently being registed '{}'. Use itemRegistry.getNextItemID() instead of itemRegistry.mMaxItemID++",
+                   it->second->getFullItemName(),
+                   itemId,
+                   itemReg->getFullItemName());
+        }
+        
+
         registerItem(itemReg);
+
         return itemReg;
     }
 
@@ -29,4 +42,8 @@ public:
 
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 4C 8B F1 48 89 4C 24 ? 48 89 55}
     MC void registerItem(SharedPtr<Item> item);
+
+    short getNextItemID() {
+        return ++mMaxItemID;
+    }
 };
