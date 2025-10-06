@@ -8,7 +8,7 @@
 #include <mc/src/common/world/containers/ContainerEnumName.hpp>
 #include <mc/src/common/world/item/ItemInstance.hpp>
 
-enum class CategoryTabState : uint32_t {
+enum class CategoryTabState : uint32_t { // guessed size
     Test
 };
 
@@ -28,7 +28,10 @@ public:
 public:
     std::byte padding0[4536]; 
     ItemInstance instance4536;
-    std::byte padding4672[4848 - 4672];
+    uint64_t padding4672;
+    uint32_t something;
+
+    std::byte padding4684[4848 - 4684];
     ItemInstance instance4848;
     uint64_t padding4984;
 
@@ -47,4 +50,5 @@ public:
     MC void _showCategoryTab(const CategoryTabInfo& tabInfo, bool someBool, int someInt);
 };
 
+static_assert(offsetof(CraftingScreenController, something) == 4680);
 static_assert(offsetof(CraftingScreenController, mTabStates) == 4992);

@@ -83,8 +83,19 @@ std::string* CraftingScreenController__tabIndexToCollectionName(CraftingScreenCo
 
 SafetyHookInline _lambda_ScreenController_registerTabNameBinding;
 
-void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
-    uint32_t* something = (uint32_t*)((uintptr_t)a1 + 4680);
+struct lambdaArgs {
+    CraftingScreenController* self;
+};
+
+void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
+{
+    
+
+    Log::Info("lambda_ScreenController_registerTabNameBinding something {}, tab states size {}", a1->self->something, a1->self->mTabStates.size());
+
+    for (auto& tabState : a1->self->mTabStates) {
+        Log::Info("tabState idx {} is {}", (uint32_t)tabState.first, (uint32_t)tabState.second);
+    }
 
     //Log::Info("something: {}", *something); // seems to be some random thing each time for the test tab.
 
@@ -94,7 +105,7 @@ void* lambda_ScreenController_registerTabNameBinding(void* a1, void* a2) {
     //Log::Info("something res '{}'", *res);
 
     if (res->size() == 0) {
-        //Log::Info("set title to craftingScreen.tab.test");
+        Log::Info("set title to craftingScreen.tab.test");
         *res = "craftingScreen.tab.test";
     }
 
@@ -275,6 +286,8 @@ std::string FullContainerName_toString(const FullContainerName* self)
 
 void CreateItemRegistryHooks()
 {
+    Log::Info("CreateItemRegistryHooks");
+
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
     HOOK(VanillaItems, serverInitCreativeItemsCallback);
     HOOK(VanillaItems, _addConstructionCategory);
