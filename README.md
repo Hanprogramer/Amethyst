@@ -68,7 +68,7 @@ Required tools: [Xmake](https://xmake.io/#/getting_started?id=installation), Vis
 To generate a `.sln` file, run these two commands:
 ```
 cd AmethystAPI
-xmake project -k vsxmake -a x64
+xmake project -k vsxmake -m "release"
 ```
 
 ### CMD
