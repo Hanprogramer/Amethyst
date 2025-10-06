@@ -39,7 +39,7 @@ public:
 
     // 101% accurate parameters lmao
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 44 89 4C 24 ? 4C 89 44 24}
-    MC void $constructor(Player* self, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, void* a11, void* a12, void* a13, void* a14);
+    MC static void $constructor(Player* self, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, void* a11, void* a12, void* a13, void* a14);
 
     MC static uintptr_t $vtable_for_this;
 
@@ -49,7 +49,9 @@ public:
     /* virtuals */
     void prepareRegion(ChunkSource& cs);
     const PlayerInventory& getSupplies() const;
+    PlayerInventory& getSupplies();
     const ItemStack& getSelectedItem() const;
+    void setSelectedItem(const ItemStack& item);
     PlayerEventCoordinator& getPlayerEventCoordinator(); 
 
     void sendInventoryTransaction(const InventoryTransaction& transaction); 
