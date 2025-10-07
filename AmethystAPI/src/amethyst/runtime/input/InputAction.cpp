@@ -13,7 +13,7 @@ void Amethyst::InputAction::addButtonDownHandler(std::function<InputPassthrough(
 
 void Amethyst::InputAction::addButtonUpHandler(std::function<InputPassthrough(FocusImpact, ClientInstance&)> handler)
 {
-	mButtonUpHandlers.push_back(handler);
+	mButtonUpHandlers.push_back(handler);  
 }
 
 Amethyst::InputPassthrough Amethyst::InputAction::_onButtonStateChange(ButtonState state, FocusImpact focus, ClientInstance& client) const
