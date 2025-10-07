@@ -23,8 +23,6 @@ void VanillaClientInputMappingFactory__createScreenKeyboardAndMouseMapping(Vanil
 {
     _VanillaClientInputMappingFactory__createScreenKeyboardAndMouseMapping.call(self, keyboard, mouse);
 
-    Log::Info("register screen inputs!");
-
     Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
     inputManager->_registerKeyboardInputs(self, keyboard, mouse, Amethyst::KeybindContext::Screen);
 }
