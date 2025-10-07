@@ -1,18 +1,18 @@
 /// @symbolgeneration
 #pragma once
 #include <amethyst/Imports.hpp>
-// #include <mc/src/common/world/inventory/InventoryOptions.hpp>
 
 #include <mc/src/common/world/item/CreativeItemCategory.hpp>
 #include <mc/src/common/world/inventory/InventoryOptions.hpp>
 #include <mc/src/common/world/containers/ContainerEnumName.hpp>
 #include <mc/src/common/world/item/ItemInstance.hpp>
+#include <mc/src-client/common/client/gui/screens/controllers/ContainerScreenController.hpp>
 
 enum class CategoryTabState : uint32_t { // guessed size
     Test
 };
 
-class CraftingScreenController {
+class CraftingScreenController : public ContainerScreenController {
 public:
     struct CategoryTabInfo {
     public:
@@ -26,7 +26,7 @@ public:
     };
 
 public:
-    std::byte padding0[4536]; 
+    std::byte padding0[4536 - sizeof(ContainerScreenController)]; 
     ItemInstance instance4536;
     uint64_t padding4672;
     uint32_t something;
@@ -48,6 +48,9 @@ public:
 
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 45 8B E1}
     MC void _showCategoryTab(const CategoryTabInfo& tabInfo, bool someBool, int someInt);
+
+    /// @sig {40 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B D9 4C 8D 35 ? ? ? ? 4C 89 B5 ? ? ? ? 48 8D 85 ? ? ? ? 48 89 85 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 85 ? ? ? ? 48 89 8D ? ? ? ? 48 8D 85 ? ? ? ? 48 89 85 ? ? ? ? 48 8D 85}
+    MC void _registerBindings();
 };
 
 static_assert(offsetof(CraftingScreenController, something) == 4680);

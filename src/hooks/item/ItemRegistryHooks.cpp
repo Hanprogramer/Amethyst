@@ -56,6 +56,9 @@ void VanillaItems__addConstructionCategory(
 
     const Block* testBlock = BlockTypeRegistry::getDefaultBlockState("fx_tests:test_block");
     Item::addCreativeItem(ref, *testBlock);
+
+    //ItemInstance instance = ItemInstance("fx_tests:example_item", 1, 0, nullptr);
+    //Item::addCreativeItem(ref, instance);
 }
 
 SafetyHookInline _CraftingScreenController__tabIndexToCollectionName;
@@ -93,9 +96,9 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 
     Log::Info("lambda_ScreenController_registerTabNameBinding something {}, tab states size {}", a1->self->something, a1->self->mTabStates.size());
 
-    for (auto& tabState : a1->self->mTabStates) {
-        Log::Info("tabState idx {} is {}", (uint32_t)tabState.first, (uint32_t)tabState.second);
-    }
+    //for (auto& tabState : a1->self->mTabStates) {
+    //    Log::Info("tabState idx {} is {}", (uint32_t)tabState.first, (uint32_t)tabState.second);
+    //}
 
     //Log::Info("something: {}", *something); // seems to be some random thing each time for the test tab.
 
@@ -105,9 +108,13 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
     //Log::Info("something res '{}'", *res);
 
     if (res->size() == 0) {
-        Log::Info("set title to craftingScreen.tab.test");
+        //Log::Info("set title to craftingScreen.tab.test");
         *res = "craftingScreen.tab.test";
     }
+
+    //std::string collectionName = a1->self->_tabIndexToCollectionName((InventoryLeftTabIndex)a1->self->something);
+    //const ItemStack& firstStack = a1->self->mContainerManagerController->getItemStack(collectionName, 0);
+    //Log::Info("Tab {} first stack {}", collectionName, firstStack.toDebugString());
 
     return (void*)res;
 }
@@ -130,30 +137,30 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 
 
 
-//SafetyHookInline _CraftingScreenController__showCategoryTab;
+SafetyHookInline _CraftingScreenController__showCategoryTab;
 
-// Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
-// seems to allways call with someBool = false, someInt = 0
-// Called for all categories at once!
-//void CraftingScreenController__showCategoryTab(
-//    CraftingScreenController* self,
-//    const CraftingScreenController::CategoryTabInfo& tabInfo,
-//    bool someBool,
-//    int someInt)
-//{
-//    Log::Info(
-//        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, padding8: {}), someBool: {}, someInt: {}",
-//        tabInfo.mTabName,
-//        tabInfo.mTabFactoryName,
-//        (uint32_t)tabInfo.mCategory,
-//        tabInfo.padding4,
-//        tabInfo.padding8,
-//        someBool,
-//        someInt);
-//
-//    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
-//        self, tabInfo, someBool, someInt);
-//}
+ //Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
+ //seems to allways call with someBool = false, someInt = 0
+ //Called for all categories at once!
+void CraftingScreenController__showCategoryTab(
+    CraftingScreenController* self,
+    const CraftingScreenController::CategoryTabInfo& tabInfo,
+    bool someBool,
+    int someInt)
+{
+    Log::Info(
+        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, container enum: {}), someBool: {}, someInt: {}",
+        tabInfo.mTabName,
+        tabInfo.mTabFactoryName,
+        (uint32_t)tabInfo.mCategory,
+        tabInfo.padding4,
+        (uint64_t)tabInfo.mContainerEnum,
+        someBool,
+        someInt);
+
+    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
+        self, tabInfo, someBool, someInt);
+}
 
 SafetyHookInline _CraftingContainerManagerModel__postInit;
 
@@ -181,9 +188,9 @@ ContainerScreenContext* CraftingContainerManagerModel__postInit(CraftingContaine
     bool isCreativeMode = true;
 
     //Log::Info("{}", ContainerScreenController::ContainerCollectionNameMap.size());
-    for (const auto& test : ContainerScreenController::ContainerCollectionNameMap) {
-        Log::Info("{} {}", (uint64_t)test.first, test.second);
-    }
+    //for (const auto& test : ContainerScreenController::ContainerCollectionNameMap) {
+    //    Log::Info("{} {}", (uint64_t)test.first, test.second);
+    //}
 
     auto testContainerModel = self->_createContainerModel(testTabContainer, testCategory, isCreativeMode, [](const ItemInstance& item, bool someBool) {
         Log::Info("Callback called with {} and {}", item.mItem->mFullName.getString(), someBool);
@@ -284,6 +291,20 @@ std::string FullContainerName_toString(const FullContainerName* self)
     return fallback;
 }
 
+SafetyHookInline _CraftingScreenController__registerBindings;
+
+void CraftingScreenController__registerBindings(CraftingScreenController* self) {
+    _CraftingScreenController__registerBindings.call<void>(self);
+
+    self->bindBool(
+        "#is_left_tab_test",
+        [self]() {
+            return self->something == 8; 
+        }, 
+        []() { return true; }
+    );
+}
+
 void CreateItemRegistryHooks()
 {
     Log::Info("CreateItemRegistryHooks");
@@ -292,10 +313,10 @@ void CreateItemRegistryHooks()
     HOOK(VanillaItems, serverInitCreativeItemsCallback);
     HOOK(VanillaItems, _addConstructionCategory);
     HOOK(CraftingScreenController, _tabIndexToCollectionName);
-    //HOOK(CraftingScreenController, _showCategoryTab);
-    //HOOK(CraftingScreenController, _focusCollectionItem);
+    HOOK(CraftingScreenController, _showCategoryTab);
     HOOK(ContainerFactory, createController);
-    //HOOK(FullContainerName, toString);
+
+    HOOK(CraftingScreenController, _registerBindings);
 
     VHOOK(CraftingContainerManagerModel, _postInit, this);
 
@@ -311,9 +332,9 @@ void CreateItemRegistryHooks()
     testTab.mCategory = (CreativeItemCategory)8;
     testTab.mTabName = "test_tab";
     testTab.mTabFactoryName = "test_tab_factory";
-    testTab.padding4 = 2; // idk made the same as items_tab
+    testTab.padding4 = 5; // idk random number
     testTab.mContainerEnum = testTabContainer; 
-    testTab.padding12 = 4;
+    testTab.padding12 = 0; // same as all other tabs
 
     CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
 

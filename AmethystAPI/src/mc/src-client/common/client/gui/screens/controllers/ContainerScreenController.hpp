@@ -32,9 +32,7 @@ struct MojangContainerEnumHasher {
 };
 
 /// @vptr {0x4CD2850}
-class ContainerScreenController :
-    public ClientInstanceScreenController
-{
+class ContainerScreenController : public ClientInstanceScreenController {
 public:
     // Just to clarify, that doesn't really exist in the binary.
     // It's just here to make it clear.

@@ -79,8 +79,7 @@ public:
 };
 
 /// @vptr {0x4CCA2A0}
-class ScreenController
-{
+class ScreenController {
 public:
     MC static uintptr_t $vtable_for_this;
 
