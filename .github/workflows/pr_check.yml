@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
+          submodules: recursive
 
       # Clone AmethystAPI into /Amethyst, so it can use exactly the same xmake setup as regularr mods
       - name: Checkout code
@@ -21,6 +22,7 @@ jobs:
         with:
           path: Amethyst
           fetch-depth: 1
+          submodules: recursive
 
       # Install xmake if not cached
       - name: Install xmake
