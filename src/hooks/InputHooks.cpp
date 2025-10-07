@@ -6,8 +6,10 @@
 
 SafetyHookInline _addFullKeyboardGamePlayControls;
 SafetyHookInline _VanillaClientInputMappingFactory_createInputMappingTemplates;
+SafetyHookInline _VanillaClientInputMappingFactory__createScreenKeyboardAndMouseMapping;
 SafetyHookInline _MouseDevice_feed;
 SafetyHookInline _InputHandler_handleButtonEvent;
+
 
 void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboard, MouseInputMapping* mouse)
 {
@@ -15,6 +17,14 @@ void addFullKeyboardGamePlayControls(VanillaClientInputMappingFactory* self, Key
 
     Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
     inputManager->_registerKeyboardInputs(self, keyboard, mouse, Amethyst::KeybindContext::Gameplay);
+}
+
+void VanillaClientInputMappingFactory__createScreenKeyboardAndMouseMapping(VanillaClientInputMappingFactory* self, KeyboardInputMapping* keyboard, MouseInputMapping* mouse)
+{
+    _VanillaClientInputMappingFactory__createScreenKeyboardAndMouseMapping.call(self, keyboard, mouse);
+
+    Amethyst::InputManager* inputManager = AmethystRuntime::getInputManager();
+    inputManager->_registerKeyboardInputs(self, keyboard, mouse, Amethyst::KeybindContext::Screen);
 }
 
 void VanillaClientInputMappingFactory_createInputMappingTemplates(VanillaClientInputMappingFactory* self, Options* opt) {
@@ -61,4 +71,6 @@ void CreateInputHooks()
     hooks.CreateDirectHook<&VanillaClientInputMappingFactory::_addFullKeyboardGamePlayControls>(_addFullKeyboardGamePlayControls, &addFullKeyboardGamePlayControls);
     hooks.CreateDirectHook<&MouseDevice::feed>(_MouseDevice_feed, &MouseDevice_feed);
     hooks.CreateDirectHook<&InputHandler::handleButtonEvent>(_InputHandler_handleButtonEvent, &InputHandler_handleButtonEvent);
+
+    HOOK(VanillaClientInputMappingFactory, _createScreenKeyboardAndMouseMapping);
 }

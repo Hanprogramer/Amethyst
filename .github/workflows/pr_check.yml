@@ -12,6 +12,17 @@ jobs:
       # Checkout current mod
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          submodules: recursive
+
+      # Clone AmethystAPI into /Amethyst, so it can use exactly the same xmake setup as regularr mods
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: Amethyst
+          fetch-depth: 1
+          submodules: recursive
 
       # Install xmake if not cached
       - name: Install xmake
@@ -21,22 +32,6 @@ jobs:
               choco install xmake -y
           } else {
               Write-Host "xmake already installed, skipping..."
-          }
-
-      # Clone AmethystAPI based on PR branch
-      - name: Clone AmethystAPI based on PR
-        shell: powershell
-        run: |
-          $pr_repo = "${{ github.event.pull_request.head.repo.clone_url }}"
-          $pr_branch = "${{ github.event.pull_request.head.ref }}"
-
-          Write-Host "Cloning Amethyst from PR branch $pr_branch at $pr_repo"
-
-          try {
-              git clone --depth 1 --recurse-submodules --branch $pr_branch $pr_repo Amethyst
-          } catch {
-              Write-Host "PR branch not found in Amethyst repo, falling back to main"
-              git clone --depth 1 --recurse-submodules https://github.com/FrederoxDev/Amethyst.git Amethyst
           }
 
       # Configure with xmake

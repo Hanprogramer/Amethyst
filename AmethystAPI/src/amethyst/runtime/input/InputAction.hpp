@@ -14,7 +14,7 @@ namespace Amethyst {
 enum class KeybindContext {
     None = 0,
     Gameplay = 1 << 0,
-    //Screen = 1 << 1,
+    Screen = 1 << 1,
 };
 
 inline KeybindContext operator|(KeybindContext lhs, KeybindContext rhs)
@@ -51,13 +51,13 @@ public:
 };
 
 enum class InputPassthrough {
-    // allows both mod and vanilla handling of the input event
+    // Allows both mod and vanilla handling of the input event
     Passthrough,
 
-    // prevents further processing of the input event
+    // Prevents further processing of the input event
     Consume,
 
-    // allows mod handling but prevents vanilla handling
+    // Allows mod handling but prevents vanilla handling
     ModOnly,
 };
 

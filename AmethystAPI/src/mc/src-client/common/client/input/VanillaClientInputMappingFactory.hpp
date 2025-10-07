@@ -86,6 +86,9 @@ public:
     
     /// @signature {40 55 53 56 57 41 56 48 8B EC 48 83 EC ? 45 0F B6 F1}
     MC void _addFullKeyboardGamePlayControls(KeyboardInputMapping*, MouseInputMapping*);
+
+    /// @signature {40 55 53 56 57 41 56 48 8D 6C 24 ? 48 81 EC ? ? ? ? 49 8B F0 48 8B DA 4C 8B F1 48 8D 55}
+    MC void _createScreenKeyboardAndMouseMapping(KeyboardInputMapping&, MouseInputMapping&);
     
     MC static uintptr_t $vtable_for_this;
 };
