@@ -57,8 +57,8 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     if (ShowAdvancedItemInfo) {
         hovertext += std::format("\n§8{}§r", self->mFullName.getString());
 
-        if (stack.mAuxValue != 0x7fff)
-            hovertext += std::format("\n§8Aux: {}§r", stack.mAuxValue);
+        if (stack.mAuxValue != 0 && stack.mAuxValue != 0x7fff)
+            hovertext += std::format("\n§8Data: {}§r", stack.mAuxValue);
 
         auto block = self->getLegacyBlock();
         if (block && !block->mTags.empty()) {
