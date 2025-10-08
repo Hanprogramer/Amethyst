@@ -79,6 +79,11 @@ public:
         return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
     }
 
+    static Amethyst::Platform* getPlatform()
+    {
+        return AmethystRuntime::getInstance()->mAmethystContext.mPlatform.get();
+    }
+
     void Start();
     void Shutdown();
 

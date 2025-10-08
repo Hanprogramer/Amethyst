@@ -10,6 +10,7 @@
 #include "amethyst/runtime/patchManager/PatchManager.hpp"
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
+#include "amethyst/runtime/platform/Platform.hpp"
 #include "amethyst/runtime/networking/NetworkManager.hpp"
 #include "mc/src-client/common/client/game/ClientInstance.hpp"
 #include "mc/src-client/common/client/input/MinecraftInputHandler.hpp"
@@ -32,6 +33,7 @@ public:
     std::unique_ptr<Amethyst::ModRepository> mModRepository;
     std::unique_ptr<Amethyst::ModGraph> mModGraph;
     std::unique_ptr<Amethyst::ModLoader> mModLoader;
+    std::unique_ptr<Amethyst::Platform> mPlatform;
 
     // Non-volatile
     Amethyst::MinecraftPackageInfo mPackageInfo;

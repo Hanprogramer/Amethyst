@@ -1,5 +1,4 @@
 #include "amethyst/Utility.hpp"
-#include "amethyst/Environment.hpp"
 #include <winrt/Windows.Storage.h>
 #include <winrt/base.h>
 #include <shlobj_core.h>
@@ -16,20 +15,20 @@
 using namespace winrt;
 using namespace Windows::Storage;
 
-fs::path GetComMojangPath()
-{
-    Assert(Amethyst::GetEnvironment() == Amethyst::Environment::Client, "GetComMojangPath can only be called in client environment");
-    StorageFolder localFolder = ApplicationData::Current().LocalFolder();
-    fs::path localPath = localFolder.Path().c_str();
-    return localPath / L"games" / L"com.mojang";
-}
+// fs::path GetComMojangPath()
+// {
+//     Assert(Amethyst::GetEnvironment() == Amethyst::Environment::Client, "GetComMojangPath can only be called in client environment");
+//     StorageFolder localFolder = ApplicationData::Current().LocalFolder();
+//     fs::path localPath = localFolder.Path().c_str();
+//     return localPath / L"games" / L"com.mojang";
+// }
 
-fs::path GetAmethystFolder()
-{
-    if (Amethyst::GetEnvironment() == Amethyst::Environment::Client)
-        return GetComMojangPath() / L"amethyst";
-    return Amethyst::GetExecutablePath().parent_path() / L"amethyst";
-}
+// fs::path GetAmethystFolder()
+// {
+//     if (Amethyst::GetEnvironment() == Amethyst::Environment::Client)
+//         return GetComMojangPath() / L"amethyst";
+//     return Amethyst::GetExecutablePath().parent_path() / L"amethyst";
+// }
 
 std::string StringFromWstring(std::wstring wstring)
 {

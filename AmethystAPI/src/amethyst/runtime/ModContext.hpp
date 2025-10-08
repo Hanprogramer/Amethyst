@@ -18,6 +18,7 @@ namespace Amethyst {
 	Amethyst::PatchManager& GetPatchManager();
 	Amethyst::EnumAllocator& GetEnumAllocator();
 	Amethyst::NetworkManager& GetNetworkManager();
+	Amethyst::Platform& GetPlatform();
 	
 	Minecraft* GetMinecraft();
 	Level* GetLevel();
