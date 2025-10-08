@@ -34,10 +34,15 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 
     events.AddListener<RegisterInputsEvent>([&](const RegisterInputsEvent& e) {
         Amethyst::InputManager& input = e.inputManager;
-        auto& action = input.RegisterNewInput("amethyst.toggle_advanced_item_info", {'H'}, true, Amethyst::KeybindContext::Gameplay);
+        auto& action = input.RegisterNewInput("amethyst.show_advanced_item_info", { 'Z' }, true, Amethyst::KeybindContext::Screen);
+        
         action.addButtonDownHandler([](FocusImpact, ClientInstance&) {
-            ShowAdvancedItemInfo = !ShowAdvancedItemInfo;
-            Log::Info("Advanced Item Info: {}", ShowAdvancedItemInfo ? "Enabled" : "Disabled");
+            ShowAdvancedItemInfo = true;
+            return Amethyst::InputPassthrough::Passthrough;
+        });
+
+        action.addButtonUpHandler([](FocusImpact, ClientInstance&) {
+            ShowAdvancedItemInfo = false;
             return Amethyst::InputPassthrough::Passthrough;
         });
     });

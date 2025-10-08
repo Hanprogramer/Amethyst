@@ -4,8 +4,11 @@
 
 #include <amethyst/runtime/HookManager.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
+#include <amethyst/runtime/ModContext.hpp>
+
 #include <mc/src/common/world/item/ItemStack.hpp>
 #include <mc/src/common/world/level/Level.hpp>
+#include <mc/src/common/locale/I18n.hpp>
 
 #include <memory>
 
@@ -54,8 +57,8 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     if (ShowAdvancedItemInfo) {
         hovertext += std::format("\n§8{}§r", self->mFullName.getString());
 
-        if (stack.mAuxValue != 0x7fff)
-            hovertext += std::format("\n§8Aux: {}§r", stack.mAuxValue);
+        if (stack.mAuxValue != 0 && stack.mAuxValue != 0x7fff)
+            hovertext += std::format("\n§8Data: {}§r", stack.mAuxValue);
 
         auto block = self->getLegacyBlock();
         if (block && !block->mTags.empty()) {
@@ -74,6 +77,13 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
         
         if (stack.mUserData)
             hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
+    }
+    else {
+        auto& options = *Amethyst::GetContext().mOptions;
+        auto& mapping = *options.getCurrentKeyboardRemapping();
+        auto* keymapping = mapping.getKeymappingByAction("key.amethyst.show_advanced_item_info");
+        if (keymapping && keymapping->isAssigned())
+            hovertext += std::format("\n§8Hold §u{}§r§8 to see details§r", mapping.getMappedKeyName(*keymapping));
     }
 
     hovertext += std::format("\n§o§9{}§r", modName);
