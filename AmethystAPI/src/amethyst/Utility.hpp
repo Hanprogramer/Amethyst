@@ -10,8 +10,10 @@ Returns a path to Microsoft.MinecraftUWP_8wekyb3d8bbwe/LocalState/games/com.moja
 fs::path GetComMojangPath();
 
 /*
-Returns a path to com.mojang/amethyst
-*/
+ * Returns a path to the /amethyst folder
+ * In client this is com.mojang/amethyst
+ * In server this is next to the server executable (e.g. server_root/amethyst)
+ */
 fs::path GetAmethystFolder();
 
 
