@@ -14,7 +14,7 @@ const std::filesystem::path& Amethyst::GetExecutablePath()
 
 Amethyst::Environment Amethyst::GetEnvironment()
 {
-    static Amethyst::Environment env = []() {
+    static const Amethyst::Environment env = []() {
         const auto& exePath = GetExecutablePath();
         std::string exeName = exePath.filename().generic_string();
         if (exeName.starts_with("bedrock_server")) {
