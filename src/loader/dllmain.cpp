@@ -39,10 +39,9 @@ DWORD WINAPI Main()
 {
     Log::InitializeConsole();
     SetUnhandledExceptionFilter(AmethystUnhandledExceptionsHandler);
-    //AmethystRuntime::PromptDebugger();
 
-    // Create an instance of AmethystRuntime and invoke it to start
-    AmethystRuntime* runtime = AmethystRuntime::getInstance();
+    auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>();
+    AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform));
 
     try {
         runtime->Start();
@@ -63,8 +62,8 @@ DWORD __stdcall EjectThread(LPVOID lpParameter)
 
 void Shutdown()
 {
-    AmethystRuntime* runtime = AmethystRuntime::getInstance();
-    runtime->Shutdown();
+    AmethystRuntime& runtime = AmethystRuntime::GetInstance();
+    runtime.Shutdown();
 
     Log::DestroyConsole();
     CreateThread(0, 0, EjectThread, 0, 0, 0);

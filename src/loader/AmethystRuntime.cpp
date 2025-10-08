@@ -5,27 +5,43 @@
 #include "amethyst/runtime/events/ModEvents.hpp"
 #include "amethyst/runtime/events/InputEvents.hpp"
 #include "amethyst/runtime/interop/RuntimeImporter.hpp"
-
 #include "debug/AmethystDebugging.hpp"
+#include "loader/RuntimeContext.hpp"
 
 AmethystRuntime* AmethystRuntime::instance = nullptr;
 extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
+extern AmethystContext* _AmethystContextInstance;
+
+AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform)
+    : mAmethystContext(std::move(platform))
+{
+    AmethystRuntime::instance = this;
+}
+
 void AmethystRuntime::Start()
 {
     if (mRunning)
         return;
 
-    getContext()->Start();
+    _AmethystContextInstance = &this->mAmethystContext;
+
+    // Prompt a debugger if they are in developer mode
+    if (mLauncherConfig.promptDebugger)
+        PromptDebugger();
+
+    //Log::Info("platform: {}", (uint64_t)getPlatform());
+
+    Amethyst::GetContext().Start();
+
+    Log::Info("Start!");
 
     // read the config file and load in any mods
     ReadLauncherConfig();
 
-    // Prompt a debugger if they are in developer mode
-    if (mLauncherConfig.promptDebugger) 
-        PromptDebugger();
+    Log::Info("prompt debugger");
 
     // Load all mod DLLs and call their initialize functions
     LoadModDlls(); 
@@ -68,9 +84,9 @@ void AmethystRuntime::LoadModDlls()
     // Register mod inputs
     // On game start mOptions will be nullptr, but the register inputs event gets called when options is created.
     // When hot-reloading we will have options already so we can register inputs here.
-    if (AmethystRuntime::getContext()->mOptions != nullptr) {
-        RegisterInputsEvent event(*AmethystRuntime::getInputManager());
-        AmethystRuntime::getEventBus()->Invoke(event);
+    if (Amethyst::GetContext().mOptions != nullptr) {
+        RegisterInputsEvent event(*Amethyst::GetContext().mInputManager.get());
+        Amethyst::GetEventBus().Invoke(event);
     }
 
     // Scan the mods directory for mod.json files and load them into the repository
@@ -102,7 +118,7 @@ void AmethystRuntime::LoadModDlls()
 
     // Allow mods to add listeners to eachothers events
     AddModEventListenersEvent event;
-    AmethystRuntime::getEventBus()->Invoke<AddModEventListenersEvent>(event);
+    Amethyst::GetEventBus().Invoke<AddModEventListenersEvent>(event);
 }
 
 void AmethystRuntime::PromptDebugger()
@@ -137,10 +153,10 @@ void AmethystRuntime::Shutdown()
         return;
 
     BeforeModShutdownEvent shutdownEvent;
-    getEventBus()->ReverseInvoke(shutdownEvent);
+    Amethyst::GetEventBus().ReverseInvoke(shutdownEvent);
 
     // Clear lists of mods & functions.
-    getContext()->Shutdown();
+    Amethyst::GetContext().Shutdown();
     mRunning = false;
 }
 
@@ -165,5 +181,5 @@ void AmethystRuntime::PauseGameThread()
 extern "C" __declspec(dllexport) 
 AmethystContext* GetContextInstance()
 {
-    return AmethystRuntime::getContext();
+    return &Amethyst::GetContext();
 }

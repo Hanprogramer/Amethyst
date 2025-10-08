@@ -53,7 +53,13 @@ Amethyst::NetworkManager& Amethyst::GetNetworkManager()
 
 Amethyst::Platform& Amethyst::GetPlatform()
 {
-    return *_AmethystContextInstance->mPlatform.get();
+    Amethyst::Platform* platform = _AmethystContextInstance->mPlatform.get();
+
+    if (platform == nullptr) {
+        AssertFail("Amethyst::GetPlatform was nullptr!");
+    }
+
+    return *platform;
 }
 
 Minecraft* Amethyst::GetMinecraft()

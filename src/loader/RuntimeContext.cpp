@@ -1,6 +1,7 @@
 #include "loader/RuntimeContext.hpp"
 
-RuntimeContext::RuntimeContext() { } 
+RuntimeContext::RuntimeContext(std::unique_ptr<Amethyst::Platform> platform)
+    : AmethystContext(std::move(platform)) {}
 
 void RuntimeContext::Start()
 {

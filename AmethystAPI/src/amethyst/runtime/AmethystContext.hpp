@@ -33,10 +33,11 @@ public:
     std::unique_ptr<Amethyst::ModRepository> mModRepository;
     std::unique_ptr<Amethyst::ModGraph> mModGraph;
     std::unique_ptr<Amethyst::ModLoader> mModLoader;
-    std::unique_ptr<Amethyst::Platform> mPlatform;
 
     // Non-volatile
+    std::unique_ptr<Amethyst::Platform> mPlatform;
     Amethyst::MinecraftPackageInfo mPackageInfo;
+
     ClientInstance* mClientInstance = nullptr;
     MinecraftInputHandler* mMcInputHandler = nullptr;
     Options* mOptions = nullptr;
@@ -52,5 +53,5 @@ public:
 protected:
     virtual void Start() = 0;
     virtual void Shutdown() = 0;
-    AmethystContext() = default;
+    AmethystContext(std::unique_ptr<Amethyst::Platform> platform);
 };

@@ -11,6 +11,7 @@
 #include "mc/src/common/world/item/Item.hpp"
 
 #include "loader/RuntimeContext.hpp"
+#include <platforms/WindowsClientPlatform.hpp>
 
 namespace fs = std::filesystem;
 extern HMODULE hModule;
@@ -28,60 +29,20 @@ extern HMODULE hModule;
 */
 class AmethystRuntime {
 private:
-    // AmethystRuntime is a Singleton so don't allow creating from outside
-    AmethystRuntime()
-    {
-    }
-
     AmethystRuntime(const AmethystRuntime&);
     AmethystRuntime& operator=(const AmethystRuntime&) = delete;
     static AmethystRuntime* instance;
 
 public:
-    static AmethystRuntime* getInstance()
-    {
-        if (instance == nullptr) instance = new AmethystRuntime();
-        return instance;
-    }
+    AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform);
 
-    static AmethystContext* getContext() 
+    static AmethystRuntime& GetInstance()
     {
-        return &AmethystRuntime::getInstance()->mAmethystContext;
-    }
+        if (instance == nullptr) {
+            AssertFail("AmethystRuntime was not initialized before use!");
+        }
 
-    static Amethyst::HookManager* getHookManager()
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mHookManager.get();
-    }
-
-    static Amethyst::EventBus* getEventBus() 
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mEventBus.get();
-    }
-
-    static Amethyst::InputManager* getInputManager() 
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mInputManager.get();
-    }
-
-    static Amethyst::PatchManager* getPatchManager() 
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mPatchManager.get();
-    }
-
-    static Amethyst::EnumAllocator* getEnumAllocator()
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mEnumAllocator.get();
-    }
-
-    static Amethyst::MinecraftPackageInfo* getMinecraftPackageInfo()
-    {
-        return &AmethystRuntime::getInstance()->mAmethystContext.mPackageInfo;
-    }
-
-    static Amethyst::Platform* getPlatform()
-    {
-        return AmethystRuntime::getInstance()->mAmethystContext.mPlatform.get();
+        return *instance;
     }
 
     void Start();
