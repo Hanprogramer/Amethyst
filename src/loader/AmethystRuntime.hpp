@@ -47,13 +47,11 @@ public:
 
     void Start();
     void Shutdown();
+
 private:
     void ReadLauncherConfig();
     void LoadModDlls();
     void RunMods();
-
-    //static void ResumeGameThread();
-    //static void PauseGameThread();
 
 public:
     Config mLauncherConfig;

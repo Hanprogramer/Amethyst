@@ -24,14 +24,14 @@ void AmethystRuntime::Start()
     Assert(!mRunning, "AmethystRuntime::Start called whilst running!");
     auto& platform = Amethyst::GetPlatform();
 
+    // read the config file and load in any mods
+    ReadLauncherConfig();
+
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger)
         platform.AttachDebugger();
 
     Amethyst::GetContext().Start();
-
-    // read the config file and load in any mods
-    ReadLauncherConfig();
 
     // Load all mod DLLs and call their initialize functions
     LoadModDlls(); 
@@ -90,8 +90,6 @@ void AmethystRuntime::LoadModDlls()
     modGraph.SortAndValidate(repository, mLauncherConfig.mods);
 
     for (const auto& modInfo : modGraph.GetMods()) {
-        Log::Info("Resolved '{}'", modInfo->GetVersionedName(), modInfo->UUID);
-
         if (modInfo->UUID == "00000000-0000-0000-0000-000000000000") {
             Log::Warning("Mod '{}' has the default UUID of '00000000-0000-0000-0000-000000000000' in its mod.json! It is recommended to generate a new one", modInfo->GetVersionedName());
         }
@@ -116,14 +114,13 @@ void AmethystRuntime::RunMods()
     auto& platform = Amethyst::GetPlatform();
     platform.ResumeGameThread();
 
-    // TODO THIS PROBABLY NEEDS TO BE PER PLATFORM 
     // Listen for hot-reload and keep Amethyst running until the end
     while (true) {
         Sleep(1000 / 20);
 
-        if (GetAsyncKeyState(VK_NUMPAD0) || GetAsyncKeyState(VK_END)) 
-            break;
-        if ((GetAsyncKeyState('R') & 0x8000) && mRunning == true) {
+        if (platform.HasRequestedStop()) break; 
+
+        if (platform.HasRequestedHotReload() && mRunning == true) {
             Log::Info("\n========================= Starting hot-reload! =========================");
 
             Shutdown();

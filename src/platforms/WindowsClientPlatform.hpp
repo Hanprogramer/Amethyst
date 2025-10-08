@@ -1,7 +1,7 @@
 #pragma once
-#include "platforms/WindowsPlatform.hpp"
+#include "platforms/WindowsPlatformCommon.hpp"
 
-class WindowsClientPlatform : public WindowsPlatform {
+class WindowsClientPlatform : public WindowsPlatformCommon {
 public:
     WindowsClientPlatform(HANDLE mcThreadHandle);
 

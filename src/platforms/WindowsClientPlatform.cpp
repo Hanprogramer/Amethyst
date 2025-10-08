@@ -12,7 +12,7 @@ using namespace winrt;
 using namespace Windows::Storage;
 
 WindowsClientPlatform::WindowsClientPlatform(HANDLE mcThreadHandle)
-    : WindowsPlatform(mcThreadHandle) {}
+    : WindowsPlatformCommon(mcThreadHandle) {}
 
 Amethyst::PlatformType WindowsClientPlatform::GetPlatformType() const
 {
