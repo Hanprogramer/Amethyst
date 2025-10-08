@@ -27,10 +27,12 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     _StartMenuScreenController__registerBindings.call(self);
     auto& context = Amethyst::GetContext();
 
+    const Amethyst::Mod* ownMod = Amethyst::GetOwnMod();
+    auto versionStr = std::format("Amethyst Runtime v{}", ownMod->mInfo->Version.to_string());
+
     // Register '#amethyst_version' binding
-    self->bindString(StringHash("#amethyst_version"), []() { 
-        const Amethyst::Mod* self = Amethyst::GetOwnMod();
-        return std::format("Amethyst Runtime v{}", self->mInfo->Version.to_string());
+    self->bindString(StringHash("#amethyst_version"), [versionStr]() { 
+        return versionStr;
     }, []() { 
         return true; 
     });

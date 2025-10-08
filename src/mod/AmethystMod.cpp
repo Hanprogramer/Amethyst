@@ -13,7 +13,6 @@
 #include "hooks/NetworkingHooks.hpp"
 #include <hooks/item/ItemRegistryHooks.hpp>
 
-extern AmethystContext* _AmethystContextInstance;
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;
 
@@ -23,8 +22,6 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 
     Amethyst::EventBus& events = *ctx.mEventBus;
     events.AddListener<BeforeModShutdownEvent>([&](const BeforeModShutdownEvent& e) {
-        Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
-        _AmethystContextInstance = nullptr;
         _OwnMod = nullptr;
     });
 

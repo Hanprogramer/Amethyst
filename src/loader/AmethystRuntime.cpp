@@ -123,7 +123,9 @@ void AmethystRuntime::RunMods()
         if (platform.HasRequestedHotReload() && mRunning == true) {
             Log::Info("\n========================= Starting hot-reload! =========================");
 
+            platform.PauseGameThread();
             Shutdown();
+
             return Start();
         }
     }
