@@ -4,6 +4,7 @@
 #include "mc/src/common/resources/ResourcePackRepository.hpp"
 #include <winrt/Windows.Storage.h>
 #include <fstream>
+#include <amethyst/runtime/ModContext.hpp>
 
 Amethyst::PackManager::PackManager(AmethystContext* amethyst) : 
     mAmethyst(amethyst)
@@ -13,9 +14,10 @@ Amethyst::PackManager::~PackManager() {}
 
 void Amethyst::PackManager::RegisterNewPack(const Mod* owner, const std::string& path, PackType type, PackPriority priority)
 {
+    auto& platform = Amethyst::GetPlatform();
     std::string key = owner->mInfo->GetVersionedName();
-    fs::path resourcesPath = GetAmethystFolder() / "mods" / key / "resource_packs";
-    fs::path behaviorPath = GetAmethystFolder() / "mods" / key / "behavior_packs";
+    fs::path resourcesPath = platform.GetAmethystFolder() / "mods" / key / "resource_packs";
+    fs::path behaviorPath = platform.GetAmethystFolder() / "mods" / key / "behavior_packs";
     auto& packBasePath = (type == PackType::Resources) ? resourcesPath : behaviorPath;
 
 	// Check if the mod is on the list of packs, if not add it

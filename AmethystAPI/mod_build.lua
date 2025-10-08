@@ -1,4 +1,5 @@
 function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_build)
+    add_rules("plugin.vsxmake.autoupdate")
     set_languages("c++23")
 
     local modFolder
@@ -104,94 +105,94 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     set_project(mod_name)
 
     target(mod_name)
-    set_kind("shared")
-    add_deps("AmethystAPI", "libhat")
+        set_kind("shared")
+        add_deps("AmethystAPI", "libhat")
 
-    -- Hard fail if AmethystAPI is missing
-    on_load(function (t)
-        if not (amethystApiPath and os.isdir(amethystApiPath)) then
-            raise("AmethystAPI not found at: " .. tostring(amethystApiPath) ..
-                  "\nCI: ensure repo is checked out to Amethyst/AmethystAPI" ..
-                  "\nLocal: set AMETHYST_SRC to point to your Amethyst clone.")
-        end
-    end)
-    
-    -- Force rebuild when any source file changes
-    set_policy("build.across_targets_in_parallel", true)
-
-    add_files("src/**.cpp")
-
-    add_defines(
-        string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
-        string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
-        string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
-        'ENTT_PACKED_PAGE=128',
-        'AMETHYST_EXPORTS'
-    )
-
-    -- Deps
-    add_packages("AmethystAPI", "libhat")
-    add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
-
-    add_includedirs("src", {public = true})
-    add_headerfiles("src/**.hpp")
-
-    before_build(function (target)
-        local importer_dir = path.join(os.curdir(), ".importer");
-        local generated_dir = path.join(importer_dir)
-        local input_dir = path.join(amethystApiPath, "src"):gsub("\\", "/")
-        local include_dir = path.join(amethystApiPath, "include"):gsub("\\", "/")
+        -- Hard fail if AmethystAPI is missing
+        on_load(function (t)
+            if not (amethystApiPath and os.isdir(amethystApiPath)) then
+                raise("AmethystAPI not found at: " .. tostring(amethystApiPath) ..
+                    "\nCI: ensure repo is checked out to Amethyst/AmethystAPI" ..
+                    "\nLocal: set AMETHYST_SRC to point to your Amethyst clone.")
+            end
+        end)
         
-        local gen_sym_args = {
-            ".importer/bin/Amethyst.SymbolGenerator.exe",
-            "--input", string.format("%s", input_dir),
-            "--output", string.format("%s", generated_dir),
-            "--filters", "mc",
-            "--",
-            "-x c++",
-            "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
-            "-std=c++23",
-            "-fms-extensions",
-            "-fms-compatibility",
-            string.format('-I%s', include_dir),
-            string.format('-I%s', input_dir)
-        }
-        print('Generating *.symbols.json files for headers...')
-        os.exec(table.concat(gen_sym_args, " "))
+        -- Force rebuild when any source file changes
+        set_policy("build.across_targets_in_parallel", true)
 
-        local gen_lib_args = {
-            ".importer/bin/Amethyst.LibraryGenerator.exe",
-            "--input", string.format("%s/symbols", generated_dir),
-            "--output", string.format("%s/lib", generated_dir)
-        }
-        print('Generating Minecraft.Windows.lib file...')
-        os.exec(table.concat(gen_lib_args, " "))
-    end)
+        add_files("src/**.cpp")
 
-    after_build(function (target)
-        local importer_dir = path.join(os.curdir(), ".importer");
-        local generated_dir = path.join(importer_dir)
-        local src_json = path.join("mod.json")
+        add_defines(
+            string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
+            string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
+            string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
+            'ENTT_PACKED_PAGE=128',
+            'AMETHYST_EXPORTS'
+        )
 
-        local mod_json = io.readfile(src_json)
+        -- Deps
+        add_packages("AmethystAPI", "libhat")
+        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
 
-        if not automated_build then
-            mod_json = mod_json:gsub('("version"%s*:%s*")([^"]*)(")', '%1' .. "0.0.0-dev" .. '%3')
-        end
+        add_includedirs("src", {public = true})
+        add_headerfiles("src/**.hpp")
 
-        local dst_json = path.join(modFolder, "mod.json")
-        if not os.isdir(modFolder) then
-            os.mkdir(modFolder)
-        end
+        before_build(function (target)
+            local importer_dir = path.join(os.curdir(), ".importer");
+            local generated_dir = path.join(importer_dir)
+            local input_dir = path.join(amethystApiPath, "src"):gsub("\\", "/")
+            local include_dir = path.join(amethystApiPath, "include"):gsub("\\", "/")
+            
+            local gen_sym_args = {
+                ".importer/bin/Amethyst.SymbolGenerator.exe",
+                "--input", string.format("%s", input_dir),
+                "--output", string.format("%s", generated_dir),
+                "--filters", "mc",
+                "--",
+                "-x c++",
+                "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
+                "-std=c++23",
+                "-fms-extensions",
+                "-fms-compatibility",
+                string.format('-I%s', include_dir),
+                string.format('-I%s', input_dir)
+            }
+            print('Generating *.symbols.json files for headers...')
+            os.exec(table.concat(gen_sym_args, " "))
 
-        io.writefile(dst_json, mod_json)
+            local gen_lib_args = {
+                ".importer/bin/Amethyst.LibraryGenerator.exe",
+                "--input", string.format("%s/symbols", generated_dir),
+                "--output", string.format("%s/lib", generated_dir)
+            }
+            print('Generating Minecraft.Windows.lib file...')
+            os.exec(table.concat(gen_lib_args, " "))
+        end)
 
-        local tweaker_args = {
-            ".importer/bin/Amethyst.ModuleTweaker.exe",
-            "--module", target:targetfile(),
-            "--symbols", string.format("%s/symbols", generated_dir)
-        }
-        print('Tweaking output file...')
-        os.exec(table.concat(tweaker_args, " "))
-    end)
+        after_build(function (target)
+            local importer_dir = path.join(os.curdir(), ".importer");
+            local generated_dir = path.join(importer_dir)
+            local src_json = path.join("mod.json")
+
+            local mod_json = io.readfile(src_json)
+
+            if not automated_build then
+                mod_json = mod_json:gsub('("version"%s*:%s*")([^"]*)(")', '%1' .. "0.0.0-dev" .. '%3')
+            end
+
+            local dst_json = path.join(modFolder, "mod.json")
+            if not os.isdir(modFolder) then
+                os.mkdir(modFolder)
+            end
+
+            io.writefile(dst_json, mod_json)
+
+            local tweaker_args = {
+                ".importer/bin/Amethyst.ModuleTweaker.exe",
+                "--module", target:targetfile(),
+                "--symbols", string.format("%s/symbols", generated_dir)
+            }
+            print('Tweaking output file...')
+            os.exec(table.concat(tweaker_args, " "))
+        end)
 end

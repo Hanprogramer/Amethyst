@@ -1,13 +1,12 @@
 #include "loader/AmethystRuntime.hpp"
-
 #include "hooks/item/ItemHooks.hpp"
-
 #include <amethyst/runtime/HookManager.hpp>
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <amethyst/runtime/ModContext.hpp>
 
 #include <mc/src/common/world/item/ItemStack.hpp>
 #include <mc/src/common/world/level/Level.hpp>
+#include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/locale/I18n.hpp>
 
 #include <memory>
@@ -33,7 +32,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     {
         modName = "Minecraft";
     }
-    else if (!(mod = AmethystRuntime::getContext()->mModLoader->GetModByNamespace(itemNamespace)).expired()) {
+    else if (!(mod = Amethyst::GetContext().mModLoader->GetModByNamespace(itemNamespace)).expired()) {
         modName = mod.lock()->mInfo->FriendlyName;
     }
     else {
@@ -91,6 +90,6 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
 
 void CreateItemHooks()
 {
-    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
+    Amethyst::HookManager& hooks = Amethyst::GetHookManager();
     VHOOK(Item, appendFormattedHovertext, this);
 }

@@ -53,11 +53,8 @@ std::unreachable();
 }
 
 void CreateNetworkingHooks() {
-    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
+    Amethyst::HookManager& hooks = Amethyst::GetHookManager();
 
     HOOK(MinecraftPackets, createPacket);
-
-    // HOOK(ServerNetworkHandler, allowIncomingPacketId);
-    // expanded
     hooks.CreateDirectHook<&ServerNetworkHandler::allowIncomingPacketId>(_ServerNetworkHandler_allowIncomingPacketId, &ServerNetworkHandler_allowIncomingPacketId);
 }

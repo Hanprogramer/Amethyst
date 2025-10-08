@@ -11,7 +11,7 @@
 namespace Log {
     void InitializeConsole();
     void DestroyConsole();
-    void HideConsole();
+    //void HideConsole();
     std::string GetModName();
 
     constexpr const char* RESET   = "\033[0m";

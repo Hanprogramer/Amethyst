@@ -1,10 +1,10 @@
 #include "loader/RuntimeContext.hpp"
 
-RuntimeContext::RuntimeContext() { } 
+RuntimeContext::RuntimeContext(std::unique_ptr<Amethyst::Platform> platform)
+    : AmethystContext(std::move(platform)) {}
 
 void RuntimeContext::Start()
 {
-    // Non persistent across mod loads
     mHookManager = std::make_unique<Amethyst::HookManager>();
     mEventBus = std::make_unique<Amethyst::EventBus>();
     mInputManager = std::make_unique<Amethyst::InputManager>(this);
