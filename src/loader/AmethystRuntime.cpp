@@ -13,8 +13,6 @@ extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
-extern AmethystContext* _AmethystContextInstance;
-
 AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform)
     : mAmethystContext(std::move(platform))
 {
@@ -23,25 +21,17 @@ AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform)
 
 void AmethystRuntime::Start()
 {
-    if (mRunning)
-        return;
-
-    _AmethystContextInstance = &this->mAmethystContext;
+    Assert(!mRunning, "AmethystRuntime::Start called whilst running!");
+    auto& platform = Amethyst::GetPlatform();
 
     // Prompt a debugger if they are in developer mode
     if (mLauncherConfig.promptDebugger)
-        PromptDebugger();
-
-    //Log::Info("platform: {}", (uint64_t)getPlatform());
+        platform.AttachDebugger();
 
     Amethyst::GetContext().Start();
 
-    Log::Info("Start!");
-
     // read the config file and load in any mods
     ReadLauncherConfig();
-
-    Log::Info("prompt debugger");
 
     // Load all mod DLLs and call their initialize functions
     LoadModDlls(); 
@@ -121,17 +111,12 @@ void AmethystRuntime::LoadModDlls()
     Amethyst::GetEventBus().Invoke<AddModEventListenersEvent>(event);
 }
 
-void AmethystRuntime::PromptDebugger()
-{
-    Log::Info("Minecraft's Base: 0x{:x}", GetMinecraftBaseAddress());
-    std::string command = std::format("vsjitdebugger -p {:d}", GetCurrentProcessId());
-    system(command.c_str());
-}
-
 void AmethystRuntime::RunMods()
 {
-    ResumeGameThread();
+    auto& platform = Amethyst::GetPlatform();
+    platform.ResumeGameThread();
 
+    // TODO THIS PROBABLY NEEDS TO BE PER PLATFORM 
     // Listen for hot-reload and keep Amethyst running until the end
     while (true) {
         Sleep(1000 / 20);
@@ -158,24 +143,6 @@ void AmethystRuntime::Shutdown()
     // Clear lists of mods & functions.
     Amethyst::GetContext().Shutdown();
     mRunning = false;
-}
-
-void AmethystRuntime::ResumeGameThread()
-{
-    typedef NTSTATUS(NTAPI* NtResumeThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
-    static NtResumeThreadPtr NtResumeThread = (NtResumeThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtResumeThread");
-    NtResumeThread(gMcThreadHandle, NULL);
-
-    Log::Info("Resumed game thread!");
-}
-
-void AmethystRuntime::PauseGameThread()
-{
-    typedef NTSTATUS(NTAPI* NtSuspendThreadPtr)(HANDLE ThreadHandle, PULONG PreviousSuspendCount);
-    static NtSuspendThreadPtr NtSuspendThread = (NtSuspendThreadPtr)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSuspendThread");
-    NtSuspendThread(gMcThreadHandle, NULL);
-
-    Log::Info("Paused game thread!");
 }
 
 extern "C" __declspec(dllexport) 

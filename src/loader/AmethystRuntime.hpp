@@ -47,17 +47,15 @@ public:
 
     void Start();
     void Shutdown();
-
-    static void PromptDebugger();
 private:
     void ReadLauncherConfig();
     void LoadModDlls();
     void RunMods();
 
-    static void ResumeGameThread();
-    static void PauseGameThread();
+    //static void ResumeGameThread();
+    //static void PauseGameThread();
 
-private:
+public:
     Config mLauncherConfig;
     RuntimeContext mAmethystContext;
     bool mRunning = false;

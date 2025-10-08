@@ -11,6 +11,13 @@
 using namespace winrt;
 using namespace Windows::Storage;
 
+WindowsClientPlatform::WindowsClientPlatform(HANDLE mcThreadHandle)
+    : WindowsPlatform(mcThreadHandle) {}
+
+Amethyst::PlatformType WindowsClientPlatform::GetPlatformType() const
+{
+    return Amethyst::PlatformType::WindowsClient;
+}
 
 fs::path WindowsClientPlatform::GetComMojangPath() const
 {

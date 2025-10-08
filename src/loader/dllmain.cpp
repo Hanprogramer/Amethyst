@@ -1,9 +1,12 @@
 #include "dllmain.hpp"
 #include "debug/AmethystDebugging.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
 DWORD gMcThreadId;
+
+extern AmethystContext* _AmethystContextInstance;
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -37,11 +40,17 @@ LONG WINAPI AmethystUnhandledExceptionsHandler(EXCEPTION_POINTERS* ExceptionInfo
 
 DWORD WINAPI Main()
 {
-    Log::InitializeConsole();
+    //Log::InitializeConsole();
     SetUnhandledExceptionFilter(AmethystUnhandledExceptionsHandler);
 
-    auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>();
+    auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
     AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform));
+
+    // Allow for using Amethyst:: Functions
+    _AmethystContextInstance = &runtime->mAmethystContext;
+
+    auto& platform = Amethyst::GetPlatform();
+    platform.InitializeConsole();
 
     try {
         runtime->Start();
