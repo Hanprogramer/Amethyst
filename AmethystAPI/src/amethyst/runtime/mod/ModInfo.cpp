@@ -3,6 +3,7 @@
 #include "amethyst/Log.hpp"
 #include <fstream>
 #include "ModInfo.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 namespace Amethyst {
 ModInfo::ModInfo(
@@ -34,7 +35,8 @@ ModInfo::ModInfo(
 std::string ModInfo::GetVersionedName() const
 {
     std::string versionedName = std::format("{}@{}", Name, Version.to_string());
-    if (!fs::exists(GetAmethystFolder() / "mods" / versionedName)) {
+    auto& platform = Amethyst::GetPlatform();
+    if (!fs::exists(platform.GetAmethystFolder() / "mods" / versionedName)) {
         return std::format("{}@0.0.0-dev", Name);
     }
     return versionedName;

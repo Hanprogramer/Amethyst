@@ -3,6 +3,7 @@
 #include "mc/src-vanilla/vanilla_client/common/module/VanillaGameModuleClient.hpp"
 #include "mc/src-vanilla/vanilla_shared/common/server/module/VanillaGameModuleServer.hpp"
 #include "mc/src/common/resources/ResourcePackRepository.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 SafetyHookInline _VanillaGameModuleClient_initializeResourceStack;
 SafetyHookInline _VanillaGameModuleServer_initializeBehaviorStack;
@@ -31,7 +32,8 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
 
     // Add mod "resource_packs" and "behavior_packs" to the CompositePackSource
     for (auto& [nameVer, packs] : packManager.GetPacks()) {
-        fs::path modBasePath = GetAmethystFolder() / "mods" / nameVer;
+        auto& platform = Amethyst::GetPlatform();
+        fs::path modBasePath = platform.GetAmethystFolder() / "mods" / nameVer;
 
         // Check if the mod has resource packs
         bool hasResourcePacks = std::find_if(packs.begin(), packs.end(), [&](const auto& pair) {

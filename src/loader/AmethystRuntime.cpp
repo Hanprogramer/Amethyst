@@ -36,7 +36,8 @@ void AmethystRuntime::Start()
 void AmethystRuntime::ReadLauncherConfig()
 {
     // Ensure it exists
-    fs::path launcherConfigPath = GetAmethystFolder() / "launcher_config.json";
+    auto& platform = Amethyst::GetPlatform();
+    fs::path launcherConfigPath = platform.GetAmethystFolder() / "launcher_config.json";
 
     if (!fs::exists(launcherConfigPath)) {
         throw std::exception("launcher_config.json could not be found!");
@@ -73,7 +74,8 @@ void AmethystRuntime::LoadModDlls()
     }
 
     // Scan the mods directory for mod.json files and load them into the repository
-    repository.ScanDirectory(GetAmethystFolder() / "mods", true);
+    auto& platform = Amethyst::GetPlatform();
+    repository.ScanDirectory(platform.GetAmethystFolder() / "mods", true);
 
     // Add itself as a mod to the repository to resolve dependencies against
     auto info = Amethyst::Mod::GetInfo(mLauncherConfig.injectedMod);
