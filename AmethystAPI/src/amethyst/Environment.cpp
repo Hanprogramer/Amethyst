@@ -1,7 +1,7 @@
 #include "Environment.hpp"
 #include <Windows.h>
 
-std::filesystem::path Amethyst::GetExecutablePath()
+const std::filesystem::path& Amethyst::GetExecutablePath()
 {
     static const std::filesystem::path exePath = []() {
         wchar_t buffer[MAX_PATH];
@@ -15,7 +15,7 @@ std::filesystem::path Amethyst::GetExecutablePath()
 Amethyst::Environment Amethyst::GetEnvironment()
 {
     static Amethyst::Environment env = []() {
-        std::filesystem::path exePath = GetExecutablePath();
+        const auto& exePath = GetExecutablePath();
         std::string exeName = exePath.filename().generic_string();
         if (exeName.starts_with("bedrock_server")) {
             return Amethyst::Environment::Server;

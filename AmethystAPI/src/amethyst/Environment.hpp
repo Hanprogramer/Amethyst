@@ -2,11 +2,11 @@
 #include <filesystem>
 
 namespace Amethyst {
-enum class Environment {
+enum class Environment : unsigned char {
 	Client,
 	Server
 };
 
-std::filesystem::path GetExecutablePath();
+const std::filesystem::path& GetExecutablePath();
 Environment GetEnvironment();
 } // namespace Amethyst
