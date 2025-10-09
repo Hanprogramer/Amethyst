@@ -14,6 +14,11 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
     // Store our own mod info for later retrieval
     _OwnMod = &mod;
 
+    // Do a quick sanity check by comparing some important class sizes and offsets
+    if (context.mAmethystAbiHash != AmethystContext::GetAmethystAbiHash()) {
+        AssertFail("Detected difference in amethyst ABI hash! This mod is not compatible with this version of the runtime! Please recompile the mod/runtime if developing!");
+    }
+
     // Check if the mod has a resource pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "resource_packs" / "main_rp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);

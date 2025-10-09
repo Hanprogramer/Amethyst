@@ -24,6 +24,9 @@ class Minecraft;
 
 class AmethystContext {
 public:
+    // This field should NEVER be moved
+    uint64_t mAmethystAbiHash;
+
     // Volatile between mod loads
     std::unique_ptr<Amethyst::HookManager> mHookManager;
     std::unique_ptr<Amethyst::EventBus> mEventBus;
@@ -51,6 +54,10 @@ public:
     // prevent copying
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
+
+    // returns a quick sanity check for the ABI of amethyst
+    // not 100% accurate, but will detect simple additions/removals, etc
+    static uint64_t GetAmethystAbiHash();
 
 protected:
     virtual void Start() = 0;
