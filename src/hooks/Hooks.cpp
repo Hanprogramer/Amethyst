@@ -111,6 +111,7 @@ Minecraft* Minecraft__Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, voi
         ctx.mMainClientThread = std::this_thread::get_id();
     }
     else {
+        Amethyst::GetContext().mServerCtx = std::make_unique<Amethyst::ServerContext>();
         Amethyst::GetServerCtx().mMinecraft = a1;
         ctx.mMainServerThread = std::this_thread::get_id();
     }
@@ -119,6 +120,13 @@ Minecraft* Minecraft__Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, voi
     a1->mLevelSubscribers->_connectInternal(LevelEvent, Bedrock::PubSub::ConnectPosition::AtFront, std::move(context), std::nullopt);
 
     return a1;
+}
+
+SafetyHookInline _Minecraft_$dtor;
+
+void* Minecraft_$dtor(Minecraft* a1, char a2) {
+    Amethyst::GetContext().mServerCtx.reset();
+    return _Minecraft_$dtor.call<void*>(a1, a2);
 }
 
 void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments& experiments) {
@@ -181,6 +189,9 @@ void CreateModFunctionHooks() {
     HOOK(VanillaItems, registerItems);
     HOOK(BlockDefinitionGroup, registerBlocks);
     HOOK(BlockGraphics, initBlocks);
+
     HOOK(Minecraft, _Minecraft);
+    HOOK(Minecraft, $dtor);
+
     HOOK(BlockActorRenderDispatcher, initializeBlockEntityRenderers);
 }
