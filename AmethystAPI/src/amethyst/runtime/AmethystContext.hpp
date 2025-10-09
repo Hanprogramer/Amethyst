@@ -45,8 +45,8 @@ public:
     std::optional<std::thread::id> mMainServerThread;
 
     Amethyst::MinecraftPackageInfo mPackageInfo;
-    Amethyst::ClientContext mClientCtx;
-    Amethyst::ServerContext mServerCtx;
+    std::unique_ptr<Amethyst::ClientContext> mClientCtx;
+    std::unique_ptr<Amethyst::ServerContext> mServerCtx;
 
     // prevent copying
     AmethystContext(const AmethystContext&) = delete;

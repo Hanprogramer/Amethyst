@@ -66,21 +66,21 @@ Amethyst::Platform& Amethyst::GetPlatform()
 
 Amethyst::ClientContext& Amethyst::GetClientCtx()
 {
-    return _AmethystContextInstance->mClientCtx;
+    return *_AmethystContextInstance->mClientCtx;
 }
 
 Amethyst::ServerContext& Amethyst::GetServerCtx()
 {
-    return _AmethystContextInstance->mServerCtx;
+    return *_AmethystContextInstance->mServerCtx;
 }
 
 Amethyst::SharedContext& Amethyst::GetCurrentThreadCtx()
 {
     if (Amethyst::IsOnMainClientThread()) {
-        return _AmethystContextInstance->mClientCtx;
+        return *_AmethystContextInstance->mClientCtx;
     } 
     else if (Amethyst::IsOnMainServerThread()) {
-        return _AmethystContextInstance->mServerCtx;
+        return *_AmethystContextInstance->mServerCtx;
     }
 
     AssertFail("Current thread is not the main Client or Server thread, cannot get context!");
