@@ -6,6 +6,12 @@ const Amethyst::Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
+    // Store a persistent AmethystContext instance
+    _AmethystContextInstance = &context;
+
+    // Store our own mod info for later retrieval
+    _OwnMod = &mod;
+
     // Check if the mod has a resource pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "resource_packs" / "main_rp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);
@@ -13,12 +19,6 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
     // Check if the mod has a behavior pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "behavior_packs" / "main_bp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
-
-    // Store a persistent AmethystContext instance
-    _AmethystContextInstance = &context;
-
-    // Store our own mod info for later retrieval
-    _OwnMod = &mod;
 }
 
 AmethystContext& Amethyst::GetContext()
