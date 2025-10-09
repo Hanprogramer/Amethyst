@@ -1,34 +1,23 @@
 #include "hooks/ui/UIHooks.hpp"
-#include "loader/AmethystRuntime.hpp"
 
-#include "amethyst/runtime/events/UiEvents.hpp"
-#include "amethyst/Log.hpp"
-
-#include "mc/src-client/common/client/gui/screens/ScreenController.hpp"
-#include "mc/src-client/common/client/gui/screens/ScreenEvent.hpp"
-#include "mc/src-client/common/client/gui/screens/controllers/StartMenuScreenController.hpp"
-#include "mc/src-deps/core/string/StringHash.hpp"
-#include "amethyst/runtime/ModContext.hpp"
-
-SafetyHookInline _ScreenController__handleButtonEvent;
-SafetyHookInline _StartMenuScreenController__registerBindings;
-
-ui::ViewRequest ScreenController__handleButtonEvent(ScreenController* screen, ScreenEvent& event) {
-    ui::ViewRequest result = _ScreenController__handleButtonEvent.call<ui::ViewRequest, ScreenController*, ScreenEvent&>(screen, event);
-
+ui::ViewRequest Amethyst::UIHooks::ScreenControllerHooks::_handleButtonEvent(ScreenController* screen, ScreenEvent& event) {
+    ui::ViewRequest result = __handleButtonEvent(screen, event);
     UIButtonHandleEvent ev(event);
     Amethyst::GetEventBus().Invoke(ev);
-
     return result;
 }
 
-void StartMenuScreenController__registerBindings(StartMenuScreenController* self)
+void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartMenuScreenController* self)
 {
-    _StartMenuScreenController__registerBindings.call(self);
-    auto& context = Amethyst::GetContext();
+    __registerBindings(self);
 
+    auto& context = Amethyst::GetContext();
     const Amethyst::Mod* ownMod = Amethyst::GetOwnMod();
-    auto versionStr = std::format("Amethyst Runtime v{}", ownMod->mInfo->Version.to_string());
+    std::string versionStr;
+    if (ownMod->mInfo->Version.prerelease_tag() == "dev")
+        versionStr = std::format("{}", "§uAmethyst Runtime (DEV)§r");
+    else
+        versionStr = std::format("Amethyst Runtime v{}", ownMod->mInfo->Version.to_string());
 
     // Register '#amethyst_version' binding
     self->bindString(StringHash("#amethyst_version"), [versionStr]() { 
@@ -49,13 +38,8 @@ void StartMenuScreenController__registerBindings(StartMenuScreenController* self
     });
 }
 
-void CreateUIHooks() {
+void Amethyst::UIHooks::Create() {
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
-    HOOK(ScreenController, _handleButtonEvent);
-}
-
-void CreateStartScreenHooks()
-{
-    Amethyst::HookManager& hooks = Amethyst::GetHookManager();
-    HOOK(StartMenuScreenController, _registerBindings);
+    hooks.CreateDirectHook<&ScreenController::_handleButtonEvent>(ScreenControllerHooks::__handleButtonEvent, &ScreenControllerHooks::_handleButtonEvent);
+    hooks.CreateDirectHook<&StartMenuScreenController::_registerBindings>(StartMenuScreenControllerHooks::__registerBindings, &StartMenuScreenControllerHooks::_registerBindings);
 }
