@@ -1,5 +1,6 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/Minecraft.hpp>
+#include <thread>
 
 AmethystContext* _AmethystContextInstance;
 const Amethyst::Mod* _OwnMod;
@@ -77,6 +78,21 @@ Level* Amethyst::GetLevel()
 ClientInstance* Amethyst::GetClientInstance()
 {
     return _AmethystContextInstance->mClientInstance;
+}
+
+bool Amethyst::IsOnAmethystThread()
+{
+    return _AmethystContextInstance->mAmethystThread == std::this_thread::get_id();
+}
+
+bool Amethyst::IsOnMainClientThread()
+{
+    return _AmethystContextInstance->mMainClientThread == std::this_thread::get_id();
+}
+
+bool Amethyst::IsOnMainServerThread()
+{
+    return _AmethystContextInstance->mMainServerThread == std::this_thread::get_id();
 }
 
 const Amethyst::Mod* Amethyst::GetOwnMod()

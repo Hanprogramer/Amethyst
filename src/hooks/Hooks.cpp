@@ -6,6 +6,7 @@
 #include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
 #include <mc/src-client/common/client/renderer/blockActor/BlockActorRendererDispatcher.hpp>
 #include <amethyst/runtime/ModContext.hpp>
+#include <thread>
 
 SafetyHookInline _ScreenView_setupAndRender;
 SafetyHookInline _ClientInstance_onStartJoinGame;
@@ -101,12 +102,14 @@ SafetyHookInline _Minecraft__Minecraft;
 Minecraft* Minecraft__Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, char a11, void* a12, void* a13, void* a14, void* a15) {
     _Minecraft__Minecraft.call<Minecraft*>(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
     AmethystContext& ctx = Amethyst::GetContext();
-    
+
     if (ctx.mClientMinecraft == nullptr) {
         ctx.mClientMinecraft = a1;
+        ctx.mMainClientThread = std::this_thread::get_id();
     }
     else {
         ctx.mServerMinecraft = a1;
+        ctx.mMainServerThread = std::this_thread::get_id();
     }
 
     auto context = Bedrock::PubSub::SubscriptionContext::makeDefaultContext("Amethyst LevelEvent Subscriber");

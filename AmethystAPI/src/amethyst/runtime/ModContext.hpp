@@ -24,5 +24,9 @@ namespace Amethyst {
 	Level* GetLevel();
 	ClientInstance* GetClientInstance();
 
+	bool IsOnAmethystThread();
+	bool IsOnMainClientThread();
+	bool IsOnMainServerThread();
+
 	const Mod* GetOwnMod();
 }
