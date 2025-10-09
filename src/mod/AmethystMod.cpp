@@ -58,11 +58,10 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     }
 
     CreateInputHooks();
-    CreateResourceHooks();
-    CreateStartScreenHooks();
+    Amethyst::ResourceHooks::Create();
+    Amethyst::UIHooks::Create();
     CreateModFunctionHooks();
     CreateNetworkingHooks();
-    CreateUIHooks();
     CreateRenderingHooks();
     CreateItemRegistryHooks();
 }
