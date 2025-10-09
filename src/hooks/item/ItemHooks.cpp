@@ -78,7 +78,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
             hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
     }
     else {
-        auto& options = *Amethyst::GetContext().mOptions;
+        auto& options = *Amethyst::GetClientCtx().mOptions;
         auto& mapping = *options.getCurrentKeyboardRemapping();
         auto* keymapping = mapping.getKeymappingByAction("key.amethyst.show_advanced_item_info");
         if (keymapping && keymapping->isAssigned())

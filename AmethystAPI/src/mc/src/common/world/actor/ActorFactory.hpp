@@ -5,7 +5,7 @@
 
 class ActorGoalFactory;
 class ActorDefinitionGroup;
-class ActorDefinitionIdentifier;
+struct ActorDefinitionIdentifier;
 class Experiments;
 class CompoundTag;
 class LevelChunk;

@@ -17,6 +17,8 @@
 #include "mc/src-client/common/client/options/Options.hpp"
 #include "mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
 #include "amethyst/Imports.hpp"
+#include "amethyst/runtime/ctx/ClientContext.hpp"
+#include "amethyst/runtime/ctx/ServerContext.hpp"
 
 class Minecraft;
 
@@ -43,15 +45,8 @@ public:
     std::optional<std::thread::id> mMainServerThread;
 
     Amethyst::MinecraftPackageInfo mPackageInfo;
-
-    // All of this should probably be moved elsewher
-    ClientInstance* mClientInstance = nullptr;
-    MinecraftInputHandler* mMcInputHandler = nullptr;
-    Options* mOptions = nullptr;
-    bool mIsInWorldOrLoading = false;
-
-    Minecraft* mClientMinecraft = nullptr;
-    Minecraft* mServerMinecraft = nullptr;
+    Amethyst::ClientContext mClientCtx;
+    Amethyst::ServerContext mServerCtx;
 
     // prevent copying
     AmethystContext(const AmethystContext&) = delete;

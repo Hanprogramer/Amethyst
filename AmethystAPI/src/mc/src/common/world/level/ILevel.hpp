@@ -25,6 +25,7 @@ namespace PositionTrackingDB { class PositionTrackingDBClient; }
 namespace cg { class ImageBuffer; }
 namespace mce {class UUID; class Color; }
 class EntityContext;
+class ActorFactory;
 struct ActorUniqueID;
 class LevelSettings;
 class LevelData;
@@ -883,11 +884,11 @@ public:
     /**@vidx {251}*/
     MC virtual bool isEdu() const;
 
-    /**@vidx {252}*/
-    MC virtual void _unknown_252();
+    /// @vidx {253}
+	MC virtual ActorFactory& getActorFactory();
 
-    /**@vidx {253}*/
-    MC virtual void _unknown_253();
+	/// @vidx {252}
+	MC virtual const ActorFactory& getActorFactory() const;
 
     /**@vidx {254}*/
     MC virtual ActorInfoRegistry* getActorInfoRegistry();

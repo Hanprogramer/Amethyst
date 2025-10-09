@@ -1,6 +1,7 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/Minecraft.hpp>
 #include <thread>
+#include "ModContext.hpp"
 
 AmethystContext* _AmethystContextInstance;
 const Amethyst::Mod* _OwnMod;
@@ -63,21 +64,26 @@ Amethyst::Platform& Amethyst::GetPlatform()
     return *platform;
 }
 
-Minecraft* Amethyst::GetMinecraft()
+Amethyst::ClientContext& Amethyst::GetClientCtx()
 {
-    return _AmethystContextInstance->mClientInstance->mMinecraft;
+    return _AmethystContextInstance->mClientCtx;
 }
 
-Level* Amethyst::GetLevel()
+Amethyst::ServerContext& Amethyst::GetServerCtx()
 {
-    ClientInstance* ci = _AmethystContextInstance->mClientInstance;
-    if (!ci) return nullptr;
-    return ci->mMinecraft->getLevel();
+    return _AmethystContextInstance->mServerCtx;
 }
 
-ClientInstance* Amethyst::GetClientInstance()
+Amethyst::SharedContext& Amethyst::GetCurrentThreadCtx()
 {
-    return _AmethystContextInstance->mClientInstance;
+    if (Amethyst::IsOnMainClientThread()) {
+        return _AmethystContextInstance->mClientCtx;
+    } 
+    else if (Amethyst::IsOnMainServerThread()) {
+        return _AmethystContextInstance->mServerCtx;
+    }
+
+    AssertFail("Current thread is not the main Client or Server thread, cannot get context!");
 }
 
 bool Amethyst::IsOnAmethystThread()

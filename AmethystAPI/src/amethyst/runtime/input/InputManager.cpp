@@ -5,13 +5,14 @@
 #include "amethyst/runtime/input/InputAction.hpp"
 #include "mc/src-client/common/client/game/IClientInstance.hpp"
 #include "mc/src-client/common/client/input/VanillaClientInputMappingFactory.hpp"
+#include "amethyst/runtime/ModContext.hpp"
 
 Amethyst::InputManager::InputManager(AmethystContext *amethyst) {
     mAmethyst = amethyst;
 }
 
 Amethyst::InputManager::~InputManager() {
-    Options* opt = mAmethyst->mOptions;
+    Options* opt = Amethyst::GetClientCtx().mOptions;
 
     // Remove registered keys.
     for (auto& action : mCustomInputs) {
@@ -37,7 +38,7 @@ Amethyst::InputAction& Amethyst::InputManager::RegisterNewInput(const std::strin
 {
     Assert(context != KeybindContext::None, "Cannot register a keybind with context None");
     Assert(actionName.find("button.") != 0 && actionName.find("key.") != 0, "Action name does not need to start with button. or key.");
-    Options* options = mAmethyst->mOptions;
+    Options* options = Amethyst::GetClientCtx().mOptions;
     Assert(options != nullptr, "Amethyst::InputManager->mOptions was nullptr. Ensure that RegisterNewInput is being called in the RegisterInputs event.");
 
     uint32_t hash = StringToNameId("button." + actionName);
