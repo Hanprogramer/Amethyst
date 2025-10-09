@@ -13,8 +13,8 @@ extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
-AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform)
-    : mAmethystContext(std::move(platform))
+AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread)
+    : mAmethystContext(std::move(platform), amethystThread)
 {
     AmethystRuntime::instance = this;
 }

@@ -36,8 +36,15 @@ public:
 
     // Non-volatile
     std::unique_ptr<Amethyst::Platform> mPlatform;
+
+    // Threads
+    std::thread::id mAmethystThread;
+    std::optional<std::thread::id> mMainClientThread;
+    std::optional<std::thread::id> mMainServerThread;
+
     Amethyst::MinecraftPackageInfo mPackageInfo;
 
+    // All of this should probably be moved elsewher
     ClientInstance* mClientInstance = nullptr;
     MinecraftInputHandler* mMcInputHandler = nullptr;
     Options* mOptions = nullptr;
@@ -53,5 +60,5 @@ public:
 protected:
     virtual void Start() = 0;
     virtual void Shutdown() = 0;
-    AmethystContext(std::unique_ptr<Amethyst::Platform> platform);
+    AmethystContext(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread);
 };

@@ -34,7 +34,7 @@ private:
     static AmethystRuntime* instance;
 
 public:
-    AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform);
+    AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread);
 
     static AmethystRuntime& GetInstance()
     {

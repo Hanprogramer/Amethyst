@@ -40,4 +40,12 @@ namespace Log {
         }
         return mod->mInfo->LoggingName;
     }
+
+    std::string GetThreadName() {
+        if (Amethyst::IsOnAmethystThread()) return "runtime";
+        if (Amethyst::IsOnMainClientThread()) return " client";
+        if (Amethyst::IsOnMainServerThread()) return " server";
+        // Fallback to thread IDs
+        return std::format("{:>7}", std::this_thread::get_id());
+    }
 } // namespace Log

@@ -1,7 +1,7 @@
 #include "loader/RuntimeContext.hpp"
 
-RuntimeContext::RuntimeContext(std::unique_ptr<Amethyst::Platform> platform)
-    : AmethystContext(std::move(platform)) {}
+RuntimeContext::RuntimeContext(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread)
+    : AmethystContext(std::move(platform), amethystThread) {}
 
 void RuntimeContext::Start()
 {

@@ -3,7 +3,7 @@
 
 class RuntimeContext : public AmethystContext {
 public:
-    RuntimeContext(std::unique_ptr<Amethyst::Platform> platform);
+    RuntimeContext(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread);
 
     /*
     * @brief Initializes all of the event systems ready for usage in mods
