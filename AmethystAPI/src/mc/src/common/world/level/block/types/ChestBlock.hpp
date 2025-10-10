@@ -23,24 +23,24 @@ public:
     MC ChestBlock(const std::string& nameId, short id, ChestType type, MaterialType materialType);
 
     /** @vidx {i} */ MC virtual ~ChestBlock() override;
-    /** @vidx {i} */ MC virtual bool canProvideSupport(const Block& block, unsigned char face, BlockSupportType type) const override;
+    /** @vidx {i} */ MC virtual bool canProvideSupport(const Block& block, FacingID face, BlockSupportType type) const override;
     /** @vidx {i} */ MC virtual bool isContainerBlock() const override;
     /** @vidx {i} */ MC virtual bool isSignalSource() const override;
     /** @vidx {i} */ MC virtual bool shouldConnectToRedstone(BlockSource&, const BlockPos&, Direction::Type) const override;
-    /** @vidx {i} */ MC virtual bool dispense(BlockSource& region, Container& container, int slot, const Vec3& pos, unsigned char face) const override;
+    /** @vidx {i} */ MC virtual bool dispense(BlockSource& region, Container& container, int slot, const Vec3& pos, FacingID face) const override;
     /** @vidx {i} */ MC virtual void onMove(BlockSource& region, const BlockPos& from, const BlockPos& to) const override;
     /** @vidx {i} */ MC virtual bool detachesOnPistonMove(BlockSource&, BlockPos const&) const override;
     /** @vidx {i} */ MC virtual void setupRedstoneComponent(BlockSource& region, const BlockPos& pos) const override;
     /** @vidx {i} */ MC virtual bool breaksFallingBlocks(const Block& block, BaseGameVersion version) const override;
     /** @vidx {i} */ MC virtual bool getSecondPart(const IConstBlockSource&, const BlockPos&, BlockPos&) const override;
     /** @vidx {i} */ MC virtual bool hasComparatorSignal() const override;
-    /** @vidx {i} */ MC virtual int getComparatorSignal(BlockSource& region, const BlockPos& pos, const Block& block, unsigned char dir) const override;
-    /** @vidx {i} */ MC virtual unsigned char getMappedFace(unsigned char face, const Block& block) const override;
+    /** @vidx {i} */ MC virtual int getComparatorSignal(BlockSource& region, const BlockPos& pos, const Block& block, FacingID dir) const override;
+    /** @vidx {i} */ MC virtual FacingID getMappedFace(FacingID face, const Block& block) const override;
     /** @vidx {i} */ MC virtual BlockLegacy& init() override;
     /** @vidx {i} */ MC virtual void onRemove(BlockSource& region, const BlockPos& pos) const override;
     /** @vidx {i} */ MC virtual void onPlace(BlockSource& region, const BlockPos& pos) const override;
     /** @vidx {i} */ MC virtual bool isInteractiveBlock() const override;
-    /** @vidx {i} */ MC virtual bool use(Player& player, const BlockPos& pos, unsigned char face) const override;
+    /** @vidx {i} */ MC virtual bool use(Player& player, const BlockPos& pos, FacingID face) const override;
 };
 
 

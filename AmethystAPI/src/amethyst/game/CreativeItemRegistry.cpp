@@ -22,6 +22,8 @@ void Amethyst::CreativeCategory::_RegisterItems(ItemRegistryRef ref)
     for (auto block : mItemsToRegister) {
         Item::addCreativeItem(ref, *block);
     }
+
+    _Reset();
 }
 
 void Amethyst::CreativeCategory::_Reset()
@@ -38,11 +40,11 @@ Amethyst::CreativeItemRegistry::CreativeItemRegistry()
     mCategories[CreativeItemCategory::ItemCommandOnly] = std::make_unique<CreativeCategory>(CreativeItemCategory::ItemCommandOnly);
 }
 
-void Amethyst::CreativeItemRegistry::_Reset() {
-    for (auto& category : mCategories) {
-        category.second->_Reset();
-    }
-}
+//void Amethyst::CreativeItemRegistry::_Reset() {
+//    for (auto& category : mCategories) {
+//        category.second->_Reset();
+//    }
+//}
 
 Amethyst::CreativeCategory& Amethyst::CreativeItemRegistry::GetVanillaCategory(CreativeItemCategory vanillaCategory)
 {
