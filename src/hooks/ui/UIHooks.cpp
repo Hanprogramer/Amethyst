@@ -1,4 +1,5 @@
 #include "hooks/ui/UIHooks.hpp"
+#include "mc/src/common/locale/I18n.hpp"
 
 ui::ViewRequest Amethyst::UIHooks::ScreenControllerHooks::_handleButtonEvent(ScreenController* screen, ScreenEvent& event) {
     ui::ViewRequest result = __handleButtonEvent(screen, event);
@@ -27,12 +28,15 @@ void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartM
     });
 
     // Register '#mods_loaded' binding
-    self->bindString(StringHash("#mods_loaded"), [&context]() { 
-        size_t count = 0;
-        if (context.mModLoader) {
-            count = context.mModLoader->GetModCount();
+    self->bindString(StringHash("#mods_loaded"), [&context]() -> std::string { 
+        if (reinterpret_cast<uintptr_t>(&getI18n) == reinterpret_cast<uintptr_t>(&Amethyst::RuntimeImporter::UninitializedFunctionHandler) || !context.mModLoader) {
+            return "No mods loaded";
         }
-        return std::format("Mods Loaded: {}", count); 
+        size_t count = context.mModLoader->GetModCount();
+        std::string modsLoadedLocalized = "text.amethyst.mods_loaded"_i18n;
+        bool plural = (count != 1);
+        std::string pluralSuffix = plural ? "s" : "";
+        return std::vformat(modsLoadedLocalized, std::make_format_args(count, pluralSuffix, pluralSuffix));
     }, []() { 
         return true; 
     });
