@@ -24,15 +24,15 @@ private:
     CreativeItemCategory mInternalCategory;
     std::vector<const Block*> mItemsToRegister;
 
+    /// Internal do NOT call
+    void _Reset();
+
 public:
     /// Use CreativeItemRegistry to get the instances of this, do NOT construct manually
     CreativeCategory(CreativeItemCategory category);
 
     /// Internal do NOT use
     void _RegisterItems(ItemRegistryRef ref);
-
-    /// Internal do NOT call
-    void _Reset();
 };
 
 /**
@@ -51,10 +51,6 @@ private:
     std::unordered_map<CreativeItemCategory, std::unique_ptr<CreativeCategory>> mCategories;
 
     friend class Amethyst::SharedContext;
-
-public:
-    // Internal do NOT call
-    void _Reset();
 };
 
 }
