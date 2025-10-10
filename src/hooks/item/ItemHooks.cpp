@@ -87,7 +87,7 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     else {
         std::string holdTextLocalized = "action.amethyst.show_advanced_item_info"_i18n;
 
-        auto& options = *Amethyst::GetContext().mOptions;
+        auto& options = *Amethyst::GetClientCtx().mOptions;
         auto& mapping = *options.getCurrentKeyboardRemapping();
         auto* keymapping = mapping.getKeymappingByAction("key.amethyst.show_advanced_item_info");
         std::string keyName = keymapping ? mapping.getMappedKeyName(*keymapping) : "Unknown";
