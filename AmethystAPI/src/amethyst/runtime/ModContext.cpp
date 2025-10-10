@@ -1,7 +1,9 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/Minecraft.hpp>
 #include <thread>
-#include "ModContext.hpp"
+#include <amethyst/runtime/ctx/SharedContext.hpp>
+#include <amethyst/runtime/ctx/ServerContext.hpp>
+#include <amethyst/runtime/ctx/ClientContext.hpp>
 
 AmethystContext* _AmethystContextInstance;
 const Amethyst::Mod* _OwnMod;

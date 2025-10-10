@@ -68,7 +68,10 @@ void VanillaItems_registerItems(
 
     //std::shared_ptr<ItemRegistry> registry = itemRegistry.mItemRegistry.lock();
     ItemRegistry* registry = itemRegistry->mItemRegistry.lock().get();
-    RegisterItemsEvent event(*registry);
+
+    auto& shared = Amethyst::GetCurrentThreadCtx();
+
+    RegisterItemsEvent event(*registry, shared.mCreativeRegistry);
     Amethyst::GetEventBus().Invoke(event);
 }
 
