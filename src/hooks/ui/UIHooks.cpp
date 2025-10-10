@@ -28,7 +28,8 @@ void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartM
     });
 
     // Register '#mods_loaded' binding
-    self->bindString(StringHash("#mods_loaded"), [&context]() -> std::string { 
+    self->bindString(StringHash("#mods_loaded"), [&context]() -> std::string {
+        // Not beautiful but works
         if (reinterpret_cast<uintptr_t>(&getI18n) == reinterpret_cast<uintptr_t>(&Amethyst::RuntimeImporter::UninitializedFunctionHandler) || !context.mModLoader) {
             return "No mods loaded";
         }
