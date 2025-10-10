@@ -33,7 +33,7 @@ void VanillaClientInputMappingFactory_createInputMappingTemplates(VanillaClientI
 
     // This options is cached for later times the runtime needs to add keybinds.
     // This function createInputMappingTemplates is called once at the very start of the game and never again.
-    Amethyst::GetContext().mOptions = opt;
+    Amethyst::GetClientCtx().mOptions = opt;
 
     // Since this is the first time, register all custom keybinds now that options is available.
     RegisterInputsEvent event(*Amethyst::GetContext().mInputManager.get());
