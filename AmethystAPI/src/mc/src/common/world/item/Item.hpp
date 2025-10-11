@@ -98,6 +98,9 @@ public:
         /** @sig {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B EA 48 8B D9 48 8D 4C 24} */
         MC ScopedCreativeGroup(const std::string& name, const ItemInstance& baseItem);
 
+		/// @signature {40 53 48 83 EC ? 49 8B 40 ? 48 8B D9 45 0F B7 48}
+        MC ScopedCreativeGroup(const std::string& name, const Block* block, const CompoundTag* data);
+
 		/** @sig {40 53 48 83 EC ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B C8} */
         MC ~ScopedCreativeGroup();
 	};

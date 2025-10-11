@@ -18,6 +18,7 @@
 #include <mc/src-client/common/client/player/LocalPlayer.hpp>
 #include <mc/src/common/world/entity/components/UnlockedRecipesClientComponent.hpp>
 #include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
+#include <mc/src/common/world/item/registry/CreativeItemGroupCategory.hpp>
 
 SafetyHookInline _VanillaItems__addItemsCategory;
 SafetyHookInline _VanillaItems__addCommandOnlyCategory;
@@ -101,7 +102,12 @@ void RegisterCustomCategories(CreativeItemRegistry* creative, ItemRegistryRef re
     Item::mActiveCreativeGroupInfo = nullptr;
 
     const Block* testBlock = BlockTypeRegistry::getDefaultBlockState("tutorial_mod:test_block");
+    const Block* testBlock2 = BlockTypeRegistry::getDefaultBlockState("tutorial_mod:test_block2");
+    Item::ScopedCreativeGroup testGroup("itemGroup.name.test", testBlock, nullptr);
+
     Item::addCreativeItem(ref, *testBlock);
+    Item::addCreativeItem(ref, *testBlock2);
+
 }
 
 
@@ -242,6 +248,8 @@ ContainerScreenContext* CraftingContainerManagerModel__postInit(CraftingContaine
         //testCategory = creativeItemReg->getCreativeCategory(CreativeItemCategory::Items);
     }
 
+    Assert(testCategory != nullptr, "Failed to get testCategory!");
+
     ContainerEnumName testTabContainer = testCategoryEnumName;
     //ContainerEnumName testTabContainer = ContainerEnumName::RecipeItemsContainer;
     bool isCreativeMode = true;
@@ -255,6 +263,8 @@ ContainerScreenContext* CraftingContainerManagerModel__postInit(CraftingContaine
         Log::Info("Callback called with {} and {}", item.mItem->mFullName.getString(), someBool);
         return FilterResult::Show;
     });
+
+    Log::Info("Num items of test tab: {}", testCategory->getTotalNumberChildItems());
 
     //testContainerModel->m
 
