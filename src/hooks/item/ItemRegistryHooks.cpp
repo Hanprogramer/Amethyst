@@ -135,7 +135,7 @@ struct lambdaArgs {
 
 void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 {
-    Log::Info("tabsWaitingToBeAnimatedIn {}", CraftingScreenController::mTabsWaitingToBeAnimatedIn);
+    //Log::Info("tabsWaitingToBeAnimatedIn {}", CraftingScreenController::mTabsWaitingToBeAnimatedIn);
 
     //Log::Info("lambda_ScreenController_registerTabNameBinding something {}, tab states size {}", a1->self->something, a1->self->mTabStates.size());
 
@@ -152,7 +152,7 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 
     if (res->size() == 0) {
         *res = "craftingScreen.tab.test";
-        CraftingScreenController::mTabsWaitingToBeAnimatedIn = 0xFF;
+        //CraftingScreenController::mTabsWaitingToBeAnimatedIn = 0xFF;
     }
 
     LocalPlayer* player = Amethyst::GetClientCtx().mClientInstance->getLocalPlayer();
@@ -160,7 +160,7 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
     component->mUnlockedCategories = 0x7FFFFFFF;
     component->mNewlyUnlockedCategories = 0x7FFFFFFF;
 
-    Log::Info("unlocked categories: {:b}, newly unlocked: {:b}", component->mUnlockedCategories, component->mNewlyUnlockedCategories);
+    //Log::Info("unlocked categories: {:b}, newly unlocked: {:b}", component->mUnlockedCategories, component->mNewlyUnlockedCategories);
 
     //std::string collectionName = a1->self->_tabIndexToCollectionName((InventoryLeftTabIndex)a1->self->something);
     //const ItemStack& firstStack = a1->self->mContainerManagerController->getItemStack(collectionName, 0);
@@ -373,8 +373,37 @@ SafetyHookInline _CraftingScreenController__getCollectionName;
 // Only seems to be called when hovering items
 std::string* CraftingScreenController__getCollectionName(CraftingScreenController* self, std::string* res, UIPropertyBag* props) {
     _CraftingScreenController__getCollectionName.call<void, CraftingScreenController*, std::string*, UIPropertyBag*>(self, res, props);
-    Log::Info("CraftingScreenController__getCollectionName returned '{}'", *res);
+    //Log::Info("CraftingScreenController__getCollectionName returned '{}'", *res);
     return res;
+}
+
+SafetyHookInline _CraftingScreenController__updateCategoryTabs;
+
+void CraftingScreenController__updateCategoryTabs(CraftingScreenController* self)
+{
+    Log::Info("updateCategoryTabs!");
+    _CraftingScreenController__updateCategoryTabs.call<void, CraftingScreenController*>(self);
+}
+
+SafetyHookInline _CraftingScreenController__updateCategoryTabsByRecipes;
+
+// called every frame
+uint32_t CraftingScreenController__updateCategoryTabsByRecipes(CraftingScreenController* self)
+{
+    //uint32_t something = self->mSomething;
+
+    self->mSomething = 100;
+
+    //Log::Info("_updateCategoryTabsByRecipes {}", something);
+
+    return _CraftingScreenController__updateCategoryTabsByRecipes.call<uint32_t, CraftingScreenController*>(self);
+
+    //if (something > 0) {
+    //    self->mSomething = something - 1;
+    //    return 0;
+    //}
+
+    //return 0;
 }
 
 void CreateItemRegistryHooks()
@@ -390,6 +419,8 @@ void CreateItemRegistryHooks()
     HOOK(CraftingScreenController, _tabIndexToCollectionName);
     HOOK(CraftingScreenController, _showCategoryTab);
     HOOK(ContainerFactory, createController);
+    HOOK(CraftingScreenController, _updateCategoryTabs);
+    HOOK(CraftingScreenController, _updateCategoryTabsByRecipes);
 
     HOOK(CraftingScreenController, _registerBindings);
     VHOOK(CraftingScreenController, _getCollectionName, this);

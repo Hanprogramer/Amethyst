@@ -30,7 +30,10 @@ public:
     uint64_t padding4672;
     uint32_t something;
 
-    std::byte padding4684[4848 - 4684];
+    /* this + 4684 */ std::byte padding4684[4796 - 4684];
+    /* this + 4796 */ uint32_t mSomething;
+    /* this + 4800 */ std::byte padding4800[4848 - 4800];
+
     ItemInstance instance4848;
     uint64_t padding4984;
 
@@ -58,7 +61,14 @@ public:
 
     /// @sig {40 55 53 56 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B D9 4C 8D 35 ? ? ? ? 4C 89 B5 ? ? ? ? 48 8D 85 ? ? ? ? 48 89 85 ? ? ? ? 48 8D 05 ? ? ? ? 48 89 85 ? ? ? ? 48 89 8D ? ? ? ? 48 8D 85 ? ? ? ? 48 89 85 ? ? ? ? 48 8D 85}
     MC void _registerBindings();
+
+    /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 41 54 41 55 41 56 41 57 48 83 EC ? 48 8B F1 48 8B 89}
+    MC void _updateCategoryTabs(); 
+
+    /// @signature {40 53 48 83 EC ? 8B 81 ? ? ? ? 48 8B D9 85 C0 7E ? FF C8 89 81 ? ? ? ? 33 C0}
+    MC uint32_t _updateCategoryTabsByRecipes();
 };
 
 static_assert(offsetof(CraftingScreenController, something) == 4680);
 static_assert(offsetof(CraftingScreenController, mTabStates) == 4992);
+static_assert(offsetof(CraftingScreenController, mSomething) == 4796);

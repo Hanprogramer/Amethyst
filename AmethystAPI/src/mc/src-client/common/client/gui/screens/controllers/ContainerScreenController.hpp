@@ -16,8 +16,8 @@ class SlotData;
 class SelectedSlotInfo;
 class ContainerManagerController;
 class AutoPlaceItem;
-enum class InteractionModel : int {
-    CombinedInventory = 0x0000,
+enum class InteractionModel : int {  
+    CombinedInventory = 0x0000, 
     SeparateInventoryAndHotbar = 0x0001,
 };
 
@@ -31,7 +31,7 @@ struct MojangContainerEnumHasher {
     } 
 }; 
 
-/// @vptr {0x4CD2850}
+/// @vptr {0x4CD2850}  
 class ContainerScreenController : public ClientInstanceScreenController {
 public: 
     // Just to clarify, that doesn't really exist in the binary.
@@ -138,15 +138,17 @@ public:
     MC virtual void unknown_76();
     /// @vidx {77}
     MC virtual bool _isInCreativeContainer(const std::string&);
-
+     
 // Non-virtuals
 public:
     static InteractionModel interactionModelFromUIProfile(UIProfile profile);
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 89 4D ? 0F 57 C0 B9 ? ? ? ? 0F 11 44 24 ? E8 ? ? ? ? 0F 10 05 ? ? ? ? 4C 8B C0 48 89 44 24 ? BF}
     MC void _registerStateMachine();
+
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8B EC 48 81 EC ? ? ? ? 4C 8B F9}
     MC void _registerEventHandlers();
+
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B F9}
     MC void _registerBindings();
 
