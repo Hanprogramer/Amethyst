@@ -41,6 +41,8 @@ public:
 
     MC static uintptr_t $vtable_for_this;
 
+    
+
     /// @address {0x5A38174}
     MC static uint32_t mTabsWaitingToBeAnimatedIn;
 

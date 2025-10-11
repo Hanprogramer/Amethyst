@@ -17,6 +17,7 @@
 #include <mc/src/common/world/containers/FullContainerName.hpp>
 #include <mc/src-client/common/client/player/LocalPlayer.hpp>
 #include <mc/src/common/world/entity/components/UnlockedRecipesClientComponent.hpp>
+#include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
 
 SafetyHookInline _VanillaItems__addItemsCategory;
 SafetyHookInline _VanillaItems__addCommandOnlyCategory;
@@ -189,27 +190,32 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 
 SafetyHookInline _CraftingScreenController__showCategoryTab;
 
- //Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
- //seems to allways call with someBool = false, someInt = 0
- //Called for all categories at once!
+//Seems to get called once when the inventory opens, after that wont until screen is closed and reopened
+//seems to allways call with someBool = false, someInt = 0
+//Called 5 times once for each category
+
+// seems to control if it renders the tab buttons at the top
+
 void CraftingScreenController__showCategoryTab(
     CraftingScreenController* self,
     const CraftingScreenController::CategoryTabInfo& tabInfo,
     bool someBool,
     int someInt)
 {
-    //Log::Info(
-    //    "Showing category tab: {} (factory: {}, category: {}, padding4: {}, container enum: {}), someBool: {}, someInt: {}",
-    //    tabInfo.mTabName,
-    //    tabInfo.mTabFactoryName,
-    //    (uint32_t)tabInfo.mCategory,
-    //    tabInfo.padding4,
-    //    (uint64_t)tabInfo.mContainerEnum,
-    //    someBool,
-    //    someInt);
+    Log::Info("_showCategoryTab {} {} {}", tabInfo.mTabName, someBool, someInt);
 
-    _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
-        self, tabInfo, someBool, someInt);
+    auto it = std::find_if(
+        CraftingScreenController::mCategoryTabs.begin(),
+        CraftingScreenController::mCategoryTabs.end(),
+        [&tabInfo](const auto& tab) {
+            return tab.mCategory == tabInfo.mCategory;
+        });
+
+    Assert(it != CraftingScreenController::mCategoryTabs.end(), "Category tab not found for index {}", (uintptr_t)tabInfo.mCategory);
+
+    UIPropertyBag propBag = UIPropertyBag();
+
+    self->mControlCreateCallback(tabInfo.mTabFactoryName, propBag);
 }
 
 SafetyHookInline _CraftingContainerManagerModel__postInit;
@@ -277,9 +283,6 @@ std::shared_ptr<ContainerController> ContainerFactory_createController(std::shar
               model->mClientUIContainer == nullptr ? "nullptr" : "exists!");
 
     if (model->mContainerEnumName == testCategoryEnumName) {
-        
-
-
         model->mContainerStringName = "recipe_test";
         testPanelController = std::make_shared<CreativeContainerController>(model);
 
@@ -314,17 +317,9 @@ SafetyHookInline _FullContainerName_toString;
 std::string FullContainerName_toString(const FullContainerName* self)
 {
     Log::Info("FullContainerName_toString: {}", (uint64_t)self->mName);
-    // Call the original function
-    //std::string result = _FullContainerName_toString.call<std::string, const FullContainerName*>(self);
-    //Log::Info("original result {}", result);
 
     auto& map = ContainerScreenController::ContainerCollectionNameMap;
     auto it = map.find(self->mName);
-
-    //auto it = std::find_if(map.begin(), map.end(),
-    //                       [&](const auto& pair) {
-    //                           return static_cast<uint64_t>(pair.first) == static_cast<uint64_t>(self->mName);
-    //                       });
 
     if (it != map.end()) {
         Log::Info("FullContainerName::toString() -> {}", it->second);
@@ -462,6 +457,8 @@ void CreateItemRegistryHooks()
     }
 
     CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
+
+    Log::Info("tab at index {}", CraftingScreenController::mCategoryTabs.at((uintptr_t)testCategoryIdx).mTabName);
 
     auto& elem = CraftingScreenController::mCategoryTabs.back();
 

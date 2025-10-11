@@ -30,7 +30,7 @@ struct MojangContainerEnumHasher {
         return static_cast<size_t>(h);
     } 
 }; 
-
+ 
 /// @vptr {0x4CD2850}  
 class ContainerScreenController : public ClientInstanceScreenController {
 public: 

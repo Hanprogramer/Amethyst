@@ -1,10 +1,32 @@
 /// @symbols
 #pragma once
 #include <amethyst/Imports.hpp>
-#include <string_view>
+#include <mc/src-deps/core/utility/PropertyBag.hpp>
 
-class UIPropertyBag {
+class UIControl;
+
+class UIPropertyBag : public PropertyBag {
 public:
+    class ContextObject {
+    public:
+        int32_t mCount;
+    };
+
+    class PropertyChangedNotificationInfo {
+    public:
+        std::string mTargetPropertyName;
+        std::weak_ptr<UIControl> mTargetControl;
+        std::function<void(const std::weak_ptr<UIControl>&, std::string_view, const Json::Value&, UIPropertyBag::ContextObject)> mCallback;
+    };
+
+    std::map<std::string, std::vector<UIPropertyBag::PropertyChangedNotificationInfo>> mPropertyChangedNotificationInfoMap;
+
+public:
+    UIPropertyBag();
+    UIPropertyBag(const Json::Value& value);
+
+    // virtual ~UIPropertyBag() = default;
+
     /*
      * Using the template without specialization will cause error.
      */
