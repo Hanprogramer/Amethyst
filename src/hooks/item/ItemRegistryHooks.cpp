@@ -458,7 +458,8 @@ void CreateItemRegistryHooks()
 
     CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
 
-    Log::Info("tab at index {}", CraftingScreenController::mCategoryTabs.at((uintptr_t)testCategoryIdx).mTabName);
+    // Line that exploded the API
+    //Log::Info("tab at index {}", CraftingScreenController::mCategoryTabs.at((uintptr_t)testCategoryIdx).mTabName);
 
     auto& elem = CraftingScreenController::mCategoryTabs.back();
 
