@@ -91,6 +91,7 @@ void VanillaItems__addConstructionCategory(
 
     RegisterCreativeItems(ref, CreativeItemCategory::Construction);
 
+    return;
     
     RegisterCustomCategories(creative, ref);
 }
