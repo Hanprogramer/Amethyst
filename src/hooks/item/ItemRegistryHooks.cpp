@@ -202,8 +202,6 @@ void CraftingScreenController__showCategoryTab(
     bool someBool,
     int someInt)
 {
-    Log::Info("_showCategoryTab {} {} {}", tabInfo.mTabName, someBool, someInt);
-
     auto it = std::find_if(
         CraftingScreenController::mCategoryTabs.begin(),
         CraftingScreenController::mCategoryTabs.end(),
@@ -214,6 +212,11 @@ void CraftingScreenController__showCategoryTab(
     Assert(it != CraftingScreenController::mCategoryTabs.end(), "Category tab not found for index {}", (uintptr_t)tabInfo.mCategory);
 
     UIPropertyBag propBag = UIPropertyBag();
+    propBag.set<std::string>("name", tabInfo.mTabName);
+    propBag.set<std::string>("control_id", tabInfo.mTabName);
+
+    bool shouldAnimate = someBool || (someInt != 0);
+    propBag.set<bool>("$animate", shouldAnimate);
 
     self->mControlCreateCallback(tabInfo.mTabFactoryName, propBag);
 }

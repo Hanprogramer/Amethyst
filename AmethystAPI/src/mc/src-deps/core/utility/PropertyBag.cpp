@@ -1,8 +1,7 @@
 #include "PropertyBag.hpp"
 
 PropertyBag::PropertyBag()
-{
-}
+    : mJsonValue(Json::ValueType::nullValue), mChangeVersion(0) {}
 
 PropertyBag::PropertyBag(const Json::Value& value) : mJsonValue(value), mChangeVersion(0)
 {
