@@ -1,7 +1,6 @@
 #include "ItemRegistryHooks.hpp"
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/world/item/VanillaItems.hpp>
-#include <mc/src/common/world/item/registry/ItemRegistryRef.hpp>
 #include <mc/src/common/world/item/Item.hpp>
 #include <mc/src/common/world/item/registry/CreativeItemRegistry.hpp>
 #include <mc/src/common/world/level/block/registry/BlockTypeRegistry.hpp>
@@ -16,12 +15,17 @@
 #include <mc/src/common/world/containers/managers/controllers/CreativeContainerController.hpp>
 #include <mc/src/common/world/containers/models/FilteredContainerModel.hpp>
 #include <mc/src/common/world/containers/FullContainerName.hpp>
+#include <mc/src-client/common/client/player/LocalPlayer.hpp>
+#include <mc/src/common/world/entity/components/UnlockedRecipesClientComponent.hpp>
 
 SafetyHookInline _VanillaItems__addItemsCategory;
 SafetyHookInline _VanillaItems__addCommandOnlyCategory;
 SafetyHookInline _VanillaItems__addEquipmentCategory;
 SafetyHookInline _VanillaItems__addNatureCategory;
 SafetyHookInline _VanillaItems__addConstructionCategory;
+
+CreativeItemCategory testCategoryIdx = (CreativeItemCategory)8;
+ContainerEnumName testCategoryEnumName = (ContainerEnumName)70;
 
 void RegisterCreativeItems(ItemRegistryRef ref, CreativeItemCategory category) {
     auto& sharedCtx = Amethyst::GetCurrentThreadCtx();
@@ -37,7 +41,7 @@ void VanillaItems__addItemsCategory(
 {
     _VanillaItems__addItemsCategory.call<void, CreativeItemRegistry*, ItemRegistryRef, const BaseGameVersion&, const Experiments&>(
         creative, ref, version, experiments);
-        
+
     RegisterCreativeItems(ref, CreativeItemCategory::Items);
 }
 
@@ -83,22 +87,22 @@ void VanillaItems__addConstructionCategory(
     _VanillaItems__addConstructionCategory.call<void, CreativeItemRegistry*, ItemRegistryRef, const BaseGameVersion&, const Experiments&>(
         creative, ref, version, experiments);
 
-    Log::Info("tabs size {}", CraftingScreenController::mCategoryTabs.size());
+    RegisterCreativeItems(ref, CreativeItemCategory::Construction);
 
-    for (auto& tab : CraftingScreenController::mCategoryTabs) {
-        Log::Info(" - {} {}, category: {}, padding4: {}, mContainerEnum: {}, padding12: {}", tab.mTabName, tab.mTabFactoryName, (uint32_t)tab.mCategory, tab.padding4, (uint64_t)tab.mContainerEnum, tab.padding12);
-    }
+    
+    RegisterCustomCategories(creative, ref);
+}
 
+
+void RegisterCustomCategories(CreativeItemRegistry* creative, ItemRegistryRef ref) {
     Log::Info("VanillaItems::addConstructionCategory! {}", (uintptr_t)Item::mActiveCreativeItemCategory);
-    Item::mActiveCreativeItemCategory = creative->newCreativeCategory("Test", (CreativeItemCategory)8);
+    Item::mActiveCreativeItemCategory = creative->newCreativeCategory("Test", testCategoryIdx);
     Item::mActiveCreativeGroupInfo = nullptr;
 
-    const Block* testBlock = BlockTypeRegistry::getDefaultBlockState("fx_tests:test_block");
+    const Block* testBlock = BlockTypeRegistry::getDefaultBlockState("tutorial_mod:test_block");
     Item::addCreativeItem(ref, *testBlock);
-
-    //ItemInstance instance = ItemInstance("fx_tests:example_item", 1, 0, nullptr);
-    //Item::addCreativeItem(ref, instance);
 }
+
 
 SafetyHookInline _CraftingScreenController__tabIndexToCollectionName;
 
@@ -106,7 +110,7 @@ std::string* CraftingScreenController__tabIndexToCollectionName(CraftingScreenCo
 {
     _CraftingScreenController__tabIndexToCollectionName.call<std::string*, CraftingScreenController*, std::string*, InventoryLeftTabIndex>(self, res, tabIdx);
 
-    if (tabIdx == (InventoryLeftTabIndex)8) {
+    if (tabIdx == (InventoryLeftTabIndex)testCategoryIdx) {
         *res = "recipe_test";
     }
 
@@ -131,9 +135,9 @@ struct lambdaArgs {
 
 void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
 {
-    
+    Log::Info("tabsWaitingToBeAnimatedIn {}", CraftingScreenController::mTabsWaitingToBeAnimatedIn);
 
-    Log::Info("lambda_ScreenController_registerTabNameBinding something {}, tab states size {}", a1->self->something, a1->self->mTabStates.size());
+    //Log::Info("lambda_ScreenController_registerTabNameBinding something {}, tab states size {}", a1->self->something, a1->self->mTabStates.size());
 
     //for (auto& tabState : a1->self->mTabStates) {
     //    Log::Info("tabState idx {} is {}", (uint32_t)tabState.first, (uint32_t)tabState.second);
@@ -147,9 +151,16 @@ void* lambda_ScreenController_registerTabNameBinding(lambdaArgs* a1, void* a2)
     //Log::Info("something res '{}'", *res);
 
     if (res->size() == 0) {
-        //Log::Info("set title to craftingScreen.tab.test");
         *res = "craftingScreen.tab.test";
+        CraftingScreenController::mTabsWaitingToBeAnimatedIn = 0xFF;
     }
+
+    LocalPlayer* player = Amethyst::GetClientCtx().mClientInstance->getLocalPlayer();
+    UnlockedRecipesClientComponent* component = player->tryGetComponent<UnlockedRecipesClientComponent>();
+    component->mUnlockedCategories = 0x7FFFFFFF;
+    component->mNewlyUnlockedCategories = 0x7FFFFFFF;
+
+    Log::Info("unlocked categories: {:b}, newly unlocked: {:b}", component->mUnlockedCategories, component->mNewlyUnlockedCategories);
 
     //std::string collectionName = a1->self->_tabIndexToCollectionName((InventoryLeftTabIndex)a1->self->something);
     //const ItemStack& firstStack = a1->self->mContainerManagerController->getItemStack(collectionName, 0);
@@ -187,15 +198,15 @@ void CraftingScreenController__showCategoryTab(
     bool someBool,
     int someInt)
 {
-    Log::Info(
-        "Showing category tab: {} (factory: {}, category: {}, padding4: {}, container enum: {}), someBool: {}, someInt: {}",
-        tabInfo.mTabName,
-        tabInfo.mTabFactoryName,
-        (uint32_t)tabInfo.mCategory,
-        tabInfo.padding4,
-        (uint64_t)tabInfo.mContainerEnum,
-        someBool,
-        someInt);
+    //Log::Info(
+    //    "Showing category tab: {} (factory: {}, category: {}, padding4: {}, container enum: {}), someBool: {}, someInt: {}",
+    //    tabInfo.mTabName,
+    //    tabInfo.mTabFactoryName,
+    //    (uint32_t)tabInfo.mCategory,
+    //    tabInfo.padding4,
+    //    (uint64_t)tabInfo.mContainerEnum,
+    //    someBool,
+    //    someInt);
 
     _CraftingScreenController__showCategoryTab.call<void, CraftingScreenController*, const CraftingScreenController::CategoryTabInfo&, bool, int>(
         self, tabInfo, someBool, someInt);
@@ -218,11 +229,11 @@ ContainerScreenContext* CraftingContainerManagerModel__postInit(CraftingContaine
     CreativeItemGroupCategory* testCategory = nullptr;
 
     if (creativeItemReg) {
-        testCategory = creativeItemReg->getCreativeCategory((CreativeItemCategory)8);
+        testCategory = creativeItemReg->getCreativeCategory(testCategoryIdx);
         //testCategory = creativeItemReg->getCreativeCategory(CreativeItemCategory::Items);
     }
 
-    ContainerEnumName testTabContainer = (ContainerEnumName)63;
+    ContainerEnumName testTabContainer = testCategoryEnumName;
     //ContainerEnumName testTabContainer = ContainerEnumName::RecipeItemsContainer;
     bool isCreativeMode = true;
 
@@ -265,14 +276,14 @@ std::shared_ptr<ContainerController> ContainerFactory_createController(std::shar
               model->mItems.size(),
               model->mClientUIContainer == nullptr ? "nullptr" : "exists!");
 
-    if ((uint64_t)model->mContainerEnumName == 63) {
+    if (model->mContainerEnumName == testCategoryEnumName) {
         
 
 
         model->mContainerStringName = "recipe_test";
         testPanelController = std::make_shared<CreativeContainerController>(model);
 
-        Log::Info("res: {}, container name: {}", (uintptr_t)testPanelController.get(), testPanelController->getContainerName());
+        //Log::Info("res: {}, container name: {}", (uintptr_t)testPanelController.get(), testPanelController->getContainerName());
 
         return testPanelController;
     }
@@ -338,10 +349,32 @@ void CraftingScreenController__registerBindings(CraftingScreenController* self) 
     self->bindBool(
         "#is_left_tab_test",
         [self]() {
-            return self->something == 8; 
+            return self->something == (uint32_t)testCategoryIdx; 
         }, 
         []() { return true; }
     );
+}
+
+SafetyHookInline _StringFromCreativeItemCategory;
+
+// used for appended hovertext only it seems
+std::string StringFromCreativeItemCategory(CreativeItemCategory category) {
+    if (category == testCategoryIdx) {
+        return "test";
+    }
+
+    std::string result = _StringFromCreativeItemCategory.call<std::string>(category);
+    //Log::Info("StringFromCreativeItemCategory with {} resulted in '{}'", (uint64_t)category, result);
+    return result;
+}
+
+SafetyHookInline _CraftingScreenController__getCollectionName;
+
+// Only seems to be called when hovering items
+std::string* CraftingScreenController__getCollectionName(CraftingScreenController* self, std::string* res, UIPropertyBag* props) {
+    _CraftingScreenController__getCollectionName.call<void, CraftingScreenController*, std::string*, UIPropertyBag*>(self, res, props);
+    Log::Info("CraftingScreenController__getCollectionName returned '{}'", *res);
+    return res;
 }
 
 void CreateItemRegistryHooks()
@@ -359,8 +392,10 @@ void CreateItemRegistryHooks()
     HOOK(ContainerFactory, createController);
 
     HOOK(CraftingScreenController, _registerBindings);
+    VHOOK(CraftingScreenController, _getCollectionName, this);
 
     VHOOK(CraftingContainerManagerModel, _postInit, this);
+
 
     hooks.CreateHookAbsolute(
         _lambda_ScreenController_registerTabNameBinding,
@@ -368,22 +403,56 @@ void CreateItemRegistryHooks()
         &lambda_ScreenController_registerTabNameBinding
     );
 
-    ContainerEnumName testTabContainer = (ContainerEnumName)63;
+    hooks.CreateHookAbsolute(
+        _StringFromCreativeItemCategory,
+        SigScan("48 89 5C 24 ? 89 54 24 ? 55 56 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 8B FA"),
+        StringFromCreativeItemCategory
+    );
+
+    ContainerEnumName testTabContainer = testCategoryEnumName;
 
     CraftingScreenController::CategoryTabInfo testTab;
-    testTab.mCategory = (CreativeItemCategory)8;
+    testTab.mCategory = testCategoryIdx;
     testTab.mTabName = "test_tab";
     testTab.mTabFactoryName = "test_tab_factory";
-    testTab.padding4 = 5; // idk random number
+    testTab.mCategoryBitmaskIndex = 5; // used as a bitmask, in game it does 1 << padding4 for writing into tabs to be animated in
+
+    // Padding 4 values the game uses
+    //[runtime][Amethyst - Runtime] construction_tab 1
+    //[runtime][Amethyst - Runtime] equipment_tab 3
+    //[runtime][Amethyst - Runtime] items_tab 4
+    //[runtime][Amethyst - Runtime] nature_tab 2
+
     testTab.mContainerEnum = testTabContainer; 
-    testTab.padding12 = 0; // same as all other tabs
+    //testTab.padding12 = 0; // same as all other tabs
+
+    for (auto& existingTabs : CraftingScreenController::mCategoryTabs) {
+        Log::Info("{} {}", existingTabs.mTabName, existingTabs.mCategoryBitmaskIndex);
+    }
 
     CraftingScreenController::mCategoryTabs.push_back(std::move(testTab));
+
+    auto& elem = CraftingScreenController::mCategoryTabs.back();
+
+    // pointer to padding4
+    uint32_t* pPadding4 = &elem.mCategoryBitmaskIndex;
+
+    size_t offset = offsetof(CraftingScreenController::CategoryTabInfo, mCategoryBitmaskIndex);
+    uintptr_t addr = reinterpret_cast<uintptr_t>(pPadding4);
+
+    Log::Info("CategoryTabInfo.padding4 offset = {}", offset);
+    Log::Info("padding4 address = 0x{:X}", addr); // prints hex address
 
     ContainerScreenController::ContainerCollectionNameMap.emplace(
         testTabContainer,
         "recipe_test"
     );
+
+    //for (auto& tab : CraftingScreenController::mCategoryTabs) {
+    //    Log::Info("category: {}, padding4: {}, container enum {}, tab name {}, factory name {}", 
+    //        (uint32_t)tab.mCategory, tab.padding4, (uint32_t)tab.mContainerEnum, tab.mTabName, tab.mTabFactoryName
+    //    );
+    //}
 
     /*for (auto& container : ContainerScreenController::ContainerCollectionNameMap) {
         Log::Info("container enum {} is '{}'", (uint64_t)container.first, container.second);

@@ -12,15 +12,14 @@ enum class CategoryTabState : uint32_t { // guessed size
     Test
 };
 
+/// @vptr {0x4CD23F8}
 class CraftingScreenController : public ContainerScreenController {
 public:
     struct CategoryTabInfo {
     public:
-        // For construction_tab these two fields were: 4294967297 ((padding4) 0x1000 , (mCategory) 00001) 
         CreativeItemCategory mCategory; 
-        uint32_t padding4; // no idea what this is
-        ContainerEnumName mContainerEnum; // same with this one.  
-        uint32_t padding12; // split from padding 8 to see if it makes more sense
+        uint32_t mCategoryBitmaskIndex; // The game stores tabs as a uint32_t, it uses 1 << mCategoryBitmaskIndex as a flag for the tab
+        ContainerEnumName mContainerEnum;
         std::string mTabName;
         std::string mTabFactoryName;
     };
@@ -37,8 +36,16 @@ public:
 
     std::unordered_map<InventoryLeftTabIndex, CategoryTabState> mTabStates;
 
+    MC static uintptr_t $vtable_for_this;
+
+    /// @address {0x5A38174}
+    MC static uint32_t mTabsWaitingToBeAnimatedIn;
+
     /// @address {0x59BF778}
     MC static std::vector<CategoryTabInfo> mCategoryTabs;
+
+    /// @vidx {i}
+    MC virtual std::string _getCollectionName(UIPropertyBag*);
 
     /// @signature {48 89 5C 24 ? 44 89 44 24 ? 55 56 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 41 8B F8}
     MC std::string _tabIndexToCollectionName(InventoryLeftTabIndex tabIdx) const;

@@ -278,7 +278,7 @@ public:
 	//MC static std::unique_ptr<std::set<short>> mServerItemsUsedInCreativeItems;
 
 	/// @address {0x597AB10}
-    MC static CreativeItemGroupCategory* mActiveCreativeItemCategory;
+    MC static CreativeItemGroupCategory* mActiveCreativeItemCategory; 
 
 	/// @address {0x597AB18}
     MC static CreativeGroupInfo* mActiveCreativeGroupInfo;
@@ -301,7 +301,10 @@ public:
 	UseAnim getUseAnimation() const;
 	void setDamageValue(ItemStackBase& stack, short value) const;
 	Item& setAllowOffhand(bool allowOffhand);
-	Item& setCategory(CreativeItemCategory category);
+
+	/// @signature {48 89 5C 24 ? 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 44 8B FA}
+	MC Item& setCategory(CreativeItemCategory category);
+
 	Item& setCreativeGroup(const std::string& group);
 	Item& setExplodable(bool isExplodable);
 	Item& setFireResistant(bool isFireResistant);

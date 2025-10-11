@@ -11,7 +11,7 @@ enum class UIProfile;
 enum class FadeInIconBehavior;
 class ClientInstanceScreenModel;
 class ItemStackBase;
-class ItemStack;
+class ItemStack; 
 class SlotData;
 class SelectedSlotInfo;
 class ContainerManagerController;
@@ -28,14 +28,14 @@ struct MojangContainerEnumHasher {
         h ^= static_cast<uint64_t>(key);
         h *= 0x9FFAAC085635BC91ull;
         return static_cast<size_t>(h);
-    }
-};
+    } 
+}; 
 
 /// @vptr {0x4CD2850}
 class ContainerScreenController : public ClientInstanceScreenController {
-public:
+public: 
     // Just to clarify, that doesn't really exist in the binary.
-    // It's just here to make it clear.
+    // It's just here to make it clear. 
     class Lambdas {
     public:
         class ShouldShowItemStackDurability {
@@ -122,7 +122,7 @@ public:
     MC virtual bool _isTargetSwappable(const std::string& collection, int index);
     /// @vidx {69}
     MC virtual std::string _getCollectionName(UIPropertyBag*);
-    /// @vidx {70}
+    /// @vidx {70} 
     MC virtual bool _canSplit(const std::string&);
     /// @vidx {71}
     MC virtual void _sendFlyingItem(const ItemStackBase&, const std::string&, int, const std::string&, int, FadeInIconBehavior);
