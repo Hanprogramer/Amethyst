@@ -81,11 +81,6 @@ Item& Item::setAllowOffhand(bool allowOffhand) {
     return *this;
 }
 
-Item& Item::setCategory(CreativeItemCategory category) {
-    mCreativeCategory = category;
-    return *this;
-}
-
 Item& Item::setCreativeGroup(const std::string& group) {
     mCreativeGroup = group;
     return *this;

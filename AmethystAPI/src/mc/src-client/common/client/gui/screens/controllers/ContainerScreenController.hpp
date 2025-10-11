@@ -11,23 +11,31 @@ enum class UIProfile;
 enum class FadeInIconBehavior;
 class ClientInstanceScreenModel;
 class ItemStackBase;
-class ItemStack;
+class ItemStack; 
 class SlotData;
 class SelectedSlotInfo;
 class ContainerManagerController;
 class AutoPlaceItem;
-enum class InteractionModel : int {
-    CombinedInventory = 0x0000,
+enum class InteractionModel : int {  
+    CombinedInventory = 0x0000, 
     SeparateInventoryAndHotbar = 0x0001,
 };
 
-/// @vptr {0x4CD2850}
-class ContainerScreenController :
-    public ClientInstanceScreenController
-{
-public:
+struct MojangContainerEnumHasher {
+    size_t operator()(ContainerEnumName key) const noexcept
+    {
+        uint64_t h = 0xCBF29CE484222325ull;
+        h ^= static_cast<uint64_t>(key);
+        h *= 0x9FFAAC085635BC91ull;
+        return static_cast<size_t>(h);
+    } 
+}; 
+ 
+/// @vptr {0x4CD2850}  
+class ContainerScreenController : public ClientInstanceScreenController {
+public: 
     // Just to clarify, that doesn't really exist in the binary.
-    // It's just here to make it clear.
+    // It's just here to make it clear. 
     class Lambdas {
     public:
         class ShouldShowItemStackDurability {
@@ -49,7 +57,7 @@ public:
     std::shared_ptr<ContainerManagerController> mContainerManagerController;
 
     /// @address {0x59D9150}
-    MC static std::unordered_map<ContainerEnumName, std::string> ContainerCollectionNameMap;
+    MC static std::unordered_map<ContainerEnumName, std::string, MojangContainerEnumHasher> ContainerCollectionNameMap;
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 54 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 8B F8 48 8B F2}
     MC ContainerScreenController(std::shared_ptr<ClientInstanceScreenModel> model, InteractionModel interactionModel);
@@ -114,7 +122,7 @@ public:
     MC virtual bool _isTargetSwappable(const std::string& collection, int index);
     /// @vidx {69}
     MC virtual std::string _getCollectionName(UIPropertyBag*);
-    /// @vidx {70}
+    /// @vidx {70} 
     MC virtual bool _canSplit(const std::string&);
     /// @vidx {71}
     MC virtual void _sendFlyingItem(const ItemStackBase&, const std::string&, int, const std::string&, int, FadeInIconBehavior);
@@ -130,15 +138,17 @@ public:
     MC virtual void unknown_76();
     /// @vidx {77}
     MC virtual bool _isInCreativeContainer(const std::string&);
-
+     
 // Non-virtuals
 public:
     static InteractionModel interactionModelFromUIProfile(UIProfile profile);
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 89 4D ? 0F 57 C0 B9 ? ? ? ? 0F 11 44 24 ? E8 ? ? ? ? 0F 10 05 ? ? ? ? 4C 8B C0 48 89 44 24 ? BF}
     MC void _registerStateMachine();
+
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 56 41 57 48 8B EC 48 81 EC ? ? ? ? 4C 8B F9}
     MC void _registerEventHandlers();
+
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B F9}
     MC void _registerBindings();
 

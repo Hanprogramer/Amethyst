@@ -118,9 +118,12 @@ public:
 
 // Non-virtuals
 public:
-
     /// @signature {85 D2 0F 88 ? ? ? ? 53 55 56 57 41 56 41 57}
     MC void networkUpdateItem(int, const ItemStack&, bool);
+
+    MC const std::string& getContainerStringName() const {
+        return mContainerStringName;
+    }
 };
 
 static_assert(sizeof(ContainerModel) == 0xD0);
