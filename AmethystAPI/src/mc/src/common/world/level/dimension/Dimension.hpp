@@ -58,7 +58,7 @@ class SubChunkPos;
 class UpdateSubChunkBlocksChangedInfo;
 class ChunkBuildOrderPolicyBase;
 
-/**@vtable */
+/// @vptr {}
 class Dimension : public IDimension, public LevelListener, public SavedData, public Bedrock::EnableNonOwnerReferences, public std::enable_shared_from_this<Dimension> {
 public:
     struct PlayerReplicationStructures;

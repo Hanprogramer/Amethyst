@@ -1,12 +1,16 @@
+/// @symbols
 #pragma once
+#include <amethyst/Imports.hpp>
 #include <mc/src/common/world/level/dimension/Dimension.hpp>
 
-/**@vtable */
+class Scheduler;
+class ILevel;
+
+/// @vptr {0x4EE8900}
 class OverworldDimension : public Dimension {
 public:
     /**
 	* @vidx {0} 
-	* @symbol {??1OverworldDimension@@UEAA@XZ}
 	*/
 	virtual ~OverworldDimension();
 
@@ -40,10 +44,10 @@ public:
     /**@vidx {40} */
 	virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) override;
 
-	/**@asmName {OverworldDimension_ctor}*/
-    OverworldDimension(ILevel& level, Scheduler& callbackContext);
+	/// @signature {4C 8B DC 49 89 5B ? 55 56 57 48 83 EC ? 49 8B D8}
+    MC OverworldDimension(ILevel& level, Scheduler& callbackContext);
 
 	// made up constructor to set a custom dimID
-    OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
-		: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
+    // OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
+		//: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
 };
