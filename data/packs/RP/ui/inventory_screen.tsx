@@ -1,5 +1,7 @@
 import { GetRef, Panel, PanelProps, StackPanel, UiFile, Variable, createFile, createMinecraftElement } from "Regolith-Generators";
 
+Deno.exit(0); // stuff below is WIP
+
 const inventoryScreen = new UiFile("crafting");
 
 interface TopTabProps extends PanelProps {

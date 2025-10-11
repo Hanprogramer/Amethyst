@@ -424,6 +424,9 @@ void CreateItemRegistryHooks()
     HOOK(VanillaItems, _addEquipmentCategory);
     HOOK(VanillaItems, _addNatureCategory);
     HOOK(VanillaItems, _addConstructionCategory);
+
+    return; // temp
+
     HOOK(CraftingScreenController, _tabIndexToCollectionName);
     HOOK(CraftingScreenController, _showCategoryTab);
     HOOK(ContainerFactory, createController);
