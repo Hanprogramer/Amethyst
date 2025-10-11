@@ -1,37 +1,50 @@
 #include "hooks/ResourceHooks.hpp"
-#include "mc/src-vanilla/vanilla_shared/common/resources/VanillaInPackagePacks.hpp"
-#include "mc/src-vanilla/vanilla_client/common/module/VanillaGameModuleClient.hpp"
-#include "mc/src-vanilla/vanilla_shared/common/server/module/VanillaGameModuleServer.hpp"
-#include "mc/src/common/resources/ResourcePackRepository.hpp"
 
-SafetyHookInline _VanillaGameModuleClient_initializeResourceStack;
-SafetyHookInline _VanillaGameModuleServer_initializeBehaviorStack;
-SafetyHookInline _ResourcePackRepository_initializePackSource;
-
-void VanillaGameModuleClient_initializeResourceStack(VanillaGameModuleClient* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
+void Amethyst::ResourceHooks::initializeResourceStack(
+    VanillaGameModuleClient* self,
+    const Experiments& experiments,
+    const Bedrock::NotNullNonOwnerPtr<ResourcePackRepository>& repository,
+    ResourcePackStack& stack,
+    const BaseGameVersion& baseGameVer,
+    GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
-    auto& context = *AmethystRuntime::getContext();
+    auto& context = Amethyst::GetContext();
     context.mPackManager->AddResourcePacksToStack(repository, stack);
-    _VanillaGameModuleClient_initializeResourceStack.thiscall<void, VanillaGameModuleClient*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
+    _initializeResourceStack(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
-void VanillaGameModuleServer_initializeBehaviorStack(VanillaGameModuleServer* self, const Experiments& experiments, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>& repository, ResourcePackStack& stack, const BaseGameVersion& baseGameVer, GameModuleClient::ResourceLoadingPhase loadingPhase)
+void Amethyst::ResourceHooks::initializeBehaviorStack(
+    VanillaGameModuleServer* self,
+    const Experiments& experiments,
+    const Bedrock::NotNullNonOwnerPtr<ResourcePackRepository>& repository,
+    ResourcePackStack& stack,
+    const BaseGameVersion& baseGameVer,
+    GameModuleClient::ResourceLoadingPhase loadingPhase)
 {
-    auto& context = *AmethystRuntime::getContext();
+    auto& context = Amethyst::GetContext();
     context.mPackManager->AddBehaviorPacksToStack(repository, stack);
-    _VanillaGameModuleServer_initializeBehaviorStack.thiscall<void, VanillaGameModuleServer*, const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<ResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase>(self, experiments, repository, stack, baseGameVer, loadingPhase);
+    _initializeBehaviorStack(self, experiments, repository, stack, baseGameVer, loadingPhase);
 }
 
-void ResourcePackRepository_initializePackSource(ResourcePackRepository* self) 
+void Amethyst::ResourceHooks::initializePackSource(ResourcePackRepository* self)
 {
-    _ResourcePackRepository_initializePackSource.thiscall<void, ResourcePackRepository*>(self);
-    Log::Info("Initializing mod resource and behavior pack sources...");
-    auto& context = *AmethystRuntime::getContext();
+    __initializePackSource(self);
+    auto& context = Amethyst::GetContext();
     auto& packManager = *context.mPackManager;
+    const auto& allPacks = packManager.GetPacks();
+    size_t totalSize = std::accumulate(
+        allPacks.begin(), allPacks.end(), 0ull,
+        [](size_t sum, const auto& pair) {
+            return sum + pair.second.size(); 
+        }
+    );
+
+    Log::Info("Initializing {} modded pack sources...", totalSize);
 
     // Add mod "resource_packs" and "behavior_packs" to the CompositePackSource
-    for (auto& [nameVer, packs] : packManager.GetPacks()) {
-        fs::path modBasePath = GetAmethystFolder() / "mods" / nameVer;
+    for (auto& [nameVer, packs] : allPacks) {
+        auto& platform = Amethyst::GetPlatform();
+        fs::path modBasePath = platform.GetAmethystFolder() / "mods" / nameVer;
 
         // Check if the mod has resource packs
         bool hasResourcePacks = std::find_if(packs.begin(), packs.end(), [&](const auto& pair) {
@@ -57,20 +70,10 @@ void ResourcePackRepository_initializePackSource(ResourcePackRepository* self)
     }
 }
 
-void CreateResourceHooks() {
-    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-
-    hooks.CreateVirtualHook<&VanillaGameModuleClient::initializeResourceStack>(
-        VanillaGameModuleClient::$vtable_for_this,
-        _VanillaGameModuleClient_initializeResourceStack,
-        VanillaGameModuleClient_initializeResourceStack
-    );
-
-    hooks.CreateVirtualHook<&VanillaGameModuleServer::initializeBehaviorStack>(
-        VanillaGameModuleServer::$vtable_for_this,
-        _VanillaGameModuleServer_initializeBehaviorStack,
-        VanillaGameModuleServer_initializeBehaviorStack
-    );
-
-    hooks.CreateDirectHook<&ResourcePackRepository::_initializePackSource>(_ResourcePackRepository_initializePackSource, &ResourcePackRepository_initializePackSource);
+void Amethyst::ResourceHooks::Create()
+{
+    Amethyst::HookManager& hooks = Amethyst::GetHookManager();
+    hooks.CreateVirtualHook<&VanillaGameModuleClient::initializeResourceStack>(VanillaGameModuleClient::$vtable_for_this, _initializeResourceStack, &initializeResourceStack);
+    hooks.CreateVirtualHook<&VanillaGameModuleServer::initializeBehaviorStack>(VanillaGameModuleServer::$vtable_for_this, _initializeBehaviorStack, &initializeBehaviorStack);
+    hooks.CreateDirectHook<&ResourcePackRepository::_initializePackSource>(__initializePackSource, &initializePackSource);
 }

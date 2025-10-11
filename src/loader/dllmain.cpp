@@ -1,9 +1,13 @@
 #include "dllmain.hpp"
 #include "debug/AmethystDebugging.hpp"
+#include "amethyst/runtime/ModContext.hpp"
+#include <thread>
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
 DWORD gMcThreadId;
+
+extern AmethystContext* _AmethystContextInstance;
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)
 {
@@ -11,38 +15,17 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-LONG WINAPI AmethystUnhandledExceptionsHandler(EXCEPTION_POINTERS* ExceptionInfo)
-{
-    if (ExceptionInfo == nullptr) {
-        std::cerr << "ExceptionInfo is nullptr" << std::endl;
-        return ExceptionContinueSearch;
-    }
-
-    HMODULE hModule = GetModuleHandle(nullptr);
-
-    TCHAR szModuleName[MAX_PATH];
-    GetModuleFileName(hModule, szModuleName, MAX_PATH);
-
-    EXCEPTION_RECORD* exceptionRecord = ExceptionInfo->ExceptionRecord;
-    uint64_t exceptionAddr = (uint64_t)exceptionRecord->ExceptionAddress;
-    uint64_t exceptionCode = (uint64_t)exceptionRecord->ExceptionCode;
-
-    Log::Error("Exception thrown at 0x{:x}\n", exceptionAddr - GetMinecraftBaseAddress(), szModuleName);
-    LogAssemblyOfExceptionCause(exceptionAddr);
-    Log::Error("\nError Code: 0x{:x}", exceptionCode);
-
-    ShutdownWait();
-    return ExceptionContinueSearch;
-}
-
 DWORD WINAPI Main()
 {
-    Log::InitializeConsole();
-    SetUnhandledExceptionFilter(AmethystUnhandledExceptionsHandler);
-    //AmethystRuntime::PromptDebugger();
+    auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
+    AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform), std::this_thread::get_id());
 
-    // Create an instance of AmethystRuntime and invoke it to start
-    AmethystRuntime* runtime = AmethystRuntime::getInstance();
+    // Initialize AmethystContextInstance so Amethyst::GetXYZ functions work.
+    _AmethystContextInstance = &runtime->mAmethystContext;
+
+    auto& platform = Amethyst::GetPlatform();
+    platform.Initialize(); // Initialize things like uncaught exception handling
+    platform.InitializeConsole(); // Initialize Amethyst Logging
 
     try {
         runtime->Start();
@@ -52,34 +35,8 @@ DWORD WINAPI Main()
         throw exception;
     }
 
-    ShutdownWait();
+    platform.ShutdownWaitForInput();
     return 0;
-}
-
-DWORD __stdcall EjectThread(LPVOID lpParameter)
-{
-    ExitProcess(0);
-}
-
-void Shutdown()
-{
-    AmethystRuntime* runtime = AmethystRuntime::getInstance();
-    runtime->Shutdown();
-
-    Log::DestroyConsole();
-    CreateThread(0, 0, EjectThread, 0, 0, 0);
-}
-
-void ShutdownWait()
-{
-    Log::Info("Press Numpad0/End to close...");
-
-    while (1) {
-        Sleep(10);
-        if (GetAsyncKeyState(VK_NUMPAD0)) break;
-    }
-
-    Shutdown();
 }
 
 void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
@@ -98,8 +55,6 @@ void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
     auto mainCallLambda = [](LPVOID lpParameter) -> DWORD {
         // Cast the parameter back to ThreadData
         auto pData = static_cast<ThreadData*>(lpParameter);
-        Log::Info("McThreadID: {}, McThreadHandle: {}", pData->dwThreadId, pData->hThreadHandle);
-        
         gMcThreadHandle = pData->hThreadHandle;
         gMcThreadId = pData->dwThreadId;
 

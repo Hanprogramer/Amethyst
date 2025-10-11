@@ -10,17 +10,23 @@
 #include "amethyst/runtime/patchManager/PatchManager.hpp"
 #include "amethyst/runtime/resource/PackManager.hpp"
 #include "amethyst/runtime/EnumAllocator.hpp"
+#include "amethyst/runtime/platform/Platform.hpp"
 #include "amethyst/runtime/networking/NetworkManager.hpp"
 #include "mc/src-client/common/client/game/ClientInstance.hpp"
 #include "mc/src-client/common/client/input/MinecraftInputHandler.hpp"
 #include "mc/src-client/common/client/options/Options.hpp"
 #include "mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp"
 #include "amethyst/Imports.hpp"
+#include "amethyst/runtime/ctx/ClientContext.hpp"
+#include "amethyst/runtime/ctx/ServerContext.hpp"
 
 class Minecraft;
 
 class AmethystContext {
 public:
+    // This field should NEVER be moved
+    uint64_t mAmethystAbiHash;
+
     // Volatile between mod loads
     std::unique_ptr<Amethyst::HookManager> mHookManager;
     std::unique_ptr<Amethyst::EventBus> mEventBus;
@@ -34,21 +40,27 @@ public:
     std::unique_ptr<Amethyst::ModLoader> mModLoader;
 
     // Non-volatile
-    Amethyst::MinecraftPackageInfo mPackageInfo;
-    ClientInstance* mClientInstance = nullptr;
-    MinecraftInputHandler* mMcInputHandler = nullptr;
-    Options* mOptions = nullptr;
-    bool mIsInWorldOrLoading = false;
+    std::unique_ptr<Amethyst::Platform> mPlatform;
 
-    Minecraft* mClientMinecraft = nullptr;
-    Minecraft* mServerMinecraft = nullptr;
+    // Threads
+    std::thread::id mAmethystThread;
+    std::optional<std::thread::id> mMainClientThread;
+    std::optional<std::thread::id> mMainServerThread;
+
+    Amethyst::MinecraftPackageInfo mPackageInfo;
+    std::unique_ptr<Amethyst::ClientContext> mClientCtx;
+    std::unique_ptr<Amethyst::ServerContext> mServerCtx;
 
     // prevent copying
     AmethystContext(const AmethystContext&) = delete;
     friend class AmethystRuntime;
 
+    // returns a quick sanity check for the ABI of amethyst
+    // not 100% accurate, but will detect simple additions/removals, etc
+    static uint64_t GetAmethystAbiHash();
+
 protected:
     virtual void Start() = 0;
     virtual void Shutdown() = 0;
-    AmethystContext() = default;
+    AmethystContext(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread);
 };

@@ -13,7 +13,6 @@
 #include "hooks/NetworkingHooks.hpp"
 #include <hooks/item/ItemRegistryHooks.hpp>
 
-extern AmethystContext* _AmethystContextInstance;
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;
 
@@ -23,8 +22,6 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 
     Amethyst::EventBus& events = *ctx.mEventBus;
     events.AddListener<BeforeModShutdownEvent>([&](const BeforeModShutdownEvent& e) {
-        Log::Info("Shutting down runtime mod: '{}'", mod.mInfo->GetVersionedName());
-        _AmethystContextInstance = nullptr;
         _OwnMod = nullptr;
     });
 
@@ -34,7 +31,7 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 
     events.AddListener<RegisterInputsEvent>([&](const RegisterInputsEvent& e) {
         Amethyst::InputManager& input = e.inputManager;
-        auto& action = input.RegisterNewInput("amethyst.show_advanced_item_info", { VK_SHIFT }, true, Amethyst::KeybindContext::Screen);
+        auto& action = input.RegisterNewInput("amethyst.show_advanced_item_info", { 'Z' }, true, Amethyst::KeybindContext::Screen);
         
         action.addButtonDownHandler([](FocusImpact, ClientInstance&) {
             ShowAdvancedItemInfo = true;
@@ -61,11 +58,10 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     }
 
     CreateInputHooks();
-    CreateResourceHooks();
-    CreateStartScreenHooks();
+    Amethyst::ResourceHooks::Create();
+    Amethyst::UIHooks::Create();
     CreateModFunctionHooks();
     CreateNetworkingHooks();
-    CreateUIHooks();
     CreateRenderingHooks();
     CreateItemRegistryHooks();
 }

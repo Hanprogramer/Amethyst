@@ -236,7 +236,7 @@ public:
 	/** @vidx {084} */ MC virtual std::string buildEffectDescriptionName(const ItemStackBase& stack) const;
 	/** @vidx {085} */ MC virtual void readUserData(ItemStackBase& stack, IDataInput& input, ReadOnlyBinaryStream& stream) const;
 	/** @vidx {086} */ MC virtual void writeUserData(const ItemStackBase& stack, IDataOutput& output) const;
-	/** @vidx {087} */ MC virtual FacingID getMaxStackSize(const ItemDescriptor& descriptor) const;
+	/** @vidx {087} */ MC virtual uint8_t getMaxStackSize(const ItemDescriptor& descriptor) const;
 	/** @vidx {088} */ MC virtual bool inventoryTick(ItemStack& stack, Level& level, Actor& actor, int unk3, bool unk4) const;
 	/** @vidx {089} */ MC virtual void refreshedInContainer(const ItemStackBase& stack, Level& level) const;
 	/** @vidx {090} */ MC virtual const HashedString& getCooldownType() const;

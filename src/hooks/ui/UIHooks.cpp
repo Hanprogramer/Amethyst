@@ -1,59 +1,50 @@
 #include "hooks/ui/UIHooks.hpp"
-#include "loader/AmethystRuntime.hpp"
+#include "mc/src/common/locale/I18n.hpp"
 
-#include "amethyst/runtime/events/UiEvents.hpp"
-#include "amethyst/Log.hpp"
-
-#include "mc/src-client/common/client/gui/screens/ScreenController.hpp"
-#include "mc/src-client/common/client/gui/screens/ScreenEvent.hpp"
-#include "mc/src-client/common/client/gui/screens/controllers/StartMenuScreenController.hpp"
-#include "mc/src-deps/core/string/StringHash.hpp"
-#include "amethyst/runtime/ModContext.hpp"
-
-SafetyHookInline _ScreenController__handleButtonEvent;
-SafetyHookInline _StartMenuScreenController__registerBindings;
-
-ui::ViewRequest ScreenController__handleButtonEvent(ScreenController* screen, ScreenEvent& event) {
-    ui::ViewRequest result = _ScreenController__handleButtonEvent.call<ui::ViewRequest, ScreenController*, ScreenEvent&>(screen, event);
-
+ui::ViewRequest Amethyst::UIHooks::ScreenControllerHooks::_handleButtonEvent(ScreenController* screen, ScreenEvent& event) {
+    ui::ViewRequest result = __handleButtonEvent(screen, event);
     UIButtonHandleEvent ev(event);
-    AmethystRuntime::getEventBus()->Invoke(ev);
-
+    Amethyst::GetEventBus().Invoke(ev);
     return result;
 }
 
-void StartMenuScreenController__registerBindings(StartMenuScreenController* self)
+void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartMenuScreenController* self)
 {
-    _StartMenuScreenController__registerBindings.call(self);
-    auto& context = *AmethystRuntime::getContext();
+    __registerBindings(self);
+
+    auto& context = Amethyst::GetContext();
+    const Amethyst::Mod* ownMod = Amethyst::GetOwnMod();
+    std::string versionStr;
+    if (ownMod->mInfo->Version.prerelease_tag() == "dev")
+        versionStr = std::format("{}", "§uAmethyst Runtime (DEV)§r");
+    else
+        versionStr = std::format("Amethyst Runtime v{}", ownMod->mInfo->Version.to_string());
 
     // Register '#amethyst_version' binding
-    self->bindString(StringHash("#amethyst_version"), []() { 
-        const Amethyst::Mod* self = Amethyst::GetOwnMod();
-        return std::format("Amethyst Runtime v{}", self->mInfo->Version.to_string());
+    self->bindString(StringHash("#amethyst_version"), [versionStr]() { 
+        return versionStr;
     }, []() { 
         return true; 
     });
 
     // Register '#mods_loaded' binding
-    self->bindString(StringHash("#mods_loaded"), [&context]() { 
-        size_t count = 0;
-        if (context.mModLoader) {
-            count = context.mModLoader->GetModCount();
+    self->bindString(StringHash("#mods_loaded"), [&context]() -> std::string {
+        // Not beautiful but works
+        if (reinterpret_cast<uintptr_t>(&getI18n) == reinterpret_cast<uintptr_t>(&Amethyst::RuntimeImporter::UninitializedFunctionHandler) || !context.mModLoader) {
+            return "No mods loaded";
         }
-        return std::format("Mods Loaded: {}", count); 
+        size_t count = context.mModLoader->GetModCount();
+        std::string modsLoadedLocalized = "text.amethyst.mods_loaded"_i18n;
+        bool plural = (count != 1);
+        std::string pluralSuffix = plural ? "s" : "";
+        return std::vformat(modsLoadedLocalized, std::make_format_args(count, pluralSuffix, pluralSuffix));
     }, []() { 
         return true; 
     });
 }
 
-void CreateUIHooks() {
-    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-    HOOK(ScreenController, _handleButtonEvent);
-}
-
-void CreateStartScreenHooks()
-{
-    Amethyst::HookManager& hooks = *AmethystRuntime::getHookManager();
-    HOOK(StartMenuScreenController, _registerBindings);
+void Amethyst::UIHooks::Create() {
+    Amethyst::HookManager& hooks = Amethyst::GetHookManager();
+    hooks.CreateDirectHook<&ScreenController::_handleButtonEvent>(ScreenControllerHooks::__handleButtonEvent, &ScreenControllerHooks::_handleButtonEvent);
+    hooks.CreateDirectHook<&StartMenuScreenController::_registerBindings>(StartMenuScreenControllerHooks::__registerBindings, &StartMenuScreenControllerHooks::_registerBindings);
 }

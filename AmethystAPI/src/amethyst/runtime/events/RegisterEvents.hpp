@@ -1,6 +1,7 @@
 #pragma once
 #include <amethyst/runtime/events/EventBus.hpp>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
+#include <amethyst/game/CreativeItemRegistry.hpp>
 
 namespace mce {
 class TextureGroup;
@@ -22,9 +23,10 @@ class BlockActorRenderDispatcher;
 class RegisterItemsEvent : public BaseEvent {
 public:
     ItemRegistry& itemRegistry;
+    Amethyst::CreativeItemRegistry& mCreativeItemRegistry;
 
-    RegisterItemsEvent(ItemRegistry& registry) 
-        : itemRegistry(registry) {}
+    RegisterItemsEvent(ItemRegistry& registry, Amethyst::CreativeItemRegistry& creativeItemRegistry) 
+        : itemRegistry(registry), mCreativeItemRegistry(creativeItemRegistry) {}
 };
 
 class RegisterBlocksEvent : public BaseEvent {
