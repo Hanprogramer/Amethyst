@@ -9,12 +9,12 @@
 
 class ModMenuScreenController : public ScreenController {
 public:
-    bool mDirty;
-    std::unordered_map<uint32_t, std::string> mModNameHashToName;
+    int32_t mSelectedMod;
 
     ModMenuScreenController(bool useTaskGroup)
-        : ScreenController(useTaskGroup), mDirty(true)
+        : ScreenController(useTaskGroup), mSelectedMod(0)
     {
+        mSelectedMod = StringToNameId(Amethyst::GetOwnMod()->mInfo->FriendlyName);
         _registerEventHandlers();
     }
 
@@ -46,35 +46,52 @@ public:
         ButtonScreenEventData data = ev.data.button;
         if (data.state != ButtonState::Down) return ui::ViewRequest::None;
 
-        Log::Info("buttonId: {}", data.fromButtonId);
+        auto& mods = Amethyst::GetContext().mModGraph->GetMods();
 
-        auto it = mModNameHashToName.find(data.fromButtonId);
-        if (it == mModNameHashToName.end()) {
-            Log::Info("Failed to find clicked mod?");
-            return ui::ViewRequest::None;
-        }
+        auto it = std::find_if(mods.begin(), mods.end(), [&data](const auto& mod) {
+            return StringToNameId(mod->FriendlyName) == data.id;
+        });
 
-        Log::Info("Pressed: {}", it->second);
+        if (it == mods.end()) return ui::ViewRequest::None;
 
-        return ui::ViewRequest::ConsumeEvent;
+        mSelectedMod = data.id;
+        _updateContent();
+
+        return ui::ViewRequest::Refresh;
     }
 
     void _updateContent() {
         auto& mods = Amethyst::GetContext().mModGraph->GetMods();
-        mModNameHashToName.clear();
+        this->mControlDestroyAllCallback("mods_list_factory");
 
+        // Populate left side mod list
         for (auto& mod : mods) {
             UIPropertyBag props = UIPropertyBag();
             props.set<std::string>("control_id", "mod_list_item");
             props.set<std::string>("name", "mod_list_item");
             props.set<std::string>("$mod_name", mod->FriendlyName);
 
-            mModNameHashToName.emplace(StringToNameId(mod->FriendlyName), mod->FriendlyName);
-
             this->mControlCreateCallback("mods_list_factory", props);
         }
 
-        this->mDirty = false;
+        this->mControlDestroyAllCallback("mod_info_factory");
+
+        auto it = std::find_if(mods.begin(), mods.end(), [this](const auto& mod) {
+            return StringToNameId(mod->FriendlyName) == mSelectedMod;
+        });
+
+        if (it == mods.end()) {
+            Log::Info("Failed to find current mod?");
+            return;
+        }
+
+        const Amethyst::ModInfo& modInfo = *it->get();
+
+        // Populate mod info
+        UIPropertyBag props = UIPropertyBag();
+        props.set<std::string>("control_id", "test");
+        props.set<std::string>("$mod_name", modInfo.FriendlyName);
+        this->mControlCreateCallback("mod_info_factory", props);
     }
 };
 
@@ -90,7 +107,6 @@ void ButtonHandleEvent(UiButtonHandleEvent& ev) {
     auto scene = factory.createUIScene(*ci.mMinecraftGame, ci, "mod_menu.root_panel", controller);
     auto screen = factory._createScreen(scene);
     factory.getCurrentSceneStack()->pushScreen(screen, true);
-    Log::Info("Pushed screen!");
 }
 
 void InitModMenuScreen()

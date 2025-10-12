@@ -37,8 +37,8 @@ enum class ScreenEventType : int32_t {
 
 struct ButtonScreenEventData {
 public:
-    uint32_t id;
-    uint32_t fromButtonId;
+    int32_t id;
+    int32_t fromButtonId;
     ButtonState previousState;
     ButtonState state;
     bool handleDeselection;
