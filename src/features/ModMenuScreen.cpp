@@ -89,9 +89,16 @@ public:
 
         // Populate mod info
         UIPropertyBag props = UIPropertyBag();
-        props.set<std::string>("control_id", "test");
+        props.set<std::string>("control_id", "mod_name");
         props.set<std::string>("$mod_name", modInfo.FriendlyName);
         this->mControlCreateCallback("mod_info_factory", props);
+
+        UIPropertyBag toggleProps = UIPropertyBag();
+        toggleProps.set<std::string>("control_id", "toggle");
+        toggleProps.set<std::string>("$option_label", "Test Label");
+        toggleProps.set<std::string>("$option_binding_name", "#test_binding");
+        toggleProps.set<std::string>("$toggle_name", "Toggle Name");
+        this->mControlCreateCallback("mod_info_factory", toggleProps);
     }
 };
 

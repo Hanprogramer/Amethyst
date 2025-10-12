@@ -8,14 +8,25 @@ const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
 
 const TopBar = GetRef("common_store", "store_top_bar");
 
-modMenu.addControl("test",
-    <Label text="$mod_name" />
+modMenu.addControl("mod_name",
+    <Label text="$mod_name" size={["100%", "15px"]}/>
 )
+
+interface OptionToggleProps extends PanelProps {
+    $option_label: string;
+    $option_binding_name: string;
+    $toggle_name: string;
+}
+
+const OptionToggle = GetRef<Partial<OptionToggleProps>>("settings_common", "option_toggle");
+
+modMenu.addControl("toggle", <OptionToggle />);
 
 modMenu.addControl("mod_info",
     <StackPanel size={["100%", "100%c"]} factory={{
         control_ids: {
-            test: "@mod_menu.test",
+            mod_name: "@mod_menu.mod_name",
+            toggle: "@mod_menu.toggle",
         },
         name: "mod_info_factory",
     }} />
@@ -59,7 +70,7 @@ modMenu.addControl("root_panel",
         </Panel>
         <Panel size={["70%", "100% - 20px"]} anchors="top_right" offset={[0, "20px"]}>
             <BgBase />
-            <Common.ScrollingPanel $show_background={false} $scrolling_content="mod_menu.mod_info" size={["100% - 16px", "100% - 16px"]} />
+            <Common.ScrollingPanel $show_background={false} $scrolling_content="mod_menu.mod_info" size={["100% - 20px", "100% - 20px"]} />
         </Panel>
     </BaseScreen>
 )
