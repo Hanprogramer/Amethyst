@@ -5,6 +5,7 @@
 #include <mc/src-client/common/client/gui/screens/SceneFactory.hpp>
 #include <mc/src-client/common/client/gui/screens/ScreenController.hpp>
 #include <mc/src-client/common/client/gui/screens/UIScene.hpp>
+#include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
 
 class ModMenuScreenController : public ScreenController {
 public:
@@ -29,6 +30,22 @@ public:
 
             return ui::ViewRequest::None;
         });
+    }
+
+    virtual void onInit() override {
+        ScreenController::onInit();
+        Log::Info("onInit!");
+        _test();
+    }
+
+    void _test() {
+        UIPropertyBag props = UIPropertyBag();
+        props.set<std::string>("control_id", "test");
+        props.set<std::string>("name", "test_factory");
+
+        Log::Info("Json: {}", props.mJsonValue.toStyledString());
+
+        this->mControlCreateCallback("test_factory", props);
     }
 };
 
