@@ -32,9 +32,8 @@ public:
         });
     }
 
-    virtual void onInit() override {
-        ScreenController::onInit();
-        Log::Info("onInit!");
+    virtual void onEntered() override {
+        Log::Info("onEntered");
         _test();
     }
 
@@ -46,6 +45,15 @@ public:
         Log::Info("Json: {}", props.mJsonValue.toStyledString());
 
         this->mControlCreateCallback("test_factory", props);
+
+        UIPropertyBag otherProps = UIPropertyBag();
+        otherProps.set<std::string>("control_id", "other");
+        otherProps.set<std::string>("name", "test_factory");
+        otherProps.set<std::string>("$other_text", "hello world!");
+
+        Log::Info("Json: {}", otherProps.mJsonValue.toStyledString());
+
+        this->mControlCreateCallback("test_factory", otherProps);
     }
 };
 
