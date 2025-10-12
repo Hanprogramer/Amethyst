@@ -21,10 +21,15 @@ modMenu.addControl("test",
     <Label text="Test" />
 )
 
+modMenu.addControl("test_other",
+    <Label text="$other_text" />
+)
+
 modMenu.addControl("mod_info",
-    <StackPanel size={["100%", "100%c"]} key="test_factory" factory={{
+    <StackPanel size={["100%", "100%c"]} factory={{
         control_ids: {
-            test: "@mod_menu.test"
+            test: "@mod_menu.test",
+            other: "@mod_menu.test_other",
         },
         name: "test_factory",
     }} />
@@ -34,12 +39,10 @@ modMenu.addControl("root_panel",
     <BaseScreen>
         <Common.CommonPanel size={["100%", "20px"]} anchors="top_left" $show_close_button>
             <TopBar />
-
             <Common.Button size={[16, 16]} anchors="left_middle" hover_control="hover" offset={[2, 0]} $pressed_button_name="button.amethyst:close_mods_list">
                 <Label text="<" anchors="center" color="$title_text_color" />
                 <Image key="hover" texture="textures/ui/Black" alpha={0.2} />
             </Common.Button>
-            
             <Label text="amethyst:menu.mods" anchors="center" color="$title_text_color" />
         </Common.CommonPanel>
         <Panel size={["30%", "100% - 20px"]} anchors="top_left" offset={[0, "20px"]}>

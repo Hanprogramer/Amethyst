@@ -54,7 +54,14 @@ enum class ViewRequest : uint32_t {
     ConsumeEvent = 0x0020,
 };
 
-enum class DirtyFlag {};
+enum class DirtyFlag : uint32_t {
+    None = 0x0000,
+    UpdateBinds = 0x0001,
+    UpdateCurrentFocus = 0x0002,
+    GlobalLayout = 0x0004,
+    LayoutChanged = 0x0008,
+    All = 0x0007,
+};
 
 class GameEventNotification {};
 }
