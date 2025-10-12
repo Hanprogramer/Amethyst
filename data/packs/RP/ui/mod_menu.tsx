@@ -17,6 +17,19 @@ modMenu.addControl("mods_list",
 
 const TopBar = GetRef("common_store", "store_top_bar");
 
+modMenu.addControl("test",
+    <Label text="Test" />
+)
+
+modMenu.addControl("mod_info",
+    <StackPanel size={["100%", "100%c"]} key="test_factory" factory={{
+        control_ids: {
+            test: "@mod_menu.test"
+        },
+        name: "test_factory",
+    }} />
+)
+
 modMenu.addControl("root_panel",
     <BaseScreen>
         <Common.CommonPanel size={["100%", "20px"]} anchors="top_left" $show_close_button>
@@ -35,6 +48,7 @@ modMenu.addControl("root_panel",
         </Panel>
         <Panel size={["70%", "100% - 20px"]} anchors="top_right" offset={[0, "20px"]}>
             <BgBase />
+            <Common.ScrollingPanel $show_background={false} $scrolling_content="mod_menu.mod_info" size={["100% - 16px", "100% - 16px"]} />
         </Panel>
     </BaseScreen>
 )
