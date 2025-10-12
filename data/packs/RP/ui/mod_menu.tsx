@@ -9,7 +9,7 @@ const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
 const TopBar = GetRef("common_store", "store_top_bar");
 
 modMenu.addControl("test",
-    <Label text="Test" />
+    <Label text="$mod_name" />
 )
 
 modMenu.addControl("mod_info",
@@ -17,7 +17,7 @@ modMenu.addControl("mod_info",
         control_ids: {
             test: "@mod_menu.test",
         },
-        name: "test_factory",
+        name: "mod_info_factory",
     }} />
 )
 
@@ -30,7 +30,7 @@ const LightTextButtton = GetRef<LightTextButttonProps>("common_buttons", "light_
 
 modMenu.addControl("mod_list_item", 
     <Panel anchors="top_left" size={["100%", "30px"]}>
-        <LightTextButtton $button_text="$mod_name" $pressed_button_name="button.menu" />
+        <LightTextButtton $button_text="$mod_name" $pressed_button_name="$mod_name" />
     </Panel>
 )
 
