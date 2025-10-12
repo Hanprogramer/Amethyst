@@ -9,8 +9,11 @@
 
 class ModMenuScreenController : public ScreenController {
 public:
+    bool mDirty;
+    std::unordered_map<uint32_t, std::string> mModNameHashToName;
+
     ModMenuScreenController(bool useTaskGroup)
-        : ScreenController(useTaskGroup) 
+        : ScreenController(useTaskGroup), mDirty(true)
     {
         _registerEventHandlers();
     }
@@ -34,26 +37,44 @@ public:
 
     virtual void onEntered() override {
         Log::Info("onEntered");
-        _test();
+        _updateContent();
     }
 
-    void _test() {
-        UIPropertyBag props = UIPropertyBag();
-        props.set<std::string>("control_id", "test");
-        props.set<std::string>("name", "test_factory");
+    virtual ui::ViewRequest handleEvent(ScreenEvent& ev) {
+        if (ev.type != ScreenEventType::ButtonEvent) return ui::ViewRequest::None;
 
-        Log::Info("Json: {}", props.mJsonValue.toStyledString());
+        ButtonScreenEventData data = ev.data.button;
+        if (data.state != ButtonState::Down) return ui::ViewRequest::None;
 
-        this->mControlCreateCallback("test_factory", props);
+        Log::Info("buttonId: {}", data.fromButtonId);
 
-        UIPropertyBag otherProps = UIPropertyBag();
-        otherProps.set<std::string>("control_id", "other");
-        otherProps.set<std::string>("name", "test_factory");
-        otherProps.set<std::string>("$other_text", "hello world!");
+        auto it = mModNameHashToName.find(data.fromButtonId);
+        if (it == mModNameHashToName.end()) {
+            Log::Info("Failed to find clicked mod?");
+            return ui::ViewRequest::None;
+        }
 
-        Log::Info("Json: {}", otherProps.mJsonValue.toStyledString());
+        Log::Info("Pressed: {}", it->second);
 
-        this->mControlCreateCallback("test_factory", otherProps);
+        return ui::ViewRequest::ConsumeEvent;
+    }
+
+    void _updateContent() {
+        auto& mods = Amethyst::GetContext().mModGraph->GetMods();
+        mModNameHashToName.clear();
+
+        for (auto& mod : mods) {
+            UIPropertyBag props = UIPropertyBag();
+            props.set<std::string>("control_id", "mod_list_item");
+            props.set<std::string>("name", "mod_list_item");
+            props.set<std::string>("$mod_name", mod->FriendlyName);
+
+            mModNameHashToName.emplace(StringToNameId(mod->FriendlyName), mod->FriendlyName);
+
+            this->mControlCreateCallback("mods_list_factory", props);
+        }
+
+        this->mDirty = false;
     }
 };
 

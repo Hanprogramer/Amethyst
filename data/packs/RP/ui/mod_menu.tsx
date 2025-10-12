@@ -1,4 +1,4 @@
-import { Button, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement } from "Regolith-Generators";
+import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement } from "Regolith-Generators";
 
 const modMenu = new UiFile("mod_menu");
 
@@ -6,32 +6,40 @@ const BaseScreen = GetRef("common", "base_screen");
 
 const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
 
-modMenu.addControl("mods_list", 
-    <StackPanel size={["100%", "100%c"]}>
-        <Panel size={["100%", "30px"]}>
-            <Label text="Mods" />
-            <Image texture="textures/ui/Black" />
-        </Panel>
-    </StackPanel>
-)
-
 const TopBar = GetRef("common_store", "store_top_bar");
 
 modMenu.addControl("test",
     <Label text="Test" />
 )
 
-modMenu.addControl("test_other",
-    <Label text="$other_text" />
-)
-
 modMenu.addControl("mod_info",
     <StackPanel size={["100%", "100%c"]} factory={{
         control_ids: {
             test: "@mod_menu.test",
-            other: "@mod_menu.test_other",
         },
         name: "test_factory",
+    }} />
+)
+
+interface LightTextButttonProps extends ButtonProps {
+    $button_text: string;
+    $pressed_button_name: string;
+}
+
+const LightTextButtton = GetRef<LightTextButttonProps>("common_buttons", "light_text_button");
+
+modMenu.addControl("mod_list_item", 
+    <Panel anchors="top_left" size={["100%", "30px"]}>
+        <LightTextButtton $button_text="$mod_name" $pressed_button_name="button.menu" />
+    </Panel>
+)
+
+modMenu.addControl("mods_list", 
+    <StackPanel size={["100%", "100%c"]} factory={{
+        name: "mods_list_factory",
+        control_ids: {
+            mod_list_item: "@mod_menu.mod_list_item",
+        }
     }} />
 )
 
