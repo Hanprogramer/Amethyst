@@ -27,7 +27,23 @@ class Value;
 }
 
 namespace ui {
-enum class SceneType {};
+enum class SceneType {
+    NONE = 0x0000,
+    DEFAULT_SCENE = 0x0001,
+    STORE_SCENE = 0x0002,
+    STORE_HOME_SCENE = 0x0004,
+    START_MENU_SCENE = 0x0008,
+    SETTINGS_SCENE = 0x0010,
+    LIBRARY_ITEM_SCENE = 0x0020,
+    LIBRARY_MODAL_SCENE = 0x0040,
+    PROFILE_SCENE = 0x0080,
+    NO_INTERRUPT = 0x0100,
+    HUMMINGBIRD = 0x0200,
+    PLAY_SCREEN = 0x0400,
+    PROGRESS_SCENE = 0x0800,
+    MULTI_CONTROLLER_INPUT_SCENE = 0x1000,
+};
+
 enum class ViewRequest : uint32_t {
     None = 0x0000,
     Refresh = 0x0001,
@@ -37,9 +53,9 @@ enum class ViewRequest : uint32_t {
     Exit = 0x0010,
     ConsumeEvent = 0x0020,
 };
-enum class DirtyFlag {
 
-};
+enum class DirtyFlag {};
+
 class GameEventNotification {};
 }
 
@@ -129,7 +145,7 @@ public:
     std::unique_ptr<TaskGroup> mTaskGroup;
 
     /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 0F B6 DA}
-    MC ScreenController(bool);
+    MC ScreenController(bool useTaskGroup);
 
     /** @vidx {00} */ MC virtual ~ScreenController();
     /** @vidx {01} */ MC virtual void preFrameTick();
@@ -149,11 +165,8 @@ public:
     /** @vidx {15} */ MC virtual void onLeave();
     /** @vidx {16} */ MC virtual void leaveScreen(const std::string&);
     /** @vidx {17} */ MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification);
-
-    // Keep your eyes open for overloads
     /** @vidx {19} */ MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /** @vidx {18} */ MC virtual bool bind(const std::string& collectionName, uint32_t collectionNameHash, int collectionIndex, const std::string& bindingName, uint32_t bindingNameHash, const std::string&, UIPropertyBag& bag);
-
     /** @vidx {20} */ MC virtual void handleLicenseChanged();
     /** @vidx {21} */ MC virtual void onDictationEvent(const std::string&);
     /** @vidx {22} */ MC virtual void setAssociatedBlockPos(const BlockPos&);
