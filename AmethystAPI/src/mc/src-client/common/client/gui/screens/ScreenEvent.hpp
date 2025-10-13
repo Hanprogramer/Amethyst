@@ -6,33 +6,36 @@
 class UIPropertyBag;
 
 enum class ScreenEventType : int32_t {
-    Undefined = 0x0000,
-    ButtonEvent = 0x0001,
-    ButtonMoveEvent = 0x0002,
-    PointerMoveInEvent = 0x0003,
-    PointerMoveOutEvent = 0x0004,
-    HoverEvent = 0x0005,
-    PointerMoveEvent = 0x0006,
-    PointerHeldEvent = 0x0007,
-    FocusMoveEvent = 0x0008,
-    PreCollectionRefresh = 0x0009,
-    InputModeChangeEvent = 0x000a,
-    HoloInputModeChangeEvent = 0x000b,
-    ScreenViewRefresh = 0x000c,
-    ScrollDirectionEvent = 0x000d,
-    ScrollRequestEvent = 0x000e,
-    TextEditChange = 0x000f,
-    ToggleChangeEvent = 0x0010,
-    ControllerDirectionEvent = 0x0011,
-    RawInputEvent = 0x0012,
-    SliderChangeEvent = 0x0013,
-    AnimationEvent = 0x0014,
-    LockedStateEvent = 0x0015,
-    ClippedCollectionRange = 0x0016,
-    ClipStateChangeEvent = 0x0017,
-    TextEditSelectedStateChangeEvent = 0x0018,
-    CustomRendererEvent = 0x0019,
-    ScreenEventTypeCount = 0x001a,
+    Undefined = 0,
+    ButtonEvent = 1,
+    ToggleChangeEvent = 13,
+    SliderChangeEvent = 16,
+
+    //ButtonMoveEvent = 0x0002,
+    //PointerMoveInEvent = 0x0003,
+    //PointerMoveOutEvent = 0x0004,
+    //HoverEvent = 0x0005,
+    //PointerMoveEvent = 0x0006,
+    //PointerHeldEvent = 0x0007,
+    //FocusMoveEvent = 0x0008,
+    //PreCollectionRefresh = 0x0009,
+    //InputModeChangeEvent = 0x000a,
+    //HoloInputModeChangeEvent = 0x000b,
+    //ScreenViewRefresh = 0x000c,
+    //ScrollDirectionEvent = 0x000d,
+    //ScrollRequestEvent = 0x000e,
+    //TextEditChange = 0x000f,
+    //ToggleChangeEvent = 0x0010,
+    //ControllerDirectionEvent = 0x0011,
+    //RawInputEvent = 0x0012,
+    //
+    //AnimationEvent = 0x0014,
+    //LockedStateEvent = 0x0015,
+    //ClippedCollectionRange = 0x0016,
+    //ClipStateChangeEvent = 0x0017,
+    //TextEditSelectedStateChangeEvent = 0x0018,
+    //CustomRendererEvent = 0x0019,
+    //ScreenEventTypeCount = 0x001a,
 };
 
 struct ButtonScreenEventData {
@@ -49,8 +52,31 @@ public:
     InputMode inputMode;
 };
 
+struct ToggleChangeEventData {
+public:
+    int32_t id;
+    int index;
+    bool state;
+    bool toggledByButtonClick;
+    UIPropertyBag* properties;
+    uint64_t itemStringHash;
+};
+
+struct SliderChangeEventData {
+public:
+    int32_t id;
+    int index;
+    float value;
+    bool finalized;
+    UIPropertyBag* properties;
+};
+
 union ScreenEventData {
     ButtonScreenEventData button;
+    ToggleChangeEventData toggle;
+    SliderChangeEventData slider;
+
+
     //TextEditScreenEventData textEdit;
     //HoverScreenEventData hover;
     //PointerMoveScreenEventData pointerMove;
@@ -60,7 +86,6 @@ union ScreenEventData {
     //HoloInputModeChangeScreenEventData holoInputMode;
     //ScrollRequestScreenEventData scrollRequest;
     //ScrollDirectionEventData scrollDirectionRequest;
-    //ToggleChangeEventData toggle;
     //ControllerDirectionEventData controllerDirectionEventData;
     //RawInputScreenEventData rawInput;
     //SliderChangeEventData slider;

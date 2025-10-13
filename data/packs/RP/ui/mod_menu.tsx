@@ -20,13 +20,23 @@ interface OptionToggleProps extends PanelProps {
 
 const OptionToggle = GetRef<Partial<OptionToggleProps>>("settings_common", "option_toggle");
 
+interface OptionSliderProps extends PanelProps {
+    $option_label: string;
+    $slider_name: string;
+    $slider_value_binding_name: string;
+}
+
+const OptionSlider = GetRef<Partial<OptionSliderProps>>("settings_common", "option_slider");
+
 modMenu.addControl("toggle", <OptionToggle />);
+modMenu.addControl("slider", <OptionSlider />);
 
 modMenu.addControl("mod_info",
     <StackPanel size={["100%", "100%c"]} factory={{
         control_ids: {
             mod_name: "@mod_menu.mod_name",
             toggle: "@mod_menu.toggle",
+            slider: "@mod_menu.slider",
         },
         name: "mod_info_factory",
     }} />

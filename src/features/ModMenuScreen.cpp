@@ -41,6 +41,19 @@ public:
     }
 
     virtual ui::ViewRequest handleEvent(ScreenEvent& ev) {
+        Log::Info("ev: {}", (uint64_t)ev.type);
+
+        switch (ev.type) {
+            case ScreenEventType::ToggleChangeEvent: {
+                _handleToggle(ev.data.toggle);
+                return ui::ViewRequest::ConsumeEvent;
+            }
+            case ScreenEventType::SliderChangeEvent: {
+                _handleSlider(ev.data.slider);
+                return ui::ViewRequest::ConsumeEvent;
+            }
+        }
+        
         if (ev.type != ScreenEventType::ButtonEvent) return ui::ViewRequest::None;
 
         ButtonScreenEventData data = ev.data.button;
@@ -55,9 +68,21 @@ public:
         if (it == mods.end()) return ui::ViewRequest::None;
 
         mSelectedMod = data.id;
+
+        Log::Info("props: {}", ev.data.button.properties->mJsonValue.toStyledString());
         _updateContent();
 
         return ui::ViewRequest::Refresh;
+    }
+
+private:
+    void _handleToggle(ToggleChangeEventData& toggle) {
+        Log::Info("{} {} {} {}", toggle.index, toggle.id, toggle.state, toggle.properties->mJsonValue.toStyledString());
+    }
+
+    void _handleSlider(SliderChangeEventData& slider)
+    {
+        Log::Info("{} {} {}", slider.index, slider.id, slider.properties->mJsonValue.toStyledString());
     }
 
     void _updateContent() {
@@ -99,6 +124,13 @@ public:
         toggleProps.set<std::string>("$option_binding_name", "#test_binding");
         toggleProps.set<std::string>("$toggle_name", "Toggle Name");
         this->mControlCreateCallback("mod_info_factory", toggleProps);
+
+        UIPropertyBag sliderProps = UIPropertyBag();
+        sliderProps.set<std::string>("control_id", "slider");
+        sliderProps.set<std::string>("$option_label", "Test Label");
+        sliderProps.set<std::string>("$slider_name", "Slider Name");
+        sliderProps.set<std::string>("$slider_value_binding_name", "#fake_binding");
+        this->mControlCreateCallback("mod_info_factory", sliderProps);
     }
 };
 
