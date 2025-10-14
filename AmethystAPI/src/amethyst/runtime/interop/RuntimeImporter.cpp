@@ -2,6 +2,10 @@
 #include <amethyst/Log.hpp>
 #include <amethyst/Memory.hpp>
 #include "mc/src-client/common/client/world/WorldCreationHelper.hpp"
+#include "amethyst/runtime/importing/data/HeaderFactory.hpp"
+#include "amethyst/runtime/importing/data/AbstractHeader.hpp"
+#include <span>
+#include <spanstream>
 
 #pragma pack(push, 1)
 struct StringTable {
@@ -366,7 +370,7 @@ void Amethyst::RuntimeImporter::Shutdown()
     mAllocatedVtableToVarStorage.clear();
     mInitialized = false;
 }
-
+using namespace Amethyst::Importing;
 bool Amethyst::RuntimeImporter::GetSections(
     IMAGE_SECTION_HEADER** stringTableSection,
     IMAGE_SECTION_HEADER** functionDescSection,
@@ -402,6 +406,19 @@ bool Amethyst::RuntimeImporter::GetSections(
     // Iterate through the sections
     for (WORD i = 0; i < sectionCount; i++, sectionHeader++) {
         const char* name = reinterpret_cast<const char*>(sectionHeader->Name);
+
+        if (strcmp(name, ".rtih") == 0) {
+            std::span<char> span(reinterpret_cast<char*>(base + sectionHeader->VirtualAddress), sectionHeader->SizeOfRawData);
+            std::spanstream stream(span);
+			SimpleBinaryReader reader(stream);
+            auto header = HeaderFactory::Create(AbstractHeader::PeekInfo(reader));
+			header->ReadFrom(reader);
+            Log::Info("Found runtime import header: {}", header->ToString());
+            for (const auto& symbol : header->Symbols) {
+                Log::Info(" - Symbol: {}", symbol->ToString());
+            }
+			continue;
+        }
 
         if (strcmp(name, StringTableSectionName) == 0) {
             foundStringTable = true;
