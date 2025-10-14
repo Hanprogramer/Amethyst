@@ -36,7 +36,7 @@ public:
     /// @vidx {5}
     MC virtual void serverInitItemStackIds();
     /// @vidx {6}
-    MC virtual std::vector<ItemStack> getItemCopies() = 0;
+    MC virtual std::vector<ItemStack> getItemCopies() const = 0;
     /// @vidx {7}
     MC virtual void setSlot(int slot, const ItemStack& stack, bool) = 0;
     /// @vidx {8}

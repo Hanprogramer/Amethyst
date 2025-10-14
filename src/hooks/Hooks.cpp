@@ -6,6 +6,7 @@
 #include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
 #include <mc/src-client/common/client/renderer/blockActor/BlockActorRendererDispatcher.hpp>
 #include <amethyst/runtime/ModContext.hpp>
+#include <thread>
 
 SafetyHookInline _ScreenView_setupAndRender;
 SafetyHookInline _ClientInstance_onStartJoinGame;
@@ -34,7 +35,7 @@ int64_t ClientInstance_onStartJoinGame(ClientInstance* self, int64_t a2, int64_t
 {
     OnStartJoinGameEvent event(*self);
     Amethyst::GetEventBus().Invoke(event);
-    Amethyst::GetContext().mIsInWorldOrLoading = true;
+    Amethyst::GetClientCtx().mIsInWorldOrLoading = true;
     return _ClientInstance_onStartJoinGame.call<int64_t, ClientInstance*, int64_t, int64_t, uint64_t>(self, a2, a3, a4);
 }
 
@@ -42,7 +43,7 @@ void ClientInstance_requestLeaveGame(ClientInstance* self, char switchScreen, ch
 {
     OnRequestLeaveGameEvent event(*self);
     Amethyst::GetEventBus().Invoke(event);
-    Amethyst::GetContext().mIsInWorldOrLoading = false;
+    Amethyst::GetClientCtx().mIsInWorldOrLoading = false;
     _ClientInstance_requestLeaveGame.thiscall(self, switchScreen, sync);
 }
 
@@ -67,7 +68,10 @@ void VanillaItems_registerItems(
 
     //std::shared_ptr<ItemRegistry> registry = itemRegistry.mItemRegistry.lock();
     ItemRegistry* registry = itemRegistry->mItemRegistry.lock().get();
-    RegisterItemsEvent event(*registry);
+
+    auto& shared = Amethyst::GetCurrentThreadCtx();
+
+    RegisterItemsEvent event(*registry, shared.mCreativeRegistry);
     Amethyst::GetEventBus().Invoke(event);
 }
 
@@ -91,7 +95,7 @@ void LevelEvent(Level* level) {
 void* ClientInstance__ClientInstance(ClientInstance* self, uint64_t a2, uint64_t a3, uint64_t a4, char a5, void* a6, void* a7, uint64_t a8, void* a9) {
     void* ret = _ClientInstance__ClientInstance.call<void*>(self, a2, a3, a4, a5, a6, a7, a8, a9);
 
-    Amethyst::GetContext().mClientInstance = self;
+    Amethyst::GetClientCtx().mClientInstance = self;
 
     return ret;
 }
@@ -101,18 +105,31 @@ SafetyHookInline _Minecraft__Minecraft;
 Minecraft* Minecraft__Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, void* a5, void* a6, void* a7, void* a8, void* a9, void* a10, char a11, void* a12, void* a13, void* a14, void* a15) {
     _Minecraft__Minecraft.call<Minecraft*>(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15);
     AmethystContext& ctx = Amethyst::GetContext();
+
+    // This is where the initial threads ids are found, so at this point Amethsyt::IsOnMainClietnThread and Amethyst::IsOnMainServerThread will start working.
+    // But for this it does have to do a tiny bit of jank such that this can be setup
     
-    if (ctx.mClientMinecraft == nullptr) {
-        ctx.mClientMinecraft = a1;
+    if (Amethyst::GetClientCtx().mMinecraft == nullptr) {
+        Amethyst::GetClientCtx().mMinecraft = a1;
+        ctx.mMainClientThread = std::this_thread::get_id();
     }
     else {
-        ctx.mServerMinecraft = a1;
+        Amethyst::GetContext().mServerCtx = std::make_unique<Amethyst::ServerContext>();
+        Amethyst::GetServerCtx().mMinecraft = a1;
+        ctx.mMainServerThread = std::this_thread::get_id();
     }
 
     auto context = Bedrock::PubSub::SubscriptionContext::makeDefaultContext("Amethyst LevelEvent Subscriber");
     a1->mLevelSubscribers->_connectInternal(LevelEvent, Bedrock::PubSub::ConnectPosition::AtFront, std::move(context), std::nullopt);
 
     return a1;
+}
+
+SafetyHookInline _Minecraft_$dtor;
+
+void* Minecraft_$dtor(Minecraft* a1, char a2) {
+    Amethyst::GetContext().mServerCtx.reset();
+    return _Minecraft_$dtor.call<void*>(a1, a2);
 }
 
 void BlockGraphics_initBlocks(ResourcePackManager& resources, const Experiments& experiments) {
@@ -175,6 +192,9 @@ void CreateModFunctionHooks() {
     HOOK(VanillaItems, registerItems);
     HOOK(BlockDefinitionGroup, registerBlocks);
     HOOK(BlockGraphics, initBlocks);
+
     HOOK(Minecraft, _Minecraft);
+    HOOK(Minecraft, $dtor);
+
     HOOK(BlockActorRenderDispatcher, initializeBlockEntityRenderers);
 }

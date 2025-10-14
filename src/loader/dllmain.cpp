@@ -1,6 +1,7 @@
 #include "dllmain.hpp"
 #include "debug/AmethystDebugging.hpp"
 #include "amethyst/runtime/ModContext.hpp"
+#include <thread>
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
@@ -17,7 +18,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 DWORD WINAPI Main()
 {
     auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
-    AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform));
+    AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform), std::this_thread::get_id());
 
     // Initialize AmethystContextInstance so Amethyst::GetXYZ functions work.
     _AmethystContextInstance = &runtime->mAmethystContext;

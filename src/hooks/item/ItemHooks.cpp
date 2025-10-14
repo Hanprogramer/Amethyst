@@ -54,35 +54,46 @@ void Item_appendFormattedHovertext(const Item* self, const ItemStackBase& stack,
     }
 
     if (ShowAdvancedItemInfo) {
+        std::string itemDataLocalized = "text.amethyst.item_data"_i18n;
+        std::string blockTagsLocalized = "text.amethyst.block_tags"_i18n;
+        std::string itemTagsLocalized = "text.amethyst.item_tags"_i18n;
+        std::string nbtCountLocalized = "text.amethyst.nbt_count"_i18n;
+
         hovertext += std::format("\n§8{}§r", self->mFullName.getString());
 
         if (stack.mAuxValue != 0 && stack.mAuxValue != 0x7fff)
-            hovertext += std::format("\n§8Data: {}§r", stack.mAuxValue);
+            hovertext += "\n" + std::vformat(itemDataLocalized, std::make_format_args(stack.mAuxValue));
 
         auto block = self->getLegacyBlock();
         if (block && !block->mTags.empty()) {
-            hovertext += "\n§8Block Tags:§r";
+            hovertext += "\n" + blockTagsLocalized;
             for (const auto& tag : block->mTags) {
                 hovertext += std::format("\n§8  #{}§r", tag.getString());
             }
         }
 
         if (!self->mTags.empty()) {
-            hovertext += "\n§8Item Tags:§r";
+            hovertext += "\n" + itemTagsLocalized;
             for (const auto& tag : self->mTags) {
                 hovertext += std::format("\n§8  #{}§r", tag.getString());
             }
         }
         
-        if (stack.mUserData)
-            hovertext += std::format("\n§8NBT: {} tag(s)§r", stack.mUserData->mTags.size());
+        if (stack.mUserData) {
+            size_t nbtCount = stack.mUserData->mTags.size();
+            hovertext += "\n" + std::vformat(nbtCountLocalized, std::make_format_args(nbtCount));
+        }
     }
     else {
-        auto& options = *Amethyst::GetContext().mOptions;
+        std::string holdTextLocalized = "action.amethyst.show_advanced_item_info"_i18n;
+
+        auto& options = *Amethyst::GetClientCtx().mOptions;
         auto& mapping = *options.getCurrentKeyboardRemapping();
         auto* keymapping = mapping.getKeymappingByAction("key.amethyst.show_advanced_item_info");
+        std::string keyName = keymapping ? mapping.getMappedKeyName(*keymapping) : "Unknown";
+
         if (keymapping && keymapping->isAssigned())
-            hovertext += std::format("\n§8Hold §u{}§r§8 to see details§r", mapping.getMappedKeyName(*keymapping));
+            hovertext += "\n" + std::vformat(holdTextLocalized, std::make_format_args(keyName));
     }
 
     hovertext += std::format("\n§o§9{}§r", modName);

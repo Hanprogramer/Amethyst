@@ -34,7 +34,7 @@ public:
     /// @vidx {inherit}
     MC virtual ~LevelContainerManagerModel() override;
     /// @vidx {inherit}
-    MC virtual std::vector<ItemStack> getItemCopies() override;
+    MC virtual std::vector<ItemStack> getItemCopies() const override;
     /// @vidx {inherit}
     MC virtual void setSlot(int slot, const ItemStack& stack, bool) override;
     /// @vidx {inherit}

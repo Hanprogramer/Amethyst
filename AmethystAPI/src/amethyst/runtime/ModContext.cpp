@@ -1,11 +1,26 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <mc/src/common/Minecraft.hpp>
+#include <thread>
+#include <amethyst/runtime/ctx/SharedContext.hpp>
+#include <amethyst/runtime/ctx/ServerContext.hpp>
+#include <amethyst/runtime/ctx/ClientContext.hpp>
 
 AmethystContext* _AmethystContextInstance;
 const Amethyst::Mod* _OwnMod;
 
 void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
 {
+    // Store a persistent AmethystContext instance
+    _AmethystContextInstance = &context;
+
+    // Store our own mod info for later retrieval
+    _OwnMod = &mod;
+
+    // Do a quick sanity check by comparing some important class sizes and offsets
+    if (context.mAmethystAbiHash != AmethystContext::GetAmethystAbiHash()) {
+        Log::Warning("Detected difference in amethyst ABI hash! This mod is not compatible with this version of the runtime! Please recompile the mod/runtime if developing!");
+    }
+
     // Check if the mod has a resource pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "resource_packs" / "main_rp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_rp", PackType::Resources);
@@ -13,12 +28,6 @@ void Amethyst::InitializeAmethystMod(AmethystContext& context, const Mod& mod)
     // Check if the mod has a behavior pack and register it if it does
     if (fs::exists(mod.mInfo->Directory / "behavior_packs" / "main_bp" / "manifest.json"))
         context.mPackManager->RegisterNewPack(&mod, "main_bp", PackType::Behavior);
-
-    // Store a persistent AmethystContext instance
-    _AmethystContextInstance = &context;
-
-    // Store our own mod info for later retrieval
-    _OwnMod = &mod;
 }
 
 AmethystContext& Amethyst::GetContext()
@@ -62,21 +71,41 @@ Amethyst::Platform& Amethyst::GetPlatform()
     return *platform;
 }
 
-Minecraft* Amethyst::GetMinecraft()
+Amethyst::ClientContext& Amethyst::GetClientCtx()
 {
-    return _AmethystContextInstance->mClientInstance->mMinecraft;
+    return *_AmethystContextInstance->mClientCtx;
 }
 
-Level* Amethyst::GetLevel()
+Amethyst::ServerContext& Amethyst::GetServerCtx()
 {
-    ClientInstance* ci = _AmethystContextInstance->mClientInstance;
-    if (!ci) return nullptr;
-    return ci->mMinecraft->getLevel();
+    return *_AmethystContextInstance->mServerCtx;
 }
 
-ClientInstance* Amethyst::GetClientInstance()
+Amethyst::SharedContext& Amethyst::GetCurrentThreadCtx()
 {
-    return _AmethystContextInstance->mClientInstance;
+    if (Amethyst::IsOnMainClientThread()) {
+        return *_AmethystContextInstance->mClientCtx;
+    } 
+    else if (Amethyst::IsOnMainServerThread()) {
+        return *_AmethystContextInstance->mServerCtx;
+    }
+
+    AssertFail("Current thread is not the main Client or Server thread, cannot get context!");
+}
+
+bool Amethyst::IsOnAmethystThread()
+{
+    return _AmethystContextInstance->mAmethystThread == std::this_thread::get_id();
+}
+
+bool Amethyst::IsOnMainClientThread()
+{
+    return _AmethystContextInstance->mMainClientThread == std::this_thread::get_id();
+}
+
+bool Amethyst::IsOnMainServerThread()
+{
+    return _AmethystContextInstance->mMainServerThread == std::this_thread::get_id();
 }
 
 const Amethyst::Mod* Amethyst::GetOwnMod()

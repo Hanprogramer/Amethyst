@@ -13,8 +13,8 @@ extern HMODULE hModule;
 extern HANDLE gMcThreadHandle;
 extern DWORD gMcThreadId;
 
-AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform)
-    : mAmethystContext(std::move(platform))
+AmethystRuntime::AmethystRuntime(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread)
+    : mAmethystContext(std::move(platform), amethystThread)
 {
     AmethystRuntime::instance = this;
 }
@@ -74,7 +74,7 @@ void AmethystRuntime::LoadModDlls()
     // Register mod inputs
     // On game start mOptions will be nullptr, but the register inputs event gets called when options is created.
     // When hot-reloading we will have options already so we can register inputs here.
-    if (Amethyst::GetContext().mOptions != nullptr) {
+    if (Amethyst::GetClientCtx().mOptions != nullptr) {
         RegisterInputsEvent event(*Amethyst::GetContext().mInputManager.get());
         Amethyst::GetEventBus().Invoke(event);
     }

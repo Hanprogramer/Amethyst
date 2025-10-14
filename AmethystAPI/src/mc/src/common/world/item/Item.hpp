@@ -98,6 +98,9 @@ public:
         /** @sig {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B EA 48 8B D9 48 8D 4C 24} */
         MC ScopedCreativeGroup(const std::string& name, const ItemInstance& baseItem);
 
+		/// @signature {40 53 48 83 EC ? 49 8B 40 ? 48 8B D9 45 0F B7 48}
+        MC ScopedCreativeGroup(const std::string& name, const Block* block, const CompoundTag* data);
+
 		/** @sig {40 53 48 83 EC ? 48 8D 4C 24 ? E8 ? ? ? ? 48 8B C8} */
         MC ~ScopedCreativeGroup();
 	};
@@ -236,7 +239,7 @@ public:
 	/** @vidx {084} */ MC virtual std::string buildEffectDescriptionName(const ItemStackBase& stack) const;
 	/** @vidx {085} */ MC virtual void readUserData(ItemStackBase& stack, IDataInput& input, ReadOnlyBinaryStream& stream) const;
 	/** @vidx {086} */ MC virtual void writeUserData(const ItemStackBase& stack, IDataOutput& output) const;
-	/** @vidx {087} */ MC virtual FacingID getMaxStackSize(const ItemDescriptor& descriptor) const;
+	/** @vidx {087} */ MC virtual uint8_t getMaxStackSize(const ItemDescriptor& descriptor) const;
 	/** @vidx {088} */ MC virtual bool inventoryTick(ItemStack& stack, Level& level, Actor& actor, int unk3, bool unk4) const;
 	/** @vidx {089} */ MC virtual void refreshedInContainer(const ItemStackBase& stack, Level& level) const;
 	/** @vidx {090} */ MC virtual const HashedString& getCooldownType() const;
@@ -278,7 +281,7 @@ public:
 	//MC static std::unique_ptr<std::set<short>> mServerItemsUsedInCreativeItems;
 
 	/// @address {0x597AB10}
-    MC static CreativeItemGroupCategory* mActiveCreativeItemCategory;
+    MC static CreativeItemGroupCategory* mActiveCreativeItemCategory; 
 
 	/// @address {0x597AB18}
     MC static CreativeGroupInfo* mActiveCreativeGroupInfo;
@@ -301,7 +304,10 @@ public:
 	UseAnim getUseAnimation() const;
 	void setDamageValue(ItemStackBase& stack, short value) const;
 	Item& setAllowOffhand(bool allowOffhand);
-	Item& setCategory(CreativeItemCategory category);
+
+	/// @signature {48 89 5C 24 ? 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 44 8B FA}
+	MC Item& setCategory(CreativeItemCategory category);
+
 	Item& setCreativeGroup(const std::string& group);
 	Item& setExplodable(bool isExplodable);
 	Item& setFireResistant(bool isFireResistant);

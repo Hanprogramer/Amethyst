@@ -3,6 +3,7 @@
 #include <amethyst/Imports.hpp>
 #include "mc/src-client/common/module/GameModuleClient.hpp"
 #include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
+#include "mc/src/common/resources/ResourcePackRepository.hpp"
 #include "gsl/gsl"
 
 class Experiments;
@@ -23,5 +24,5 @@ public:
     virtual void unk_3();
 
     /// @vidx { 4, this }
-    MC virtual void initializeResourceStack(const Experiments&, const gsl::not_null<Bedrock::NonOwnerPointer<IResourcePackRepository>>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase);
+    MC virtual void initializeResourceStack(const Experiments&, const Bedrock::NotNullNonOwnerPtr<ResourcePackRepository>&, ResourcePackStack&, const BaseGameVersion&, GameModuleClient::ResourceLoadingPhase);
 };

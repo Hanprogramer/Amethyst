@@ -19,10 +19,14 @@ namespace Amethyst {
 	Amethyst::EnumAllocator& GetEnumAllocator();
 	Amethyst::NetworkManager& GetNetworkManager();
 	Amethyst::Platform& GetPlatform();
-	
-	Minecraft* GetMinecraft();
-	Level* GetLevel();
-	ClientInstance* GetClientInstance();
+
+	Amethyst::ClientContext& GetClientCtx();
+	Amethyst::ServerContext& GetServerCtx();
+	Amethyst::SharedContext& GetCurrentThreadCtx();
+
+	bool IsOnAmethystThread();
+	bool IsOnMainClientThread();
+	bool IsOnMainServerThread();
 
 	const Mod* GetOwnMod();
 }
