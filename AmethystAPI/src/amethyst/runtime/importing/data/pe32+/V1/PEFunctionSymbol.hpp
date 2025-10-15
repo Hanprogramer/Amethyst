@@ -6,6 +6,7 @@ namespace Amethyst::Importing::PE::V1 {
 		public AbstractPEImportedSymbol
 	{
 	public:
+		bool IsDestructor = false;
 		bool IsVirtual = false;
 		uint32_t VirtualIndex = 0;
 		std::string VirtualTable = "";

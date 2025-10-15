@@ -7,6 +7,7 @@ namespace Amethyst::Importing::PE {
 	{
 	public:
 		uint32_t TargetOffset = 0x0;
+		bool IsVirtualTableAddress = false;
 		bool IsVirtualTable = false;
 		uint64_t Address = 0x0;
 

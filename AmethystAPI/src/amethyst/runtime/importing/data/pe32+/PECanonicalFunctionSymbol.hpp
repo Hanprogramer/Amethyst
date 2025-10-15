@@ -7,6 +7,7 @@ namespace Amethyst::Importing::PE {
 	{
 	public:
 		uint32_t TargetOffset = 0x0;
+		bool IsDestructor = false;
 		bool IsVirtual = false;
 		uint32_t VirtualIndex = 0;
 		std::string VirtualTable = "";

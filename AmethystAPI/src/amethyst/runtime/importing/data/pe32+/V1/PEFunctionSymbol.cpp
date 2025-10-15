@@ -17,6 +17,7 @@ namespace Amethyst::Importing::PE::V1 {
 	std::unique_ptr<CanonicalSymbol> PEFunctionSymbol::Canonize() const {
 		auto canon = std::make_unique<PECanonicalFunctionSymbol>();
 		canon->TargetOffset = TargetOffset;
+		canon->IsDestructor = IsDestructor;
 		canon->Name = Name;
 		canon->IsShadow = IsShadowSymbol();
 		canon->IsVirtual = IsVirtual;
@@ -30,6 +31,7 @@ namespace Amethyst::Importing::PE::V1 {
 
 	void PEFunctionSymbol::ReadFrom(SimpleBinaryReader& reader) {
 		AbstractPEImportedSymbol::ReadFrom(reader);
+		IsDestructor = reader.Read<uint8_t>() != 0;
 		IsVirtual = reader.Read<uint8_t>() != 0;
 		if (IsVirtual) {
 			VirtualIndex = reader.Read<uint32_t>();
@@ -48,6 +50,7 @@ namespace Amethyst::Importing::PE::V1 {
 
 	std::string PEFunctionSymbol::ToString() const {
 		std::stringstream fields;
+		fields << (IsDestructor ? "Destructor, " : "");
 		if (IsVirtual) {
 			fields << std::format("Virtual[{}, {}]", VirtualIndex, VirtualTable);
 		}

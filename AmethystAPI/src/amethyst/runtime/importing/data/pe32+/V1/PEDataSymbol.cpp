@@ -17,6 +17,7 @@ namespace Amethyst::Importing::PE::V1 {
 	std::unique_ptr<CanonicalSymbol> PEDataSymbol::Canonize() const {
 		auto canon = std::make_unique<PECanonicalDataSymbol>();
 		canon->TargetOffset = TargetOffset;
+		canon->IsVirtualTableAddress = IsVirtualTableAddress;
 		canon->Name = Name;
 		canon->IsShadow = IsShadowSymbol();
 		canon->IsVirtualTable = IsVirtualTable;
@@ -26,6 +27,7 @@ namespace Amethyst::Importing::PE::V1 {
 
 	void PEDataSymbol::ReadFrom(SimpleBinaryReader& reader) {
 		AbstractPEImportedSymbol::ReadFrom(reader);
+		IsVirtualTableAddress = reader.Read<uint8_t>() != 0;
 		IsVirtualTable = reader.Read<uint8_t>() != 0;
 		Address = reader.Read<uint64_t>();
 	}
@@ -34,6 +36,9 @@ namespace Amethyst::Importing::PE::V1 {
 		std::stringstream fields;
 		if (IsVirtualTable) {
 			fields << "VirtualTable, ";
+		}
+		if (IsVirtualTableAddress) {
+			fields << "VirtualTableAddress, ";
 		}
 		fields << std::format("Address[{:x}]", Address);
 		return std::format("{} -> PEDataSymbol[{}]", AbstractPEImportedSymbol::ToString(), fields.str());
