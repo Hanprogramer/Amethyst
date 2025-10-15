@@ -41,9 +41,18 @@ namespace Amethyst::Importing::PE {
 
 		uintptr_t base = reinterpret_cast<uintptr_t>(ctx.ModuleHandle);
 		uintptr_t computedAddress = Compute(ctx);
-		if (Name.starts_with("?$vtable_for_")) {
-			// Intentional leak for now, will probably allocate at .rtih in the future at tweaking time
-			computedAddress = reinterpret_cast<uintptr_t>(new uintptr_t(computedAddress));
+		if (HasStorage) {
+			if (StorageOffset == 0x0) {
+				Assert(false, "Data symbol '{}' has storage enabled but no storage offset", Name);
+				return false;
+			}
+
+			// First, write the computed address to the storage
+			uintptr_t* storage = reinterpret_cast<uintptr_t*>(base + StorageOffset);
+			InterlockedExchange(storage, computedAddress);
+
+			// Now, write the address of the storage to the target
+			computedAddress = reinterpret_cast<uintptr_t>(storage);
 		}
 
 		DWORD oldProtection;

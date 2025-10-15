@@ -17,6 +17,8 @@ namespace Amethyst::Importing::PE::V1 {
 	std::unique_ptr<CanonicalSymbol> PEDataSymbol::Canonize() const {
 		auto canon = std::make_unique<PECanonicalDataSymbol>();
 		canon->TargetOffset = TargetOffset;
+		canon->HasStorage = HasStorage;
+		canon->StorageOffset = StorageOffset;
 		canon->IsVirtualTableAddress = IsVirtualTableAddress;
 		canon->Name = Name;
 		canon->IsShadow = IsShadowSymbol();

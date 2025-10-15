@@ -76,6 +76,24 @@ namespace Amethyst::Importing::PE {
 		uintptr_t computedAddress = Compute(ctx);
 		Assert(computedAddress != 0x0, "Failed to compute address for '{}'", Name);
 
+		if (HasStorage) {
+			if (StorageOffset == 0x0) {
+				Assert(false, "Function symbol '{}' has storage enabled but no storage offset", Name);
+				return false;
+			}
+
+			// Virtual destructors need special handling
+			if (IsDestructor && IsVirtual) {
+				// First, write the computed address to the storage
+				// We add 2 to the storage offset to skip "mov, rax, imm64" instruction
+				uintptr_t* storageAddr = reinterpret_cast<uintptr_t*>(base + StorageOffset + 2);
+				InterlockedExchange(storageAddr, computedAddress);
+
+				// Now, write the address of the storage to the target
+				computedAddress = base + StorageOffset;
+			}
+		}
+
 		DWORD oldProtection;
 		UnprotectMemory(base + TargetOffset, sizeof(void*), &oldProtection);
 		InterlockedExchange(reinterpret_cast<volatile uintptr_t*>(base + TargetOffset), computedAddress);

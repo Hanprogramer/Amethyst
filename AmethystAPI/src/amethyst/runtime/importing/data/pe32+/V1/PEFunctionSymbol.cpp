@@ -17,6 +17,8 @@ namespace Amethyst::Importing::PE::V1 {
 	std::unique_ptr<CanonicalSymbol> PEFunctionSymbol::Canonize() const {
 		auto canon = std::make_unique<PECanonicalFunctionSymbol>();
 		canon->TargetOffset = TargetOffset;
+		canon->HasStorage = HasStorage;
+		canon->StorageOffset = StorageOffset;
 		canon->IsDestructor = IsDestructor;
 		canon->Name = Name;
 		canon->IsShadow = IsShadowSymbol();
