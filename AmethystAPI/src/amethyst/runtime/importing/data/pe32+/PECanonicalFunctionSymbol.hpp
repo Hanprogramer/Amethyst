@@ -6,6 +6,7 @@ namespace Amethyst::Importing::PE {
 		public CanonicalSymbol
 	{
 	public:
+		uint32_t TargetOffset = 0x0;
 		bool IsVirtual = false;
 		uint32_t VirtualIndex = 0;
 		std::string VirtualTable = "";
@@ -16,5 +17,7 @@ namespace Amethyst::Importing::PE {
 		virtual std::string GetFormatType() const override;
 		virtual std::string GetKind() const override;
 		virtual std::string ToString() const override;
+		virtual uintptr_t Compute(const ResolutionContext& ctx) override;
+		virtual bool Resolve(const ResolutionContext& ctx) override;
 	};
 }

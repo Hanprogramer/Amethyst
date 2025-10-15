@@ -86,7 +86,7 @@ std::optional<ModError> Mod::Load()
         return error;
     }
 
-    mRuntimeImporter->Initialize();
+    mRuntimeImporter->ResolveAll();
     mIsLoaded = true;
     return std::nullopt;
 }
@@ -96,9 +96,6 @@ void Mod::Unload()
     if (!IsLoaded())
         return;
 
-    if (mRuntimeImporter) {
-        mRuntimeImporter->Shutdown();
-    }
     mRuntimeImporter.reset();
     mHandle.Reset();
     mIsLoaded = false;

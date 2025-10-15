@@ -6,6 +6,13 @@ namespace Amethyst::Importing {
 		class PECanonicalFunctionSymbol;
 	}
 
+	class CanonicalHeader;
+	class ResolutionContext {
+	public:
+		void* ModuleHandle = nullptr;
+		CanonicalHeader* Header = nullptr;
+	};
+
 	class CanonicalSymbol {
 	public:
 		std::string Name = "";
@@ -15,6 +22,8 @@ namespace Amethyst::Importing {
 		virtual std::string GetFormatType() const = 0;
 		virtual std::string GetKind() const = 0;
 		virtual std::string ToString() const;
+		virtual uintptr_t Compute(const ResolutionContext& ctx) = 0;
+		virtual bool Resolve(const ResolutionContext& ctx) = 0;
 
 		template<typename T = CanonicalSymbol>
 		T* Transform() {

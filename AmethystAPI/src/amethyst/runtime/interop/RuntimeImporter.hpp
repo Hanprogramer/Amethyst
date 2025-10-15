@@ -17,17 +17,6 @@ private:
 
     HMODULE mModule = nullptr;
     bool mInitialized = false;
-
-    std::unordered_map<uint32_t, std::string> mStringTable{};
-    std::unordered_map<std::string, uintptr_t*> mImportAddressTable{};
-    std::unordered_map<std::string, uintptr_t*> mFuntionImportAddresses{};
-    std::unordered_map<std::string, uintptr_t> mVirtualTables{};
-    std::unordered_map<std::string, uintptr_t> mVirtualDestructors{};
-    std::unordered_map<std::string, safetyhook::Allocation> mAllocatedDestructorBlocks{};
-    std::unordered_map<std::string, safetyhook::Allocation> mAllocatedVtableToVarStorage{};
-
-    std::shared_ptr<safetyhook::Allocator> mAllocator = nullptr;
-
     explicit RuntimeImporter(HMODULE moduleHandle);
 public:
     RuntimeImporter(const RuntimeImporter&) = delete;
@@ -36,21 +25,7 @@ public:
     RuntimeImporter& operator=(RuntimeImporter&&) = delete;
     ~RuntimeImporter();
 
-    bool IsInitialized() const;
-    HMODULE GetModule() const;
-    uintptr_t* GetMutableAddress(const std::string& name);
-    uintptr_t GetAddress(const std::string& name) const;
-    uintptr_t GetVirtualTableAddress(const std::string& name) const;
-
-    void Initialize();
-    void Shutdown();
-
-    bool GetSections(
-        IMAGE_SECTION_HEADER** stringTableSection,
-        IMAGE_SECTION_HEADER** functionDescSection,
-        IMAGE_SECTION_HEADER** virtualFunctionDescSection,
-        IMAGE_SECTION_HEADER** variableDescSection,
-        IMAGE_SECTION_HEADER** vtableDescSection) const;
+    bool ResolveAll() const;
 
     static void UninitializedFunctionHandler();
     static void UninitializedDestructorHandler();

@@ -1,4 +1,5 @@
 #include "amethyst/runtime/importing/data/pe32+/PECanonicalDataSymbol.hpp"
+#include "mc/src/common/world/containers/managers/controllers/CraftingContainerController.hpp"
 
 namespace Amethyst::Importing::PE {
 	std::string PECanonicalDataSymbol::GetFormatType() const {
@@ -16,5 +17,40 @@ namespace Amethyst::Importing::PE {
 		}
 		fields << std::format("Address[{:x}]", Address);
 		return std::format("{} -> PECanonicalDataSymbol[{}]", CanonicalSymbol::ToString(), fields.str());
+	}
+
+	uintptr_t PECanonicalDataSymbol::Compute(const ResolutionContext& ctx) {
+		if (ctx.ModuleHandle == nullptr) {
+			Assert(false, "Cannot resolve data symbol '{}' without a valid module handle", Name);
+			return 0x0;
+		}
+
+		return SlideAddress(Address);
+	}
+
+	bool PECanonicalDataSymbol::Resolve(const ResolutionContext& ctx) {
+		if (IsShadow) {
+			// Shadow symbols do not need to be resolved
+			return true;
+		}
+
+		if (TargetOffset == 0x0) {
+			Assert(false, "Data symbol '{}' has no target offset to write to", Name);
+			return false;
+		}
+
+		uintptr_t base = reinterpret_cast<uintptr_t>(ctx.ModuleHandle);
+		uintptr_t computedAddress = Compute(ctx);
+		if (Name.starts_with("?$vtable_for_")) {
+			// Intentional leak for now, will probably allocate at .rtih in the future at tweaking time
+			computedAddress = reinterpret_cast<uintptr_t>(new uintptr_t(computedAddress));
+		}
+
+		DWORD oldProtection;
+		UnprotectMemory(base + TargetOffset, sizeof(void*), &oldProtection);
+		uintptr_t* target = reinterpret_cast<uintptr_t*>(base + TargetOffset);
+		InterlockedExchange(target, computedAddress);
+		ProtectMemory(base + TargetOffset, sizeof(void*), oldProtection, nullptr);
+		return true;
 	}
 }
