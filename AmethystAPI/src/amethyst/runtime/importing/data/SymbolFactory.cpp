@@ -25,6 +25,6 @@ namespace Amethyst::Importing {
 		if (it != Constructors.end()) {
 			return it->second();
 		}
-		Assert(false, "No constructor registered for {}", type.ToString());
+		AssertFail("No constructor registered for {}", type.ToString());
 	}
 }
