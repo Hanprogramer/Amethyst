@@ -11,8 +11,10 @@ namespace Amethyst::Importing::PE {
 	PEImporter::PEImporter(void* module) :
 		Importer(module)
 	{
-		Assert(!IsResolved(), "Symbols are already resolved for this module");
-		Assert(mModule != nullptr, "PEImporter module handle cannot be null");
+		if (IsResolved())
+			AssertFail("Symbols are already resolved for this module");
+		if (mModule == nullptr)
+			AssertFail("PEImporter module handle cannot be null");
 		auto [rtih, rtis] = GetSections(mModule);
 		mRTIHSection = rtih;
 		mRTISSection = rtis;
@@ -26,8 +28,10 @@ namespace Amethyst::Importing::PE {
 	}
 
 	void PEImporter::ResolveAll() {
-		Assert(mHeader != nullptr, "Cannot resolve symbols without a valid header");
-		Assert(!IsResolved(), "Symbols are already resolved for this module");
+		if (mHeader == nullptr)
+			AssertFail("Cannot resolve symbols without a valid header");
+		if (IsResolved())
+			AssertFail("Symbols are already resolved for this module");
 		for (auto& symbol : mHeader->Symbols) {
 			ResolutionContext ctx = {
 				.ModuleHandle = mModule,
@@ -47,7 +51,7 @@ namespace Amethyst::Importing::PE {
 		uintptr_t base = reinterpret_cast<uintptr_t>(module);
 		IMAGE_DOS_HEADER* dosHeader = reinterpret_cast<IMAGE_DOS_HEADER*>(base);
 		if (dosHeader->e_magic != IMAGE_DOS_SIGNATURE) {
-			Assert(false, "DOS header signature was NOT 'MZ'...");
+			AssertFail("DOS header signature was NOT 'MZ'...");
 			return { nullptr, nullptr };
 		}
 
@@ -74,13 +78,12 @@ namespace Amethyst::Importing::PE {
 	}
 
 	std::unique_ptr<CanonicalHeader> PEImporter::LoadHeader(void* module, IMAGE_SECTION_HEADER* rtih, IMAGE_SECTION_HEADER* rtis) {
-		if (rtih == nullptr || rtis == nullptr) {
-			Assert(false, "RTIH and RTIS section headers cannot be null");
-			return nullptr;
-		}
-
-		Assert(rtih != nullptr, "RTIH section header cannot be null");
-		Assert(rtis != nullptr, "RTIS section header cannot be null");
+		if (module == nullptr)
+			AssertFail("PEImporter module handle cannot be null");
+		if (rtih == nullptr)
+			AssertFail("RTIH section header cannot be null");
+		if (rtis == nullptr)
+			AssertFail("RTIS section header cannot be null");
 		
 		uintptr_t base = reinterpret_cast<uintptr_t>(module);
 		std::span<char> data = {
@@ -93,7 +96,7 @@ namespace Amethyst::Importing::PE {
 		auto type = AbstractHeader::PeekInfo(reader);
 		auto header = HeaderFactory::Create(type);
 		if (header == nullptr) {
-			Assert(false, "Failed to create header of type '{}'", type.ToString());
+			AssertFail("Failed to create header of type '{}'", type.ToString());
 			return nullptr;
 		}
 
@@ -102,21 +105,25 @@ namespace Amethyst::Importing::PE {
 	}
 
 	std::unique_ptr<PEImporter> PEImporter::Create(void* module) {
-		Assert(module != nullptr, "PEImporter module handle cannot be null");
+		if (module == nullptr)
+			AssertFail("PEImporter module handle cannot be null");
 		auto [rtih, rtis] = GetSections(module);
 		if (rtih == nullptr || rtis == nullptr) {
 			Log::Warning("Module 0x{:x} doesn't import from 'Minecraft.Windows', skipping resolution.", reinterpret_cast<uintptr_t>(module));
 			return nullptr;
 		}
 
-		Assert((ReadState(module) & 0xFFull) != 1, "Symbols are already resolved for this module");
+		if ((ReadState(module) & 0xFFull) == 1)
+			AssertFail("Symbols are already resolved for this module");
 		return std::make_unique<PEImporter>(module);
 	}
 
 	uint64_t PEImporter::ReadState(void* module) {
 		auto [rtih, rtis] = GetSections(module);
-		Assert(rtih != nullptr, "Failed to find .rtih section in module");
-		Assert(rtis != nullptr, "Failed to find .rtis section in module");
+		if (rtih == nullptr)
+			AssertFail("RTIH section header cannot be null");
+		if (rtis == nullptr)
+			AssertFail("RTIS section header cannot be null");
 
 		uintptr_t base = reinterpret_cast<uintptr_t>(module);
 		uint64_t* state = reinterpret_cast<uint64_t*>(base + rtis->VirtualAddress);
@@ -125,8 +132,11 @@ namespace Amethyst::Importing::PE {
 
 	void PEImporter::WriteState(void* module, uint64_t state) {
 		auto [rtih, rtis] = GetSections(module);
-		Assert(rtih != nullptr, "Failed to find .rtih section in module");
-		Assert(rtis != nullptr, "Failed to find .rtis section in module");
+		if (rtih == nullptr)
+			AssertFail("RTIH section header cannot be null");
+		if (rtis == nullptr)
+			AssertFail("RTIS section header cannot be null");
+
 		uintptr_t base = reinterpret_cast<uintptr_t>(module);
 		uint64_t* currentState = reinterpret_cast<uint64_t*>(base + rtis->VirtualAddress);
 		*currentState = state;
