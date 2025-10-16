@@ -27,7 +27,7 @@ namespace Amethyst::Importing {
 
 		template<typename T = CanonicalSymbol>
 		T* Transform() {
-			static_assert(false, "Transforming CanonicalSymbol to T not implemented.");
+			static_assert(!std::is_same_v<T, T>, "Transforming CanonicalSymbol to T not implemented.");
 		}
 
 		template<>
