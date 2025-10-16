@@ -90,7 +90,7 @@ class ItemTag : public HashedString {
 /*
  * Represents a type of item in the game, including its properties, behaviors, and interactions.
  */
-/** @vptr {0x4DFCE10} */
+/** @vptr {48 8D 05 ? ? ? ? 48 89 01 48 83 C1 ? 0F 57 C0 0F 11 01 4C 89 61 ? 4C 89 61 ? 45 8D 44 24} */
 class Item {
 public:
 	class ScopedCreativeGroup {
@@ -149,7 +149,7 @@ public:
     std::vector<std::function<void()>> mOnResetBAIcallbacks;
     std::vector<ItemTag> mTags;
 
-	/** @sig {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 0F B7 D8} */
+	/** @sig {E8 ? ? ? ? 88 9F ? ? ? ? 48 8D 05} */
     MC Item(const std::string& identifier, short numId);
 
     /** @vidx {000} */ MC virtual ~Item();
