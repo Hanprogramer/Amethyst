@@ -55,10 +55,10 @@ namespace Amethyst::Importing::PE {
 		if (IsSignature) {
 			auto scanResult = SigScanSafe(Signature);
 			Assert(scanResult.has_value(), "Failed to resolve signature for function '{}': {}", Name, Signature);
-			return *scanResult;
+			return GetEffectiveAddress(*scanResult);
 		}
 
-		return SlideAddress(Address);
+		return GetEffectiveAddress(SlideAddress(Address));
 	}
 
 	bool PECanonicalFunctionSymbol::Resolve(const ResolutionContext& ctx) {

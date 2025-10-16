@@ -25,7 +25,13 @@ namespace Amethyst::Importing::PE {
 			return 0x0;
 		}
 
-		return SlideAddress(Address);
+		if (IsSignature) {
+			auto scanResult = SigScanSafe(Signature);
+			Assert(scanResult.has_value(), "Failed to resolve signature for data '{}': {}", Name, Signature);
+			return GetEffectiveAddress(*scanResult);
+		}
+
+		return GetEffectiveAddress(SlideAddress(Address));
 	}
 
 	bool PECanonicalDataSymbol::Resolve(const ResolutionContext& ctx) {

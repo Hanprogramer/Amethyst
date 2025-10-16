@@ -4,7 +4,7 @@
 namespace Amethyst::Importing {
 	void AbstractSymbol::ReadFrom(SimpleBinaryReader& reader) {
 		auto ver = reader.Read<uint32_t>();
-		Assert(ver == 1, "Unsupported AbstractSymbol version {}", ver);
+		Assert(ver == GetFormatVersion(), "Unsupported AbstractSymbol version {}", ver);
 		auto fmt = reader.ReadPrefixedString();
 		Assert(fmt == GetFormatType(), "Mismatched AbstractSymbol format type {}, expected {}", fmt, GetFormatType());
 		auto kind = reader.ReadPrefixedString();
