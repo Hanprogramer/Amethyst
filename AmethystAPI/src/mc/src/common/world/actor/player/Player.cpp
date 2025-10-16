@@ -118,6 +118,16 @@ LocalPlayer* Player::getLocalPlayer()
     return reinterpret_cast<LocalPlayer*>(this);
 }
 
+SerializedSkin& Player::getSkin()
+{
+    return mSkin;
+}
+
+const SerializedSkin& Player::getSkin() const
+{
+    return mSkin;
+}
+
  //int Player::getItemUseDuration() const
  //{
  //    using function = decltype(&Player::getItemUseDuration);

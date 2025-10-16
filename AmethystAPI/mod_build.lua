@@ -1,6 +1,10 @@
-function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_build)
+function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_build, config)
+    config = config or {}
+    
     add_rules("plugin.vsxmake.autoupdate")
     set_languages("c++23")
+
+    local extra_deps     = config.extra_deps or {}
 
     local modFolder
     local amethystApiPath
@@ -105,6 +109,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     set_project(mod_name)
 
     target(mod_name)
+        set_languages("c++23")
         set_kind("shared")
         add_deps("AmethystAPI", "libhat")
 
@@ -129,6 +134,14 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             'ENTT_PACKED_PAGE=128',
             'AMETHYST_EXPORTS'
         )
+
+        for _, dep in ipairs(extra_deps) do
+            add_deps(dep)
+        end
+
+        for _, lib in ipairs(extra_links) do
+            add_links(lib)
+        end
 
         -- Deps
         add_packages("AmethystAPI", "libhat")
