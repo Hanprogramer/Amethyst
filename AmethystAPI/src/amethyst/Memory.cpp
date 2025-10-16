@@ -75,7 +75,6 @@ void ProtectMemory(uintptr_t address, size_t size, DWORD protectionData, DWORD* 
 	if (oldProtection != nullptr) *oldProtection = oldProtect;
 }
 
-#pragma optimize("", off)
 uintptr_t GetEffectiveAddress(uintptr_t address) {
 	ZydisDecoder decoder;
 	ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
@@ -117,7 +116,6 @@ uintptr_t GetEffectiveAddress(uintptr_t address) {
 	}
 	return address;
 }
-#pragma optimize("", on)
 
 uintptr_t GetVtable(void* obj)
 {
