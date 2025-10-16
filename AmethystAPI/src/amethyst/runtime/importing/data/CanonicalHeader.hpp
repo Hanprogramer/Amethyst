@@ -17,7 +17,7 @@ namespace Amethyst::Importing {
 
 		template<typename T = CanonicalHeader>
 		T* Transform() {
-			static_assert(false, "Transforming CanonicalHeader to T not implemented.");
+			static_assert(!std::is_same_v<T, T>, "Transforming CanonicalHeader to T not implemented.");
 		}
 
 		template<>
