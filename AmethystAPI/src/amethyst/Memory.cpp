@@ -4,6 +4,7 @@
 #include <thread>
 #include <optional>
 
+
 uintptr_t GetMinecraftBaseAddress()
 {
     static uintptr_t mc = reinterpret_cast<uintptr_t>(GetModuleHandleA("Minecraft.Windows.exe"));
@@ -75,6 +76,8 @@ void ProtectMemory(uintptr_t address, size_t size, DWORD protectionData, DWORD* 
 	if (oldProtection != nullptr) *oldProtection = oldProtect;
 }
 
+// Since those functions are very workaroundy and not performance critical, disable optimizations to make debugging easier.
+#pragma optimize("", off)
 uintptr_t GetEffectiveAddress(uintptr_t address) {
 	ZydisDecoder decoder;
 	ZydisDecoderInit(&decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
@@ -85,7 +88,7 @@ uintptr_t GetEffectiveAddress(uintptr_t address) {
 		// lea ...
 		if (instr.mnemonic == ZYDIS_MNEMONIC_LEA) {
 			// ... reg, [rip + disp32]
-			if (instr.operand_count == 2 &&
+			if (instr.operand_count_visible == 2 &&
 				operands[0].type == ZYDIS_OPERAND_TYPE_REGISTER &&
 				operands[1].type == ZYDIS_OPERAND_TYPE_MEMORY &&
 				operands[1].mem.base == ZYDIS_REGISTER_RIP &&
@@ -97,18 +100,16 @@ uintptr_t GetEffectiveAddress(uintptr_t address) {
 		// call|jmp ...
 		if (instr.mnemonic == ZYDIS_MNEMONIC_CALL || instr.mnemonic == ZYDIS_MNEMONIC_JMP) {
 			// ... rel32
-			if (instr.operand_count == 1 && 
+			if (instr.operand_count_visible == 1 && 
 				operands[0].type == ZYDIS_OPERAND_TYPE_IMMEDIATE)
 				return address + instr.length + operands[0].imm.value.s;
 
 			// ... [rip + disp32]
-			if (instr.operand_count == 1 && 
+			if (instr.operand_count_visible == 1 &&
 				operands[0].type == ZYDIS_OPERAND_TYPE_MEMORY &&
 				operands[0].mem.base == ZYDIS_REGISTER_RIP &&
 				operands[0].mem.disp.has_displacement &&
-				operands[0].mem.index == ZYDIS_REGISTER_NONE &&
-				operands[0].mem.scale == 1 &&
-				operands[0].mem.segment == ZYDIS_REGISTER_NONE) {
+				operands[0].mem.index == ZYDIS_REGISTER_NONE) {
 				uintptr_t ptr = address + instr.length + operands[0].mem.disp.value;
 				return *reinterpret_cast<uintptr_t*>(ptr);
 			}
@@ -122,7 +123,6 @@ uintptr_t GetVtable(void* obj)
     return (uintptr_t)*reinterpret_cast<uintptr_t**>(obj);
 }
 
-#pragma optimize("", off)
 void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)
 {
     Log::Info("Comparing virtual tables {:X} and {:X}", lhs, rhs);

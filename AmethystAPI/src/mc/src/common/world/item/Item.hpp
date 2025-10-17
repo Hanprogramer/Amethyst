@@ -152,6 +152,9 @@ public:
 	/** @sig {E8 ? ? ? ? 88 9F ? ? ? ? 48 8D 05} */
     MC Item(const std::string& identifier, short numId);
 
+	/** @sig {E8 ? ? ? ? 88 9F ? ? ? ? 48 8D 05} */
+	MC static void $constructor(Item* self, const std::string& identifier, short numId);
+
     /** @vidx {000} */ MC virtual ~Item();
 	/** @vidx {001} */ MC virtual bool initServer(const Json::Value& config, const SemVersion& version, bool unk2, const Experiments& experiments);
 	/** @vidx {002} */ MC virtual void tearDown();
