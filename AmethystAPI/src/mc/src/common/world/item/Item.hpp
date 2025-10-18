@@ -93,6 +93,24 @@ class ItemTag : public HashedString {
 /** @vptr {48 8D 05 ? ? ? ? 48 89 01 48 83 C1 ? 0F 57 C0 0F 11 01 4C 89 61 ? 4C 89 61 ? 45 8D 44 24} */
 class Item {
 public:
+	class Tier {
+	public:
+		const int32_t mLevel;
+		const int32_t mUses;
+		const float mSpeed;
+		const int32_t mDamage;
+		const int32_t mEnchantmentValue;
+
+		Tier(int32_t level, int32_t uses, float speed, int32_t damage, int32_t enchantmentValue) :
+			mLevel(level),
+			mUses(uses),
+			mSpeed(speed),
+			mDamage(damage),
+			mEnchantmentValue(enchantmentValue) 
+		{
+		}
+	};
+
 	class ScopedCreativeGroup {
     public:
         /** @sig {48 89 5C 24 ? 48 89 6C 24 ? 48 89 74 24 ? 57 48 83 EC ? 49 8B F0 48 8B EA 48 8B D9 48 8D 4C 24} */
@@ -203,7 +221,7 @@ public:
 	/** @vidx {045} */ MC virtual bool isLiquidClipItem() const;
 	/** @vidx {046} */ MC virtual bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
 	/** @vidx {047} */ MC virtual bool requiresInteract() const;
-	/** @vidx {048} */ MC virtual void appendFormattedHovertext(const ItemStackBase& stack, Level& level, std::string& outText, bool unk3) const;
+	/** @vidx {048} */ MC virtual void appendFormattedHovertext(const ItemStackBase& stack, Level& level, std::string& outText, bool showCategory) const;
 	/** @vidx {049} */ MC virtual bool isValidRepairItem(const ItemStackBase& targetStack, const ItemStackBase& repairStack, const BaseGameVersion& version) const;
 	/** @vidx {050} */ MC virtual int getEnchantSlot() const;
 	/** @vidx {051} */ MC virtual int getEnchantValue() const;
