@@ -56,7 +56,7 @@ public:
     /** @sig {48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA 48 8B F1 48 89 94 24 ? ? ? ? 48 8D 59} */
     MC void setUserData(std::unique_ptr<CompoundTag> userData);
 
-    const Item* getItem() const;
+    Item* getItem() const;
     bool isNull() const;
     bool isLiquidClipItem() const;
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;

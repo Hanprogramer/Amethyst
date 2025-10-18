@@ -92,7 +92,7 @@ bool ItemStackBase::_isInstance(std::string_view itemName) const
     AssertFail("Too lazy to implement this, if needed write impl here");
 }
 
-const Item* ItemStackBase::getItem() const {
+Item* ItemStackBase::getItem() const {
     return mItem.get();
 }
 
