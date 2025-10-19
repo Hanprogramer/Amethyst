@@ -73,6 +73,9 @@ public:
     const LocalPlayer* getLocalPlayer() const;
     ServerPlayer* getServerPlayer();
     LocalPlayer* getLocalPlayer();
+
+    SerializedSkin& getSkin();
+    const SerializedSkin& getSkin() const;
 };
 #pragma pack(pop)   
 

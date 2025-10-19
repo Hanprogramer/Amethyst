@@ -25,7 +25,11 @@ public:
         : Packet(), mPacket(nullptr), mTypeId(0) {}
 
     CustomPacketInternal(std::unique_ptr<Amethyst::CustomPacket> packet, uint64_t typeId) 
-        : Packet(), mPacket(std::move(packet)), mTypeId(typeId) {}
+        : Packet(), mPacket(std::move(packet)), mTypeId(typeId) {
+            mReliability = mPacket->mReliability;
+            mPriority = mPacket->mPriority;
+            mCompressible = mPacket->mCompressible;
+        }
 
     // Delete copy semantics
     CustomPacketInternal(const CustomPacketInternal&) = delete;
