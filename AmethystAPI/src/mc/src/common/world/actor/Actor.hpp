@@ -1,3 +1,4 @@
+/// @symbols
 #pragma once
 #include <gsl/gsl>
 #include <vector>
@@ -8,6 +9,7 @@
 #include "mc/src/common/world/entity/EntityContext.hpp"
 #include <mc/src/common/gamerefs/WeakRef.hpp>
 #include <mc/src/common/world/actor/Actor.hpp>
+#include <mc/src/common/world/actor/ActorDamageSource.hpp>
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src-deps/core/math/Color.hpp>
 #include <mc/src/common/ActorUniqueID.hpp>
@@ -38,7 +40,6 @@ class AddActorBasePacket;
 
 // Auto-generated: Unknown complete types
 enum NewInteractionModel {};
-enum ActorDamageCause {};
 
 namespace Puv {
     namespace Legacy {
@@ -82,7 +83,7 @@ struct BuiltInActorComponents {
     gsl::not_null<ActorWalkAnimationComponent*> mWalkAnimationComponent;
 };
 
-#pragma pack(push, 1)
+
 class Actor {
 public:
     /* this + 8   */ EntityContext mEntityContext;
@@ -601,8 +602,10 @@ public:
 
     /**@vidx {150}*/
     virtual void _unknown_150();
+
+	/** @sig {40 56 57 48 83 EC ? 8B 41} */
+	MC float calculateAttackDamage(Actor& target) const;
 };
-#pragma pack(pop)   
 
 // 1.21.0.3
 static_assert(sizeof(Actor) == 1096);
