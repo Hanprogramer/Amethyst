@@ -109,6 +109,22 @@ public:
 			mEnchantmentValue(enchantmentValue) 
 		{
 		}
+
+		bool equals(const Tier& other) const {
+			return mLevel == other.mLevel &&
+				   mUses == other.mUses &&
+				   mSpeed == other.mSpeed &&
+				   mDamage == other.mDamage &&
+				   mEnchantmentValue == other.mEnchantmentValue;
+		}
+
+		bool operator==(const Tier& other) const {
+			return equals(other);
+		}
+
+		bool operator!=(const Tier& other) const {
+			return !equals(other);
+		}
 	};
 
 	class ScopedCreativeGroup {

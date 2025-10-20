@@ -1,3 +1,4 @@
+/// @symbols
 #pragma once
 #include <gsl/gsl>
 #include <vector>
@@ -601,6 +602,9 @@ public:
 
     /**@vidx {150}*/
     virtual void _unknown_150();
+
+	/** @sig {40 56 57 48 83 EC ? 8B 41} */
+	MC float calculateAttackDamage(Actor& target) const;
 };
 
 // 1.21.0.3

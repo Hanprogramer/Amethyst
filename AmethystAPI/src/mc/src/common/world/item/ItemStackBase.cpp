@@ -131,3 +131,9 @@ UseAnim ItemStackBase::getUseAnimation() const
     if (!mItem) return UseAnim::None;
     else return mItem->getUseAnimation();
 }
+
+bool ItemStackBase::isEnchanted() const {
+	if (!mItem || !mUserData)
+		return false;
+	return mUserData->contains(TAG_ENCHANTS, Tag::Type::List);
+}
