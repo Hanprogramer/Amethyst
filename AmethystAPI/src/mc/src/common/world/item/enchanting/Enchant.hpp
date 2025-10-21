@@ -122,6 +122,7 @@ public:
 
 public:
 	// 1.21.0.3
+	// No 'lea reg, [rip+disp32]' found, using direct address
 	/** @addr {0x59DD368} */
 	MC static std::vector<std::unique_ptr<Enchant>> mEnchants;
 	
