@@ -5,6 +5,7 @@
 #include <mc/src/common/network/packet/Packet.hpp>
 #include <mc/src/common/network/PacketSender.hpp>
 #include <mc/src/common/CommonTypes.hpp>
+#include <mc/src/common/world/actor/player/Player.hpp>
 
 class UserEntityIdentifierComponent;
 
@@ -109,6 +110,13 @@ public:
     {
         CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
         sender.sendToClient(userIdentifier, sendable);
+    }
+
+	template <DerivedFromCustomPacket T>
+    void SendToClient(::PacketSender& sender, const Player& player, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendToClient(player.getUserIdentity(), sendable);
     }
 
     template <DerivedFromCustomPacket T>

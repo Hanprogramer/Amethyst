@@ -10,6 +10,7 @@ enum class ScreenEventType : int32_t {
     ButtonEvent = 1,
     ToggleChangeEvent = 13,
     SliderChangeEvent = 16,
+	TextEditChange = 12
 
     //ButtonMoveEvent = 0x0002,
     //PointerMoveInEvent = 0x0003,
@@ -71,13 +72,24 @@ public:
     UIPropertyBag* properties;
 };
 
+enum class TextCharEventResult : int32_t {};
+
+struct TextEditScreenEventData {
+public:
+	int id;
+  	int index;
+  	bool finished;
+  	UIPropertyBag *properties;
+  	TextCharEventResult result;
+  	bool hasSelectedTextBox;
+};
+
 union ScreenEventData {
     ButtonScreenEventData button;
     ToggleChangeEventData toggle;
     SliderChangeEventData slider;
+    TextEditScreenEventData textEdit;
 
-
-    //TextEditScreenEventData textEdit;
     //HoverScreenEventData hover;
     //PointerMoveScreenEventData pointerMove;
     //PointerHeldScreenEventData pointerHeld;
