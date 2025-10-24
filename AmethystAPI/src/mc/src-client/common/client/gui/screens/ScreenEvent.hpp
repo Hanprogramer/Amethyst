@@ -11,7 +11,6 @@ enum class ScreenEventType : int32_t {
     TextEditChange = 12,
     ToggleChangeEvent = 13,
     SliderChangeEvent = 16,
-	TextEditChange = 12
 
     //ButtonMoveEvent = 0x0002,
     //PointerMoveInEvent = 0x0003,
