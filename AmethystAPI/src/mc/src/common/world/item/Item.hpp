@@ -267,10 +267,10 @@ public:
 	/** @vidx {075} */ MC virtual ItemUseMethod useTimeDepleted(ItemStack& stack, Level* level, Player* player) const;
 	/** @vidx {076} */ MC virtual void releaseUsing(ItemStack& stack, Player* player, int duration) const;
 	/** @vidx {077} */ MC virtual float getDestroySpeed(const ItemStackBase& stack, const Block& block) const;
-	/** @vidx {078} */ MC virtual void hurtActor(ItemStack& stack, Actor& actor, Mob& mob) const;
-	/** @vidx {079} */ MC virtual void hitActor(ItemStack& stack, Actor& actor, Mob& mob) const;
+	/** @vidx {078} */ MC virtual void hurtActor(ItemStack& stack, Actor& actor, Mob& attacker) const;
+	/** @vidx {079} */ MC virtual void hitActor(ItemStack& stack, Actor& actor, Mob& attacker) const;
 	/** @vidx {080} */ MC virtual void hitBlock(ItemStack& stack, const Block& block, const BlockPos& pos, Mob& mob) const;
-	/** @vidx {081} */ MC virtual bool mineBlock(ItemStack& stack, const Block& block, int unk2, int unk3, int unk4, Actor* actor) const;
+	/** @vidx {081} */ MC virtual bool mineBlock(ItemStack& stack, const Block& block, int x, int y, int z, Actor* owner) const;
 	/** @vidx {082} */ MC virtual std::string buildDescriptionName(const ItemStackBase& stack) const;
 	/** @vidx {083} */ MC virtual std::string buildDescriptionId(const ItemDescriptor& descriptor, const CompoundTag* tag) const;
 	/** @vidx {084} */ MC virtual std::string buildEffectDescriptionName(const ItemStackBase& stack) const;

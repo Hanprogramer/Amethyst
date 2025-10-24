@@ -90,3 +90,9 @@ bool Block::hasProperty(BlockProperty property) const
 {
     return mLegacyBlock->hasProperty(property);
 }
+
+bool Block::requiresCorrectToolForDrops() const {
+    if (!mLegacyBlock)
+		AssertFail("mLegacyBlock is null");
+	return !mLegacyBlock->mMaterial.mAlwaysDestroyable && !mLegacyBlock->mCanDropWithAnyTool;
+}

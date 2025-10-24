@@ -137,3 +137,16 @@ bool ItemStackBase::isEnchanted() const {
 		return false;
 	return mUserData->contains(TAG_ENCHANTS, Tag::Type::List);
 }
+
+bool ItemStackBase::canDestroySpecial(const Block& block) const {
+	if (!mItem)
+		return false;
+	return mItem->canDestroySpecial(block);
+}
+
+bool ItemStackBase::canDestroyOptimally(const Block& block) const {
+	if (!block.requiresCorrectToolForDrops()) {
+		return true;
+	}
+	return canDestroySpecial(block);
+}

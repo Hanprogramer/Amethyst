@@ -74,6 +74,8 @@ public:
     operator bool() const;
     bool hasTag(const HashedString& tag) const;
     UseAnim getUseAnimation() const;
+	bool canDestroySpecial(const Block& block) const;
+	bool canDestroyOptimally(const Block& block) const;
 private:
     bool _isInstance(std::string_view itemName) const;
 };
