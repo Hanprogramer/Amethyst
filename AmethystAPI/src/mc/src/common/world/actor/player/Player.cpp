@@ -130,6 +130,10 @@ const SerializedSkin& Player::getSkin() const
     return mSkin;
 }
 
+UserEntityIdentifierComponent* Player::getUserIdentity() {
+    return tryGetComponent<UserEntityIdentifierComponent>();
+}
+
 const UserEntityIdentifierComponent* Player::getUserIdentity() const {
-    return this->tryGetComponent<UserEntityIdentifierComponent>();
+	return tryGetComponent<UserEntityIdentifierComponent>();
 }

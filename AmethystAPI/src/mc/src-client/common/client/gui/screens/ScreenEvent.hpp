@@ -94,7 +94,6 @@ union ScreenEventData {
     SliderChangeEventData slider;
     TextEditScreenEventData textEdit;
 
-
     //HoverScreenEventData hover;
     //PointerMoveScreenEventData pointerMove;
     //PointerHeldScreenEventData pointerHeld;

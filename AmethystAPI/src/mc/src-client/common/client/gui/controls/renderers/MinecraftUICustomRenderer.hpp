@@ -1,6 +1,8 @@
 
 #pragma once
-#include "UICustomRenderer.hpp"
+#include "mc/src-client/common/client/gui/controls/renderers/UICustomRenderer.hpp"
+
+class MinecraftUIRenderContext;
 
 class MinecraftUIRenderContext;
 

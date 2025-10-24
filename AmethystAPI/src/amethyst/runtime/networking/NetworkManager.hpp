@@ -5,7 +5,7 @@
 #include <mc/src/common/network/packet/Packet.hpp>
 #include <mc/src/common/network/PacketSender.hpp>
 #include <mc/src/common/CommonTypes.hpp>
-#include <mc/src/common/server/ServerPlayer.hpp>
+#include <mc/src/common/world/actor/player/Player.hpp>
 
 class UserEntityIdentifierComponent;
 
