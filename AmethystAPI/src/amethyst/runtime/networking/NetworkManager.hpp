@@ -124,13 +124,6 @@ public:
         sender.sendToClient(userIdentifier, sendable);
     }
 
-	template <DerivedFromCustomPacket T>
-    void SendToClient(::PacketSender& sender, const Player& player, std::unique_ptr<T> packet)
-    {
-        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
-        sender.sendToClient(player.getUserIdentity(), sendable);
-    }
-
     template <DerivedFromCustomPacket T>
     void SendToClient(::PacketSender& sender, const NetworkIdentifier& id, SubClientId subid, std::unique_ptr<T> packet)
     {
