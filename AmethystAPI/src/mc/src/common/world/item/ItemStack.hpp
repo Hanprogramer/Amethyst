@@ -16,7 +16,7 @@ class NetworkItemStackDescriptor;
 class ItemStack : public ItemStackBase {
 public:
     /** @address {0x57CF128} */
-    MC static ItemStack& EMPTY_ITEM;
+    MC static ItemStack EMPTY_ITEM;
 	/* this + 136 */ ItemStackNetIdVariant mNetIdVariant;
 
     ItemStack();
