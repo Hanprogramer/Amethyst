@@ -1,4 +1,5 @@
 #pragma once
+#include <amethyst/Log.hpp>
 
 template <typename T0, typename T1, int T2>
 class TypedClientNetId {
@@ -8,9 +9,9 @@ public:
 
     virtual ~TypedClientNetId() = default;
     virtual void clientInit(TypedClientNetId<T0, T1, T2>) {
-		Assert("Not implemented");
+		AssertFail("Not implemented");
 	};
     virtual void clientInit() {
-		Assert("Not implemented");
+		AssertFail("Not implemented");
 	}
 };
