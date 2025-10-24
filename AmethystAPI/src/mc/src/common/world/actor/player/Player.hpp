@@ -35,7 +35,17 @@ public:
     /* this + 3784 */ std::unique_ptr<GameMode> mGameMode;
     /* this + 3792 */ std::byte padding3792[2680];
     /* this + 6472 */ std::unique_ptr<ItemStackNetManagerBase> mItemStackNetManager;
-    /* this + 6480 */ std::byte padding6480[1112];
+    /* this + 6480 */ std::byte padding6480[7472 - 6480];
+	/* this + 7472 */ std::string mName;
+  	std::string mLastEmotePlayed;	
+	int64_t mEmoteEasterEggEndTime;
+	unsigned int mEmoteMessageCount;
+	std::string mDeviceId;
+	bool mFlagClientForBAIReset;
+	bool mSendInventoryOptionsToClient;
+	bool mIsHostingPlayer;
+	bool mOverrideShouldCrit;
+
 
     // 101% accurate parameters lmao
     /// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 44 89 4C 24 ? 4C 89 44 24}
@@ -76,6 +86,8 @@ public:
 
     SerializedSkin& getSkin();
     const SerializedSkin& getSkin() const;
+
+	const UserEntityIdentifierComponent* getUserIdentity() const;
 };
 #pragma pack(pop)   
 

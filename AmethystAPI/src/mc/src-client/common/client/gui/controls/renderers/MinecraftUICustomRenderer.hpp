@@ -2,6 +2,8 @@
 #pragma once
 #include "UICustomRenderer.hpp"
 
+class MinecraftUIRenderContext;
+
 class MinecraftUICustomRenderer : public UICustomRenderer {
 public:
     MinecraftUICustomRenderer() : UICustomRenderer() {};
