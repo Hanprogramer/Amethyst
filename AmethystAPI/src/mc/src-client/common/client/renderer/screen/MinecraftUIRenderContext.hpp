@@ -91,7 +91,7 @@ public:
     virtual float getLineLength(Font& font, const std::string& text, float fontSize, bool showColorSymbol);
     virtual float getTextAlpha();
     virtual void setTextAlpha(float alpha);
-    virtual void drawDebugText(const RectangleArea* rect, const std::string* text, const mce::Color* color, float alpha, ui::TextAlignment alignment, const TextMeasureData* textData, const CaretMeasureData* caretData);
+    virtual void drawDebugText(const RectangleArea& rect, const std::string& text, const mce::Color& color, float alpha, ui::TextAlignment alignment, const TextMeasureData& textData, const CaretMeasureData& caretData);
     virtual void drawText(Font& font, const RectangleArea& rect, const std::string& text, const mce::Color& color, float alpha, ui::TextAlignment alignment, const TextMeasureData& textData, const CaretMeasureData& caretData);
     virtual void flushText(float deltaTime);
     virtual void drawImage(const mce::TexturePtr& texture, const glm::tvec2<float>& position, const glm::tvec2<float>& size, glm::tvec2<float>& uv, glm::tvec2<float>& uvSize, int degree);
