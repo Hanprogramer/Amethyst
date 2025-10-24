@@ -63,6 +63,11 @@ public:
         Assert(id != 0, "Received a CustomPacketInternal with a typeId of 0!");
         InitPacketFromNetwork(id);
 
+		if (mPacket == nullptr) {
+			Log::Warning("[CustomPacketInternal] Failed to create packet for typeId {}", id);
+			return {};
+		}
+
         return mPacket->read(in);
     }
 
@@ -103,6 +108,13 @@ public:
     {
         CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
         sender.sendToServer(sendable);
+    }
+
+	template <DerivedFromCustomPacket T>
+    void SendToClient(::PacketSender& sender, const Player& player, std::unique_ptr<T> packet)
+    {
+        CustomPacketInternal sendable = CreateSendablePacket(std::move(packet));
+        sender.sendToClient(player.getUserIdentity(), sendable);
     }
 
     template <DerivedFromCustomPacket T>
@@ -147,14 +159,14 @@ public:
         sender.send(exceptId, exceptSubid, sendable);
     }
 
-    CustomPacketHandler& GetPacketHandler(uint64_t typeId) {
+    CustomPacketHandler* GetPacketHandler(uint64_t typeId) {
         auto it = mPacketHandlers.find(typeId);
         if (it != mPacketHandlers.end()) {
-            return *it->second.get();
+            return it->second.get();
         }
 
-        Assert(false, "[NetworkManager] No packet handler found for typeId {}", typeId);
-        std::unreachable();
+		Log::Warning("[NetworkManager] No packet handler found for typeId {}", typeId);
+		return nullptr;
     }
 
     std::unique_ptr<Amethyst::CustomPacket> CreatePacket(uint64_t typeId) {
@@ -163,8 +175,10 @@ public:
             return it->second();
         }
         
-        Assert(false, "[NetworkManager] No packet factory found for typeId {}", typeId);
-        std::unreachable();
+		Log::Warning("[NetworkManager] No packet factory found for typeId {}", typeId);
+		return nullptr;
+        // Assert(false, "[NetworkManager] No packet factory found for typeId {}", typeId);
+        // std::unreachable();
     }
 
 private:

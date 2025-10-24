@@ -183,13 +183,15 @@ public:
     /* this + 760 */ uint64_t mCreativeEnumState;
     /* this + 768 */ std::vector<std::unique_ptr<Block>> mBlockPermutations;
     const Block *mDefaultState;
-    /* this + 800 */ std::byte padding800[152];
+    /* this + 800 */ std::byte padding800[120];
     //std::vector<std::unique_ptr<BlockTrait::IGetPlacementBlockCallback>> mGetPlacementBlockCallbacks;
     //Core::Cache<unsigned short, Block const *, Block const *> mLegacyDataLookupTable;
     // std::unique_ptr<BlockStateGroup> mBlockStateGroup;
     // std::unique_ptr<IResourceDropsStrategy> mResourceDropsStrategy;
     // IntRange mExperienceDropRange;
-    // bool mCanDropWithAnyTool;
+	/* this + 920 */ bool mCanDropWithAnyTool;
+	/* this + 921 - Alignment +7 */ 
+	/* this + 928 */ std::byte padding928[24];
     /* this + 952 */ std::vector<std::shared_ptr<BlockLegacy::AlteredStateCollection>> mAlteredStateCollections;
     /* this + 976 */ uint8_t mClientPredictionOverrides;
 
@@ -377,3 +379,5 @@ public:
 // 1.21.0.3
 static_assert(sizeof(BlockLegacy) == 984);
 static_assert(offsetof(BlockLegacy, mID) == 422);
+static_assert(offsetof(BlockLegacy, mCanDropWithAnyTool) == 920);
+static_assert(offsetof(BlockLegacy, mClientPredictionOverrides) == 976);

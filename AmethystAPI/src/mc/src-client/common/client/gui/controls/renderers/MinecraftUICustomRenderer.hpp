@@ -4,6 +4,8 @@
 
 class MinecraftUIRenderContext;
 
+class MinecraftUIRenderContext;
+
 class MinecraftUICustomRenderer : public UICustomRenderer {
 public:
     MinecraftUICustomRenderer() : UICustomRenderer() {};
