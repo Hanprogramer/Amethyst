@@ -6,7 +6,11 @@ public:
     T1              mRawId;
     // MCAPI static T1 sNextRawId;
 
-    virtual ~TypedClientNetId();
-    virtual void clientInit(TypedClientNetId<T0, T1, T2>);
-    virtual void clientInit();
+    virtual ~TypedClientNetId() = default;
+    virtual void clientInit(TypedClientNetId<T0, T1, T2>) {
+		Assert("Not implemented");
+	};
+    virtual void clientInit() {
+		Assert("Not implemented");
+	}
 };
