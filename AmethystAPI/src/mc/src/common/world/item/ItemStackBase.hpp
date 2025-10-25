@@ -48,9 +48,9 @@ public:
     ItemStackBase& operator=(const ItemStackBase&);
 
     /** @vidx {0} */ MC virtual ~ItemStackBase();
-    /** @vidx {1} */ MC virtual void reinit(const Item& item, int count, int auxValue);
+    /** @vidx {3} */ MC virtual void reinit(const Item& item, int count, int auxValue);
     /** @vidx {2} */ MC virtual void reinit(const BlockLegacy& block, int count);
-    /** @vidx {3} */ MC virtual void reinit(std::string_view name, int count, int auxValue);
+    /** @vidx {1} */ MC virtual void reinit(std::string_view name, int count, int auxValue);
     /** @vidx {4} */ MC virtual void setNull(std::optional<std::string> reason);
     /** @vidx {5} */ MC virtual std::string toString() const;
     /** @vidx {6} */ MC virtual std::string toDebugString() const;
