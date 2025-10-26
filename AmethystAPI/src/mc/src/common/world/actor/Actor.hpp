@@ -7,7 +7,7 @@
 #include <optional>
 
 #include "mc/src/common/world/entity/EntityContext.hpp"
-#include <mc/src/common/gamerefs/WeakRef.hpp>
+#include "mc/src-deps/gamerefs/WeakRef.hpp"
 #include <mc/src/common/world/actor/Actor.hpp>
 #include <mc/src/common/world/actor/ActorDamageSource.hpp>
 #include <mc/src/common/world/phys/Vec3.hpp>
@@ -24,6 +24,7 @@
 #include <mc/src/common/world/actor/ActorType.hpp>
 #include <mc/src/common/world/actor/player/Abilities.hpp>
 #include <mc/src-deps/input/InputMode.hpp>
+#include <mc/src/common/world/actor/ActorStatusProvider.hpp>
 
 enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
@@ -85,7 +86,7 @@ struct BuiltInActorComponents {
 
 
 /// @vptr {0x4DBE658}
-class Actor {
+class Actor : public ActorStatusProvider {
 public:
     /* this + 8   */ EntityContext mEntityContext;
     /* this + 32  */ ActorInitializationMethod mInitMethod;
@@ -153,11 +154,11 @@ public:
 
     ActorUniqueID getUniqueID() const;
 
-    /**@vidx {0}*/
-    MC virtual bool getStatusFlag(ActorFlags unk0) const;
+    /**@vidx {i}*/
+    MC virtual bool getStatusFlag(ActorFlags unk0) const override;
 
-    /**@vidx {1}*/
-    MC virtual void setStatusFlag(ActorFlags unk0, bool unk1);
+    /**@vidx {i}*/
+    MC virtual void setStatusFlag(ActorFlags unk0, bool unk1) override;
 
     /**@vidx {2}*/
     MC virtual bool hasComponent(const HashedString& unk0) const;

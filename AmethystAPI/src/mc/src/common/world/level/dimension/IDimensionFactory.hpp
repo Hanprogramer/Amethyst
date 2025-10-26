@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <mc/src/common/gamerefs/OwnerPtr.hpp>
+#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
 
 class Dimension;
 

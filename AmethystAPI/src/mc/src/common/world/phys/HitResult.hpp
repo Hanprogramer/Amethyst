@@ -1,5 +1,5 @@
 #pragma once
-#include "mc/src/common/gamerefs/WeakRef.hpp"
+#include "mc/src-deps/ecs/WeakEntityRef.hpp"
 #include "mc/src/common/world/Facing.hpp"
 #include "mc/src/common/world/level/BlockPos.hpp"
 #include "mc/src/common/world/phys/Vec3.hpp"
