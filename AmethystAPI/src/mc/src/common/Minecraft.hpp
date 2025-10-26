@@ -5,7 +5,7 @@
 #include <chrono>
 #include <mc/src-deps/core/utility/pubsub/Publisher.hpp>
 #include <mc/src-deps/core/utility/pubsub/ThreadModel.hpp>
-#include <mc/src/common/gamerefs/gamerefs_entity/IEntityRegistryOwner.hpp>
+#include <mc/src-deps/ecs/gamerefs_entity/IEntityRegistryOwner.hpp>
 #include <mc/src/common/world/GameSession.hpp>
 #include <amethyst/Imports.hpp>
 

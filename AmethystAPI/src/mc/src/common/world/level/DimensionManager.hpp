@@ -2,8 +2,8 @@
 #include <cstdint>
 #include <unordered_map>
 #include <mc/src-deps/core/utility/AutomaticID.hpp>
-#include <mc/src/common/gamerefs/OwnerPtr.hpp>
-#include <mc/src/common/gamerefs/WeakRef.hpp>
+#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
+#include <mc/src-deps/gamerefs/WeakRef.hpp>
 
 class Dimension;
 class IDimensionFactory;

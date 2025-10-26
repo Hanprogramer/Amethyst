@@ -6,7 +6,7 @@
 #include <mc/src/common/world/level/ILevel.hpp>
 #include <mc/src/common/world/level/BlockSourceListener.hpp>
 #include <mc/src/common/world/level/IWorldRegistriesProvider.hpp>
-#include <mc/src/common/gamerefs/OwnerPtr.hpp>
+#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/world/level/dimension/DimensionFactory.hpp>
 #include <amethyst/Imports.hpp>
 
@@ -33,6 +33,8 @@ public:
     /* this + 6408 */ std::shared_ptr<OwnerPtr<DimensionFactory>> mDimensionFactory;     // its actually a gsl::not_null but compiler hates that despite the fact we don't construct level
     /* this + 6424 */ std::byte padding6424[6512 - 6424];
     /* this + 6512 */ Factory<BaseLightTextureImageBuilder, Level&, Scheduler&> mLightTextureImageBuilderFactory;
+	/* this + 6576 */ std::byte padding6576[8192 - 6576];
+
 
     MC static uintptr_t $vtable_for_this;
 };
