@@ -3,7 +3,6 @@
 #include <mc/src/common/world/item/ItemStack.hpp>  
 #include <mc/src/common/world/item/Item.hpp>  
 #include <mc/src-client/common/client/renderer/screen/MinecraftUIRenderContext.hpp>
-#include <mc/src/common/ActorUniqueID.hpp>
 
 template <>
 struct std::formatter<ItemStack> {
@@ -39,16 +38,4 @@ struct std::formatter<RectangleArea> {
         return std::format_to(ctx.out(), "RectangleArea[({}, {}) to ({}, {})]",
                               rect._x0, rect._y0, rect._x1, rect._y1);
     }
-};
-
-template <>
-struct std::formatter<ActorUniqueID> {
-	constexpr auto parse(std::format_parse_context& ctx) {
-		return ctx.begin();
-	}
-
-	template <typename FormatContext>
-	auto format(const ActorUniqueID& id, FormatContext& ctx) const {
-		return std::format_to(ctx.out(), "ActorUniqueID({})", id.rawID);
-	}
 };

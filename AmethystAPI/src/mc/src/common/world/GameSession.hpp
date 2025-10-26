@@ -1,6 +1,7 @@
 #pragma once
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src/common/network/ClientOrServerNetworkSystemRef.hpp>
+#include <mc/src/common/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/CommonTypes.hpp>
 #include <mc/src/common/world/level/Level.hpp>
 

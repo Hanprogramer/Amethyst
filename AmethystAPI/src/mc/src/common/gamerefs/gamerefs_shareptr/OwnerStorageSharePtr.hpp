@@ -7,10 +7,6 @@ class OwnerStorageSharePtr {
 public:
     std::shared_ptr<T> mValue;
 
-	T* get() const {
-        return mValue.get();
-    }
-
 protected:
     bool _hasValue() const;
     void _reset();

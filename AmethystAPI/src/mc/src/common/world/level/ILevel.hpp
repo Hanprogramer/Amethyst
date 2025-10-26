@@ -3,13 +3,13 @@
 #include <gsl/gsl>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src-deps/core/utility/AutomaticID.hpp>
-#include "mc/src-deps/gamerefs/WeakRef.hpp"
+#include <mc/src/common/gamerefs/WeakRef.hpp>
 #include <mc/src-deps/core/file/Path.hpp>
 #include <mc/src/common/world/level/ChunkPos.hpp>
 #include <mc/src/common/world/level/Tick.hpp>
 #include <mc/src/common/world/level/storage/StorageVersion.hpp>
 #include <mc/src/common/world/level/block/LevelEvent.hpp>
-#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
+#include <mc/src/common/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
 #include <mc/src/common/world/level/GameType.hpp>
