@@ -9,7 +9,7 @@
 #include "mc/src-deps/renderer/Camera.hpp"
 #include "mc/src-client/common/client/renderer/TexturePtr.hpp"
 #include "mc/src-deps/renderer/ViewportInfo.hpp"
-#include "mc/src-deps/gamerefs/WeakRef.hpp"
+#include "mc/src/common/gamerefs/WeakRef.hpp"
 #include <amethyst/Imports.hpp>
 #include "mc/src/common/world/phys/Vec3.hpp"
 #include "mc/src/common/world/phys/Vec2.hpp"
@@ -20,7 +20,6 @@
 #include <mc/src-client/common/client/social/GameConnectionInfo.hpp>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src-client/common/client/game/IClientInstance.hpp>
-#include <mc/src-deps/ecs/WeakEntityRef.hpp>
 
 class Minecraft;
 class ClientInputHandler;

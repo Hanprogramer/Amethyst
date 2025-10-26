@@ -78,8 +78,6 @@ bool Actor::isClientSide() const
 bool Actor::isCreative() const
 {
     const ActorGameTypeComponent* gameTypeComp = tryGetComponent<ActorGameTypeComponent>();
-	if (!gameTypeComp) return false;
-
     GameType ownType = gameTypeComp->mGameType;
 
     if (ownType == (GameType)-1) return false;

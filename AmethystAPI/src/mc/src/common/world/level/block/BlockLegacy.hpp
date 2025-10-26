@@ -49,9 +49,6 @@ class Experiments;
 class EntityContext;
 struct ResourceDropsContext;
 
-namespace BlockTrait {
-	class ITrait;
-}
 
 // other types
 enum class FlameOdds : int {
@@ -373,7 +370,6 @@ public:
     short getBlockItemId();
     void setDestroyTime(float destroyTime, float explosionResistance);
     void addState(const BlockState& blockState);
-	void addTrait(const BlockTrait::ITrait& trait);
     bool isAir() const;
     bool hasProperty(BlockProperty prop) const;
     bool isSnappableBlock() const;

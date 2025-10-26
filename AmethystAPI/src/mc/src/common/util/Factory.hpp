@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <functional>
-#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
+#include <mc/src/common/gamerefs/OwnerPtr.hpp>
 
 template <typename Type, typename... Params>
 class OwnerPtrFactory {

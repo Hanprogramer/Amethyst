@@ -4,12 +4,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     add_rules("plugin.vsxmake.autoupdate")
     set_languages("c++23")
 
-    -- Allow flexible configuration
-    local extra_deps          = config.extra_deps or {}
-    local extra_links         = config.extra_links or {}
-    local extra_include_dirs  = config.extra_include_dirs or {}
-    local extra_header_files  = config.extra_header_files or {}
-    local extra_files         = config.extra_files or {}
+    local extra_deps     = config.extra_deps or {}
 
     local modFolder
     local amethystApiPath
@@ -105,7 +100,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                 os.exec(table.concat(clang_args, " "))
             end
         end)
-        
+
         on_install(function (package)
         end)
     package_end()
@@ -116,7 +111,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     target(mod_name)
         set_languages("c++23")
         set_kind("shared")
-        set_toolchains("msvc")
         add_deps("AmethystAPI", "libhat")
 
         -- Hard fail if AmethystAPI is missing
@@ -128,25 +122,18 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             end
         end)
         
+        -- Force rebuild when any source file changes
         set_policy("build.across_targets_in_parallel", true)
 
-        -- Main mod sources
         add_files("src/**.cpp")
-        add_includedirs("src", { public = true })
-        add_headerfiles("src/**.hpp")
 
-        -- Apply user-specified extras
-        for _, dir in ipairs(extra_include_dirs) do
-            add_includedirs(dir, { public = true })
-        end
-
-        for _, hdr in ipairs(extra_header_files) do
-            add_headerfiles(hdr, { public = true })
-        end
-
-        for _, f in ipairs(extra_files) do
-            add_files(f)
-        end
+        add_defines(
+            string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
+            string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
+            string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
+            'ENTT_PACKED_PAGE=128',
+            'AMETHYST_EXPORTS'
+        )
 
         for _, dep in ipairs(extra_deps) do
             add_deps(dep)
@@ -156,16 +143,12 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_links(lib)
         end
 
+        -- Deps
         add_packages("AmethystAPI", "libhat")
         add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
 
-        add_defines(
-            string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
-            string.format('MOD_TARGET_VERSION_MINOR=%d', targetMinor),
-            string.format('MOD_TARGET_VERSION_PATCH=%d', targetPatch),
-            'ENTT_PACKED_PAGE=128',
-            'AMETHYST_EXPORTS'
-        )
+        add_includedirs("src", {public = true})
+        add_headerfiles("src/**.hpp")
 
         before_build(function (target)
             local importer_dir = path.join(os.curdir(), ".importer");
