@@ -1,4 +1,4 @@
-#include <mc/src-deps/gamerefs/gamerefs_shareptr/OwnerStorageSharePtr.hpp>
+#include <mc/src/common/gamerefs/gamerefs_shareptr/OwnerStorageSharePtr.hpp>
 
 template <typename T>
 inline bool OwnerStorageSharePtr<T>::_hasValue() const

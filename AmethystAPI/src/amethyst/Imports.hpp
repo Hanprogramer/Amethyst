@@ -66,7 +66,7 @@
 #include <mc/src/common/world/level/BlockPos.hpp>
 #include <mc/src-deps/core/string/StringHash.hpp>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
-#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
+#include <mc/src/common/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/world/entity/EntityContext.hpp>
 #include <mc/src/common/ActorUniqueID.hpp>
 
