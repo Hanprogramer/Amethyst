@@ -28,4 +28,12 @@ public:
 
 	T& operator*() const { return *get(); }
     T* operator->() const { return get(); }
+
+	constexpr bool operator!() const noexcept {
+		return !get();
+	}
+
+	constexpr explicit operator bool() const noexcept {
+		return get() != nullptr;
+	}
 };
