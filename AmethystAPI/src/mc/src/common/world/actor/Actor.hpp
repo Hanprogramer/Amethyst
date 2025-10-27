@@ -184,7 +184,7 @@ public:
     virtual ~Actor();
 
     /**@vidx {11}*/
-    virtual void _unknown_11(); // resetUserPos
+    MC virtual void resetUserPos(bool unk0); // resetUserPos
 
     /**@vidx {12}*/
     virtual ActorType getOwnerEntityType();
@@ -271,7 +271,7 @@ public:
     virtual Vec3 getHeadLookVector(float unk0) const;
 
     /**@vidx {40}*/
-    virtual void _unknown_40();
+    MC virtual bool canInteractWithOtherEntitiesInGame() const;
 
     /**@vidx {41}*/
     virtual float getBrightness(float unk0, const IConstBlockSource& unk1) const;
@@ -283,7 +283,7 @@ public:
     virtual bool isImmobile() const;
 
     /**@vidx {44}*/
-    virtual void _unknown_44();
+    MC virtual bool isSilentObserver() const;
 
     /**@vidx {45}*/
     virtual bool isSleeping() const;
@@ -298,7 +298,7 @@ public:
     virtual bool isBlocking() const;
 
     /**@vidx {49}*/
-    virtual void _unknown_49();
+    MC virtual bool isDamageBlocked(const ActorDamageSource& unk0) const;
 
     /**@vidx {50}*/
     virtual bool isAlive() const;
@@ -535,7 +535,7 @@ public:
     virtual void startSpinAttack();
 
     /**@vidx {128}*/
-    virtual void _unknown_128();
+    MC virtual void stopSpinAttack();
 
     /**@vidx {129}*/
     virtual void _unknown_129();
@@ -565,13 +565,13 @@ public:
     virtual std::optional<AutomaticID<Dimension, int>> getLastDeathDimension() const;
 
     /**@vidx {138}*/
-    virtual void _unknown_138();
+    MC virtual bool hasDiedBefore() const;
 
     /**@vidx {139}*/
-    virtual void _unknown_139();
+    MC virtual void doEnterWaterSplashEffect();
 
     /**@vidx {140}*/
-    virtual void _unknown_140();
+    MC virtual void doExitWaterSplashEffect();
 
     /**@vidx {141}*/
     virtual void doWaterSplashEffect();

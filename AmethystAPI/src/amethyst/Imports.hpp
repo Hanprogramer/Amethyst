@@ -68,6 +68,7 @@
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src/common/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/world/entity/EntityContext.hpp>
+#include <mc/src/common/ActorUniqueID.hpp>
 
 // Common amethyst types
 // #include <amethyst/runtime/ModContext.hpp>
