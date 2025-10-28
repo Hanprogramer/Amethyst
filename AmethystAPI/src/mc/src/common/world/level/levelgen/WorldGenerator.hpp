@@ -97,7 +97,7 @@ public:
     // easier to just define this one in c++
     virtual std::optional<short> getPreliminarySurfaceLevel(QuartPos2d worldQuartPos) const override;
 
-    /**@asmName {WorldGenerator_ctor}*/
+    /// @sig {48 89 5C 24 ? 55 56 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 49 8B F0 48 8B DA 48 8B F9 48 89 4C 24 ? 4C 89 44 24}
     WorldGenerator(class Dimension& dimension, std::unique_ptr<StructureFeatureRegistry> structureFeatureRegistry);
 };
 

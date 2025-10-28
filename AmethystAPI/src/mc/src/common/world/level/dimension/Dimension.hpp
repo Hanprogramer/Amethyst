@@ -1,4 +1,4 @@
-/// @symbolgeneration
+/// @symbols
 #pragma once
 #include <amethyst/Imports.hpp>
 #include "mc/src-deps/core/threading/Mutex.hpp"
@@ -58,7 +58,9 @@ class SubChunkPos;
 class UpdateSubChunkBlocksChangedInfo;
 class ChunkBuildOrderPolicyBase;
 
-/// @vptr {}
+/** @vptr {0x4E5FB08} */
+/** @vptr {0x4E5FA10, SavedData} */
+/** @vptr {0x4E5FA28, LevelListener} */
 class Dimension : public IDimension, public LevelListener, public SavedData, public Bedrock::EnableNonOwnerReferences, public std::enable_shared_from_this<Dimension> {
 public:
     struct PlayerReplicationStructures;
@@ -121,148 +123,148 @@ public:
 
 public:
     /**@vidx {0} */
-	virtual ~Dimension();
+	MC virtual ~Dimension();
 
-    /**@vidx {1} */
-	virtual bool isNaturalDimension() const override;
+    /**@vidx {i} */
+	MC virtual bool isNaturalDimension() const override;
 
-    /**@vidx {2} */
-	virtual DimensionType getDimensionId() const override;
+    /**@vidx {i} */
+	MC virtual DimensionType getDimensionId() const override;
 
-    /**@vidx {3} */
-	virtual void sendPacketForPosition(const BlockPos&, const Packet&, const Player*) override;
+    /**@vidx {i} */
+	MC virtual void sendPacketForPosition(const BlockPos&, const Packet&, const Player*) override;
 
-    /**@vidx {4} */
-	virtual void flushLevelChunkGarbageCollector() override;
+    /**@vidx {i} */
+	MC virtual void flushLevelChunkGarbageCollector() override;
 
-    /**@vidx {5} */
-	virtual void initializeWithLevelStorageManager(class LevelStorageManager&) override;
+    /**@vidx {i} */
+	MC virtual void initializeWithLevelStorageManager(class LevelStorageManager&) override;
 
-    /**@vidx {6} */
-	virtual BiomeRegistry& getBiomeRegistry() override;
+    /**@vidx {i} */
+	MC virtual BiomeRegistry& getBiomeRegistry() override;
 
-    /**@vidx {7} */
-	virtual const BiomeRegistry& getBiomeRegistry() const override;
+    /**@vidx {i} */
+	MC virtual const BiomeRegistry& getBiomeRegistry() const override;
 
-    /**@vidx {8} */
-	virtual Vec3 translatePosAcrossDimension(const Vec3&, DimensionType) const override;
+    /**@vidx {i} */
+	MC virtual Vec3 translatePosAcrossDimension(const Vec3&, DimensionType) const override;
 
-    /**@vidx {9} */
-	virtual void forEachPlayer(std::function<bool(class Player&)> callback) const override;
+    /**@vidx {i} */
+	MC virtual void forEachPlayer(std::function<bool(class Player&)> callback) const override;
 
-    /**@vidx {10} */
-	virtual Actor* fetchEntity(ActorUniqueID actorID, bool getRemoved) const override;
+    /**@vidx {i} */
+	MC virtual Actor* fetchEntity(ActorUniqueID actorID, bool getRemoved) const override;
 
     /**@vidx {11} */
-	virtual void init(const br::worldgen::StructureSetRegistry&);
+	MC virtual void init(const br::worldgen::StructureSetRegistry&);
 
     /**@vidx {12} */
-	virtual void tick();
+	MC virtual void tick();
     
     /**@vidx {13} */
-	virtual void tickRedstone();
+	MC virtual void tickRedstone();
     
     /**@vidx {14} */
-	virtual std::unique_ptr<class WorldGenerator> createGenerator(const br::worldgen::StructureSetRegistry&) = 0;
+	MC virtual std::unique_ptr<class WorldGenerator> createGenerator(const br::worldgen::StructureSetRegistry&) = 0;
     
     /**@vidx {15} */
-	virtual void upgradeLevelChunk(class ChunkSource& source, class LevelChunk& lc, class LevelChunk& generatedChunk) = 0;
+	MC virtual void upgradeLevelChunk(class ChunkSource& source, class LevelChunk& lc, class LevelChunk& generatedChunk) = 0;
     
     /**@vidx {16} */
-	virtual void fixWallChunk(class ChunkSource&, class LevelChunk&) = 0;
+	MC virtual void fixWallChunk(class ChunkSource&, class LevelChunk&) = 0;
     
     /**@vidx {17} */
-	virtual bool levelChunkNeedsUpgrade(const LevelChunk&) const = 0;
+	MC virtual bool levelChunkNeedsUpgrade(const LevelChunk&) const = 0;
     
     /**@vidx {18} */
-	virtual bool isValidSpawn(int x, int z) const;
+	MC virtual bool isValidSpawn(int x, int z) const;
     
     /**@vidx {19} */
-	virtual class mce::Color getBrightnessDependentFogColor(const mce::Color& baseColor, float brightness) const;
+	MC virtual class mce::Color getBrightnessDependentFogColor(const mce::Color& baseColor, float brightness) const;
     
     /**@vidx {20} */
-	virtual bool hasPrecipitationFog() const;
+	MC virtual bool hasPrecipitationFog() const;
     
     /**@vidx {21} */
-	virtual short getCloudHeight() const;
+	MC virtual short getCloudHeight() const;
     
     /**@vidx {22} */
-	virtual class HashedString getDefaultBiome() const;
+	MC virtual class HashedString getDefaultBiome() const;
     
     /**@vidx {23} */
-	virtual bool hasGround() const;
+	MC virtual bool hasGround() const;
     
     /**@vidx {24} */
-	virtual bool showSky() const;
+	MC virtual bool showSky() const;
     
     /**@vidx {25} */
-	virtual class BlockPos getSpawnPos() const;
+	MC virtual class BlockPos getSpawnPos() const;
     
     /**@vidx {26} */
-	virtual int getSpawnYPosition() const;
+	MC virtual int getSpawnYPosition() const;
     
     /**@vidx {27} */
-	virtual bool mayRespawnViaBed(void) const;
+	MC virtual bool mayRespawnViaBed(void) const;
     
     /**@vidx {28} */
-	virtual bool isDay() const;
+	MC virtual bool isDay() const;
     
     /**@vidx {29} */
-	virtual float getTimeOfDay(int time, float a) const;
+	MC virtual float getTimeOfDay(int time, float a) const;
     
     /**@vidx {30} */
-	virtual float getSunIntensity(float a, const Vec3& viewVector, float minInfluenceAngle) const;
+	MC virtual float getSunIntensity(float a, const Vec3& viewVector, float minInfluenceAngle) const;
     
     /**@vidx {31} */
-	virtual bool forceCheckAllNeighChunkSavedStat() const;
+	MC virtual bool forceCheckAllNeighChunkSavedStat() const;
     
     /**@vidx {32} */
-	virtual void sendBroadcast(const Packet& packet, class Player* except);
+	MC virtual void sendBroadcast(const Packet& packet, class Player* except);
     
     /**@vidx {33} */
-	virtual bool is2DPositionRelevantForPlayer(const BlockPos& position, class Player& player) const;
+	MC virtual bool is2DPositionRelevantForPlayer(const BlockPos& position, class Player& player) const;
     
     /**@vidx {34} */
-	virtual bool isActorRelevantForPlayer(class Player& player, const Actor& actor) const;
+	MC virtual bool isActorRelevantForPlayer(class Player& player, const Actor& actor) const;
     
     /**@vidx {35} */
-	virtual class BaseLightTextureImageBuilder* getLightTextureImageBuilder() const;
+	MC virtual class BaseLightTextureImageBuilder* getLightTextureImageBuilder() const;
     
     /**@vidx {36} */
-	virtual const DimensionBrightnessRamp& getBrightnessRamp() const;
+	MC virtual const DimensionBrightnessRamp& getBrightnessRamp() const;
     
     /**@vidx {37} */
-	virtual void startLeaveGame();
+	MC virtual void startLeaveGame();
     
     /**@vidx {38} */
-	virtual std::unique_ptr<class ChunkBuildOrderPolicyBase> _createChunkBuildOrderPolicy();
+	MC virtual std::unique_ptr<class ChunkBuildOrderPolicyBase> _createChunkBuildOrderPolicy();
     
     /**@vidx {39} */
-	virtual void _upgradeOldLimboEntity(class CompoundTag& tag, LimboEntitiesVersion vers) = 0;
+	MC virtual void _upgradeOldLimboEntity(class CompoundTag& tag, LimboEntitiesVersion vers) = 0;
     
     /**@vidx {40} */
-	virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) = 0;
+	MC virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) = 0;
 
-    /** @vidx {1} @for {SavedData} */
-    virtual void deserialize(const CompoundTag&) override;
+    /** @vidx {1, SavedData} */
+    MC virtual void deserialize(const CompoundTag&) override;
 
-    /** @vidx {2} @for {SavedData} */
-    virtual void serialize(CompoundTag&) const override;
+    /** @vidx {2, SavedData} */
+    MC virtual void serialize(CompoundTag&) const override;
 
-    /** @vidx {4} @for {LevelListener} */
-    virtual void onBlockChanged(BlockSource& source, const BlockPos& pos, uint32_t layer, const Block& block, const Block& oldBlock, int updateFlags, const ActorBlockSyncMessage* syncMsg, BlockChangedEventTarget eventTarget, Actor* blockChangeSource) override;
+    /** @vidx {4, LevelListener}  */
+    MC virtual void onBlockChanged(BlockSource& source, const BlockPos& pos, uint32_t layer, const Block& block, const Block& oldBlock, int updateFlags, const ActorBlockSyncMessage* syncMsg, BlockChangedEventTarget eventTarget, Actor* blockChangeSource) override;
 
-    /** @vidx {5} @for {LevelListener} */
-    virtual void onBrightnessChanged(BlockSource& source, const BlockPos& pos) override;
+    /** @vidx {5, LevelListener} */
+    MC virtual void onBrightnessChanged(BlockSource& source, const BlockPos& pos) override;
 
-    /** @vidx {8} @for {LevelListener} */
-    virtual void onBlockEvent(BlockSource& source, int x, int y, int z, int b0, int b1) override;
+    /** @vidx {8, LevelListener} */
+    MC virtual void onBlockEvent(BlockSource& source, int x, int y, int z, int b0, int b1) override;
 
-    /** @vidx {19} @for {LevelListener} */
-    virtual void onChunkLoaded(class ChunkSource& source, class LevelChunk& lc) override;
+    /** @vidx {19, LevelListener} */
+    MC virtual void onChunkLoaded(class ChunkSource& source, class LevelChunk& lc) override;
 
-    /** @vidx {23} @for {LevelListener} */
-    virtual void onLevelDestruction(const std::string& levelId) override;
+    /** @vidx {23, LevelListener} */
+    MC virtual void onLevelDestruction(const std::string& levelId) override;
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 8B F9 41 8B D8}
     MC Dimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName);

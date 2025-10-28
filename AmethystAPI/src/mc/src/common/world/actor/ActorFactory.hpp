@@ -18,10 +18,6 @@ class Level;
 class ActorInfo;
 class Actor;
 
-struct OwnerStorageEntity {
-    std::optional<EntityContext> mContext;
-};
-
 class ActorFactory {
 public:
 	/// @vidx {0}

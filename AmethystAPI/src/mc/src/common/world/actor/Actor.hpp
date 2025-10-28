@@ -84,7 +84,6 @@ struct BuiltInActorComponents {
 };
 
 
-/// @vptr {0x4DBE658}
 class Actor {
 public:
     /* this + 8   */ EntityContext mEntityContext;
@@ -97,8 +96,6 @@ public:
     /* this + 688 */ std::byte padding688[408];
 
 public:
-	MC static uintptr_t $vtable_for_this;
-
     Vec3* getPosition() const;
     Vec2* getHeadRot() const;
     void moveTo(const Vec3&, const Vec2&);
@@ -187,7 +184,7 @@ public:
     MC virtual ~Actor();
 
     /**@vidx {11}*/
-    MC virtual void _unknown_11(); // resetUserPos
+    MC virtual void resetUserPos(bool unk0); // resetUserPos
 
     /**@vidx {12}*/
     MC virtual ActorType getOwnerEntityType();
@@ -274,7 +271,7 @@ public:
     MC virtual Vec3 getHeadLookVector(float unk0) const;
 
     /**@vidx {40}*/
-    MC virtual void _unknown_40();
+    MC virtual bool canInteractWithOtherEntitiesInGame() const;
 
     /**@vidx {41}*/
     MC virtual float getBrightness(float unk0, const IConstBlockSource& unk1) const;
@@ -286,7 +283,7 @@ public:
     MC virtual bool isImmobile() const;
 
     /**@vidx {44}*/
-    MC virtual void _unknown_44();
+    MC virtual bool isSilentObserver() const;
 
     /**@vidx {45}*/
     MC virtual bool isSleeping() const;
@@ -301,7 +298,7 @@ public:
     MC virtual bool isBlocking() const;
 
     /**@vidx {49}*/
-    MC virtual void _unknown_49();
+    MC virtual bool isDamageBlocked(const ActorDamageSource& unk0) const;
 
     /**@vidx {50}*/
     MC virtual bool isAlive() const;
@@ -538,7 +535,7 @@ public:
     MC virtual void startSpinAttack();
 
     /**@vidx {128}*/
-    MC virtual void _unknown_128();
+    MC virtual void stopSpinAttack();
 
     /**@vidx {129}*/
     MC virtual void _unknown_129();
@@ -568,13 +565,13 @@ public:
     MC virtual std::optional<AutomaticID<Dimension, int>> getLastDeathDimension() const;
 
     /**@vidx {138}*/
-    MC virtual void _unknown_138();
+    MC virtual bool hasDiedBefore() const;
 
     /**@vidx {139}*/
-    MC virtual void _unknown_139();
+    MC virtual void doEnterWaterSplashEffect();
 
     /**@vidx {140}*/
-    MC virtual void _unknown_140();
+    MC virtual void doExitWaterSplashEffect();
 
     /**@vidx {141}*/
     MC virtual void doWaterSplashEffect();
