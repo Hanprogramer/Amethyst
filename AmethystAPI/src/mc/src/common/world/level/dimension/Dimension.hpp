@@ -59,6 +59,8 @@ class UpdateSubChunkBlocksChangedInfo;
 class ChunkBuildOrderPolicyBase;
 
 /**@vptr {0x4E5FB08} */
+/**@vptr {0x4E5FA10, SavedData} */
+/**@vptr {0x4E5FA28, LevelListener} */
 class Dimension : public IDimension, public LevelListener, public SavedData, public Bedrock::EnableNonOwnerReferences, public std::enable_shared_from_this<Dimension> {
 public:
     struct PlayerReplicationStructures;
@@ -243,25 +245,25 @@ public:
     /**@vidx {40} */
 	MC virtual std::unique_ptr<class ChunkSource> _wrapStorageForVersionCompatibility(std::unique_ptr<class ChunkSource> storageSource, StorageVersion levelVersion) = 0;
 
-    /** @vidx {1} @for {SavedData} */
+    /** @vidx {1, SavedData} */
     MC virtual void deserialize(const CompoundTag&) override;
 
-    /** @vidx {2} @for {SavedData} */
+    /** @vidx {2, SavedData} */
     MC virtual void serialize(CompoundTag&) const override;
 
-    /** @vidx {4} @for {LevelListener} */
+    /** @vidx {4, LevelListener}  */
     MC virtual void onBlockChanged(BlockSource& source, const BlockPos& pos, uint32_t layer, const Block& block, const Block& oldBlock, int updateFlags, const ActorBlockSyncMessage* syncMsg, BlockChangedEventTarget eventTarget, Actor* blockChangeSource) override;
 
-    /** @vidx {5} @for {LevelListener} */
+    /** @vidx {5, LevelListener} */
     MC virtual void onBrightnessChanged(BlockSource& source, const BlockPos& pos) override;
 
-    /** @vidx {8} @for {LevelListener} */
+    /** @vidx {8, LevelListener} */
     MC virtual void onBlockEvent(BlockSource& source, int x, int y, int z, int b0, int b1) override;
 
-    /** @vidx {19} @for {LevelListener} */
+    /** @vidx {19, LevelListener} */
     MC virtual void onChunkLoaded(class ChunkSource& source, class LevelChunk& lc) override;
 
-    /** @vidx {23} @for {LevelListener} */
+    /** @vidx {23, LevelListener} */
     MC virtual void onLevelDestruction(const std::string& levelId) override;
 
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 8B F9 41 8B D8}

@@ -2,7 +2,7 @@
 #include <string>
 
 class SavedData {
-private:
+public:
     bool mDirty;
     std::string mId;
 
