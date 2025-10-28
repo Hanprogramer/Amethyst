@@ -75,7 +75,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local is_first_install = should_reinstall and installed_version == "None"
 
-            if not is_first_install and not automated_build then
+            if should_reinstall and not is_first_install and not automated_build then
                 io.write("Runtime-Importer is outdated (installed: " .. installed_version .. ", latest: " .. latest_tag .. "), install? (y/n): ")
                 io.flush()
                 local answer = (io.read() or ""):lower()
