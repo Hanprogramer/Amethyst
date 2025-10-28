@@ -71,7 +71,6 @@ enum class DirtyFlag {
     UpdateToDefaultFocus = 1u << 4,
     All = UpdateBinds | UpdateCurrentFocus | GlobalLayout,
 };
-
 class GameEventNotification {};
 }
 
@@ -161,7 +160,7 @@ public:
     std::unique_ptr<TaskGroup> mTaskGroup;
 
     /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 83 EC ? 0F B6 DA}
-    MC ScreenController(bool useTaskGroup);
+    MC ScreenController(bool);
 
     /** @vidx {00} */ MC virtual ~ScreenController();
     /** @vidx {01} */ MC virtual void preFrameTick();
@@ -181,8 +180,11 @@ public:
     /** @vidx {15} */ MC virtual void onLeave();
     /** @vidx {16} */ MC virtual void leaveScreen(const std::string&);
     /** @vidx {17} */ MC virtual ui::DirtyFlag handleGameEventNotification(ui::GameEventNotification);
+
+    // Keep your eyes open for overloads
     /** @vidx {19} */ MC virtual bool bind(const std::string&, uint32_t, const std::string&, UIPropertyBag&);
     /** @vidx {18} */ MC virtual bool bind(const std::string& collectionName, uint32_t collectionNameHash, int collectionIndex, const std::string& bindingName, uint32_t bindingNameHash, const std::string&, UIPropertyBag& bag);
+
     /** @vidx {20} */ MC virtual void handleLicenseChanged();
     /** @vidx {21} */ MC virtual void onDictationEvent(const std::string&);
     /** @vidx {22} */ MC virtual void setAssociatedBlockPos(const BlockPos&);

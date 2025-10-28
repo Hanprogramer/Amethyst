@@ -11,7 +11,6 @@
 #include "hooks/ResourceHooks.hpp"
 #include "hooks/NetworkingHooks.hpp"
 #include <hooks/item/ItemRegistryHooks.hpp>
-#include "features/ModMenuScreen.hpp"
 
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;
@@ -64,5 +63,4 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
     CreateNetworkingHooks();
     CreateRenderingHooks();
     CreateItemRegistryHooks();
-    InitModMenuScreen();
 }
