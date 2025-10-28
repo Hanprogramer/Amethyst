@@ -1,4 +1,4 @@
-import { GetRef, Image, Label, PanelProps, UiFile, createFile } from "Regolith-Generators";
+import { GetRef, Image, Label, PanelProps, UiFile, createFile, createMinecraftElement } from "Regolith-Generators";
 
 const startScreen = new UiFile("start");
 const BaseVersion = GetRef<PanelProps>("start", "version");
