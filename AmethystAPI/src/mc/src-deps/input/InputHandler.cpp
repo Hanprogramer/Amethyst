@@ -2,7 +2,8 @@
 #include "mc/src-deps/core/string/StringHash.hpp"
 
 // This seems to be a 32 bit variation of a hashed string?
-int StringToNameId(const std::string& str) {
+int32_t StringToNameId(const std::string& str)
+{
     int hashed = -2128831035;
 
     for (char c : str) {

@@ -45,6 +45,6 @@ public:
 	MC OverworldDimension(ILevel& level, Scheduler& callbackContext);
 
 	// made up constructor to set a custom dimID
-    OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
-		: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
+    // OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
+		//: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
 };
