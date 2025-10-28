@@ -32,11 +32,11 @@ void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartM
         // Not beautiful but works
         auto* mod = GetOwnMod();
         if (!mod)
-			return "No mods loaded";
+			return "Reloading...";
 
         auto* importer = mod->GetImporter();
         if (!importer || !importer->IsResolved() || !context.mModLoader) {
-            return "No mods loaded";
+            return "Reloading...";
         }
 
         size_t count = context.mModLoader->GetModCount();
