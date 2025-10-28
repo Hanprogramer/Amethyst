@@ -1,6 +1,6 @@
 #pragma once
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
-#include <mc/src/common/gamerefs/StackRefResult.hpp>
+#include <mc/src-deps/gamerefs/StackRefResult.hpp>
 
 class EntityRegistry;
 
