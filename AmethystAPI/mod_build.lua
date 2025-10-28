@@ -70,15 +70,22 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             local release = json.loadfile(releases_file)
             local latest_tag = release.tag_name
             local installed_version_file = path.join(importer_dir, "version.txt")
-            local installed_version = os.isfile(installed_version_file) and io.readfile(installed_version_file) or "0.0.0"
+            local installed_version = os.isfile(installed_version_file) and io.readfile(installed_version_file) or "None"
             local should_reinstall = installed_version ~= latest_tag
 
+            local is_first_install = should_reinstall and installed_version == "None"
+
+            if not is_first_install and not automated_build then
+                io.write("Runtime-Importer is outdated (installed: " .. installed_version .. ", latest: " .. latest_tag .. "), install? (y/n): ")
+                io.flush()
+                local answer = (io.read() or ""):lower()
+                should_reinstall = (answer == "" or answer == "y")
+            end
+
             if should_reinstall then
-                print("Runtime-Importer is outdated, reinstalling...")
-                print("Latest version is " .. latest_tag)
                 local url = "https://github.com/AmethystAPI/Runtime-Importer/releases/latest/download/Runtime-Importer.zip"
                 local zipfile = path.join(os.tmpdir(), "Runtime-Importer.zip")
-                print("Installing Runtime-Importer...")
+                print("Installing Runtime-Importer " .. latest_tag .. "...")
 
                 http.download(url, zipfile)
                 archive.extract(zipfile, bin_dir)
