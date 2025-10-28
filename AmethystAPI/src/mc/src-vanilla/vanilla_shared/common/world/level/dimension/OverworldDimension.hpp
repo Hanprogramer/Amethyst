@@ -1,4 +1,6 @@
+/// @symbols
 #pragma once
+#include <amethyst/Imports.hpp>
 #include <mc/src/common/world/level/dimension/Dimension.hpp>
 
 /**@vptr {0x4EE8900} */
@@ -43,6 +45,6 @@ public:
 	MC OverworldDimension(ILevel& level, Scheduler& callbackContext);
 
 	// made up constructor to set a custom dimID
-    OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
-		: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
+    // OverworldDimension(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName) 
+		//: Dimension(level, dimId, heightRange, callbackContext, dimensionName) {}
 };
