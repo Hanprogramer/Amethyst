@@ -183,18 +183,18 @@ void BlockActorRenderDispatcher_initializeBlockEntityRenderers(
 void CreateModFunctionHooks() {
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
 
+	#ifdef CLIENT
     HOOK(ClientInstance, onStartJoinGame);
     HOOK(ClientInstance, requestLeaveGame);
     HOOK(ClientInstance, _ClientInstance);
-    
     HOOK(ScreenView, setupAndRender);
+    HOOK(BlockGraphics, initBlocks);
+    HOOK(BlockActorRenderDispatcher, initializeBlockEntityRenderers);
+    #endif
+
     HOOK(Minecraft, update);
+    HOOK(Minecraft, _Minecraft);
     HOOK(VanillaItems, registerItems);
     HOOK(BlockDefinitionGroup, registerBlocks);
-    HOOK(BlockGraphics, initBlocks);
-
-    HOOK(Minecraft, _Minecraft);
     HOOK(Minecraft, $dtor);
-
-    HOOK(BlockActorRenderDispatcher, initializeBlockEntityRenderers);
 }

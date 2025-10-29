@@ -191,6 +191,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                 "--input", string.format("%s", input_dir),
                 "--output", string.format("%s", generated_dir),
                 "--filters", "mc",
+                "--platform win-server",
                 "--",
                 "-x c++",
                 "-include-pch", path.join(generated_dir, "pch.hpp.pch"),

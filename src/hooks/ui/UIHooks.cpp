@@ -51,6 +51,8 @@ void Amethyst::UIHooks::StartMenuScreenControllerHooks::_registerBindings(StartM
 
 void Amethyst::UIHooks::Create() {
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
+	#ifdef CLIENT
     hooks.CreateDirectHook<&ScreenController::_handleButtonEvent>(ScreenControllerHooks::__handleButtonEvent, &ScreenControllerHooks::_handleButtonEvent);
     hooks.CreateDirectHook<&StartMenuScreenController::_registerBindings>(StartMenuScreenControllerHooks::__registerBindings, &StartMenuScreenControllerHooks::_registerBindings);
+	#endif
 }
