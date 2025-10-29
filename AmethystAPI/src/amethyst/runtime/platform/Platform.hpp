@@ -29,6 +29,8 @@ public:
     virtual void InitializeConsole() const = 0;
 	virtual void PauseGameThread() const = 0;
     virtual void ResumeGameThread() const = 0;
+
+	bool IsDedicatedServer() const;
 };
 
 } // namespace Amethyst

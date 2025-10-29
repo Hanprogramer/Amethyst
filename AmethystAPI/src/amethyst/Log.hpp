@@ -24,7 +24,7 @@ namespace Log {
     void Info(const std::format_string<T...> fmt, T&&... args) {
         std::string formatted_string = std::format(fmt, std::forward<T>(args)...);
         formatted_string = std::format("[{}] [{}] {}", GetThreadName(), GetModName(), formatted_string);
-        std::cout << formatted_string << "\n";
+        std::cout << formatted_string << std::endl;
     }
 
     template <typename... T>

@@ -2,6 +2,8 @@
 #include "debug/AmethystDebugging.hpp"
 #include "amethyst/runtime/ModContext.hpp"
 #include <thread>
+#include "platforms/WindowsClientPlatform.hpp"
+#include "platforms/WindowsServerPlatform.hpp"
 
 HMODULE hModule;
 HANDLE gMcThreadHandle;
@@ -15,17 +17,24 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
+#define WIN_SERVER
+
 DWORD WINAPI Main()
 {
-    auto windowsClientPlatform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
-    AmethystRuntime* runtime = new AmethystRuntime(std::move(windowsClientPlatform), std::this_thread::get_id());
+	#ifdef WIN_CLIENT
+    auto _platform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
+	#endif
+	#ifdef WIN_SERVER
+    auto _platform = std::make_unique<WindowsServerPlatform>(gMcThreadHandle);
+	#endif
+
+    AmethystRuntime* runtime = new AmethystRuntime(std::move(_platform), std::this_thread::get_id());
 
     // Initialize AmethystContextInstance so Amethyst::GetXYZ functions work.
     _AmethystContextInstance = &runtime->mAmethystContext;
 
     auto& platform = Amethyst::GetPlatform();
     platform.Initialize(); // Initialize things like uncaught exception handling
-    platform.InitializeConsole(); // Initialize Amethyst Logging
 
     try {
         runtime->Start();
@@ -39,15 +48,13 @@ DWORD WINAPI Main()
     return 0;
 }
 
+struct ThreadData {
+    DWORD  dwThreadId;
+    HANDLE hThreadHandle;
+};
+
 void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
 {
-    // Define a struct to hold the data
-    struct ThreadData {
-        DWORD dwThreadId;
-        HANDLE hThreadHandle;
-    };
-
-    // Create an instance of the ThreadData struct
     ThreadData* pData = new ThreadData;
     pData->dwThreadId = dMcThreadID;
     pData->hThreadHandle = hMcThreadHandle;
@@ -67,4 +74,14 @@ void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
 
     // Create the thread and pass the lambda function and the ThreadData struct
     CreateThread(nullptr, 0, mainCallLambda, pData, 0, nullptr);
+}
+
+extern "C" __declspec(dllexport) DWORD WINAPI ServerInit(LPVOID lp)
+{
+	ThreadData* td = static_cast<ThreadData*>(lp);
+    gMcThreadHandle = td->hThreadHandle;
+    gMcThreadId     = td->dwThreadId;
+	Main();
+
+	return 0;
 }

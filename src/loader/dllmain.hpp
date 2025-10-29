@@ -13,4 +13,6 @@ DWORD __stdcall EjectThread(LPVOID lpParameter);
 
 extern "C" __declspec(dllexport) void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle);
 
+extern "C" __declspec(dllexport) DWORD __cdecl ServerInit(LPVOID lp);
+
 LONG WINAPI AmethystUnhandledExceptionsHandler(EXCEPTION_POINTERS* ExceptionInfo);

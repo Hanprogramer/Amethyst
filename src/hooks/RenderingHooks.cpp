@@ -23,5 +23,8 @@ void LevelRenderer_renderLevel(LevelRenderer* self, ScreenContext& screenContext
 
 void CreateRenderingHooks() {
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
+
+	#ifdef CLIENT
     HOOK(LevelRenderer, renderLevel);
+	#endif
 }
