@@ -194,8 +194,6 @@ public:
     MC virtual bool isEmpty() const;
     /// @vidx {40}
     MC virtual bool isSlotDisabled(int slot);
-    /// @vidx {41}
-    MC virtual bool hasGetStrictParsingVersion();
 };
 
 // 1.21.0.3

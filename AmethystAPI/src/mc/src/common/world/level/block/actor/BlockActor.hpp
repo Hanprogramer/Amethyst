@@ -14,8 +14,6 @@
 #include <gsl/gsl>
 #include <amethyst/Imports.hpp>
 
-//#include <amethyst/Imports.hpp>
-
 // Auto-generated: Unknown complete types
 class UIProfanityContext {}; 
 

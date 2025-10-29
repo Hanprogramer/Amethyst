@@ -81,8 +81,6 @@ public:
 	MC virtual bool canPushInItem(int slot, int face, const ItemStack& itemStack) const override;
 	/** @vidx {i, Container} */
 	MC virtual bool canPullOutItem(int slot, int face, const ItemStack& itemStack) const override;
-	/** @vidx {i, Container} */
-	MC virtual bool hasGetStrictParsingVersion() override;
 };
 
 static_assert(sizeof(FurnaceBlockActor) == 1344, "Size of FurnaceBlockActor doesn't match what's expected!");
