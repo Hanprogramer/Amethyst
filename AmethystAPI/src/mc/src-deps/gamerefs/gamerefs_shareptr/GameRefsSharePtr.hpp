@@ -1,5 +1,5 @@
 #pragma once
-#include <mc/src/common/gamerefs/gamerefs_shareptr/OwnerStorageSharePtr.hpp>
+#include <mc/src-deps/gamerefs/gamerefs_shareptr/OwnerStorageSharePtr.hpp>
 
 template <typename T>
 struct SharePtrRefTraits {
