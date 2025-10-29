@@ -156,10 +156,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_files(f)
         end
 
-
-
-
-
         for _, dep in ipairs(extra_deps) do
             add_deps(dep)
         end
@@ -168,9 +164,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_links(lib)
         end
 
-
         add_packages("AmethystAPI", "libhat")
-        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
+        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/win-server/Minecraft.Windows.lib"))
 
         add_defines(
             string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
@@ -191,7 +186,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                 "--input", string.format("%s", input_dir),
                 "--output", string.format("%s", generated_dir),
                 "--filters", "mc",
-                "--platform win-server",
+                "--platform", "win-server",
                 "--",
                 "-x c++",
                 "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
@@ -206,8 +201,9 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local gen_lib_args = {
                 ".importer/bin/Amethyst.LibraryGenerator.exe",
-                "--input", string.format("%s/symbols", generated_dir),
-                "--output", string.format("%s/lib", generated_dir)
+                "--platform", "win-server",
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Generating Minecraft.Windows.lib file...')
             os.exec(table.concat(gen_lib_args, " "))
@@ -233,10 +229,12 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local tweaker_args = {
                 ".importer/bin/Amethyst.ModuleTweaker.exe",
+                "--platform", "win-server",
                 "--module", target:targetfile(),
-                "--symbols", string.format("%s/symbols", generated_dir)
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Tweaking output file...')
-            os.exec(table.concat(tweaker_args, " "))
+            os.exec(table.concat(tweaker_args, " "))    
         end)
 end
