@@ -10,6 +10,9 @@ class Level;
 /// @vptr {0x4DE56F8}
 class FillingContainer : public Container {
 public:
+	/** @sig {48 8D 15 ? ? ? ? 48 8B CF E8 ? ? ? ? 48 8B 5C 24 ? B0} */
+	MC static SemVersion PLAYER_UI_CONTAINER_UNVERSIONED;
+
     std::vector<ItemStack> mItems;
     Player* mPlayer;
 
@@ -35,16 +38,19 @@ public:
     MC virtual int getMaxStackSize() const override;
     /// @vidx {inherit}
     MC virtual void startOpen(Player&) override;
-    /// @vidx {42}
+    /// @vidx {41}
     MC virtual void add(ItemStack& item);
-    /// @vidx {43}
+    /// @vidx {42}
     MC virtual bool canAdd(const ItemStack& item);
-    /// @vidx {44}
+    /// @vidx {43}
     MC virtual void clearSlot(int slot);
-    /// @vidx {45}
+    /// @vidx {44}
     MC virtual void clearInventory(int size);
-    /// @vidx {46}
-    MC virtual void load(const ListTag& tag, const SemVersion& version, Level&);
+    /// @vidx {45}
+    MC virtual void load(const ListTag& tag, const SemVersion& version, Level& level);
+
+	/** @sig {E8 ? ? ? ? 90 48 8B 45 ? 4C 89 7D ? 48 89 45} */
+	MC std::unique_ptr<ListTag> save();
 };
 
 // 1.21.0.3
