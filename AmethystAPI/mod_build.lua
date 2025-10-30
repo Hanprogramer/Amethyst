@@ -214,8 +214,9 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local gen_lib_args = {
                 ".importer/bin/Amethyst.LibraryGenerator.exe",
-                "--input", string.format("%s/symbols", generated_dir),
-                "--output", string.format("%s/lib", generated_dir)
+                "--platform", "win-server",
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Generating Minecraft.Windows.lib file...')
             os.exec(table.concat(gen_lib_args, " "))
@@ -241,10 +242,12 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local tweaker_args = {
                 ".importer/bin/Amethyst.ModuleTweaker.exe",
+                "--platform", "win-server",
                 "--module", target:targetfile(),
-                "--symbols", string.format("%s/symbols", generated_dir)
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Tweaking output file...')
-            os.exec(table.concat(tweaker_args, " "))
+            os.exec(table.concat(tweaker_args, " "))    
         end)
 end
