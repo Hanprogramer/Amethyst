@@ -32,9 +32,8 @@ fs::path WindowsClientPlatform::GetAmethystFolder() const
     return GetComMojangPath() / "amethyst";
 }
 
-std::string WindowsClientPlatform::GetPlatformFolderName()
-{
-	return "win_client";
+std::string WindowsClientPlatform::GetPlatformFolderName() {
+	return "win-client";
 }
 
 uintptr_t WindowsClientPlatform::GetMinecraftBaseAddress() const {

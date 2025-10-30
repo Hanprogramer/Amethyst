@@ -17,7 +17,7 @@ fs::path WindowsServerPlatform::GetAmethystFolder() const {
 }
 
 std::string WindowsServerPlatform::GetPlatformFolderName() {
-	return "win_server";
+	return "win-server";
 }
 
 void WindowsServerPlatform::ShutdownWaitForInput() {
