@@ -178,7 +178,10 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
 
         add_packages("AmethystAPI", "libhat")
-        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"), "Dbghelp")
+
+        libs_folder = path.join(".importer", platform)
+
+        add_links("user32", "windowsapp", path.join(libs_folder, "Minecraft.Windows.*.lib"), "Dbghelp")
 
         add_defines(
             string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
@@ -214,7 +217,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local gen_lib_args = {
                 ".importer/bin/Amethyst.LibraryGenerator.exe",
-                "--platform", "win-server",
+                "--platform", platform,
                 "--input", string.format("%s", generated_dir),
                 "--output", string.format("%s", generated_dir)
             }
@@ -242,7 +245,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local tweaker_args = {
                 ".importer/bin/Amethyst.ModuleTweaker.exe",
-                "--platform", "win-server",
+                "--platform", platform,
                 "--module", target:targetfile(),
                 "--input", string.format("%s", generated_dir),
                 "--output", string.format("%s", generated_dir)
