@@ -109,7 +109,7 @@ Minecraft* Minecraft__Minecraft(Minecraft* a1, void* a2, void* a3, void* a4, voi
     // This is where the initial threads ids are found, so at this point Amethsyt::IsOnMainClietnThread and Amethyst::IsOnMainServerThread will start working.
     // But for this it does have to do a tiny bit of jank such that this can be setup
     
-    if (Amethyst::GetClientCtx().mMinecraft == nullptr) {
+    if (Amethyst::IsOnMainClientThread()) {
         Amethyst::GetClientCtx().mMinecraft = a1;
         ctx.mMainClientThread = std::this_thread::get_id();
     }
