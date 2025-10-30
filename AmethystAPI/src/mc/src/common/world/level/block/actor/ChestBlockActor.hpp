@@ -60,7 +60,6 @@ public:
     /** @vidx {i, FillingContainer} */ MC virtual void stopOpen(Player&) override;
     /** @vidx {i, FillingContainer} */ MC virtual void setContainerChanged(int) override;
     /** @vidx {i, FillingContainer} */ MC virtual void initializeContainerContents(BlockSource&) override;
-    /** @vidx {i, FillingContainer} */ MC virtual bool hasGetStrictParsingVersion() override;
     /** @vidx {i, FillingContainer} */ MC virtual void clearSlot(int slot) override;
     /** @vidx {i, FillingContainer} */ MC virtual void clearInventory(int size) override;
 };
