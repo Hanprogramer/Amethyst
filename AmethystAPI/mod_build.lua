@@ -25,15 +25,24 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         local amethystSrc = os.getenv("AMETHYST_SRC")
         amethystApiPath = amethystSrc and path.join(amethystSrc, "AmethystAPI") or nil
 
-        local amethystFolder = path.join(
-            os.getenv("localappdata"),
-            "Packages",
-            "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
-            "LocalState",
-            "games",
-            "com.mojang",
-            "amethyst"
-        )
+        local amethystFolder
+
+        if platform == "win-client" then
+            amethystFolder = path.join(
+                os.getenv("localappdata"),
+                "Packages",
+                "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
+                "LocalState",
+                "games",
+                "com.mojang",
+                "amethyst"
+            )
+        elseif platform == "win-server" then
+            amethystFolder = path.join(
+                os.getenv("AMETHYST_BDS_TARGET"),
+                "amethyst"
+            )
+        end
 
         modFolder = path.join(
             amethystFolder,
