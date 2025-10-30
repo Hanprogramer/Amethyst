@@ -27,11 +27,11 @@ namespace Log {
         FreeConsole();
     }
 
-    //void HideConsole()
-    //{
-    //    HWND consoleWindow = GetConsoleWindow();
-    //    ShowWindow(consoleWindow, SW_HIDE);
-    //}
+    void HideConsole()
+    {
+       HWND consoleWindow = GetConsoleWindow();
+       ShowWindow(consoleWindow, SW_HIDE);
+    }
 
     std::string GetModName() {
         const Amethyst::Mod* mod = Amethyst::GetOwnMod();

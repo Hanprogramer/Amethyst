@@ -11,7 +11,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     local extra_header_files  = config.extra_header_files or {}
     local extra_files         = config.extra_files or {}
 
-    local platform = "win-client"
+    local platform = config.platform or "win-client"
 
     local modFolder
     local amethystApiPath
@@ -42,6 +42,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         )
     end
 
+    local binary_dir = path.join(modFolder, platform)
+
     -- Only include AmethystAPI if present on disk at configure-time
     if amethystApiPath and os.isdir(amethystApiPath) then
         includes(amethystApiPath)
@@ -52,7 +54,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     add_cxxflags("/O2", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
     add_ldflags("/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
 
-    set_targetdir(modFolder)
+    set_targetdir(binary_dir)
 
     package("Runtime-Importer")
         set_kind("binary")

@@ -38,9 +38,9 @@ struct Pack {
     Bedrock::NonOwnerPointer<ResourcePackRepository> repo;
     ResourcePackStack& stack;
 
-	/// @signature {48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 81 EC ? ? ? ? 48 8B F1 48 8B 01, win-server}
     /// @signature {48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B D9 48 8B 09}
     MC void addFromUUID(const PackIdVersion& version);
 };
+/// @signature {48 89 5C 24 ? 48 89 6C 24 ? 56 57 41 56 48 81 EC ? ? ? ? 48 8B F1 48 8B 01, win-server}
 } // namespace lambda
 
