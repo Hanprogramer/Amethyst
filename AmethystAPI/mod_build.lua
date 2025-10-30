@@ -216,7 +216,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local gen_lib_args = {
                 ".importer/bin/Amethyst.LibraryGenerator.exe",
-                "--platform", platform,
+                "--platform " .. platform,
                 "--input", string.format("%s", generated_dir),
                 "--output", string.format("%s", generated_dir)
             }
