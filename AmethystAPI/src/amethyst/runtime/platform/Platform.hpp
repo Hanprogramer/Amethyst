@@ -30,6 +30,9 @@ public:
 	virtual void PauseGameThread() const = 0;
     virtual void ResumeGameThread() const = 0;
 
+	virtual uintptr_t GetMinecraftBaseAddress() const = 0;
+	virtual size_t GetMinecraftSize() const = 0;
+
 	bool IsDedicatedServer() const;
 };
 
