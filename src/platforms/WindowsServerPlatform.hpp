@@ -8,6 +8,7 @@ public:
     virtual Amethyst::PlatformType GetPlatformType() const override;
     virtual fs::path GetComMojangPath() const override;
     virtual fs::path GetAmethystFolder() const override;
+	virtual std::string GetPlatformFolderName() override;
 
 	virtual void ShutdownWaitForInput() override;
 

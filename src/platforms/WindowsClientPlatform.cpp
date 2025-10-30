@@ -32,6 +32,11 @@ fs::path WindowsClientPlatform::GetAmethystFolder() const
     return GetComMojangPath() / "amethyst";
 }
 
+std::string WindowsClientPlatform::GetPlatformFolderName()
+{
+	return "win_client";
+}
+
 uintptr_t WindowsClientPlatform::GetMinecraftBaseAddress() const {
 	return reinterpret_cast<uintptr_t>(GetModuleHandleA("Minecraft.Windows.exe"));
 }

@@ -16,6 +16,10 @@ fs::path WindowsServerPlatform::GetAmethystFolder() const {
     return fs::current_path() / "amethyst";
 }
 
+std::string WindowsServerPlatform::GetPlatformFolderName() {
+	return "win_server";
+}
+
 void WindowsServerPlatform::ShutdownWaitForInput() {
 	Shutdown();
 }
