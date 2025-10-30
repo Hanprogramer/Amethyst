@@ -176,8 +176,6 @@ void BlockActorRenderDispatcher_initializeBlockEntityRenderers(
         experiments
     );
 
-	AssertFail("Test");
-
     InitBlockEntityRenderersEvent event(*self, geometryGroup, textures, blockTessellator, entityResourceDefGroup, resourcePackManager, gameplayGraphicsResources, resourceLoadManager, version, experiments);
     Amethyst::GetEventBus().Invoke(event);
 }
