@@ -312,17 +312,21 @@ public:
 	/** @vidx {117} */ MC virtual bool _shouldAutoCalculatePlacePos() const;
 	/** @vidx {118} */ MC virtual InteractionResult _useOn(ItemStack& stack, Actor& actor, BlockPos pos, FacingID face, const Vec3& hit) const;
 
+	/// @sig {40 53 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B D9 48 89 8C 24 ? ? ? ? 45 33 C9, win-server}
 	/** @sig {48 89 4C 24 ? 53 48 81 EC ? ? ? ? 48 8B D9 45 33 C9} */
     MC static void addCreativeItem(ItemRegistryRef registry, const Block& block);
 
+	/// @sig {48 89 5C 24 ? 55 56 57 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B EA 48 8B F1 48 89 8C 24, win-server}
     /** @sig {48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA 48 8B F1 48 89 8C 24} */
     MC static void addCreativeItem(ItemRegistryRef registry, const ItemInstance& item);
 
 	//MC static std::unique_ptr<std::set<short>> mServerItemsUsedInCreativeItems;
 
+	/// @address {0x3412640, win-server}
 	/// @address {0x597AB10}
     MC static CreativeItemGroupCategory* mActiveCreativeItemCategory; 
 
+	/// @address {0x3412630, win-server}
 	/// @address {0x597AB18}
     MC static CreativeGroupInfo* mActiveCreativeGroupInfo;
 

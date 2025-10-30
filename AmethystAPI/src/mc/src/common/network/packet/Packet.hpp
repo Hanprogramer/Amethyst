@@ -225,7 +225,8 @@ enum class MinecraftPacketIds {
     EndId = 309
 };
 
-/// @vptr {0x4CB18D0}
+/// @vptr { 0x2BCFDA8, this, win-server }
+/// @vptr { 0x4CB18D0 }
 class Packet {
 public:
     PacketPriority mPriority;
@@ -247,7 +248,7 @@ public:
 	MC virtual std::string getName() const = 0;
 
 	/// @vidx {3}
-	MC virtual Bedrock::Result<void, std::error_code> checkSize(unsigned long unk0, bool unk1) const;
+	MC virtual Bedrock::Result<void, std::error_code> checkSize(uint64_t unk0, bool unk1) const;
 
 	/// @vidx {4}
 	MC virtual void write(BinaryStream& unk0) const = 0;
@@ -270,6 +271,7 @@ public:
 
 class MinecraftPackets {
 public:
+	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8B EC 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B F9, win-server}
     /// @signature {40 53 48 83 EC ? 45 33 C0 48 8B D9 FF CA 81 FA}
     MC static std::shared_ptr<Packet> createPacket(MinecraftPacketIds id);
 };
