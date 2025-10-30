@@ -17,13 +17,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     return TRUE;
 }
 
-#define WIN_SERVER
-
 DWORD WINAPI Main()
 {
 	#ifdef WIN_CLIENT
     auto _platform = std::make_unique<WindowsClientPlatform>(gMcThreadHandle);
 	#endif
+
 	#ifdef WIN_SERVER
     auto _platform = std::make_unique<WindowsServerPlatform>(gMcThreadHandle);
 	#endif

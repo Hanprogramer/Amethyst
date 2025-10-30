@@ -418,8 +418,6 @@ uint32_t CraftingScreenController__updateCategoryTabsByRecipes(CraftingScreenCon
 
 void CreateItemRegistryHooks()
 {
-    Log::Info("CreateItemRegistryHooks");
-
     Amethyst::HookManager& hooks = Amethyst::GetHookManager();
     HOOK(VanillaItems, _addItemsCategory);
     HOOK(VanillaItems, _addCommandOnlyCategory);

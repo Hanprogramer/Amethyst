@@ -271,7 +271,7 @@ public:
 
 class MinecraftPackets {
 public:
-	/// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8B EC 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B F9, win-server}
-    /// @signature {40 53 48 83 EC ? 45 33 C0 48 8B D9 FF CA 81 FA}
-    MC static std::shared_ptr<Packet> createPacket(MinecraftPacketIds id);
+	/// @signature {40 53 48 83 EC ? 45 33 C0 48 8B D9 FF CA 81 FA}
+	MC static std::shared_ptr<Packet> createPacket(MinecraftPacketIds id);
 };
+/// @signature {48 89 5C 24 ? 48 89 74 24 ? 55 57 41 56 48 8B EC 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B F9, win-server}

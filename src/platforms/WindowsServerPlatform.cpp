@@ -16,6 +16,10 @@ fs::path WindowsServerPlatform::GetAmethystFolder() const {
     return fs::current_path() / "amethyst";
 }
 
+void WindowsServerPlatform::ShutdownWaitForInput() {
+	Shutdown();
+}
+
 uintptr_t WindowsServerPlatform::GetMinecraftBaseAddress() const
 {
     return reinterpret_cast<uintptr_t>(GetModuleHandleA("bedrock_server.exe"));

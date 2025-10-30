@@ -11,6 +11,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     local extra_header_files  = config.extra_header_files or {}
     local extra_files         = config.extra_files or {}
 
+    local platform = "win-client"
+
     local modFolder
     local amethystApiPath
 
@@ -156,10 +158,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_files(f)
         end
 
-
-
-
-
         for _, dep in ipairs(extra_deps) do
             add_deps(dep)
         end
@@ -168,9 +166,17 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_links(lib)
         end
 
+        if platform == "win-client" then
+            add_defines("CLIENT")
+            add_defines("WIN_CLIENT")
+        elseif platform == "win-server" then
+            add_defines("SERVER")
+            add_defines("WIN_SERVER")
+        end
+
 
         add_packages("AmethystAPI", "libhat")
-        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
+        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"), "Dbghelp")
 
         add_defines(
             string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
@@ -191,7 +197,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                 "--input", string.format("%s", input_dir),
                 "--output", string.format("%s", generated_dir),
                 "--filters", "mc",
-                "--platform win-server",
+                "--platform " .. platform,
                 "--",
                 "-x c++",
                 "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
