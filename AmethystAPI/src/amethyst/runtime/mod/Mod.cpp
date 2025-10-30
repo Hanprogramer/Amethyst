@@ -155,8 +155,6 @@ std::shared_ptr<const ModInfo> Amethyst::Mod::GetInfo(const std::string& modName
     Amethyst::Platform& platform = Amethyst::GetPlatform();
     fs::path modConfigPath = platform.GetAmethystFolder() / L"mods" / modName / L"mod.json";
 
-	Log::Info("Loading mod info from '{}'", modConfigPath.generic_string());
-
     Assert(fs::exists(modConfigPath), "mod.json could not be found, for '{}'", modName);
 
     auto result = ModInfo::FromFile(modConfigPath);
@@ -165,6 +163,7 @@ std::shared_ptr<const ModInfo> Amethyst::Mod::GetInfo(const std::string& modName
 		Log::Error("{}", error.getFormattedMessage());
 		AssertFail("Failed to load mod info for '{}' at '{}'", modName, modConfigPath.generic_string());
 	}
+	
     return std::make_shared<const Amethyst::ModInfo>(std::move(*result));
 }
 
