@@ -52,6 +52,7 @@ struct ThreadData {
     HANDLE hThreadHandle;
 };
 
+#ifdef WIN_CLIENT
 void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
 {
     ThreadData* pData = new ThreadData;
@@ -74,7 +75,9 @@ void __cdecl Init(DWORD dMcThreadID, HANDLE hMcThreadHandle)
     // Create the thread and pass the lambda function and the ThreadData struct
     CreateThread(nullptr, 0, mainCallLambda, pData, 0, nullptr);
 }
+#endif
 
+#ifdef WIN_SERVER
 extern "C" __declspec(dllexport) DWORD WINAPI ServerInit(LPVOID lp)
 {
 	ThreadData* td = static_cast<ThreadData*>(lp);
@@ -84,3 +87,4 @@ extern "C" __declspec(dllexport) DWORD WINAPI ServerInit(LPVOID lp)
 
 	return 0;
 }
+#endif

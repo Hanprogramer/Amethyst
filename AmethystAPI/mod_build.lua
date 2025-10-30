@@ -176,7 +176,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_defines("WIN_SERVER")
         end
 
-
         add_packages("AmethystAPI", "libhat")
 
         libs_folder = path.join(".importer", platform)
