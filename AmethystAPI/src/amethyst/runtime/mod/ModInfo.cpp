@@ -90,7 +90,6 @@ std::expected<ModInfo, ModError> ModInfo::FromFile(const fs::path& jsonFile)
     buffer << modConfigFile.rdbuf();
     modConfigFile.close();
     std::string fileContents = buffer.str();
-	Log::Info("contents {}", fileContents);
 
     nlohmann::json j = nlohmann::json::parse(fileContents);
     if (!j["meta"].is_object()) {
