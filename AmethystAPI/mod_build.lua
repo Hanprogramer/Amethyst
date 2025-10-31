@@ -267,5 +267,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             }
             print('Tweaking output file...')
             os.exec(table.concat(tweaker_args, " "))    
+
+            print("Built '" .. mod_name .. "' for '" .. platform .. "'")
         end)
 end
