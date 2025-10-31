@@ -148,7 +148,7 @@ bool Mod::IsLoaded() const
 bool Mod::operator==(const Mod& other) const
 {
     return mInfo == other.mInfo;
-}
+} 
 
 std::shared_ptr<const ModInfo> Amethyst::Mod::GetInfo(const std::string& modName)
 {

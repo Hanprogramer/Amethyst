@@ -20,7 +20,16 @@ std::string WindowsServerPlatform::GetPlatformFolderName() {
 	return "win-server";
 }
 
+bool WindowsServerPlatform::HasRequestedHotReload() const {
+	// For some reason it listens to inputs even when not focused
+	if (GetForegroundWindow() != GetConsoleWindow())
+		return false;
+
+	return WindowsPlatformCommon::HasRequestedHotReload();
+}
+
 void WindowsServerPlatform::ShutdownWaitForInput() {
+	// Instant shutdown is fine, running in a console
 	Shutdown();
 }
 

@@ -10,6 +10,7 @@ public:
     virtual fs::path GetAmethystFolder() const override;
 	virtual std::string GetPlatformFolderName() override;
 
+	virtual bool HasRequestedHotReload() const override;
 	virtual void ShutdownWaitForInput() override;
 
 	virtual uintptr_t GetMinecraftBaseAddress() const override;
