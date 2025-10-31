@@ -1,6 +1,12 @@
 -- Mod Options
 local mod_name = "Amethyst-Runtime" -- Replace with the name of your mod
 local targetMajor, targetMinor, targetPatch = 1, 21, 3 -- 1.21.0.3 (Other versions not supported by Amethyst)
+local config_options = {} -- Any additional options, see: https://github.com/AmethystAPI/Amethyst-Template/blob/main/README.md
+
+-- Anything below here should not need to be changed
+-- To update your build script if its outdated, replace everything below these comments
+-- The latest version can be found here: https://github.com/AmethystAPI/Amethyst-Template/blob/main/xmake.lua
+local MOD_BUILD_SCRIPT_VERSION = 2
 
 option("automated_build")
     set_default(false)
@@ -31,8 +37,13 @@ else
     includes(build_script_path)
 
     local build_config = {
+        MOD_BUILD_SCRIPT_VERSION = MOD_BUILD_SCRIPT_VERSION,
         platform = platform,
     }
+
+    for k, v in pairs(config_options) do
+        build_config[k] = v
+    end
 
     build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated, build_config)
 end

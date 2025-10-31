@@ -1,6 +1,7 @@
 function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_build, config)
     config = config or {}
 
+    set_xmakever("3.0.4") -- 3.0.x versions before this have a bug where a .sln cant be generated with options
     add_rules("plugin.vsxmake.autoupdate")
     set_languages("c++23")
 
@@ -10,8 +11,14 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     local extra_include_dirs  = config.extra_include_dirs or {}
     local extra_header_files  = config.extra_header_files or {}
     local extra_files         = config.extra_files or {}
-
     local platform = config.platform or "win-client"
+
+    local BUILD_SCRIPT_VERSION = 2
+    local MOD_BUILD_SCRIPT_VERSION = config.MOD_BUILD_SCRIPT_VERSION or 1
+
+    if MOD_BUILD_SCRIPT_VERSION ~= BUILD_SCRIPT_VERSION then
+        print("The mods xmake.lua is in an outdated format, consider updating! Mods version: " .. tostring(MOD_BUILD_SCRIPT_VERSION) .. ", Build script version: " .. tostring(BUILD_SCRIPT_VERSION))
+    end
 
     local modFolder
     local amethystApiPath
