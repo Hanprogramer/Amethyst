@@ -185,11 +185,9 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         end
 
         if platform == "win-client" then
-            add_defines("CLIENT")
-            add_defines("WIN_CLIENT")
+            add_defines("CLIENT", "WIN_CLIENT", {  public = true })
         elseif platform == "win-server" then
-            add_defines("SERVER")
-            add_defines("WIN_SERVER")
+            add_defines("SERVER", "WIN_SERVER", {  public = true })
         end
 
         add_packages("AmethystAPI", "libhat")
@@ -211,6 +209,11 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             local generated_dir = path.join(importer_dir)
             local input_dir = path.join(amethystApiPath, "src"):gsub("\\", "/")
             local include_dir = path.join(amethystApiPath, "include"):gsub("\\", "/")
+
+            local defs = target:get("defines")
+            for _, def in ipairs(defs) do
+                print("Define:", def)
+            end
 
             local gen_sym_args = {
                 ".importer/bin/Amethyst.SymbolGenerator.exe",

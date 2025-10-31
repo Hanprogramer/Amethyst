@@ -9,10 +9,20 @@ AmethystContext::AmethystContext(std::unique_ptr<Amethyst::Platform> platform, s
     mClientCtx(nullptr), 
     mServerCtx(nullptr) 
 	{
-		if (!mPlatform->IsDedicatedServer()) {
-			mClientCtx = std::make_unique<Amethyst::ClientContext>();
-		}
-		
+
+		#ifdef CLIENT
+		mClientCtx = std::make_unique<Amethyst::ClientContext>();
+		Log::Info("mClientContext set!");
+		#else
+		Log::Info("Skipping ClientContext creation...");
+		#endif
+
+		#ifdef SERVER
+		Log::Info("Creating ServerContext...");
+		#endif
+
+		__debugbreak();
+		Log::Info("Sanity check! {}", mClientCtx == nullptr);
 	}
 
 uint64_t AmethystContext::GetAmethystAbiHash()
