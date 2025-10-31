@@ -62,6 +62,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
     -- Only include AmethystAPI if present on disk at configure-time
     if amethystApiPath and os.isdir(amethystApiPath) then
+        PLATFORM = platform -- This is kinda horrible, declare a non local variable here which is read in the xmake.lua of AmethystAPI 
         includes(amethystApiPath)
         includes(path.join(amethystApiPath, "packages", "libhat"))
     end
@@ -209,11 +210,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             local generated_dir = path.join(importer_dir)
             local input_dir = path.join(amethystApiPath, "src"):gsub("\\", "/")
             local include_dir = path.join(amethystApiPath, "include"):gsub("\\", "/")
-
-            local defs = target:get("defines")
-            for _, def in ipairs(defs) do
-                print("Define:", def)
-            end
 
             local gen_sym_args = {
                 ".importer/bin/Amethyst.SymbolGenerator.exe",
