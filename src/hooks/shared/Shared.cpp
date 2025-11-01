@@ -1,6 +1,6 @@
 #include "hooks/shared/Shared.hpp"
-#include "hooks/shared/items/registry/ItemRegistryHooks.hpp"
-#include "hooks/shared/blocks/registry/BlockRegistryHooks.hpp"
+#include "hooks/shared/ItemRegistry.hpp"
+#include "hooks/shared/BlockRegistry.hpp"
 #include "hooks/shared/Networking.hpp"
 #include "hooks/shared/Resource.hpp"
 

@@ -1,5 +1,5 @@
 #if defined(CLIENT) || defined(SERVER)
-#include "hooks/shared/blocks/registry/BlockRegistryHooks.hpp"
+#include "hooks/shared/BlockRegistry.hpp"
 
 #include <amethyst/runtime/utility/InlineHook.hpp>
 #include <amethyst/runtime/ModContext.hpp>
