@@ -93,5 +93,13 @@ namespace mce {
                 angle += glm::two_pi<float>();
             return angle;
         }
+
+		static int signum(float x) {
+            return (x > 0) - (x < 0);
+        }
+
+		static float abs(float x) {
+            return x < 0.0f ? -x : x;
+        }
     };
 };

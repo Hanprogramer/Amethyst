@@ -777,7 +777,7 @@ public:
     MC virtual void unregisterTemporaryPointer(_TickPtr&);
 
     /**@vidx {216}*/
-    MC virtual bool destroyBlock(BlockSource&, const BlockPos&, bool);
+    MC virtual bool destroyBlock(BlockSource& region, const BlockPos& pos, bool dropResources);
 
     /**@vidx {217}*/
     MC virtual void upgradeStorageVersion(StorageVersion);

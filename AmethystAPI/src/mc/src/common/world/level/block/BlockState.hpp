@@ -36,9 +36,7 @@ struct BlockStateInstance {
 };
 
 template<typename T>
-class BlockStateVariant :
-	public BlockState
-{
+class BlockStateVariant : public BlockState {
 public:
 };
 
