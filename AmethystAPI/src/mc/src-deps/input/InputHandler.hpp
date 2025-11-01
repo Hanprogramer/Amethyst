@@ -32,7 +32,7 @@ enum class ButtonState : uint8_t {
 };
 
 struct ButtonEventData {
-    uint32_t id;
+    int32_t id;
     ButtonState state;
     bool exclusive;
     float repeatInterval;
@@ -43,7 +43,7 @@ class IClientInstance;
 class BindingFactoryMap;
 class InputMappingFactoryMap;
 
-int StringToNameId(const std::string& str);
+int32_t StringToNameId(const std::string& str);
 
 class InputHandler {
 public:

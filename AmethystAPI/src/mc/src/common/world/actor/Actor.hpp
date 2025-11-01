@@ -7,7 +7,7 @@
 #include <optional>
 
 #include "mc/src/common/world/entity/EntityContext.hpp"
-#include <mc/src/common/gamerefs/WeakRef.hpp>
+#include <mc/src-deps/gamerefs/WeakRef.hpp>
 #include <mc/src/common/world/actor/Actor.hpp>
 #include <mc/src/common/world/actor/ActorDamageSource.hpp>
 #include <mc/src/common/world/phys/Vec3.hpp>

@@ -34,6 +34,12 @@ enum ItemTakeType : int {
     One = 0x0002,
 };
 
+enum ItemTransferType : int32_t {
+	Take = 0x0000,
+	Place = 0x0001,
+	AddToExisting = 0x0002,
+};
+
 /// @vptr {0x4DE9D50}
 class ContainerManagerController :
 	public std::enable_shared_from_this<ContainerManagerController>
@@ -65,7 +71,7 @@ public:
     /// @vidx {7}
     MC virtual void updatePreviewItem(void);
     /// @vidx {8}
-    MC virtual void getTakeableItemStackBase(const SlotData&);
+    MC virtual const ItemStackBase& getTakeableItemStackBase(const SlotData& slot);
     /// @vidx {9}
     MC virtual void handleTakeAmount(const SlotData&, int, const SlotData&);
     /// @vidx {10}
@@ -128,6 +134,9 @@ public:
 
     /** @sig {40 53 56 57 48 83 EC ? 48 83 7A ? ? 41 8B F0} */
     MC const ItemStack& getItemStack(const std::string& collectionName, int index);
+
+	/** @sig {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4D 8B E1 4C 89 4C 24 ? 4D 8B F0} */
+	MC bool _transfer(ItemTransferType type, const SlotData& srcSlot, const SlotData& dstSlot, ItemTransferAmount transferAmount, bool allowSwap, bool idk);
 };
 
 static_assert(sizeof(ContainerManagerController) == 0xA8);

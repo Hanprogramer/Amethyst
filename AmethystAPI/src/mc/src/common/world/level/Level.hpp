@@ -6,7 +6,7 @@
 #include <mc/src/common/world/level/ILevel.hpp>
 #include <mc/src/common/world/level/BlockSourceListener.hpp>
 #include <mc/src/common/world/level/IWorldRegistriesProvider.hpp>
-#include <mc/src/common/gamerefs/OwnerPtr.hpp>
+#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
 #include <mc/src/common/world/level/dimension/DimensionFactory.hpp>
 #include <amethyst/Imports.hpp>
 

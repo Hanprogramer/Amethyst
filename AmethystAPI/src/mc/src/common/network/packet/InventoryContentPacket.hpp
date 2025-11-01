@@ -2,6 +2,8 @@
 #pragma once
 #include "amethyst/Imports.hpp"
 #include "mc/src/common/network/packet/Packet.hpp"
+#include "mc/src/common/world/containers/FullContainerName.hpp"
+#include "mc/src/common/world/inventory/network/NetworkItemStackDescriptor.hpp"
 
 enum class ContainerID : uint8_t;
 class Player;
@@ -13,7 +15,7 @@ class InventoryContentPacket
 {
 public:
     ContainerID mInventoryId;
-    std::vector<ItemStack> mSlots;
+    std::vector<NetworkItemStackDescriptor> mSlots;
 
     /// @signature {48 89 5C 24 ? 48 89 6C 24 ? 48 89 4C 24 ? 56 57 41 56 48 81 EC ? ? ? ? 49 8B F0 4C 8B F1}
     MC InventoryContentPacket(ContainerID id, const std::vector<ItemStack>& items);
