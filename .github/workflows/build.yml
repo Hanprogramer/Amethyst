@@ -38,13 +38,13 @@ jobs:
             - name: Push bumped version
               shell: powershell
               env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                GIT_AUTH_TOKEN: ${{ secrets.PAT_PUSH }}
               run: |
                 git config user.name "github-actions[bot]"
                 git config user.email "github-actions[bot]@users.noreply.github.com"
                 git add mod.json
-                git commit -m "Bump version to $env:NEW_VERSION"
-                git push
+                git commit -m "Bump version to $env:NEW_VERSION" || echo "No changes to commit"
+                git push "https://x-access-token:${env:GIT_AUTH_TOKEN}@github.com/${{ github.repository }}.git" HEAD:main
 
             - name: Package Resources
               shell: powershell
