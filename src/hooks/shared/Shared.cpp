@@ -76,7 +76,7 @@ namespace Amethyst::SharedHooks {
 #endif
 #ifdef SERVER
 		Amethyst::GetContext().mServerCtx = std::make_unique<Amethyst::ServerContext>();
-		Amethyst::GetServerCtx().mMinecraft = a1;
+		Amethyst::GetServerCtx().mMinecraft = result;
 		ctx.mMainServerThread = std::this_thread::get_id();
 #endif
 
