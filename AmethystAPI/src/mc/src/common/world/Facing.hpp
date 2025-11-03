@@ -1,5 +1,6 @@
 #pragma once
 #include <format>
+class BlockPos;
 
 namespace Facing {
     enum class Name : unsigned char {
@@ -20,6 +21,8 @@ namespace Facing {
 		Facing::Name::WEST,
 		Facing::Name::EAST
 	};
+
+	class BlockPos getOffset(Facing::Name face);
 
 	enum class Axis : int {
 		X = 0,
@@ -60,7 +63,18 @@ namespace Facing {
         }
     }
 
-
+	inline Name fromDirectionAndAxis(AxisDirection direction, Axis axis) {
+		switch (axis) {
+			case Axis::X:
+				return direction == AxisDirection::POSITIVE ? Name::EAST : Name::WEST;
+			case Axis::Y:
+				return direction == AxisDirection::POSITIVE ? Name::UP : Name::DOWN;
+			case Axis::Z:
+				return direction == AxisDirection::POSITIVE ? Name::SOUTH : Name::NORTH;
+			default:
+				std::unreachable();
+		}
+	}
 };
 
 typedef Facing::Name FacingID;

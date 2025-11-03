@@ -15,6 +15,7 @@ public:
 
     /// @vidx {0}
     MC virtual ~BaseActorRenderer() override;
+	
     /// @vidx {inherit}
     MC virtual mce::Color _getOverlayColor(Actor& entity, float alpha) const override;
 };

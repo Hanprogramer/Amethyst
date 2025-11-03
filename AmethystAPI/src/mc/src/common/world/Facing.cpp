@@ -1,5 +1,20 @@
 #include <mc/src/common/world/Facing.hpp>
 #include <stdexcept>
+#include "Facing.hpp"
+#include <mc/src/common/world/level/BlockPos.hpp>
+
+BlockPos Facing::getOffset(Facing::Name face) 
+ {
+	switch (face) {
+		case Name::DOWN:  return BlockPos(0, -1, 0);
+		case Name::UP:    return BlockPos(0, 1, 0);
+		case Name::NORTH: return BlockPos(0, 0, -1);
+		case Name::SOUTH: return BlockPos(0, 0, 1);
+		case Name::WEST:  return BlockPos(-1, 0, 0);
+		case Name::EAST:  return BlockPos(1, 0, 0);
+		default: std::unreachable();
+	}
+}
 
 Facing::Name Facing::getOpposite(Facing::Name face)
 {
