@@ -20,7 +20,7 @@ public:
 
 	cg::ImageBuffer& getCachedImageOrLoadSync(ResourceLocation& loc, bool a2) {
 		using function = decltype(&AbstractTextureAccessor::getCachedImageOrLoadSync);
-		auto func = std::bit_cast<function>(vtable[16]);
+		auto func = std::bit_cast<function>(vtable[2]);
 		return (this->*func)(loc, a2);
 	}
 };
