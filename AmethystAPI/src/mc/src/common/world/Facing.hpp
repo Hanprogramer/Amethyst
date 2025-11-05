@@ -63,6 +63,18 @@ namespace Facing {
         }
     }
 
+	inline Axis getAxis(Name face) {
+        switch (face) {
+            case Name::DOWN:  return Axis::Y;
+            case Name::UP:    return Axis::Y;
+            case Name::NORTH: return Axis::Z;
+            case Name::SOUTH: return Axis::Z;
+            case Name::WEST:  return Axis::X;
+            case Name::EAST:  return Axis::X;
+            default: std::unreachable();
+        }
+    }
+
 	inline Name fromDirectionAndAxis(AxisDirection direction, Axis axis) {
 		switch (axis) {
 			case Axis::X:

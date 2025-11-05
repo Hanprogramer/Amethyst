@@ -14,9 +14,9 @@ class Actor;
 /// @vptr {0x4CEF830}
 class ActorShaderManager {
 public:
-    /* this + 8  */ mce::MaterialPtr mEntityMaterial = {};
-    /* this + 24 */ mce::MaterialPtr mTransparentEntityMaterial = {};
-    /* this + 40 */ mce::MaterialPtr mStaticMaterial = {};
+    /* this + 8  */ mce::MaterialPtr mEntityMaterial;
+    /* this + 24 */ mce::MaterialPtr mTransparentEntityMaterial;
+    /* this + 40 */ mce::MaterialPtr mStaticMaterial;
 
     ActorShaderManager() = default;
 
