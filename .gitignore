@@ -12,3 +12,6 @@ dist
 /.vscode/compile_commands.json
 /.importer
 /Amethyst
+compile_commands.json
+help/makefile
+makefile

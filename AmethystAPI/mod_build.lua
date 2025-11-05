@@ -3,13 +3,25 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
     add_rules("plugin.vsxmake.autoupdate")
     set_languages("c++23")
-
+    
     -- Allow flexible configuration
     local extra_deps          = config.extra_deps or {}
     local extra_links         = config.extra_links or {}
     local extra_include_dirs  = config.extra_include_dirs or {}
     local extra_header_files  = config.extra_header_files or {}
     local extra_files         = config.extra_files or {}
+    local platform = config.platform or "win-client"
+    
+    local BUILD_SCRIPT_VERSION = 2
+    local MOD_BUILD_SCRIPT_VERSION = config.MOD_BUILD_SCRIPT_VERSION or 1
+
+    if not automated_build then -- choco downloads 3.0.1 - but not important for CI builds since no .sln is generated
+        set_xmakever("3.0.4") -- 3.0.x versions before this have a bug where a .sln cant be generated with options
+    end
+    
+    if MOD_BUILD_SCRIPT_VERSION ~= BUILD_SCRIPT_VERSION then
+        print("The mods xmake.lua is in an outdated format, consider updating! Mods version: " .. tostring(MOD_BUILD_SCRIPT_VERSION) .. ", Build script version: " .. tostring(BUILD_SCRIPT_VERSION))
+    end
 
     local modFolder
     local amethystApiPath
@@ -23,15 +35,24 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         local amethystSrc = os.getenv("AMETHYST_SRC")
         amethystApiPath = amethystSrc and path.join(amethystSrc, "AmethystAPI") or nil
 
-        local amethystFolder = path.join(
-            os.getenv("localappdata"),
-            "Packages",
-            "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
-            "LocalState",
-            "games",
-            "com.mojang",
-            "amethyst"
-        )
+        local amethystFolder
+
+        if platform == "win-client" then
+            amethystFolder = path.join(
+                os.getenv("localappdata"),
+                "Packages",
+                "Microsoft.MinecraftUWP_8wekyb3d8bbwe",
+                "LocalState",
+                "games",
+                "com.mojang",
+                "amethyst"
+            )
+        elseif platform == "win-server" then
+            amethystFolder = path.join(
+                os.getenv("AMETHYST_BDS_TARGET"),
+                "amethyst"
+            )
+        end
 
         modFolder = path.join(
             amethystFolder,
@@ -40,8 +61,11 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
         )
     end
 
+    local binary_dir = path.join(modFolder, platform)
+
     -- Only include AmethystAPI if present on disk at configure-time
     if amethystApiPath and os.isdir(amethystApiPath) then
+        PLATFORM = platform -- This is kinda horrible, declare a non local variable here which is read in the xmake.lua of AmethystAPI 
         includes(amethystApiPath)
         includes(path.join(amethystApiPath, "packages", "libhat"))
     end
@@ -50,7 +74,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     add_cxxflags("/O2", "/DNDEBUG", "/MD", "/EHsc", "/FS", "/MP")
     add_ldflags("/OPT:REF", "/OPT:ICF", "/INCREMENTAL:NO", {force = true})
 
-    set_targetdir(modFolder)
+    set_targetdir(binary_dir)
 
     package("Runtime-Importer")
         set_kind("binary")
@@ -156,10 +180,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_files(f)
         end
 
-
-
-
-
         for _, dep in ipairs(extra_deps) do
             add_deps(dep)
         end
@@ -168,9 +188,17 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             add_links(lib)
         end
 
+        if platform == "win-client" then
+            add_defines("CLIENT", "WIN_CLIENT", {  public = true })
+        elseif platform == "win-server" then
+            add_defines("SERVER", "WIN_SERVER", {  public = true })
+        end
 
         add_packages("AmethystAPI", "libhat")
-        add_links("user32", "windowsapp", path.join(os.curdir(), ".importer/lib/Minecraft.Windows.lib"))
+
+        libs_folder = path.join(".importer", platform)
+
+        add_links("user32", "windowsapp", path.join(libs_folder, "Minecraft.Windows.*.lib"), "Dbghelp")
 
         add_defines(
             string.format('MOD_TARGET_VERSION_MAJOR=%d', targetMajor),
@@ -191,6 +219,7 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                 "--input", string.format("%s", input_dir),
                 "--output", string.format("%s", generated_dir),
                 "--filters", "mc",
+                "--platform " .. platform,
                 "--",
                 "-x c++",
                 "-include-pch", path.join(generated_dir, "pch.hpp.pch"),
@@ -205,8 +234,9 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local gen_lib_args = {
                 ".importer/bin/Amethyst.LibraryGenerator.exe",
-                "--input", string.format("%s/symbols", generated_dir),
-                "--output", string.format("%s/lib", generated_dir)
+                "--platform " .. platform,
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Generating Minecraft.Windows.lib file...')
             os.exec(table.concat(gen_lib_args, " "))
@@ -232,10 +262,14 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
 
             local tweaker_args = {
                 ".importer/bin/Amethyst.ModuleTweaker.exe",
+                "--platform", platform,
                 "--module", target:targetfile(),
-                "--symbols", string.format("%s/symbols", generated_dir)
+                "--input", string.format("%s", generated_dir),
+                "--output", string.format("%s", generated_dir)
             }
             print('Tweaking output file...')
-            os.exec(table.concat(tweaker_args, " "))
+            os.exec(table.concat(tweaker_args, " "))    
+
+            print("Built '" .. mod_name .. "' for '" .. platform .. "'")
         end)
 end

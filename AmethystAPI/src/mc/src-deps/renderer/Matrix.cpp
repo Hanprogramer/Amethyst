@@ -1,4 +1,5 @@
 #include "mc/src-deps/renderer/Matrix.hpp"
+#include "Matrix.hpp"
 
 Matrix Matrix::IDENTITY = Matrix();
 
@@ -18,5 +19,10 @@ void Matrix::rotate(float angle, float x, float y, float z)
 {
     // note: it IS accurate that mc takes angle in degrees, not radians
     glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angle), glm::vec3(x, y, z));
+    _m = _m * rotationMatrix;
+}
+
+void Matrix::rotateRad(float angleRad, float x, float y, float z) {
+    glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angleRad, glm::vec3(x, y, z));
     _m = _m * rotationMatrix;
 }

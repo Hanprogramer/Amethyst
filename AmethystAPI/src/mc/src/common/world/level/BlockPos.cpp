@@ -1,5 +1,7 @@
 #include <mc/src/common/world/level/BlockPos.hpp>
 
+const BlockPos BlockPos::ZERO = BlockPos(0, 0, 0);
+
 template <>
 Bedrock::Result<BlockPos> ReadOnlyBinaryStream::get<BlockPos>()
 {

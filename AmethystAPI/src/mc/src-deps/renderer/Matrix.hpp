@@ -15,4 +15,5 @@ public:
 	void translate(float x, float y, float z);
     void scale(float scaleX, float scaleY, float scaleZ);
     void rotate(float angleDeg, float x, float y, float z);
+	void rotateRad(float angleRad, float x, float y, float z);
 };

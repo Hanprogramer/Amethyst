@@ -205,7 +205,6 @@ public:
     /** @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 49 8B F9 48 8B F2 } */
     MC BlockLegacy(const std::string& nameId, short id, const Material& material);
 
-	// That's satisfying asf lmao
     /** @vidx {000} */ MC virtual ~BlockLegacy();
  	/** @vidx {001} */ MC virtual std::shared_ptr<BlockActor> newBlockEntity(const BlockPos& unk0, const Block& unk1) const;
  	/** @vidx {002} */ MC virtual const Block* getNextBlockPermutation(const Block& unk0) const;

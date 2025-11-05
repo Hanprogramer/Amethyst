@@ -14,6 +14,18 @@ class GeometryGroup :
 public:
     /* this + 40  */ std::unordered_map<HashedString, std::shared_ptr<GeometryInfo>> mGeometries;
     /* this + 104 */ std::mutex mGeometryLock;
+
+	std::shared_ptr<GeometryInfo> getGeometry(const HashedString& key) {
+        std::scoped_lock lock(mGeometryLock);
+
+        auto it = mGeometries.find(key);
+        if (it != mGeometries.end()) {
+            return it->second;
+        }
+
+        return nullptr;
+    }
 };
 
+static_assert(offsetof(GeometryGroup, mGeometries) == 40);
 static_assert(offsetof(GeometryGroup, mGeometryLock) == 104);

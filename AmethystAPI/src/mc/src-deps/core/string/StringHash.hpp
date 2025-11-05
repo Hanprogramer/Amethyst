@@ -3,6 +3,7 @@
 #include <string>
 #include <cstddef>
 #include <string_view>
+#include <format>
 
 extern int StringToNameId(const std::string& str);
 
@@ -141,6 +142,20 @@ struct std::hash<HashedString> {
     std::size_t operator()(const HashedString& key) const
     {
         return key.getHash();
+    }
+};
+
+template <>
+struct std::formatter<HashedString> {
+    constexpr auto parse(std::format_parse_context& ctx)
+    {
+        return ctx.begin();
+    }
+
+    template <typename FormatContext>
+    auto format(const HashedString& rect, FormatContext& ctx) const
+    {
+        return std::format_to(ctx.out(), "HashedString[{}]", rect.getString());
     }
 };
 

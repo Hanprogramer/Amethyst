@@ -18,5 +18,9 @@ namespace mce {
 
         MaterialPtr() = default;
         MaterialPtr(mce::RenderMaterialGroupBase& materialGroup, const HashedString& materialName);
+
+		bool isNull() const {
+			return mRenderMaterialInfoPtr == nullptr;
+		}
     };
 }
