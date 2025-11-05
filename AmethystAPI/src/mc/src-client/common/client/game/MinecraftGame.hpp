@@ -31,16 +31,16 @@ public:
     ResourceLocation loc;
     const std::function<void(AbstractTextureAccessor&, cg::ImageBuffer&)> factory;
 
-    RuntimeImageGeneratorInfo(std::string unk0_, ResourceLocation loc_, const std::function<void(AbstractTextureAccessor&, cg::ImageBuffer&)>& factory_)
-        : unk0(std::move(unk0_))
-        , loc(std::move(loc_))
+    RuntimeImageGeneratorInfo(const std::string& unk0_, const ResourceLocation& loc_, const std::function<void(AbstractTextureAccessor&, cg::ImageBuffer&)>& factory_)
+        : unk0(unk0_)
+        , loc(loc_)
         , factory(factory_) {}
 };
 
 class TextureAtlas : public Bedrock::EnableNonOwnerReferences {
 public:
-	/// @signature {E8 ? ? ? ? 48 83 C6 ? 48 3B F7 75 ? 4C 8B B5}
-	MC UnknownReturn addRuntimeImageGenerator(std::weak_ptr<RuntimeImageGeneratorInfo> a2);
+	/// @signature {40 53 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B DA 48 89 54 24 ? 48 8B 91 ? ? ? ? 48 3B 91 ? ? ? ? 74 ? 33 C0 48 89 02 48 89 42 ? 48 39 43 ? 74 ? 48 8B 03 48 89 02 48 8B 43 ? 48 89 42 ? F0 FF 40 ? 48 83 81}
+	MC void addRuntimeImageGenerator(std::weak_ptr<RuntimeImageGeneratorInfo> a2);
 };
 
 class MinecraftGame {
@@ -56,10 +56,10 @@ public:
 	/* this + 2272 */ std::unique_ptr<ResourcePackRepository> mResourcePackRepository;
 	/* this + 2280 */ std::byte padding2296[3328 - 2280];
 	/* this + 3328 */ std::unique_ptr<MinecraftInputHandler> mInput;
-	/* this + 3336 */ std::byte padding3608[3496 - 3336];
-	/* this + 3496 */ std::unique_ptr<TextureAtlas> mTextureAtlas;
-	/* this + 3504 */ std::unique_ptr<TextureAtlas> mItemTextureAtlas;
-	/* this + 3512 */ std::byte padding3512[3768 - 3512];
+	/* this + 3336 */ std::byte padding3336[3768 - 3336];
+	// /* this + 3496 */ std::unique_ptr<TextureAtlas> mTextureAtlas;
+	// /* this + 3504 */ std::unique_ptr<TextureAtlas> mItemTextureAtlas;
+	// /* this + 3512 */ std::byte padding3512[3768 - 3512];
 	/* this + 3768 */ World::System* mWorldSystem;
 	/* this + 3776 */ std::byte padding3744[3912 - 3776];
 	/* this + 3912 */ FontHandle mFontHandle;

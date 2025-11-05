@@ -19,4 +19,9 @@ struct ResolvedItemIconInfo {
   float mV1;
   unsigned __int16 mTexSizeW;
   unsigned __int16 mTexSizeH;
+
+  ResolvedItemIconInfo(const std::string& icon, int frame, ItemIconInfoType type)
+	  : mIconName(icon), mIconFrame(frame), mIconType(type),
+		mRuntimeBlockID(0), mU0(0.0f), mV0(0.0f), mU1(0.0f), mV1(0.0f),
+		mTexSizeW(0), mTexSizeH(0) {}
 };
