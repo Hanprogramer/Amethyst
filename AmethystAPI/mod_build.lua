@@ -159,9 +159,6 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
             end
         end)
 
-
-        set_policy("build.across_targets_in_parallel", true)
-
         -- Main mod sources
         add_files("src/**.cpp")
         add_includedirs("src", { public = true })
