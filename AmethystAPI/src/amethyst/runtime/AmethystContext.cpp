@@ -6,8 +6,13 @@ AmethystContext::AmethystContext(std::unique_ptr<Amethyst::Platform> platform, s
     mAmethystAbiHash(AmethystContext::GetAmethystAbiHash()),
     mPlatform(std::move(platform)), 
     mAmethystThread(amethystThread), 
-    mClientCtx(std::make_unique<Amethyst::ClientContext>()), 
-    mServerCtx(nullptr) {}
+    mClientCtx(nullptr), 
+    mServerCtx(nullptr) 
+	{
+		#ifdef CLIENT
+		mClientCtx = std::make_unique<Amethyst::ClientContext>();
+		#endif
+	}
 
 uint64_t AmethystContext::GetAmethystAbiHash()
 {

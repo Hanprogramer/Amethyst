@@ -1,6 +1,7 @@
 #include "mc/src/common/world/level/block/Block.hpp"
 #include "mc/src/common/world/level/block/BlockLegacy.hpp"
 #include "mc/src/common/world/phys/AABB.hpp"
+#include "mc/src/common/world/Facing.hpp"
 
 template <typename T>
 inline T Block::getState(const BlockState& blockState) const
@@ -9,16 +10,20 @@ inline T Block::getState(const BlockState& blockState) const
     auto result = states.find(blockState.mID);
 
     if (blockState.mID >= result->first) {
-        return (0xFFFF >> (16 - result->second.mNumBits)) & (mData >> (result->second.mEndBit - result->second.mNumBits + 1));
+        int value = (0xFFFF >> (16 - result->second.mNumBits)) & (mData >> (result->second.mEndBit - result->second.mNumBits + 1));
+		return static_cast<T>(value);
     }
 
     auto alteredState = mLegacyBlock->_tryLookupAlteredStateCollection(blockState.mID, mData);
 
-    if (alteredState.has_value()) return alteredState.value();
-    return 0;
+    if (alteredState.has_value()) 
+		return static_cast<T>(alteredState.value());
+
+    return static_cast<T>(0);
 }
 
 template int Block::getState<int>(const BlockState& blockState) const;
+template Facing::Axis Block::getState<Facing::Axis>(const BlockState& blockState) const;
 
 template <typename T>
 gsl::strict_not_null<const Block*> Block::setState(const BlockState& stateType, T value) const {
@@ -26,9 +31,9 @@ gsl::strict_not_null<const Block*> Block::setState(const BlockState& stateType, 
     auto foundState = states.find(stateType.mID);
 
     if (stateType.mID >= foundState->first) {
-        if (value < (int64_t)foundState->second.mVariationCount) {
+        if ((int)value < (int64_t)foundState->second.mVariationCount) {
             uint64_t maskedData = mData & (~foundState->second.mMask);
-            uint64_t index = maskedData | (value << (foundState->second.mEndBit - foundState->second.mNumBits + 1));
+            uint64_t index = maskedData | ((int)value << (foundState->second.mEndBit - foundState->second.mNumBits + 1));
 
             if (index < mLegacyBlock->mBlockPermutations.size()) {
                 return gsl::make_not_null(mLegacyBlock->mBlockPermutations[index].get());
@@ -45,6 +50,7 @@ gsl::strict_not_null<const Block*> Block::setState(const BlockState& stateType, 
 }
 
 template gsl::strict_not_null<const Block*> Block::setState<int>(const BlockState& stateType, int value) const;
+template gsl::strict_not_null<const Block*> Block::setState<Facing::Axis>(const BlockState& stateType, Facing::Axis value) const;
 
 // 1.20.71.1 - Partial reimplementation using `BlockLegacy::getMapColor`
 mce::Color Block::getMapColor(BlockSource& region, const BlockPos& pos) const

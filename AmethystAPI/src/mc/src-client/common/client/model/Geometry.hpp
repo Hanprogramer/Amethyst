@@ -6,11 +6,7 @@
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src-deps/core/semVer/SemVersion.hpp>
 #include <mc/src/common/world/actor/ModelPartLocator.hpp>
-
-struct SkinAdjustments
-{
-    uint32_t mAnimOverrideBitmask;
-};
+#include <mc/src/common/world/actor/player/SkinAdjustments.hpp>
 
 struct TextureOffset {
     uintptr_t** vtable; // why tf this need a vtable.

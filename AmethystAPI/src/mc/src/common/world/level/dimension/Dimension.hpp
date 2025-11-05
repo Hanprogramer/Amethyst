@@ -276,6 +276,14 @@ public:
 
     const Level& getLevelConst() const;
     Level& getLevel() const;
+
+	bool isClientSide() const {
+		return mLevel->isClientSide();
+	}
+
+	bool destroyBlock(const BlockPos& pos, bool dropResources) {
+		return mLevel->destroyBlock(*mBlockSource, pos, dropResources);
+	}
 };
 
 //static_assert(sizeof(Dimension) == 1592);

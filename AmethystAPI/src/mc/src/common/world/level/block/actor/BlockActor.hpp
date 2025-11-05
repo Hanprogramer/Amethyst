@@ -195,6 +195,10 @@ public:
 
 public:
     void moveTo(const BlockPos& pos);
+	
+	BlockActorType getType() const {
+		return mType;
+	}
 };
 
 static_assert(sizeof(BlockActor) == 200);

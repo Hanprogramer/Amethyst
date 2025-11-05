@@ -3,23 +3,18 @@
 #include <mutex>
 #include <thread>
 #include <optional>
-
+#include <amethyst/runtime/ModContext.hpp>
 
 uintptr_t GetMinecraftBaseAddress()
 {
-    static uintptr_t mc = reinterpret_cast<uintptr_t>(GetModuleHandleA("Minecraft.Windows.exe"));
+	static uintptr_t mc = Amethyst::GetPlatform().GetMinecraftBaseAddress();
     return mc;
 }
 
 unsigned long GetMinecraftSize()
 {
-    HMODULE base = GetModuleHandleA("Minecraft.Windows.exe");
-    if (base == nullptr) return 0;
-
-    MODULEINFO moduleInfo;
-    if (!GetModuleInformation(GetCurrentProcess(), base, &moduleInfo, sizeof(MODULEINFO))) return 0;
-
-    return moduleInfo.SizeOfImage;
+	static size_t mc = Amethyst::GetPlatform().GetMinecraftSize();
+	return mc;
 }
 
 uintptr_t SlideAddress(uintptr_t offset)
@@ -115,12 +110,12 @@ uintptr_t GetEffectiveAddress(uintptr_t address) {
 			}
 		}
 	}
+
 	return address;
 }
 
-uintptr_t GetVtable(void* obj)
-{
-    return (uintptr_t)*reinterpret_cast<uintptr_t**>(obj);
+uintptr_t GetVtable(const void* obj) {
+	return *reinterpret_cast<uintptr_t const*>(obj);
 }
 
 void CompareVirtualTables(uintptr_t lhs, uintptr_t rhs, size_t maxFunctions)

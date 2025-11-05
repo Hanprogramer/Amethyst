@@ -38,6 +38,25 @@ public:
     MatrixStackRef push(const Matrix& matrix) {
         stack.push(matrix);
         _isDirty = true;
+		return { this, &stack.top() };
+    }
+
+	MatrixStack::MatrixStackRef push() {
+		if (stack.empty()) {
+			stack.push(Matrix());
+		} else {
+			stack.push(stack.top());
+		}
+
+		_isDirty = true;
+		return { this, &stack.top() };
+	}
+
+	void pop() {
+        if (!stack.empty()) {
+            stack.pop();
+            _isDirty = true;
+        }
     }
 };
 

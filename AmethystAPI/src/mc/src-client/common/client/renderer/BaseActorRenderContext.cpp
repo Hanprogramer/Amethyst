@@ -11,5 +11,5 @@
 //}
 
 MatrixStack& BaseActorRenderContext::getWorldMatrix() {
-    return this->mScreenContext->camera->worldMatrixStack;
+    return this->mScreenContext.camera->worldMatrixStack;
 }

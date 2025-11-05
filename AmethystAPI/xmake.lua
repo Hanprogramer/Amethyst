@@ -21,3 +21,13 @@ target("AmethystAPI")
 
     add_includedirs("include", "src", {public = true})
     add_headerfiles("src/**.hpp", "include/**.hpp", "include/**.h")
+
+    -- Janky fix, this is set in the mod_build.lua script by defining a non-local variable
+    -- But it does mean it propagates down so good enough xD
+    PLATFORM = PLATFORM or "win-client"
+
+    if PLATFORM == "win-client" then
+        add_defines("CLIENT", "WIN_CLIENT", {  public = true })
+    elseif PLATFORM == "win-server" then
+        add_defines("SERVER", "WIN_SERVER", {  public = true })
+    end

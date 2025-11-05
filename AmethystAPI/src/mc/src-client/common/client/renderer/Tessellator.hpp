@@ -1,4 +1,6 @@
+/// @symbols
 #pragma once
+#include <amethyst/Imports.hpp>
 #include <cstddef>
 #include "mc/src/common/world/phys/Vec3.hpp"
 #include "amethyst/Memory.hpp"
@@ -18,6 +20,7 @@ static_assert(sizeof(TessellatorQuadInfo) == 0x10);
 
 namespace mce {
     class Mesh; 
+	class BufferResourceService;
 
     enum class PrimitiveMode : int {
         None = 0,
@@ -73,8 +76,12 @@ public:
     /* this + 552 */ unsigned int mCount;
     /* this + 556 */ std::byte padding556[5];
     /* this + 561 */ bool mBuildFaceData;
+	/* this + 562 */ std::byte padding562[592-562];
 
 public:
+	/// @sig {48 89 5C 24 ? 55 56 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 48 8B F2 48 8B F9 48 89 4C 24 ? 48 89 54 24}
+	MC Tessellator(std::weak_ptr<mce::BufferResourceService> bufferService);
+
     void begin(mce::PrimitiveMode mode, int maxVertices);
     void beginOverride();
 
@@ -102,3 +109,4 @@ public:
 };
 
 static_assert(offsetof(Tessellator, mBuildFaceData) == 561);
+static_assert(sizeof(Tessellator) == 592);

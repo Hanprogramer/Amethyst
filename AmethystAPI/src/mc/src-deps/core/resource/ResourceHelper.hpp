@@ -1,6 +1,7 @@
 #pragma once
-#include "mc/src-deps/core/resource/ResourceUtil.hpp"
+#include <functional>
 #include <string>
+#include "mc/src-deps/core/resource/ResourceUtil.hpp"
 #include "mc/src-deps/core/semVer/SemVersion.hpp"
 #include "mc/src-deps/core/utility/UUID.hpp"
 
@@ -58,8 +59,21 @@ public:
     ResourceLocation(const std::string& path);
     ResourceLocation(const char* path);
 
+	inline bool operator==(const ResourceLocation& rhs) const {
+		return mFullHash == rhs.mFullHash;
+	}
+
 private:
     void _computeHashes();
 };
+
+namespace std {
+    template<>
+    struct hash<ResourceLocation> {
+        std::size_t operator()(const ResourceLocation& rl) const noexcept {
+            return static_cast<std::size_t>(rl.mFullHash);
+        }
+    };
+}
 
 static_assert(offsetof(ResourceLocation, mPath) == 8);

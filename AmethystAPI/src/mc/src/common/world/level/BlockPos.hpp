@@ -27,6 +27,8 @@ public:
         this->z = static_cast<int>(std::floor(vec.z));
     }
 
+	static const BlockPos ZERO;
+
     BlockPos below() const
     {
         return {this->x, this->y - 1, this->z};
@@ -83,6 +85,13 @@ public:
         }
     }
 
+	int distSqr(const BlockPos& other) const {
+        int dx = x - other.x;
+        int dy = y - other.y;
+        int dz = z - other.z;
+        return dx * dx + dy * dy + dz * dz;
+    }
+
     constexpr size_t hashCode() const
     {
         // This implementation is completely guessed, please verify it for usage in actual game memory
@@ -94,10 +103,36 @@ public:
         return hash;
     }
 
+	BlockPos operator+(const BlockPos& other) const {
+		return BlockPos(x + other.x, y + other.y, z + other.z);
+	}
+
+	BlockPos operator-(const BlockPos& other) const {
+		return BlockPos(x - other.x, y - other.y, z - other.z);
+	}
+
     bool operator==(const BlockPos& other) const
     {
         return x == other.x && y == other.y && z == other.z;
     }
+
+	static std::vector<BlockPos> betweenClosed(const BlockPos& a, const BlockPos& b) {
+		std::vector<BlockPos> result;
+
+		int minX = std::min(a.x, b.x);
+		int maxX = std::max(a.x, b.x);
+		int minY = std::min(a.y, b.y);
+		int maxY = std::max(a.y, b.y);
+		int minZ = std::min(a.z, b.z);
+		int maxZ = std::max(a.z, b.z);
+
+		for (int x = minX; x <= maxX; ++x)
+			for (int y = minY; y <= maxY; ++y)
+				for (int z = minZ; z <= maxZ; ++z)
+					result.emplace_back(x, y, z);
+
+		return result;
+	}
 
     BlockPos(const BlockPos& other) : x(other.x), y(other.y), z(other.z) {}
 };
