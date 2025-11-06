@@ -3,6 +3,7 @@
 #include <amethyst/Imports.hpp>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src/common/AppPlatformListener.hpp>
+#include <mc/src-deps/gamerefs/OwnerPtr.hpp>
 
 class IMinecraftApp;
 class Minecraft;
@@ -13,10 +14,41 @@ class Timer;
 class Scheduler;
 class EducationOptions;
 class LevelStorage;
+class AllowList;
+class PermissionsFile;
+class LevelSettings;
+struct ConnectionDefinition;
+class LevelData;
+class IMinecraftEventing;
+class IResourcePackRepository;
+class IContentTierManager;
+class ResourcePackManager;
+class ServerMetrics;
+class DebugEndPoint;
+struct NetworkSettingOptions;
+struct PlayerMovementSettings;
+struct ScriptSettings;
+class Experiments;
+struct NetworkPermissions;
+class NetworkSessionOwner;
+class CDNConfig;
+class ServerTextSettings;
+
+enum class ForceBlockNetworkIdsAreHashes : unsigned char {};
 
 namespace Core {
 	class StorageAreaStateListener {};
+	class FilePathManager {};
+	class FileStorageArea {};
 };
+
+namespace mce {
+	class UUID {};
+}
+
+namespace cereal {
+	struct ReflectionCtx {};
+}
 
 class ServerInstance : public Bedrock::EnableNonOwnerReferences, public AppPlatformListener, public GameCallbacks, Core::StorageAreaStateListener {
 public:
@@ -40,6 +72,62 @@ public:
 	std::string mServerName;
 
 public:
+	/// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 89 95 ? ? ? ? 4C 8B E1}
+	MC bool initializeServer(
+		IMinecraftApp app,
+		AllowList& allowList,
+		PermissionsFile* permissionsFile,
+		Bedrock::NotNullNonOwnerPtr<Core::FilePathManager> const& pathManager,
+		std::chrono::seconds maxPlayerIdleTime,
+		std::string levelId,
+		std::string levelName,
+		std::string serverName,
+		LevelSettings levelSettings,
+		int maxChunkRadius,
+		bool shouldAnnounce,
+		ConnectionDefinition connectionDefinition,
+		bool requireTrustedAuthentication,
+		std::vector<std::string> const& extraTrustedKeys,
+		std::string serverType,
+		mce::UUID const& localPlayerId,
+		IMinecraftEventing& eventing,
+		Bedrock::NotNullNonOwnerPtr<IResourcePackRepository> const& resourcePackRepository,
+		Bedrock::NotNullNonOwnerPtr<IContentTierManager const> const& contentTierManager,
+		ResourcePackManager& clientResourcePackManager,
+		std::function<OwnerPtr<LevelStorage>(Scheduler &)> createLevelStorageCallback,
+		std::string const& basePath,
+		LevelData* levelData,
+		std::string playerSafetyServiceTextProcessorConfig,
+		std::string serverId,
+		std::string applicationId,
+		std::string applicationSecret,
+		std::string applicationTenantId,
+		std::unique_ptr<EducationOptions> educationOptions,
+		ResourcePackManager* localServerResourcePackManager,
+		std::function<void()> criticalSaveCallback,
+		std::function<void()> compactionCallback,
+		ServerMetrics* serverMetrics,
+		DebugEndPoint* debugEndPoint,
+		bool enableWorldSessionEndPoint,
+		std::shared_ptr<Core::FileStorageArea> storageAreaForLevel,
+		NetworkSettingOptions const& networkSettings,
+		bool enableItemStackNetManager,
+		bool enableItemTransactionLogger,
+		bool enableRealmsStories,
+		std::optional<PlayerMovementSettings> playerMovementSettings,
+		std::optional<ScriptSettings> scriptSettings,
+		Experiments const& levelExperiments,
+		bool isServerVisibleToLanDiscovery,
+		float worldSizeMB,
+		std::optional<bool> clientSideGenerationEnabled,
+		ForceBlockNetworkIdsAreHashes blockNetworkIdsAreHashes,
+		NetworkPermissions const& networkPermissions,
+		Bedrock::NotNullNonOwnerPtr<NetworkSessionOwner> networkSessionOwner,
+		Bedrock::NonOwnerPointer<CDNConfig> cdnConfig,
+		cereal::ReflectionCtx& reflectionContext,
+		Bedrock::NonOwnerPointer<ServerTextSettings> serverTextSettings
+	);
+
 	/// @signature {40 53 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B DA 48 89 54 24 ? 8B 81 ? ? ? ? 90 83 F8 ? 74}
 	MC void _threadSafeExecute(std::function<void()> func);
 
