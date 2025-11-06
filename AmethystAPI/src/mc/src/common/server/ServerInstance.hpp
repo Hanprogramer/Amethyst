@@ -1,9 +1,11 @@
 /// @symbols
 #pragma once
 #include <amethyst/Imports.hpp>
-#include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src/common/AppPlatformListener.hpp>
+#include <mc/src/common/world/level/LevelSettings.hpp>
+#include <mc/src-deps/core/utility/UUID.hpp>
 #include <mc/src-deps/gamerefs/OwnerPtr.hpp>
+#include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 
 class IMinecraftApp;
 class Minecraft;
@@ -16,7 +18,6 @@ class EducationOptions;
 class LevelStorage;
 class AllowList;
 class PermissionsFile;
-class LevelSettings;
 struct ConnectionDefinition;
 class LevelData;
 class IMinecraftEventing;
@@ -34,17 +35,11 @@ class NetworkSessionOwner;
 class CDNConfig;
 class ServerTextSettings;
 
-enum class ForceBlockNetworkIdsAreHashes : unsigned char {};
-
 namespace Core {
 	class StorageAreaStateListener {};
 	class FilePathManager {};
 	class FileStorageArea {};
 };
-
-namespace mce {
-	class UUID {};
-}
 
 namespace cereal {
 	struct ReflectionCtx {};
@@ -74,7 +69,7 @@ public:
 public:
 	/// @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? 48 2B E0 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 48 89 95 ? ? ? ? 4C 8B E1}
 	MC bool initializeServer(
-		IMinecraftApp app,
+		IMinecraftApp& app,
 		AllowList& allowList,
 		PermissionsFile* permissionsFile,
 		Bedrock::NotNullNonOwnerPtr<Core::FilePathManager> const& pathManager,
