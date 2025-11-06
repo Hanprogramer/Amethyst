@@ -50,7 +50,8 @@ public:
 	/// @signature {40 55 53 56 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 0F 29 B4 24 ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 49 8B D9}
 	MC bool _validateActorData(CompoundTag& unk0, ActorDefinitionIdentifier& unk1, Vec3& unk2, const LevelChunk* unk3) const;
 
-	void applyEntityInitializer(std::unique_ptr<Actor> unk0, EntityContext& unk1) const;
+	/// @signature {48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 49 8B E8 48 8B DA 48 8B F9}
+	MC void applyEntityInitializer(std::unique_ptr<Actor> unk0, EntityContext& unk1) const;
 
 	void clearDefinitionGroup();
 
@@ -62,9 +63,10 @@ public:
 	MC OwnerPtr<EntityContext> createActor(const std::string& unk0, const ActorDefinitionIdentifier& unk1, Actor* unk2, const Vec3& unk3, const Vec2& unk4);
 
 	/// @signature {48 8B C4 53 55 56 57 41 55 41 56 48 81 EC}
-	OwnerPtr<EntityContext> createBornActor(const ActorDefinitionIdentifier& unk0, Actor* unk1);
+	MC OwnerPtr<EntityContext> createBornActor(const ActorDefinitionIdentifier& unk0, Actor* unk1);
 
-	OwnerPtr<EntityContext> createBornActor(const ActorDefinitionIdentifier& unk0, const BlockPos& unk1);
+	/// @signature {48 8B C4 48 89 58 ? 48 89 70 ? 48 89 50 ? 57 48 83 EC ? 49 8B F0}
+	MC OwnerPtr<EntityContext> createBornActor(const ActorDefinitionIdentifier& unk0, const BlockPos& unk1);
 
 	/// @signature {40 53 55 56 57 41 54 41 56 41 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 4D 8B E1 49 8B E8 48 8B DA}
 	MC OwnerPtr<EntityContext> createSpawnedActor(const ActorDefinitionIdentifier& unk0, Actor* unk1, const Vec3& unk2, const Vec2& unk3);
