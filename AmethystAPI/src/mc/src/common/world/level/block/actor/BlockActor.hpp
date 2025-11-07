@@ -199,6 +199,10 @@ public:
 	BlockActorType getType() const {
 		return mType;
 	}
+
+	void setChanged() {
+		mChanged = true;
+	}
 };
 
 static_assert(sizeof(BlockActor) == 200);

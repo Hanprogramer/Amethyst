@@ -3,6 +3,7 @@
 #include "hooks/shared/BlockRegistry.hpp"
 #include "hooks/shared/Networking.hpp"
 #include "hooks/shared/Resource.hpp"
+#include "hooks/shared/Block.hpp"
 
 #include <thread>
 
@@ -108,5 +109,6 @@ namespace Amethyst::SharedHooks {
 		BlockRegistryHooks::Initialize();
 		NetworkingHooks::Initialize();
 		ResourceHooks::Initialize();
+		BlockHooks::Initialize();
 	}
 }

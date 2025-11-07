@@ -1,8 +1,11 @@
 #include "mc/src/common/nbt/CompoundTag.hpp"
 #include "mc/src/common/nbt/CompoundTagVariant.hpp"
+#include "mc/src/common/nbt/IntTag.hpp"
+#include "mc/src/common/nbt/Int64Tag.hpp"
 #include <sstream>
 #include "mc/src/common/util/DataIO.hpp"
 #include "mc/src-deps/core/math/Math.hpp"
+#include "CompoundTag.hpp"
 
 CompoundTag::CompoundTag() {}
 
@@ -173,6 +176,49 @@ int CompoundTag::getInt(std::string_view name) const {
     auto tag = getIntTag(name);
     if (tag) return tag->data;
     return 0;
+}
+
+void CompoundTag::putInt(std::string name, int value) {
+	IntTag intTag(value);
+	mTags[name].emplace<IntTag>(intTag);
+}
+
+const Int64Tag* CompoundTag::getInt64Tag(std::string_view name) const {
+    return get<Int64Tag>(name);
+}
+
+Int64Tag* CompoundTag::getInt64Tag(std::string_view name) {
+    return get<Int64Tag>(name);
+}
+
+int64_t CompoundTag::getInt64(std::string_view name) const {
+    auto tag = getInt64Tag(name);
+	if (tag) return tag->data;
+	return 0;
+}
+
+void CompoundTag::putInt64(std::string name, int64_t value) {
+    Int64Tag intTag(value);
+    mTags[name].emplace<Int64Tag>(intTag);
+}
+
+const FloatTag* CompoundTag::getFloatTag(std::string_view name) const {
+    return get<FloatTag>(name);
+}
+
+FloatTag* CompoundTag::getFloatTag(std::string_view name) {
+    return get<FloatTag>(name);
+}
+
+float CompoundTag::getFloat(std::string_view name) const {
+    auto tag = getFloatTag(name);
+    if (tag) return tag->data;
+    return 0.0f;
+}
+
+void CompoundTag::putFloat(std::string name, float value) {
+    FloatTag floatTag(value);
+    mTags[name].emplace<FloatTag>(floatTag);
 }
 
 Tag& CompoundTag::put(std::string name, Tag&& tag)

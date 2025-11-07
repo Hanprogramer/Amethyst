@@ -103,6 +103,26 @@ public:
         return hash;
     }
 
+	constexpr uint64_t asLong() const {
+		// Bit layout: [X:26 | Z:26 | Y:12]
+		return ((static_cast<uint64_t>(x) & 0x3FFFFFFULL) << 38)
+			| ((static_cast<uint64_t>(z) & 0x3FFFFFFULL) << 12)
+			| (static_cast<uint64_t>(y) & 0xFFFULL);
+	}
+
+	static BlockPos fromLong(uint64_t value) {
+		int x = static_cast<int>(value >> 38);
+		int y = static_cast<int>(value & 0xFFFULL);
+		int z = static_cast<int>((value >> 12) & 0x3FFFFFFULL);
+
+		// Correct for negatives (sign extension)
+		if (x >= 0x2000000) x -= 0x4000000;
+		if (y >= 0x800) y -= 0x1000;
+		if (z >= 0x2000000) z -= 0x4000000;
+
+		return BlockPos(x, y, z);
+	}
+
 	BlockPos operator+(const BlockPos& other) const {
 		return BlockPos(x + other.x, y + other.y, z + other.z);
 	}

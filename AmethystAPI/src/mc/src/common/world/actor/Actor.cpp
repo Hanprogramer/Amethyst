@@ -6,6 +6,7 @@
 #include "mc/src/common/world/entity/components/StateVectorComponent.hpp"
 #include "mc/src/common/world/entity/components/ActorGameTypeComponent.hpp"
 #include "mc/src/common/world/entity/components/ActorUniqueIDComponent.hpp"
+#include "Actor.hpp"
 
 Vec3* Actor::getPosition() const
 {
@@ -54,6 +55,10 @@ void Actor::setDimension(WeakRef<Dimension> dimension)
     using function = decltype(&Actor::setDimension);
     static auto func = std::bit_cast<function>(SigScan("48 89 5C 24 ? 55 56 57 48 83 EC ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 44 24 ? 48 8B FA 48 8B E9 48 89 54 24 ? 0F 57 C9"));
     return (this->*func)(dimension);
+}
+
+Dimension& Actor::getDimension() const {
+    return *mDimension.lock();
 }
 
 //int Actor::load(const CompoundTag& actorData, DefaultDataLoadHelper& dataLoadHelper)

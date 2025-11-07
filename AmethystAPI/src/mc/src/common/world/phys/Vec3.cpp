@@ -34,6 +34,10 @@ Vec3::Vec3(const glm::vec3& vec)
     this->z = vec.z;
 }
 
+Vec3 Vec3::voxelSpace(float x, float y, float z) {
+    return Vec3(x / 16.0f, y / 16.0f, z / 16.0f);
+}
+
 Vec3 Vec3::operator+(const Vec3 rhs) const
 {
     return Vec3(
@@ -176,9 +180,48 @@ void Vec3::rotateAroundPointDegrees(const Vec3& pivot, const Vec3& angle) {
     this->z = result.z;
 }
 
+void Vec3::rotateCentered(float angleDegrees, Facing::Axis axis) {
+	Vec3 result = *this;
+	Vec3 pivot(0.5f, 0.5f, 0.5f);
+
+	result = result - pivot;
+
+	switch(axis) {
+		case Facing::Axis::X:
+			result.rotateAroundXRadians(angleDegrees * PI / 180.0f);
+			break;
+		case Facing::Axis::Y:
+			result.rotateAroundYRadians(angleDegrees * PI / 180.0f);
+			break;
+		case Facing::Axis::Z:
+			result.rotateAroundZRadians(angleDegrees * PI / 180.0f);
+			break;
+		default:
+			std::unreachable();
+	}
+
+	result = result + pivot;
+	*this = result;
+}
+
+Vec3 Vec3::rotateCentered(const Vec3& vec, float angleDegrees, Facing::Axis axis) {
+	Vec3 copy = vec;
+	copy.rotateCentered(angleDegrees, axis);
+	return copy;
+}
+
 Vec3 Vec3::lerp(const Vec3& start, const Vec3& end, float t)
 {
     return start + (end - start) * t;
+}
+
+Vec3 Vec3::atLowerCornerOf(const Vec3& vec) 
+{
+	return Vec3{
+		std::floor(vec.x),
+		std::floor(vec.y),
+		std::floor(vec.z)
+	};
 }
 
 float Vec3::distance(const Vec3& other) const
