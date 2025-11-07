@@ -24,6 +24,7 @@ inline T Block::getState(const BlockState& blockState) const
 
 template int Block::getState<int>(const BlockState& blockState) const;
 template Facing::Axis Block::getState<Facing::Axis>(const BlockState& blockState) const;
+template FacingID Block::getState<FacingID>(const BlockState& blockState) const;
 
 template <typename T>
 gsl::strict_not_null<const Block*> Block::setState(const BlockState& stateType, T value) const {
@@ -51,6 +52,7 @@ gsl::strict_not_null<const Block*> Block::setState(const BlockState& stateType, 
 
 template gsl::strict_not_null<const Block*> Block::setState<int>(const BlockState& stateType, int value) const;
 template gsl::strict_not_null<const Block*> Block::setState<Facing::Axis>(const BlockState& stateType, Facing::Axis value) const;
+template gsl::strict_not_null<const Block*> Block::setState<FacingID>(const BlockState& stateType, FacingID value) const;
 
 // 1.20.71.1 - Partial reimplementation using `BlockLegacy::getMapColor`
 mce::Color Block::getMapColor(BlockSource& region, const BlockPos& pos) const

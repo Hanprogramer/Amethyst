@@ -298,7 +298,7 @@ public:
 	/** @vidx {090} */ MC virtual bool breaksFallingBlocks(const Block& unk0, BaseGameVersion unk1) const;
 	/** @vidx {091} */ MC virtual void destroy(BlockSource& unk0, const BlockPos& unk1, const Block& unk2, Actor* unk3) const;
 	/** @vidx {092} */ MC virtual bool getIgnoresDestroyPermissions(Actor& unk0, const BlockPos& unk1) const;
-	/** @vidx {093} */ MC virtual void neighborChanged(BlockSource& unk0, const BlockPos& unk1, const BlockPos& unk2) const;
+	/** @vidx {093} */ MC virtual void neighborChanged(BlockSource& region, const BlockPos& pos, const BlockPos& neighborPos) const;
 	/** @vidx {094} */ MC virtual bool getSecondPart(const IConstBlockSource& unk0, const BlockPos& unk1, BlockPos& unk2) const;
 	/** @vidx {095} */ MC virtual const Block* playerWillDestroy(Player& unk0, const BlockPos& unk1, const Block& unk2) const;
 	/** @vidx {096} */ MC virtual ItemInstance asItemInstance(const Block& block, const BlockActor* actor) const;
@@ -369,6 +369,7 @@ public:
 	/** @vidx {161} */ MC virtual void _onHitByActivatingAttack(BlockSource& unk0, const BlockPos& unk1, Actor* unk2) const;
     /** @vidx {162} */ MC virtual void entityInside(BlockSource& unk0, const BlockPos& unk1, Actor& unk2);
 
+	bool hasBlockEntity() const;
     short getBlockItemId();
     void setDestroyTime(float destroyTime, float explosionResistance);
     void addState(const BlockState& blockState);
