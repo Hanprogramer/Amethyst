@@ -54,6 +54,12 @@ template gsl::strict_not_null<const Block*> Block::setState<int>(const BlockStat
 template gsl::strict_not_null<const Block*> Block::setState<Facing::Axis>(const BlockState& stateType, Facing::Axis value) const;
 template gsl::strict_not_null<const Block*> Block::setState<FacingID>(const BlockState& stateType, FacingID value) const;
 
+bool Block::hasState(const BlockState& stateType) const {
+    auto& states = mLegacyBlock->mStates;
+	auto foundState = states.find(stateType.mID);
+	return foundState != states.end();
+}
+
 // 1.20.71.1 - Partial reimplementation using `BlockLegacy::getMapColor`
 mce::Color Block::getMapColor(BlockSource& region, const BlockPos& pos) const
 {
@@ -62,6 +68,10 @@ mce::Color Block::getMapColor(BlockSource& region, const BlockPos& pos) const
 
 bool Block::canBeBuiltOver(BlockSource& region, const BlockPos& pos) const {
     return mLegacyBlock->canBeBuiltOver(region, pos);
+}
+
+bool Block::isAir() const {
+    return mLegacyBlock->isAir();
 }
 
 bool Block::isFenceBlock() const
@@ -78,13 +88,6 @@ bool Block::getCollisionShape(AABB& outAABB, const IConstBlockSource& region, co
 const Material& Block::getMaterial() const
 {
     return mLegacyBlock->mMaterial;
-}
-
-bool Block::use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const
-{
-    using function = decltype(&Block::use);
-    static auto func = std::bit_cast<function>(SigScan("40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 0F B6 E9 44 88 4C 24 ? 4D 8B F0"));
-    return (this->*func)(player, at, face, hit);
 }
 
 bool Block::isInteractiveBlock() const

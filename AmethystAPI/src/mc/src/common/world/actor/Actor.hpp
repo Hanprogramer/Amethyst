@@ -106,6 +106,7 @@ public:
     BlockSource& getDimensionBlockSource() const;
     bool hasDimension() const;
     void setDimension(WeakRef<Dimension> dimension);
+	Dimension& getDimension() const;
 
     ILevel* getLevel() const
     {
