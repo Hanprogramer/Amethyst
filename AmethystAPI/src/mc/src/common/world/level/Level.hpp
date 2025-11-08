@@ -35,6 +35,9 @@ public:
     /* this + 6512 */ Factory<BaseLightTextureImageBuilder, Level&, Scheduler&> mLightTextureImageBuilderFactory;
 
     MC static uintptr_t $vtable_for_this;
+
+	/**@vidx {i}*/
+    MC virtual void tick() override;
 };
 
 // 1.21.0.3
