@@ -108,9 +108,10 @@ public:
     void setDimension(WeakRef<Dimension> dimension);
 	Dimension& getDimension() const;
 
-    ILevel* getLevel() const
+    Level* getLevel() const
     {
-        return mLevel;
+		if (mLevel != nullptr) return static_cast<Level*>(mLevel);
+        return nullptr;
     }
 
     // Generics
