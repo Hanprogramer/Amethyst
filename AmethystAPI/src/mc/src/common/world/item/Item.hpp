@@ -14,11 +14,11 @@
 #include <mc/src/common/world/item/UseAnim.hpp>
 #include <mc/src-deps/shared_types/legacy/LevelSoundEvent.hpp>
 #include <mc/src/common/world/item/ItemCommandVisibility.hpp>
+#include <mc/src/common/world/item/ItemUseMethod.hpp>
 
 // Auto-generated: Unknown complete types
 enum ItemColor {};
 struct ActorDefinitionIdentifier;
-enum ItemUseMethod {};
 enum InHandUpdateType {};
 enum ActorLocation {};
 
@@ -73,9 +73,9 @@ class Mob;
 class IDataInput;
 class ReadOnlyBinaryStream;
 class IDataOutput;
-class FoodItemComponentLegacy {};
-class SeedItemComponentLegacy {};
-class CameraItemComponentLegacy {};
+class FoodItemComponentLegacy;
+class SeedItemComponentLegacy;
+class CameraItemComponentLegacy;
 class CreativeItemGroupCategory;
 class CreativeGroupInfo;
 
