@@ -25,7 +25,6 @@
 #include <mc/src/common/world/actor/player/Abilities.hpp>
 #include <mc/src-deps/input/InputMode.hpp>
 #include <mc/src/common/world/effect/MobEffectInstance.hpp>
-#include <mc/src/common/world/entity/components/MobEffectsComponent.hpp>
 
 enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
