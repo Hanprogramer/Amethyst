@@ -42,6 +42,12 @@ enum class EffectType : unsigned int {
 	BadOmen = 28,
 	VillageHero = 29,
 	Darkness = 30,
+	TrialOmen = 31,
+	WindCharged = 32,
+	Weaving = 33,
+	Oozing = 34,
+	Infested = 35,
+	RaidOmen = 36,
 };
 
 class MobEffect {
