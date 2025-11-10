@@ -96,3 +96,10 @@ ActorUniqueID Actor::getUniqueID() const
 {
     return tryGetComponent<ActorUniqueIDComponent>()->mActorUniqueID;
 }
+
+MobEffectInstance* Actor::getEffect(EffectType effectType) {
+	unsigned int effectId = (unsigned int)effectType;
+	if (effectId > 0x24) return nullptr;
+	auto effect = MobEffect::mMobEffects[effectId].get();
+	return getEffect(*effect);
+}

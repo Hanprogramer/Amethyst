@@ -30,6 +30,6 @@ public:
 	HashedString mCooldownCategory;
 	int mCooldownDuration;
 	bool mCanAlwaysEat;
-	FoodItemComponentLegacy::Effect mEffects;
+	std::vector<FoodItemComponentLegacy::Effect> mEffects;
 	std::vector<unsigned int> mRemoveEffects;
 };
