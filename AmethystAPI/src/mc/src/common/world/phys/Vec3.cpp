@@ -12,6 +12,12 @@ Vec3::Vec3()
     z = 0;
 }
 
+Vec3::Vec3(float scalar) {
+    this->x = scalar;
+    this->y = scalar;
+    this->z = scalar;
+}
+
 Vec3::Vec3(float x, float y, float z)
 {
     this->x = x;

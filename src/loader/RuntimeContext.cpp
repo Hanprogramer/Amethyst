@@ -1,4 +1,5 @@
 #include "loader/RuntimeContext.hpp"
+#include "game/client/CustomUIRendererRegistry.hpp"
 
 RuntimeContext::RuntimeContext(std::unique_ptr<Amethyst::Platform> platform, std::thread::id amethystThread)
     : AmethystContext(std::move(platform), amethystThread) {}
@@ -9,6 +10,9 @@ void RuntimeContext::Start()
     mEventBus = std::make_unique<Amethyst::EventBus>();
 #ifdef CLIENT
     mInputManager = std::make_unique<Amethyst::InputManager>(this);
+	if (mClientCtx) {
+		mClientCtx->mCustomUIRendererRegistry = std::make_unique<CustomUIRendererRegistry>();
+	}
 #endif
     mPatchManager = std::make_unique<Amethyst::PatchManager>();
     mEnumAllocator = std::make_unique<Amethyst::EnumAllocator>();
@@ -21,6 +25,12 @@ void RuntimeContext::Start()
 
 void RuntimeContext::Shutdown()
 {
+#ifdef CLIENT
+	if (mClientCtx) {
+		mClientCtx->mCustomUIRendererRegistry.reset();
+	}
+#endif
+
     mHookManager.reset();
     mEventBus.reset();
     mInputManager.reset();

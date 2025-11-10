@@ -7,6 +7,9 @@
 #include <mc/src-deps/core/semVer/SemVersion.hpp>
 #include <mc/src/common/world/actor/ModelPartLocator.hpp>
 #include <mc/src/common/world/actor/player/SkinAdjustments.hpp>
+#include <mc/src-deps/renderer/Matrix.hpp>
+
+class Tesellator;
 
 struct TextureOffset {
     uintptr_t** vtable; // why tf this need a vtable.
@@ -52,7 +55,7 @@ public:
         float mInflate;
         bool mUsesFaceUVs;
 
-        void Tessellate(Tessellator& tess, float textureWidth, float textureHeight) const;
+		Matrix getTransform() const;
     };
 
     struct NodeVertex {
@@ -90,6 +93,8 @@ public:
         unsigned int mSkinnedMeshGroupIdentifier;
         SemVersion mSourceFileVersion;
         SemVersion mSourceMinEngineVersion;
+
+		Matrix getTransform() const;
     };
 
 public:
@@ -107,4 +112,6 @@ public:
     SemVersion mMinEngineVersion;
     bool mIsFromBaseGamePack;
     std::vector<std::string> mMaterialInstanceList;
+
+	void Tessellate(Tessellator& tess) const;
 };

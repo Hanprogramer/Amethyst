@@ -49,6 +49,7 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 	});
 
 	Amethyst::ClientHooks::Initialize();
+
 #endif
 	Amethyst::SharedHooks::Initialize();
 }

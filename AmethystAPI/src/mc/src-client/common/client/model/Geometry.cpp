@@ -1,5 +1,35 @@
 #include <mc/src-client/common/client/model/Geometry.hpp>
 #include <mc/src-client/common/client/renderer/Tessellator.hpp>
+#include <mc/src-deps/renderer/MatrixStack.hpp>
+
+Matrix Geometry::Node::getTransform() const 
+{
+	Matrix mat;
+
+	mat.translate(mPivot);
+
+	mat.rotateXDegrees(mRot.x);
+	mat.rotateYDegrees(mRot.y);
+	mat.rotateZDegrees(mRot.z);
+
+	mat.scale(mScale);
+
+	mat.translate(mPivot * -1.0f);
+	return mat;
+}
+
+Matrix Geometry::Box::getTransform() const 
+{
+	Matrix mat;
+	mat.translate(mPivot);
+
+	mat.rotateXDegrees(mRotation.x);
+	mat.rotateYDegrees(mRotation.y);
+	mat.rotateZDegrees(mRotation.z);
+
+	mat.translate(mPivot * -1.0f);
+	return mat;
+}
 
 std::array<std::array<char, 4>, 6> boxFaces = {{
     {6, 4, 0, 2}, // down 0, 2, 6, 4
@@ -10,45 +40,74 @@ std::array<std::array<char, 4>, 6> boxFaces = {{
     {0, 1, 3, 2}, 
 }};
 
-// d, u, n, s, w, e
+void TessellateBox(const Geometry::Box& box, Tessellator& tess, float texW, float texH, MatrixStack& stack) {
+    // Push current transform
+    auto ref = stack.push();
 
-void Geometry::Box::Tessellate(Tessellator& tess, float textureWidth, float textureHeight) const
-{
-    // Calculate vertices for the box
-    std::array<Vec3, 8> boxVertices = {
-        Vec3(mFrom.x, mFrom.y, mFrom.z),
-        Vec3(mFrom.x, mFrom.y + mSize.y, mFrom.z),
-        Vec3(mFrom.x + mSize.x, mFrom.y, mFrom.z),
-        Vec3(mFrom.x + mSize.x, mFrom.y + mSize.y, mFrom.z),
-        Vec3(mFrom.x, mFrom.y, mFrom.z + mSize.z),
-        Vec3(mFrom.x, mFrom.y + mSize.y, mFrom.z + mSize.z),
-        Vec3(mFrom.x + mSize.x, mFrom.y, mFrom.z + mSize.z),
-        Vec3(mFrom.x + mSize.x, mFrom.y + mSize.y, mFrom.z + mSize.z)
+    // Apply box pivot + rotation
+    ref->translate(box.mPivot);
+    ref->rotateXDegrees(box.mRotation.x);
+    ref->rotateYDegrees(box.mRotation.y);
+    ref->rotateZDegrees(box.mRotation.z);
+    ref->translate(box.mPivot * -1.0f);
+
+    // Box corners in local space (no mirroring)
+    std::array<Vec3, 8> verts = {
+        Vec3(box.mFrom.x, box.mFrom.y, box.mFrom.z),
+        Vec3(box.mFrom.x, box.mFrom.y + box.mSize.y, box.mFrom.z),
+        Vec3(box.mFrom.x + box.mSize.x, box.mFrom.y, box.mFrom.z),
+        Vec3(box.mFrom.x + box.mSize.x, box.mFrom.y + box.mSize.y, box.mFrom.z),
+        Vec3(box.mFrom.x, box.mFrom.y, box.mFrom.z + box.mSize.z),
+        Vec3(box.mFrom.x, box.mFrom.y + box.mSize.y, box.mFrom.z + box.mSize.z),
+        Vec3(box.mFrom.x + box.mSize.x, box.mFrom.y, box.mFrom.z + box.mSize.z),
+        Vec3(box.mFrom.x + box.mSize.x, box.mFrom.y + box.mSize.y, box.mFrom.z + box.mSize.z)
     };
 
-    // Add vertices to tessellator for each face
-    /*for (auto& face : boxFaces) {
-        tess.vertex(boxVertices[face[0]]);
-        tess.vertex(boxVertices[face[1]]);
-        tess.vertex(boxVertices[face[2]]);
-        tess.vertex(boxVertices[face[3]]);
-    }*/
-
+    // Tessellate each face
     for (int face = 0; face < 6; face++) {
-        auto& faceVertexes = boxFaces[face];
-        auto& faceUV = mFaceUVs[face];
+        const auto& f = boxFaces[face];
+        const auto& uv = box.mFaceUVs[face];
 
-        float x1 = faceUV.mUV.x / textureWidth;
-        float x2 = (faceUV.mUV.x + faceUV.mUVSize.x) / textureWidth;
+        float x1 = uv.mUV.x / texW;
+        float x2 = (uv.mUV.x + uv.mUVSize.x) / texW;
+        float y1 = uv.mUV.y / texH;
+        float y2 = (uv.mUV.y + uv.mUVSize.y) / texH;
 
-        float y1 = faceUV.mUV.y / textureHeight;
-        float y2 = (faceUV.mUV.y + faceUV.mUVSize.y) / textureHeight;
-
-        //Log::Info("{} {} {} {} {} {}", face, x, x1, y, y1, this->mUsesFaceUVs ? "t" : "f");
-
-        tess.vertexUV(boxVertices[faceVertexes[0]] / Vec3(16.f, 16.f, 16.f), x2, y2);
-        tess.vertexUV(boxVertices[faceVertexes[1]] / Vec3(16.f, 16.f, 16.f), x2, y1);
-        tess.vertexUV(boxVertices[faceVertexes[2]] / Vec3(16.f, 16.f, 16.f), x1, y1);
-        tess.vertexUV(boxVertices[faceVertexes[3]] / Vec3(16.f, 16.f, 16.f), x1, y2);
+        tess.vertexUV(*ref * (verts[f[0]] / Vec3(16.f)), x2, y2);
+        tess.vertexUV(*ref * (verts[f[1]] / Vec3(16.f)), x2, y1);
+        tess.vertexUV(*ref * (verts[f[2]] / Vec3(16.f)), x1, y1);
+        tess.vertexUV(*ref * (verts[f[3]] / Vec3(16.f)), x1, y2);
     }
+
+    stack.pop();
+}
+
+void TessellateNode(const Geometry::Node& node, Tessellator& tess, float texW, float texH, MatrixStack& stack) {
+    auto ref = stack.push();
+
+    // Apply node pivot / rotation / scale
+    ref->translate(node.mPivot);
+    ref->rotateXDegrees(node.mRot.x);
+    ref->rotateYDegrees(node.mRot.y);
+    ref->rotateZDegrees(node.mRot.z);
+    ref->scale(node.mScale);
+    ref->translate(node.mPivot * -1.0f);
+
+    for (const auto& box : node.mBoxes) {
+        TessellateBox(box, tess, texW, texH, stack);
+    }
+
+    stack.pop();
+}
+
+void Geometry::Tessellate(Tessellator& tess) const
+{
+	MatrixStack stack;
+    stack.push(Matrix()); // identity
+
+    for (const auto& [_, node] : mNodes) {
+        TessellateNode(node, tess, mTextureDimensions.x, mTextureDimensions.y, stack);
+    }
+
+    stack.pop();
 }
