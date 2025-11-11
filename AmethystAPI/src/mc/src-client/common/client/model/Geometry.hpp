@@ -11,13 +11,15 @@
 
 class Tesellator;
 
-struct TextureOffset {
-    uintptr_t** vtable; // why tf this need a vtable.
+class TextureOffset {
+public:
     int x;
     int y;
+
+	virtual ~TextureOffset() = default;
 };
 
-enum QuadUVRotation : __int8 {
+enum class QuadUVRotation : __int8 {
     ZERO = 0x0,
     CW_90_DEG = 0x1,
     CW_180_DEG = 0x2,
