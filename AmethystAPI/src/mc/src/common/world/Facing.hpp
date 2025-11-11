@@ -1,5 +1,7 @@
 #pragma once
 #include <format>
+#include <array>
+#include <span>
 class BlockPos;
 class Vec3;
 
@@ -98,6 +100,19 @@ namespace Facing {
 				std::unreachable();
 		}
 	}
+
+	inline std::span<const Facing::Name> directionsInAxis(Axis axis) {
+        static constexpr std::array<Name, 2> X_DIRS = { Name::WEST, Name::EAST };
+        static constexpr std::array<Name, 2> Y_DIRS = { Name::DOWN, Name::UP };
+        static constexpr std::array<Name, 2> Z_DIRS = { Name::NORTH, Name::SOUTH };
+
+        switch (axis) {
+            case Axis::X: return X_DIRS;
+            case Axis::Y: return Y_DIRS;
+            case Axis::Z: return Z_DIRS;
+            default: std::unreachable();
+        }
+    }
 };
 
 typedef Facing::Name FacingID;

@@ -56,6 +56,7 @@ public:
 public:
     ~ResourceLocation();
     ResourceLocation();
+	ResourceLocation(const HashedString& path);
     ResourceLocation(const std::string& path);
     ResourceLocation(const char* path);
 

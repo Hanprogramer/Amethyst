@@ -1,6 +1,7 @@
 #pragma once
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <amethyst/runtime/mod/Mod.hpp>
+#include <amethyst/runtime/utility/InlineHook.hpp>
 
 class Minecraft;
 class Level;

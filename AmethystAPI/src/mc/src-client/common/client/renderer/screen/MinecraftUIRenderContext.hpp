@@ -94,7 +94,7 @@ public:
     virtual void drawDebugText(const RectangleArea& rect, const std::string& text, const mce::Color& color, float alpha, ui::TextAlignment alignment, const TextMeasureData& textData, const CaretMeasureData& caretData);
     virtual void drawText(Font& font, const RectangleArea& rect, const std::string& text, const mce::Color& color, float alpha, ui::TextAlignment alignment, const TextMeasureData& textData, const CaretMeasureData& caretData);
     virtual void flushText(float deltaTime);
-    virtual void drawImage(const mce::TexturePtr& texture, const glm::tvec2<float>& position, const glm::tvec2<float>& size, glm::tvec2<float>& uv, glm::tvec2<float>& uvSize, int degree);
+    virtual void drawImage(const mce::TexturePtr& texture, const glm::tvec2<float>& position, const glm::tvec2<float>& size, const glm::tvec2<float>& uv, const glm::tvec2<float>& uvSize, int degree);
     virtual void drawNineslice(const mce::TexturePtr& texture, const NinesliceInfo& nineslice);
     virtual void flushImages(const mce::Color& color, float alpha, const HashedString& materialNameHash);
     virtual void beginSharedMeshBatch(ComponentRenderBatch& renderBatch);
@@ -125,4 +125,23 @@ public:
     // snapImageSizeToGrid(glm::vec<2, float, (glm::qualifier)0> &);
     // snapImagePositionToGrid(glm::vec<2, float, (glm::qualifier)0> &);
     // notifyImageEstimate(ulong);
+
+	void drawText(Font& font, const std::string& text, int x, int y, const mce::Color& color, float alpha, bool shadow = false) {
+		RectangleArea textRect;
+
+		textRect._x0 = static_cast<float>(x);
+		textRect._x1 = static_cast<float>(x + this->getLineLength(font, text, 1.0f, false));
+		textRect._y0 = static_cast<float>(y);
+		textRect._y1 = static_cast<float>(y) + 11.0f;
+
+		TextMeasureData textData;
+		memset(&textData, 0, sizeof(TextMeasureData));
+		textData.fontSize = 1.0f;
+		textData.renderShadow = true;
+
+		CaretMeasureData caretData;
+		memset(&caretData, 1, sizeof(CaretMeasureData));
+
+		this->drawText(font, textRect, text, color, alpha, ui::TextAlignment::Left, textData, caretData);
+	}
 };

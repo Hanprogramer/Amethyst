@@ -31,4 +31,10 @@ public:
     void rotateXRadians(float angleRad);
     void rotateYRadians(float angleRad);
     void rotateZRadians(float angleRad);
+
+	Matrix operator*(const Matrix& other) const {
+		return Matrix(this->_m * other._m);
+	}
+
+	Vec3 operator*(const Vec3& vec) const;
 };

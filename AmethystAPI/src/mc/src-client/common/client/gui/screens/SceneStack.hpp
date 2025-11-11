@@ -5,14 +5,21 @@
 #include <memory>
 #include "mc/src-deps/core/utility/NonOwnerPointer.hpp"
 #include "mc/src-client/common/client/gui/screens/ScreenController.hpp"
+#include "mc/src-client/common/client/gui/screens/AbstractScene.hpp"
 
 class AbstractScene;
 
-class SceneStack : 
-    public Bedrock::EnableNonOwnerReferences 
-{
+class ISceneStack : public Bedrock::EnableNonOwnerReferences {
+public:
+	virtual ~ISceneStack();
+};
+
+class SceneStack : public ISceneStack {
 public:
     std::vector<std::shared_ptr<AbstractScene>> mScreenStack;
+
+	virtual ~SceneStack();
+	virtual void padding1();
 
     /// @signature {48 89 54 24 ? 53 48 83 EC ? 48 8B DA C6 44 24 ? ? 0F 57 C0}
     MC void pushScreen(std::shared_ptr<AbstractScene> newScreen, bool flush);
@@ -22,4 +29,10 @@ public:
 
     /// @signature {89 54 24 ? 4C 8B DC 53 48 81 EC}
     MC void popScreensBackTo(ui::SceneType sceneType);
+
+	std::string getScreenName() const {
+		if (mScreenStack.empty())
+			return Util::EmptyString;
+		return mScreenStack.back()->getScreenName();
+	}
 };
