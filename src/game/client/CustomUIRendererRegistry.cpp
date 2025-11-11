@@ -20,7 +20,6 @@ void UIControlFactory__populateCustomRenderComponent(UIControlFactory* factory, 
 	std::string rendererType = resolved.getAsString("renderer");
 
 	auto customComponent = modComponentsFactory->tryCreateRenderer(rendererType);
-	Log::Info("Trying to create custom renderer with id '{}': {}", rendererType, customComponent ? "Found" : "Not Found");
 	if (customComponent) {
 		control.setComponent<CustomRenderComponent>(
 			std::make_unique<CustomRenderComponent>(control)
