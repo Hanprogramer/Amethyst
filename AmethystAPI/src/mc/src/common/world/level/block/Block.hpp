@@ -1,6 +1,7 @@
 /// @symbols
 #pragma once
 #include <amethyst/Imports.hpp>
+#include "mc/src/common/world/level/block/BlockLegacy.hpp"
 #include "mc/src-deps/core/headerIncludes/gsl_includes.hpp"
 #include "mc/src/common/world/level/block/components/BlockComponentStorage.hpp"
 #include <mc/src/common/world/level/block/BlockState.hpp>
@@ -11,15 +12,6 @@
 #include <optional>
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src/common/world/level/block/BlockProperty.hpp>
-
-//is_virtual = True
-//hide_vtable = False
-//struct_size = 208
-//
-//# (Type, Name, Size (in bytes), Offset (in bytes))
-//struct = [
-//("gsl::not_null<BlockLegacy*>", "mLegacyBlock", 8, 0x30),
-//]
 
 namespace mce {
 class Color;
@@ -91,13 +83,9 @@ public:
 
 
 public:
-    // Circular dependency between this and BlockLegacy because of permutations vector
-    // Have to explictly declare each thing..
     template <typename T>
     T getState(const BlockState& blockState) const;
 
-    // Circular dependency between this and BlockLegacy because of permutations vector
-    // Have to explictly declare each thing..
     template <typename T>
     gsl::strict_not_null<const Block*> setState(const BlockState& stateType, T value) const;
 
@@ -124,6 +112,8 @@ public:
     bool hasProperty(BlockProperty property) const;
 	bool requiresCorrectToolForDrops() const;
 };
+
+#include "mc/src/common/world/level/block/Block.inl"
 
 static_assert(sizeof(Block) == 208);
 static_assert(offsetof(Block, mLegacyBlock) == 48);
