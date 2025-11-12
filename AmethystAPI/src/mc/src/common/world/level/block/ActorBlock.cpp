@@ -1,5 +1,6 @@
 ﻿#include "ActorBlock.hpp"
 #include <mc/src/common/world/level/BlockSource.hpp>
+#include <mc/src/common/world/level/block/actor/BlockActor.hpp>
 
 // 1.21.0.3 - Re-Implemented
 void ActorBlock::neighborChanged(BlockSource& region, const BlockPos& pos, const BlockPos& neighborPos) const

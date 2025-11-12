@@ -4,6 +4,7 @@
 #include "registry/ItemRegistryManager.hpp"
 #include "registry/ItemRegistry.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
+#include "mc/src/common/world/level/block/Block.hpp"
 
 ItemStackBase::ItemStackBase() :
     mUserData(nullptr),

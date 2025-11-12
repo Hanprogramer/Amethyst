@@ -92,6 +92,10 @@ public:
         return dx * dx + dy * dy + dz * dz;
     }
 
+	int distManhattan(const BlockPos& other) const {
+		return std::abs(x - other.x) + std::abs(y - other.y) + std::abs(z - other.z);
+	}
+
     constexpr size_t hashCode() const
     {
         // This implementation is completely guessed, please verify it for usage in actual game memory
