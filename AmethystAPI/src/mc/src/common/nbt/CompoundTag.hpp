@@ -28,6 +28,8 @@ public:
     bool contains(std::string_view name) const;
     bool contains(std::string_view name, Tag::Type type) const;
 
+	bool remove(std::string_view name);
+
     void clear();
     void deepCopy(const CompoundTag& other);
     std::unique_ptr<CompoundTag> clone() const;
