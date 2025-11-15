@@ -81,7 +81,6 @@ public:
     /* this + 196 */ BlockRuntimeId mNetworkId;
     /* this + 204 */ bool mHasRuntimeId;
 
-
 public:
     template <typename T>
     T getState(const BlockState& blockState) const;
@@ -102,7 +101,7 @@ public:
 
 	bool isAir() const;
     bool isFenceBlock() const;
-    bool getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const;
+    bool getCollisionShape(AABB& outAABB, const BlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const;
     const Material& getMaterial() const;
 
 	/// @sig {40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 0F B6 E9 44 88 4C 24 ? 4D 8B F0}

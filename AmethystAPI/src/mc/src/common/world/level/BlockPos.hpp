@@ -135,6 +135,10 @@ public:
         }
     }
 
+	BlockPos offset(int x, int y, int z) const {
+		return BlockPos(this->x + x, this->y + y, this->z + z);
+	}
+
 	int distSqr(const BlockPos& other) const {
         int dx = x - other.x;
         int dy = y - other.y;
@@ -196,6 +200,14 @@ public:
 		if (z >= 0x2000000) z -= 0x4000000;
 
 		return BlockPos(x, y, z);
+	}
+
+	Vec3 center() const {
+		return Vec3(
+			static_cast<double>(x) + 0.5,
+			static_cast<double>(y) + 0.5,
+			static_cast<double>(z) + 0.5
+		);
 	}
 
 	BlockPos operator+(const BlockPos& other) const {

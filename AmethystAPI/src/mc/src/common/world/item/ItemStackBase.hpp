@@ -64,6 +64,7 @@ public:
 
     Item* getItem() const;
     bool isNull() const;
+	bool isEmpty() const;
     bool isLiquidClipItem() const;
     bool shouldInteractionWithBlockBypassLiquid(const Block& block) const;
     bool isInstance(const HashedString& itemName, bool useItemLookup) const;
@@ -76,6 +77,8 @@ public:
     UseAnim getUseAnimation() const;
 	bool canDestroySpecial(const Block& block) const;
 	bool canDestroyOptimally(const Block& block) const;
+	uint8_t getMaxStackSize() const;
+
 private:
     bool _isInstance(std::string_view itemName) const;
 };

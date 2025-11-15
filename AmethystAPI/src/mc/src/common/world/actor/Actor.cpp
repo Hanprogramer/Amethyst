@@ -61,6 +61,10 @@ Dimension& Actor::getDimension() const {
     return *mDimension.lock();
 }
 
+const Vec3& Actor::getDeltaMovement() const {
+    return mBuiltInComponents.mStateVectorComponent->mPosDelta;
+}
+
 //int Actor::load(const CompoundTag& actorData, DefaultDataLoadHelper& dataLoadHelper)
 //{
 //    using function = decltype(&Actor::load);

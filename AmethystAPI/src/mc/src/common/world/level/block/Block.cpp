@@ -28,7 +28,7 @@ bool Block::isFenceBlock() const
     return mLegacyBlock->isFenceBlock();
 }
 
-bool Block::getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const
+bool Block::getCollisionShape(AABB& outAABB, const BlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const
 {
     outAABB = this->mLegacyBlock->getCollisionShape(*this, region, pos, entity);
     return outAABB.min.x < outAABB.max.x && outAABB.min.y < outAABB.max.y && outAABB.min.z < outAABB.max.z;
