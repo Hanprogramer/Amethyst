@@ -95,9 +95,9 @@ namespace Facing {
 	inline float horizontalAngle(Name face) {
         switch (face) {
             case Name::SOUTH: return 0.0f;
-            case Name::WEST:  return 90.0f;
+            case Name::WEST:  return 270.0f;
             case Name::NORTH: return 180.0f;
-            case Name::EAST:  return 270.0f;
+            case Name::EAST:  return 90.0f;
             default:          return 0.0f; // UP or DOWN shouldn't be used here
         }
     }

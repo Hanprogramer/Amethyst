@@ -57,8 +57,13 @@ public:
 
     /** @sig {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 4C 8B EA 48 89 8D} */
     MC void _loadItem(const CompoundTag*);
+
+	/// @sig {48 89 5C 24 ? 55 56 57 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B F2 4C 8B F1 48 89 55 ? 45 33 FF 44 89 7D ? 33 C0}
+	MC std::unique_ptr<CompoundTag> save() const;
+
     /** @sig {48 89 5C 24 ? 48 89 74 24 ? 57 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 84 24 ? ? ? ? 48 8B FA 48 8B F1 48 89 94 24 ? ? ? ? 48 8D 59} */
     MC void setUserData(std::unique_ptr<CompoundTag> userData);
+
 	/** @sig {48 89 5C 24 ? 55 56 57 48 81 EC ? ? ? ? 48 8B F2 48 8B E9 48 89 54 24} */
 	MC ItemEnchants constructItemEnchantsFromUserData() const;
 
