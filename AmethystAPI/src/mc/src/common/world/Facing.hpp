@@ -1,6 +1,9 @@
 #pragma once
 #include <format>
+#include <array>
+#include <span>
 class BlockPos;
+class Vec3;
 
 namespace Facing {
     enum class Name : unsigned char {
@@ -13,7 +16,7 @@ namespace Facing {
         MAX
     };
 
-	static const Facing::Name DIRECTIONS[6] = {
+	const Facing::Name DIRECTIONS[6] = {
 		Facing::Name::DOWN,
 		Facing::Name::UP,
 		Facing::Name::NORTH,
@@ -23,12 +26,19 @@ namespace Facing {
 	};
 
 	class BlockPos getOffset(Facing::Name face);
+	Vec3 normal(Facing::Name face);
 
 	enum class Axis : int {
 		X = 0,
 		Y = 1,
 		Z = 2,
 		Count = 3
+	};
+
+	const Axis AXES[3] = {
+		Axis::X,
+		Axis::Y,
+		Axis::Z
 	};
 
 	inline int choose(Axis axis, int x, int y, int z) {
@@ -40,10 +50,11 @@ namespace Facing {
 		}
 	}
 
-    static Facing::Name getOpposite(Facing::Name face);
-    static Facing::Name getClockWise(Facing::Name face);
-    static Facing::Name getCounterClockWise(Facing::Name face);
-    static float getYAngle(Facing::Name face);
+    Facing::Name getOpposite(Facing::Name face);
+    Facing::Name getClockWise(Facing::Name face);
+    Facing::Name getCounterClockWise(Facing::Name face);
+    float getYAngle(Facing::Name face);
+	float getXAngle(Facing::Name face);
 
 	// Axis direction is technically not actually a type in mc, but seemed useful enough to have
 	enum class AxisDirection : int {
@@ -75,6 +86,8 @@ namespace Facing {
         }
     }
 
+	Name getNearest(const Vec3& vec);
+
 	inline Name fromDirectionAndAxis(AxisDirection direction, Axis axis) {
 		switch (axis) {
 			case Axis::X:
@@ -87,6 +100,19 @@ namespace Facing {
 				std::unreachable();
 		}
 	}
+
+	inline std::span<const Facing::Name> directionsInAxis(Axis axis) {
+        static constexpr std::array<Name, 2> X_DIRS = { Name::WEST, Name::EAST };
+        static constexpr std::array<Name, 2> Y_DIRS = { Name::DOWN, Name::UP };
+        static constexpr std::array<Name, 2> Z_DIRS = { Name::NORTH, Name::SOUTH };
+
+        switch (axis) {
+            case Axis::X: return X_DIRS;
+            case Axis::Y: return Y_DIRS;
+            case Axis::Z: return Z_DIRS;
+            default: std::unreachable();
+        }
+    }
 };
 
 typedef Facing::Name FacingID;

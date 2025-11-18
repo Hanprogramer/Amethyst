@@ -1,6 +1,7 @@
 #pragma once
 #include <format>
 #include <glm/vec3.hpp>
+#include <mc/src/common/world/Facing.hpp>
 
 class BlockPos;
 
@@ -12,9 +13,12 @@ public:
 
 public:
     Vec3();
+	Vec3(float scalar);
     Vec3(float x, float y, float z);
     Vec3(const BlockPos&);
     Vec3(const glm::vec3&);
+
+	static Vec3 voxelSpace(float x, float y, float z);
 
     Vec3 operator+(const Vec3 rhs) const;
     Vec3 operator-(const Vec3 rhs) const;
@@ -34,6 +38,9 @@ public:
     void rotateAroundYDegrees(float angleDegrees);
     void rotateAroundZDegrees(float angleDegrees);
     void rotateAroundPointDegrees(const Vec3& pivot, const Vec3& angle);
+	
+	void rotateCentered(float angleDegrees, Facing::Axis axis); 
+	static Vec3 rotateCentered(const Vec3& vec, float angleDegrees, Facing::Axis axis);
 
     float distance(const Vec3& other) const;
 
@@ -65,9 +72,10 @@ public:
 		return { x / len, y / len, z / len };
 	}
 
-
     static Vec3 lerp(const Vec3& start, const Vec3& end, float t);
     static Vec3 ZERO;
+
+	static Vec3 atLowerCornerOf(const Vec3& vec);
 
     operator glm::vec3() const
     {

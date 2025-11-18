@@ -24,6 +24,7 @@
 #include <mc/src/common/world/actor/ActorType.hpp>
 #include <mc/src/common/world/actor/player/Abilities.hpp>
 #include <mc/src-deps/input/InputMode.hpp>
+#include <mc/src/common/world/effect/MobEffectInstance.hpp>
 
 enum class ActorInitializationMethod : __int8 {
     INVALID = 0x0,
@@ -63,7 +64,6 @@ class ItemStack;
 class CompoundTag;
 class DataLoadHelper;
 struct PlayerMovementSettings;
-class MobEffectInstance;
 class AnimationComponent;
 class Player;
 class ItemStackBase;
@@ -106,10 +106,17 @@ public:
     BlockSource& getDimensionBlockSource() const;
     bool hasDimension() const;
     void setDimension(WeakRef<Dimension> dimension);
+	Dimension& getDimension() const;
 
-    ILevel* getLevel() const
+	/// @signature {40 53 48 83 EC ? 8B 41 ? 8B 5A ? 48 8D 54 24 ? 48 8B 49 ? 89 44 24 ? E8 ? ? ? ? 48 85 C0 74 ? 4C 8B 00 8B D3 48 8B 48 ? 49 2B C8 48 C1 F9 ? 48 3B CB 76 ? 8B 05 ? ? ? ? 48 C1 E2 ? 42 39 04 02 4A 8D 0C 02 75 ? 33 C9 48 8B C1}
+	MC MobEffectInstance* getEffect(MobEffect const& mobEffect);
+
+	MobEffectInstance* getEffect(EffectType effectType);
+
+    Level* getLevel() const
     {
-        return mLevel;
+		if (mLevel != nullptr) return static_cast<Level*>(mLevel);
+        return nullptr;
     }
 
     // Generics

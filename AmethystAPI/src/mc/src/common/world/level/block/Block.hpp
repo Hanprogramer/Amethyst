@@ -1,4 +1,7 @@
+/// @symbols
 #pragma once
+#include <amethyst/Imports.hpp>
+#include "mc/src/common/world/level/block/BlockLegacy.hpp"
 #include "mc/src-deps/core/headerIncludes/gsl_includes.hpp"
 #include "mc/src/common/world/level/block/components/BlockComponentStorage.hpp"
 #include <mc/src/common/world/level/block/BlockState.hpp>
@@ -9,15 +12,6 @@
 #include <optional>
 #include <mc/src/common/world/phys/Vec3.hpp>
 #include <mc/src/common/world/level/block/BlockProperty.hpp>
-
-//is_virtual = True
-//hide_vtable = False
-//struct_size = 208
-//
-//# (Type, Name, Size (in bytes), Offset (in bytes))
-//struct = [
-//("gsl::not_null<BlockLegacy*>", "mLegacyBlock", 8, 0x30),
-//]
 
 namespace mce {
 class Color;
@@ -89,15 +83,13 @@ public:
 
 
 public:
-    // Circular dependency between this and BlockLegacy because of permutations vector
-    // Have to explictly declare each thing..
     template <typename T>
     T getState(const BlockState& blockState) const;
 
-    // Circular dependency between this and BlockLegacy because of permutations vector
-    // Have to explictly declare each thing..
     template <typename T>
     gsl::strict_not_null<const Block*> setState(const BlockState& stateType, T value) const;
+
+	bool hasState(const BlockState& stateType) const;
 
     // 1.20.71.1 - Partial reimplementation using `BlockLegacy::getMapColor`
     // Needed because `BlockLegacy::getMapColor` is a protected function and the Block class
@@ -107,14 +99,21 @@ public:
     BlockRuntimeId getRuntimeId() const {
         return mNetworkId;
     }
+
+	bool isAir() const;
     bool isFenceBlock() const;
     bool getCollisionShape(AABB& outAABB, const IConstBlockSource& region, const BlockPos& pos, optional_ref<const GetCollisionShapeInterface> entity) const;
     const Material& getMaterial() const;
-    bool use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const;
+
+	/// @sig {40 55 53 56 57 41 54 41 55 41 56 41 57 48 8D AC 24 ? ? ? ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 85 ? ? ? ? 45 0F B6 E9 44 88 4C 24 ? 4D 8B F0}
+    MC bool use(Player& player, const BlockPos& at, FacingID face, std::optional<Vec3> hit) const;
+
     bool isInteractiveBlock() const;
     bool hasProperty(BlockProperty property) const;
 	bool requiresCorrectToolForDrops() const;
 };
+
+#include "mc/src/common/world/level/block/Block.inl"
 
 static_assert(sizeof(Block) == 208);
 static_assert(offsetof(Block, mLegacyBlock) == 48);

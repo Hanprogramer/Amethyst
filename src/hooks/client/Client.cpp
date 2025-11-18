@@ -5,6 +5,7 @@
 #include "hooks/client/Rendering.hpp"
 #include "hooks/client/Resource.hpp"
 #include "hooks/client/UI.hpp"
+#include "game/client/CustomUIRendererRegistry.hpp"
 #include "debug/F3Menu.hpp"
 
 #include <amethyst/runtime/ModContext.hpp>
@@ -69,6 +70,7 @@ namespace Amethyst::ClientHooks {
 		RenderingHooks::Initialize();
 		ResourceHooks::Initialize();
 		UIHooks::Initialize();
+		CustomUIRendererRegistry::AddEventListeners();
 		F3Menu::Initialize();
 	}
 }

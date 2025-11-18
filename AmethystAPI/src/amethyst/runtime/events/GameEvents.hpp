@@ -3,6 +3,7 @@
 
 class ClientInstance;
 class Level;
+class Minecraft;
 
 /*
 Called when loading into a world
@@ -24,6 +25,10 @@ public:
         : client(client) {}
 };
 
+/**
+ * Called every frame
+ * - Called on both client and server thread
+ */
 class UpdateEvent : public BaseEvent {
 public:
     Minecraft& mMinecraft;
@@ -42,4 +47,28 @@ public:
 class OnLevelDestroyedEvent : public BaseEvent {
 public:
     OnLevelDestroyedEvent() {};
+};
+
+/**
+ * Called every 1/20 seconds before every game tick
+ * - Called on both client and server thread
+ */
+class BeforeTickEvent : public BaseEvent {
+public:
+	Level& mLevel;
+
+	BeforeTickEvent(Level& level) 
+		: mLevel(level) {}
+};
+
+/**
+ * Called every 1/20 seconds after every game tick
+ * - Called on both client and server thread
+ */
+class AfterTickEvent : public BaseEvent {
+public:
+	Level& mLevel;
+
+	AfterTickEvent(Level& level) 
+		: mLevel(level) {}
 };

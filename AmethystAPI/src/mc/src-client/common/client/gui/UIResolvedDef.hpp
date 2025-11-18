@@ -1,4 +1,6 @@
+/// @symbols
 #pragma once
+#include <amethyst/Imports.hpp>
 #include <string>
 #include <set>
 #include <vector>
@@ -17,9 +19,6 @@ public:
     std::vector<Json::Value*>* mVariablesStack;
     std::set<std::string> mUnvalidatedProperties;
 
-    std::string getAsString(std::string_view key) const {
-        using function = decltype(&UIResolvedDef::getAsString);
-        static function func = std::bit_cast<function>(SigScan("40 55 53 56 57 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B F1 48 8B F2"));
-        return (this->*func)(key);
-    }
+	/// @sig {40 55 53 56 57 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 4D 8B F1 48 8B F2}
+    MC std::string getAsString(std::string_view key) const;
 };

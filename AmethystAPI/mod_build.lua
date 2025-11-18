@@ -20,7 +20,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
     end
     
     if MOD_BUILD_SCRIPT_VERSION ~= BUILD_SCRIPT_VERSION then
-        print("The mods xmake.lua is in an outdated format, consider updating! Mods version: " .. tostring(MOD_BUILD_SCRIPT_VERSION) .. ", Build script version: " .. tostring(BUILD_SCRIPT_VERSION))
+        print("The mods xmake.lua is in an outdated format, consider updating! Mods version: " .. tostring(MOD_BUILD_SCRIPT_VERSION) .. ", Build script version: " .. tostring(BUILD_SCRIPT_VERSION) .. 
+            "\n\tLatest version here: https://github.com/AmethystAPI/Amethyst-Template/blob/main/xmake.lua")
     end
 
     local modFolder
@@ -158,6 +159,8 @@ function build_mod(mod_name, targetMajor, targetMinor, targetPatch, automated_bu
                     "\nLocal: set AMETHYST_SRC to point to your Amethyst clone.")
             end
         end)
+
+        set_policy("build.across_targets_in_parallel", true)
 
         -- Main mod sources
         add_files("src/**.cpp")

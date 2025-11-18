@@ -6,6 +6,7 @@
 #include "mc/src/common/world/entity/components/StateVectorComponent.hpp"
 #include "mc/src/common/world/entity/components/ActorGameTypeComponent.hpp"
 #include "mc/src/common/world/entity/components/ActorUniqueIDComponent.hpp"
+#include "Actor.hpp"
 
 Vec3* Actor::getPosition() const
 {
@@ -56,6 +57,10 @@ void Actor::setDimension(WeakRef<Dimension> dimension)
     return (this->*func)(dimension);
 }
 
+Dimension& Actor::getDimension() const {
+    return *mDimension.lock();
+}
+
 //int Actor::load(const CompoundTag& actorData, DefaultDataLoadHelper& dataLoadHelper)
 //{
 //    using function = decltype(&Actor::load);
@@ -90,4 +95,11 @@ bool Actor::isCreative() const
 ActorUniqueID Actor::getUniqueID() const
 {
     return tryGetComponent<ActorUniqueIDComponent>()->mActorUniqueID;
+}
+
+MobEffectInstance* Actor::getEffect(EffectType effectType) {
+	unsigned int effectId = (unsigned int)effectType;
+	if (effectId > 0x24) return nullptr;
+	auto effect = MobEffect::mMobEffects[effectId].get();
+	return getEffect(*effect);
 }

@@ -7,7 +7,6 @@
 #include <mc/src/common/world/phys/AABB.hpp>
 #include <mc/src-deps/core/utility/NonOwnerPointer.hpp>
 #include <mc/src/common/world/level/BlockPos.hpp>
-#include <mc/src/common/world/level/block/Block.hpp>
 #include <mc/src/common/world/actor/ActorTerrainInterlockData.hpp>
 #include <mc/src/common/world/level/block/actor/BlockActorRendererId.hpp>
 #include <mc/src/common/network/packet/BlockActorDataPacket.hpp>
@@ -30,6 +29,7 @@ class Player;
 class SaveContext;
 class BlockLegacy;
 class BlockActor;
+class Block;
 
 class BlockActorFactory {
 public:
@@ -198,6 +198,10 @@ public:
 	
 	BlockActorType getType() const {
 		return mType;
+	}
+
+	void setChanged() {
+		mChanged = true;
 	}
 };
 

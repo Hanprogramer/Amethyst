@@ -3,6 +3,7 @@
 #include "hooks/shared/BlockRegistry.hpp"
 #include "hooks/shared/Networking.hpp"
 #include "hooks/shared/Resource.hpp"
+#include "hooks/shared/Block.hpp"
 
 #include <thread>
 
@@ -99,14 +100,25 @@ namespace Amethyst::SharedHooks {
 		return value;
 	}
 
+	Amethyst::InlineHook<decltype(&Level::tick)> _Level_tick;
+	void Level_tick(Level* self) {
+		BeforeTickEvent event(*self);
+		Amethyst::GetEventBus().Invoke(event);
+		_Level_tick(self);
+		AfterTickEvent afterEvent(*self);
+		Amethyst::GetEventBus().Invoke(afterEvent);
+	}
+
 	void Initialize() {
 		auto& hooks = Amethyst::GetHookManager();
 		HOOK(Minecraft, $constructor);
 		HOOK(Minecraft, $destructor);
 		HOOK(Minecraft, update);
+		VHOOK(Level, tick, this);
 		ItemRegistryHooks::Initialize();
 		BlockRegistryHooks::Initialize();
 		NetworkingHooks::Initialize();
 		ResourceHooks::Initialize();
+		BlockHooks::Initialize();
 	}
 }

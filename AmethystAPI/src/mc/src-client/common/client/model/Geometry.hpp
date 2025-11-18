@@ -7,14 +7,19 @@
 #include <mc/src-deps/core/semVer/SemVersion.hpp>
 #include <mc/src/common/world/actor/ModelPartLocator.hpp>
 #include <mc/src/common/world/actor/player/SkinAdjustments.hpp>
+#include <mc/src-deps/renderer/Matrix.hpp>
 
-struct TextureOffset {
-    uintptr_t** vtable; // why tf this need a vtable.
+class Tesellator;
+
+class TextureOffset {
+public:
     int x;
     int y;
+
+	virtual ~TextureOffset() = default;
 };
 
-enum QuadUVRotation : __int8 {
+enum class QuadUVRotation : __int8 {
     ZERO = 0x0,
     CW_90_DEG = 0x1,
     CW_180_DEG = 0x2,
@@ -52,7 +57,7 @@ public:
         float mInflate;
         bool mUsesFaceUVs;
 
-        void Tessellate(Tessellator& tess, float textureWidth, float textureHeight) const;
+		Matrix getTransform() const;
     };
 
     struct NodeVertex {
@@ -90,6 +95,8 @@ public:
         unsigned int mSkinnedMeshGroupIdentifier;
         SemVersion mSourceFileVersion;
         SemVersion mSourceMinEngineVersion;
+
+		Matrix getTransform() const;
     };
 
 public:
@@ -107,4 +114,6 @@ public:
     SemVersion mMinEngineVersion;
     bool mIsFromBaseGamePack;
     std::vector<std::string> mMaterialInstanceList;
+
+	void Tessellate(Tessellator& tess) const;
 };

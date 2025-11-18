@@ -8,6 +8,8 @@ class IntTag;
 class StringTag;
 class ListTag;
 class ByteTag;
+class Int64Tag;
+class FloatTag;
 
 typedef std::map<std::string, CompoundTagVariant, std::less<>> TagMap;
 
@@ -49,6 +51,17 @@ public:
     const IntTag* getIntTag(std::string_view name) const;
     IntTag* getIntTag(std::string_view name);
     int getInt(std::string_view name) const;
+	void putInt(std::string name, int value);
+
+	const Int64Tag* getInt64Tag(std::string_view name) const;
+	Int64Tag* getInt64Tag(std::string_view name);
+	int64_t getInt64(std::string_view name) const;
+	void putInt64(std::string name, int64_t value);
+
+	const FloatTag* getFloatTag(std::string_view name) const;
+	FloatTag* getFloatTag(std::string_view name);
+	float getFloat(std::string_view name) const;
+	void putFloat(std::string name, float value);
 
     Tag& put(std::string, Tag&&);
     Tag* put(std::string, std::unique_ptr<Tag>);

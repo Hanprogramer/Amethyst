@@ -2,6 +2,8 @@
 #include "Utility.hpp"
 #include <iostream>
 #include <format>
+#include <intrin.h>
+#include <utility>
 
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -82,6 +84,7 @@ namespace Log {
     {
         if (condition) return;
         _AssertFail(function, line, fmt, std::forward<T>(args)...);
+		std::unreachable();
     }
 }; // namespace Log
 

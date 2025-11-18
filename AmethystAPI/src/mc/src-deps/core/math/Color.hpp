@@ -19,10 +19,10 @@ public:
 
     Color(unsigned int color)
     {
-        this->r = (float)((color & 0xFF000000) >> 24) / 255.0f;
-        this->g = (float)((color & 0x00FF0000) >> 16) / 255.0f;
-        this->b = (float)((color & 0x0000FF00) >> 8) / 255.0f;
-        this->a = (float)((color & 0x000000FF)) / 255.0f;
+        this->r = ((color >> 24) & 0xFF) / 255.0f;
+		this->g = ((color >> 16) & 0xFF) / 255.0f;
+		this->b = ((color >> 8)  & 0xFF) / 255.0f;
+		this->a = ((color)       & 0xFF) / 255.0f;
     }
 
     Color()

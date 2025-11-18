@@ -1,6 +1,8 @@
 #include "mc/src/common/world/level/BlockSource.hpp"
 #include "amethyst/Memory.hpp"
 #include "ChunkBlockPos.hpp"
+#include "BlockSource.hpp"
+#include "mc/src/common/world/level/dimension/Dimension.hpp"
 
 //void BlockSource::postGameEvent(Actor* source, const GameEvent& gameEvent, const BlockPos& originPos, const Block* affectedBlock)
 //{
@@ -15,3 +17,7 @@
 //    static auto func = std::bit_cast<function>(SigScan("40 53 56 57 48 83 EC ? 48 8B 01 48 8B FA"));
 //    return (this->*func)(pos);
 //}
+
+bool BlockSource::isClientSide() const {
+    return mDimension->isClientSide();
+}

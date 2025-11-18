@@ -7,7 +7,6 @@ public:
     /* this + 0  */ std::stack<Matrix, std::deque<Matrix>> stack;
     /* this + 41 */ std::byte padding41[16];
     /* this + 56 */ bool _isDirty;
-    /* this + 57 */ std::byte padding57[7];
 
     class MatrixStackRef {
     public:
@@ -26,6 +25,9 @@ public:
             return *mat;
         }
     };
+
+	// constructor, currently being used for Geometry:: stuff, probably not ABI compatible since i have no idea what padding41 is
+	MatrixStack() : stack(), _isDirty(false) {}
 
     Matrix& getTop() {
         return stack.top();

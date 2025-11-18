@@ -1,5 +1,6 @@
 #include "mc/src-deps/core/resource/ResourceHelper.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
+#include "ResourceHelper.hpp"
 
 ResourceLocation::~ResourceLocation() {}
 
@@ -7,6 +8,12 @@ ResourceLocation::ResourceLocation() {
     mFileSystem = ResourceFileSystem::UserPackage;
     mPath = "";
     _computeHashes();
+}
+
+ResourceLocation::ResourceLocation(const HashedString& path) {
+	mFileSystem = ResourceFileSystem::UserPackage;
+	mPath = path.getString();
+	_computeHashes();
 }
 
 // Reimplemented in 1.20.71.1

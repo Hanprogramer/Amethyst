@@ -1,7 +1,6 @@
 /// @symbolgeneration
 #pragma once
 #include <amethyst/Imports.hpp>
-
 #include <mc/src/common/world/Direction.hpp>
 #include <mc/src/common/world/item/FertilizerType.hpp>
 #include <mc/src-deps/core/math/Color.hpp>
@@ -15,9 +14,7 @@
 #include <mc/src/common/world/phys/AABB.hpp>
 #include <mc/src/common/world/level/block/BlockRenderLayer.hpp>
 #include <mc/src/common/world/level/block/BlockState.hpp>
-#include <mc/src/common/world/level/block/Block.hpp>
 #include "actor/BlockActorRendererId.hpp"
-#include <mc/src/common/world/level/block/actor/BlockActor.hpp>
 #include <mc/src/common/world/phys/HitResult.hpp>
 #include <mc/src/common/world/level/block/GetCollisionShapeInterface.hpp>
 #include <mc/src/common/world/phys/ShapeType.hpp>
@@ -48,6 +45,7 @@ class Random;
 class Experiments;
 class EntityContext;
 struct ResourceDropsContext;
+class BlockActor;
 
 namespace BlockTrait {
 	class ITrait;
@@ -88,19 +86,7 @@ enum class TintMethod : int32_t {
     Size             = 9,
 };
 
-// struct_size = 944 is_virtual = True
-//     hide_vtable = True
-// #(Type, Name, Size(in bytes), Offset(in bytes))
-//     struct
-//     = [("BurnOdds", "mBurnOdds", 1, 95),
-//        ("FlameOdds", "mFlameOdds", 1, 94),
-//        ("bool", "mIsVanilla", 1, 544),
-//        ("const Material&", "mMaterial", 8, 296),
-//        ("unsigned short", "mID", 2, 422),
-//        ("BaseGameVersion", "mMinRequiredBaseGameVersion", 120, 424),
-//        ("unsigned char", "mLightEmission", 1, 374),
-//        ("unsigned char", "mLightBlock", 1, 373),
-//        ("mce::Color", "mMapColor", 16, 396)]
+class Block;
 
 /// @vptr {0x4E0E500}
 class BlockLegacy : public BlockComponentStorage {
@@ -198,8 +184,7 @@ public:
     /* this + 952 */ std::vector<std::shared_ptr<BlockLegacy::AlteredStateCollection>> mAlteredStateCollections;
     /* this + 976 */ uint8_t mClientPredictionOverrides;
 
-    // aint that lovely, they're friends now
-    friend class Block;
+	// no longer friends with Block :<
 
 public:
     /** @signature {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 49 8B F9 48 8B F2 } */
@@ -298,7 +283,7 @@ public:
 	/** @vidx {090} */ MC virtual bool breaksFallingBlocks(const Block& unk0, BaseGameVersion unk1) const;
 	/** @vidx {091} */ MC virtual void destroy(BlockSource& unk0, const BlockPos& unk1, const Block& unk2, Actor* unk3) const;
 	/** @vidx {092} */ MC virtual bool getIgnoresDestroyPermissions(Actor& unk0, const BlockPos& unk1) const;
-	/** @vidx {093} */ MC virtual void neighborChanged(BlockSource& unk0, const BlockPos& unk1, const BlockPos& unk2) const;
+	/** @vidx {093} */ MC virtual void neighborChanged(BlockSource& region, const BlockPos& pos, const BlockPos& neighborPos) const;
 	/** @vidx {094} */ MC virtual bool getSecondPart(const IConstBlockSource& unk0, const BlockPos& unk1, BlockPos& unk2) const;
 	/** @vidx {095} */ MC virtual const Block* playerWillDestroy(Player& unk0, const BlockPos& unk1, const Block& unk2) const;
 	/** @vidx {096} */ MC virtual ItemInstance asItemInstance(const Block& block, const BlockActor* actor) const;
@@ -369,6 +354,7 @@ public:
 	/** @vidx {161} */ MC virtual void _onHitByActivatingAttack(BlockSource& unk0, const BlockPos& unk1, Actor* unk2) const;
     /** @vidx {162} */ MC virtual void entityInside(BlockSource& unk0, const BlockPos& unk1, Actor& unk2);
 
+	bool hasBlockEntity() const;
     short getBlockItemId();
     void setDestroyTime(float destroyTime, float explosionResistance);
     void addState(const BlockState& blockState);
