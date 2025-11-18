@@ -56,32 +56,30 @@ namespace F3Menu {
 
 		auto modCount = Amethyst::GetContext().mModLoader->GetModCount();
 		auto ver = Amethyst::GetOwnMod()->mInfo->Version.to_string();
-		std::vector<std::string> texts = { std::format("Amethyst Runtime v{} ({} mod(s) loaded)\n", ver, modCount) };
+		std::vector<std::string> texts = { std::format("Amethyst Runtime v{} ({} mod loaded)", ver, modCount) };
 
 		// Position info
-		texts.push_back(std::format("XYZ: {} {} {}\n", player->getPosition()->x, player->getPosition()->y, player->getPosition()->z));
-		texts.push_back(std::format("Facing: {} ({})\n", yawToFacing(player->getHeadRot()->y), player->getHeadRot()->y));
-
-		texts.push_back("\n");
+		texts.push_back(std::format("XYZ: {} {} {}", player->getPosition()->x, player->getPosition()->y, player->getPosition()->z));
+		texts.push_back(std::format("Facing: {} ({})", yawToFacing(player->getHeadRot()->y), player->getHeadRot()->y));
 
 
 		// Cursor info
 		ILevel* level = client->getLocalPlayer()->getLevel();
 		HitResult& hr = level->getHitResult();
 		if (hr.mType == HitResultType::TILE) {
+			texts.push_back("");
 			auto& block = client->getRegion()->getBlock(hr.mBlock);
-			texts.push_back(std::format("BlockPos: {} {} {}\n", hr.mBlock.x, hr.mBlock.y, hr.mBlock.z));
-			texts.push_back(std::format("Block: {}:{}\n", block.mLegacyBlock->mNameInfo.mNamespaceName, block.mLegacyBlock->mNameInfo.mRawName.getString()));
+			texts.push_back(std::format("BlockPos: {} {} {}", hr.mBlock.x, hr.mBlock.y, hr.mBlock.z));
+			texts.push_back(std::format("Block: {}:{}", block.mLegacyBlock->mNameInfo.mNamespaceName, block.mLegacyBlock->mNameInfo.mRawName.getString()));
 		}
 
-		texts.push_back("\n");
+		texts.push_back("");
 
 		// Dimension info 
 		const Dimension& dimension = player->getDimensionConst();
-		dimension.getId();
-		texts.push_back("Dimension Info:\n");
-		texts.push_back(std::format("dimension: {}\n", dimension.getId()));
-		texts.push_back(std::format("dimension ID: {}\n", dimension.getId()));
+		texts.push_back("Dimension Info:");
+		texts.push_back(std::format("dimension: {}", dimension.getId()));
+		texts.push_back(std::format("dimension ID: {}", dimension.getDimensionId().runtimeID));
 
 		// Invoke the event
 		auto ev = F3DisplayEvent(texts, *player, hr);
@@ -95,10 +93,9 @@ namespace F3Menu {
 		// Draw the background
 		float ypos = 1.0f;
 		for (int i = 0; i < texts.size(); i++) {
-			text += texts.at(i);
-			if (texts.at(i).empty()) continue;
+			text += texts.at(i) + "\n";
 			auto mr = event.ctx.mMeasureStrategy.measureText(font, texts.at(i), 300, 300, textData, caretData);
-			if(!(texts.at(i) == "\n"))
+			if(!(texts.at(i).empty()))
 				event.ctx.fillRectangle(RectangleArea{ 0.0f, mr.mSize.x + 3.0f, ypos, ypos + mr.mSize.y}, mce::Color::FONT_DARK_GRAY, 0.5f);
 			ypos += mr.mSize.y;
 		}

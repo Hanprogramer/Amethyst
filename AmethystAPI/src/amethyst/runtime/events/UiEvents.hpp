@@ -22,8 +22,11 @@ public:
 		: mLines(lines), mPlayer(player), mHitResult(hitResult) {
 	}
 
-	void addLine(std::string newLine) {
-		mLines.push_back(newLine + "\n");
+	void AddLine(std::string newLine) {
+		mLines.push_back(newLine);
+	}
+	void AddEmptyLine() { //
+		mLines.push_back("");
 	}
 };
 
