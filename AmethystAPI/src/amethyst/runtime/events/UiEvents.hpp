@@ -23,7 +23,7 @@ public:
 	}
 
 	void addLine(std::string newLine) {
-		mLines.push_back(newLine);
+		mLines.push_back(newLine + "\n");
 	}
 };
 
