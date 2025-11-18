@@ -14,6 +14,7 @@
 #include <mc/src/common/world/level/BlockPos.hpp>
 #include <mc/src/common/world/level/BlockSource.hpp>
 #include <mc/src/common/locale/I18n.hpp>
+#include <amethyst/runtime/events/UiEvents.hpp>
 
 namespace F3Menu {
 	static bool renderMenu = false;
@@ -24,14 +25,8 @@ namespace F3Menu {
 			Amethyst::InputManager& input = ev.inputManager;
 			auto& action = input.RegisterNewInput("amethyst.toggle_debug_ui", { 114 }, true, Amethyst::KeybindContext::Gameplay);
 
-			action.addButtonDownHandler([](FocusImpact, ClientInstance&) {
-				Log::Info("Pressed down, {}", renderMenu);
-				return Amethyst::InputPassthrough::Passthrough;
-			});
-
 			action.addButtonUpHandler([](FocusImpact, ClientInstance&) {
 				renderMenu = !renderMenu;
-				Log::Info("Pressed up, {}", renderMenu);
 				return Amethyst::InputPassthrough::Passthrough;
 			});
 		});
@@ -85,6 +80,10 @@ namespace F3Menu {
 		texts.push_back("Dimension Info:\n");
 		texts.push_back(std::format("dimension: {}\n", dimension.getId()));
 		texts.push_back(std::format("dimension ID: {}\n", dimension.getId()));
+
+		// Invoke the event
+		auto ev = F3DisplayEvent(texts, *player, hr);
+		Amethyst::GetEventBus().Invoke<F3DisplayEvent>(ev);
 
 		std::string text;
 		TextMeasureData textData(1.0f, 1, false, false, false);
