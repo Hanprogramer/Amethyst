@@ -21,6 +21,10 @@ public:
 	F3DisplayEvent(std::vector<std::string>& lines, LocalPlayer& player, HitResult& hitResult) 
 		: mLines(lines), mPlayer(player), mHitResult(hitResult) {
 	}
+
+	void addLine(std::string newLine) {
+		mLines.push_back(newLine);
+	}
 };
 
 using UiButtonHandleEvent = UIButtonHandleEvent;

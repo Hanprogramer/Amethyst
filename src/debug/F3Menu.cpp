@@ -33,16 +33,16 @@ namespace F3Menu {
 		});
 	}
 
-	std::string yawToFacing(float yawDegrees) {
+	static std::string yawToFacing(float yawDegrees) {
 		// normalize to [0, 360)
 		float a = std::fmod(yawDegrees, 360.0f);
 		if (a < 0) a += 360.0f;
 
-		// each sector is 90 degrees, centered on 0=north, 90=east, 180=south, 270=west
-		if (a >= 315.0f || a < 45.0f) return "north";
-		if (a >= 45.0f && a < 135.0f) return "east";
-		if (a >= 135.0f && a < 225.0f) return "south";
-		return "west"; // guaranteed return for remaining range
+		// each sector is 90 degrees, centered on 0=south, 90=west, 180=north, 270=east
+		if (a >= 315.0f || a < 45.0f) return "south";
+		if (a >= 45.0f && a < 135.0f) return "west";
+		if (a >= 135.0f && a < 225.0f) return "north";
+		return "east"; // guaranteed return for remaining range
 	}
 
 	void Render(AfterRenderUIEvent& event) {
@@ -55,7 +55,8 @@ namespace F3Menu {
 
 
 		auto modCount = Amethyst::GetContext().mModLoader->GetModCount();
-		std::vector<std::string> texts = { std::format("Amethyst API ({} mod(s) loaded)\n", modCount) };
+		auto ver = Amethyst::GetOwnMod()->mInfo->Version.to_string();
+		std::vector<std::string> texts = { std::format("Amethyst Runtime v{} ({} mod(s) loaded)\n", ver, modCount) };
 
 		// Position info
 		texts.push_back(std::format("XYZ: {} {} {}\n", player->getPosition()->x, player->getPosition()->y, player->getPosition()->z));
