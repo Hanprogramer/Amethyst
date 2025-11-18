@@ -39,10 +39,29 @@ namespace F3Menu {
 		if (a < 0) a += 360.0f;
 
 		// each sector is 90 degrees, centered on 0=south, 90=west, 180=north, 270=east
-		if (a >= 315.0f || a < 45.0f) return "south";
-		if (a >= 45.0f && a < 135.0f) return "west";
-		if (a >= 135.0f && a < 225.0f) return "north";
-		return "east"; // guaranteed return for remaining range
+		if (a >= 315.0f || a < 45.0f) return "South (Towards positive Z)";
+		if (a >= 45.0f && a < 135.0f) return "West (Towards negative X)";
+		if (a >= 135.0f && a < 225.0f) return "North (Towards negative Z)";
+		return "East (Towards positive X)"; // guaranteed return for remaining range
+	}
+
+	static std::unordered_map<std::string, int> getAllBlockStates(const Block& block) {
+		std::unordered_map<std::string, int> result;
+
+		BlockState::StateListNode* node = BlockState::StateListNode::mHead;
+		while (node) {
+			const BlockState* state = node->mState;
+			const std::string name = state->mName.getString();
+
+			if (block.hasState(*state)) {
+				int value = block.getState<int>(*state);
+				result[name] = value;
+			}
+			
+			node = node->mNext;
+		}
+
+		return result;
 	}
 
 	void Render(AfterRenderUIEvent& event) {
@@ -56,30 +75,35 @@ namespace F3Menu {
 
 		auto modCount = Amethyst::GetContext().mModLoader->GetModCount();
 		auto ver = Amethyst::GetOwnMod()->mInfo->Version.to_string();
-		std::vector<std::string> texts = { std::format("Amethyst Runtime v{} ({} mod loaded)", ver, modCount) };
+		std::vector<std::string> texts = { };
+		texts.push_back(std::format("Minecraft 1.21.0.3 (Amethyst v{}, {} mods)", ver, modCount));
 
 		// Position info
-		texts.push_back(std::format("XYZ: {} {} {}", player->getPosition()->x, player->getPosition()->y, player->getPosition()->z));
-		texts.push_back(std::format("Facing: {} ({})", yawToFacing(player->getHeadRot()->y), player->getHeadRot()->y));
-
+		texts.push_back(std::format("§cX§aY§bZ: §c{:.3f} §a{:.3f} §b{:.3f}§r", player->getPosition()->x, player->getPosition()->y, player->getPosition()->z));
 
 		// Cursor info
 		ILevel* level = client->getLocalPlayer()->getLevel();
 		HitResult& hr = level->getHitResult();
-		if (hr.mType == HitResultType::TILE) {
-			texts.push_back("");
-			auto& block = client->getRegion()->getBlock(hr.mBlock);
-			texts.push_back(std::format("BlockPos: {} {} {}", hr.mBlock.x, hr.mBlock.y, hr.mBlock.z));
-			texts.push_back(std::format("Block: {}:{}", block.mLegacyBlock->mNameInfo.mNamespaceName, block.mLegacyBlock->mNameInfo.mRawName.getString()));
-		}
-
-		texts.push_back("");
 
 		// Dimension info 
 		const Dimension& dimension = player->getDimensionConst();
-		texts.push_back("Dimension Info:");
-		texts.push_back(std::format("dimension: {}", dimension.getId()));
-		texts.push_back(std::format("dimension ID: {}", dimension.getDimensionId().runtimeID));
+		texts.push_back(std::format("§2Dimension: §b{} ({})§r", dimension.getId(), dimension.getDimensionId().runtimeID));
+		const Vec2& headRot = *player->getHeadRot();
+		texts.push_back(std::format("§2Facing: §b{}", yawToFacing(headRot.y)));
+		texts.push_back(std::format("§2Rotation: §bYaw {:.1f} Pitch {:.1f}", headRot.x, headRot.y));
+
+		// Looked at block
+		if (hr.mType == HitResultType::TILE) {
+		 	// texts.push_back("");
+		 	auto& block = client->getRegion()->getBlock(hr.mBlock);
+		 	texts.push_back(std::format("§uTargeted Block: §e{} {} {}", hr.mBlock.x, hr.mBlock.y, hr.mBlock.z));
+		 	texts.push_back(std::format("§uBlock ID: §e{}", block.mLegacyBlock->mNameInfo.mFullName.getString()));
+
+			auto states = getAllBlockStates(block);
+			for (const auto& [name, value] : states) {
+				texts.push_back(std::format("§u{}: §e{}", name, value));
+			}
+		}
 
 		// Invoke the event
 		auto ev = F3DisplayEvent(texts, *player, hr);
@@ -87,6 +111,7 @@ namespace F3Menu {
 
 		std::string text;
 		TextMeasureData textData(1.0f, 1, false, false, false);
+		textData.renderShadow = true;
 		CaretMeasureData caretData(0, false);
 		auto font = Bedrock::NonOwnerPointer<const FontHandle>(&event.ctx.mDebugTextFontHandle);
 
@@ -104,7 +129,7 @@ namespace F3Menu {
 		RectangleArea rect{ 2.0f, 100.0f, 2.0f, 700.0f };
 
 		event.ctx.drawDebugText(rect, text, mce::Color::WHITE, 1.0f, ui::TextAlignment::Left, textData, caretData);
-		event.ctx.flushText(0.0);
+		event.ctx.flushText(1.0);
 	}
 }
 #endif
