@@ -5,6 +5,7 @@
 #include "hooks/client/Rendering.hpp"
 #include "hooks/client/Resource.hpp"
 #include "hooks/client/UI.hpp"
+#include "debug/F3Menu.hpp"
 
 #include <amethyst/runtime/ModContext.hpp>
 #include <amethyst/runtime/utility/InlineHook.hpp>
@@ -68,6 +69,7 @@ namespace Amethyst::ClientHooks {
 		RenderingHooks::Initialize();
 		ResourceHooks::Initialize();
 		UIHooks::Initialize();
+		F3Menu::Initialize();
 	}
 }
 #endif

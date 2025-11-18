@@ -1,4 +1,5 @@
 key.amethyst.show_advanced_item_info=Show item details
+key.amethyst.toggle_debug_ui=Toggle debug UI
 text.amethyst.item_data=§8Data: {}§r
 text.amethyst.block_tags=§8Block Tags:§r
 text.amethyst.item_tags=§8Item Tags:§r
