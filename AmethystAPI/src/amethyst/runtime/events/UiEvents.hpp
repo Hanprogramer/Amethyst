@@ -25,7 +25,7 @@ public:
 	void AddLine(std::string newLine) {
 		mLines.push_back(newLine);
 	}
-	void AddEmptyLine() { //
+	void AddEmptyLine() {
 		mLines.push_back("");
 	}
 };
