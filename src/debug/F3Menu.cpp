@@ -11,6 +11,7 @@
 #include <mc/src-client/common/client/gui/ScreenView.hpp>
 #include <mc/src-client/common/client/gui/gui/UIControl.hpp>
 #include <mc/src-client/common/client/gui/gui/VisualTree.hpp>
+#include <mc/src/common/world/level/block/Block.hpp>
 #include <mc/src/common/world/level/BlockPos.hpp>
 #include <mc/src/common/world/level/BlockSource.hpp>
 #include <mc/src/common/locale/I18n.hpp>
