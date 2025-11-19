@@ -3,15 +3,10 @@
 #include "amethyst/runtime/events/ModEvents.hpp"
 #include "amethyst/runtime/events/InputEvents.hpp"
 
-#include "hooks/ui/UIHooks.hpp"
-#include "hooks/item/ItemHooks.hpp"
-#include "hooks/RenderingHooks.hpp"
-#include "hooks/Hooks.hpp"
-#include "hooks/InputHooks.hpp"
-#include "hooks/ResourceHooks.hpp"
-#include "hooks/NetworkingHooks.hpp"
-#include <hooks/item/ItemRegistryHooks.hpp>
+#include "hooks/client/UI.hpp"
 #include "features/ModMenuScreen.hpp"
+#include <hooks/client/Client.hpp>
+#include <hooks/shared/Shared.hpp>
 
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;

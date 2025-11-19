@@ -44,10 +44,14 @@ modMenu.addControl("mods_list",
 )
 
 modMenu.addControl("root_panel",
-    <BaseScreen>
+    <BaseScreen 
+        is_modal={true}
+        force_render_below={true}
+        absorbs_input={true}
+        is_showing_menu={true}>
         <Common.CommonPanel size={["100%", "20px"]} anchors="top_left" $show_close_button>
             <TopBar />
-            <Common.Button size={[16, 16]} anchors="left_middle" hover_control="hover" offset={[2, 0]} $pressed_button_name="button.amethyst:close_mods_list">
+            <Common.Button size={[16, 16]} anchors="left_middle" hover_control="hover" offset={[2, 0]} $pressed_button_name="button.amethyst:close_mods_list" >
                 <Label text="<" anchors="center" color="$title_text_color" />
                 <Image key="hover" texture="textures/ui/Black" alpha={0.2} />
             </Common.Button>

@@ -15,6 +15,7 @@ public:
         : ScreenController(useTaskGroup), mSelectedMod(0)
     {
         mSelectedMod = StringToNameId(Amethyst::GetOwnMod()->mInfo->FriendlyName);
+		Log::Info("Registering event handlers");
         _registerEventHandlers();
     }
 
@@ -27,11 +28,12 @@ public:
         this->registerButtonInteractedHandler(StringToNameId("button.amethyst:close_mods_list"), [this](UIPropertyBag* bag) {
             ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
             SceneFactory& factory = *ci.mSceneFactory;
-
+			Log::Info("popping");
             // rn it just pops and theres nothing below it... lmao
-            factory.getCurrentSceneStack()->schedulePopScreen(1);
+			//factory.getCurrentSceneStack()->popScreensBackTo(ui::SceneType::StartMenuScene);
+			factory.getCurrentSceneStack()->schedulePopScreen(1);
 
-            return ui::ViewRequest::None;
+            return ui::ViewRequest::Exit;
         });
     }
 
@@ -41,10 +43,10 @@ public:
     }
 
     virtual ui::ViewRequest handleEvent(ScreenEvent& ev) {
-        if (ev.type != ScreenEventType::ButtonEvent) return ui::ViewRequest::None;
+        if (ev.type != ScreenEventType::ButtonEvent) return ScreenController::handleEvent(ev);
 
-        ButtonScreenEventData data = ev.data.button;
-        if (data.state != ButtonState::Down) return ui::ViewRequest::None;
+		ButtonScreenEventData data = ev.data.button;
+		if (data.state != ButtonState::Down) return ScreenController::handleEvent(ev);
 
         auto& mods = Amethyst::GetContext().mModGraph->GetMods();
 
@@ -52,12 +54,12 @@ public:
             return StringToNameId(mod->FriendlyName) == data.id;
         });
 
-        if (it == mods.end()) return ui::ViewRequest::None;
+        if (it == mods.end()) return ScreenController::handleEvent(ev);
 
         mSelectedMod = data.id;
         _updateContent();
 
-        return ui::ViewRequest::Refresh;
+        return ui::ViewRequest::ConsumeEvent;
     }
 
     void _updateContent() {
@@ -106,7 +108,7 @@ void ButtonHandleEvent(UiButtonHandleEvent& ev) {
     auto controller = std::make_shared<ModMenuScreenController>(true);
     auto scene = factory.createUIScene(*ci.mMinecraftGame, ci, "mod_menu.root_panel", controller);
     auto screen = factory._createScreen(scene);
-    factory.getCurrentSceneStack()->pushScreen(screen, true);
+    factory.getCurrentSceneStack()->pushScreen(screen, false);
 }
 
 void InitModMenuScreen()
