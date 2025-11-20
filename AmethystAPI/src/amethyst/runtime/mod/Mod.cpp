@@ -123,7 +123,7 @@ namespace Amethyst {
 		}
 	}
 
-	void Mod::SaveSettings() {
+	void Mod::SaveSettings() const {
 		auto& platform = Amethyst::GetPlatform();
 		std::string versionedName = mInfo->GetVersionedName();
 		fs::path settingsPath = mInfo->Directory / "settings.json";
@@ -139,6 +139,8 @@ namespace Amethyst {
 				jsonRoot[key] = mSettings->GetBool(key, false);
 			} else if (type == "int") {
 				jsonRoot[key] = mSettings->GetInt(key, 0);
+			} else if (type == "float") {
+				jsonRoot[key] = mSettings->GetFloat(key, 0);
 			} else {
 				Log::Error("Unknown type for settings {} : {}", type, key);
 				continue;

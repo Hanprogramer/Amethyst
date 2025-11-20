@@ -56,7 +56,7 @@ namespace Amethyst {
 		std::optional<ModError> Load();
 		void Unload();
 		void LoadSettings();
-		void SaveSettings();
+		void SaveSettings() const;
 
 		const ModuleHandle& GetHandle() const;
 		Importing::Importer* GetImporter() const;

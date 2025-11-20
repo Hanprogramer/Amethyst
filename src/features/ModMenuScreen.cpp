@@ -1,5 +1,6 @@
 #include "ModMenuScreen.hpp"
 #include <amethyst/runtime/ModContext.hpp>
+#include <amethyst/runtime/mod/Mod.hpp>
 #include <amethyst/runtime/events/UiEvents.hpp>
 #include <mc/src-client/common/client/gui/screens/ScreenEvent.hpp>
 #include <mc/src-client/common/client/gui/screens/SceneFactory.hpp>
@@ -28,11 +29,15 @@ public:
 		this->registerButtonInteractedHandler(StringToNameId("button.amethyst:close_mods_list"), [this](UIPropertyBag* bag) {
 			ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
 			SceneFactory& factory = *ci.mSceneFactory;
-			Log::Info("popping");
-			// rn it just pops and theres nothing below it... lmao
-			//factory.getCurrentSceneStack()->popScreensBackTo(ui::SceneType::StartMenuScene);
-			factory.getCurrentSceneStack()->schedulePopScreen(1);
 
+			// Save mod settings
+			for (const auto& modPtr : Amethyst::GetContext().mModLoader->GetMods()) {
+				auto mod = modPtr.lock();
+				mod->SaveSettings();
+				mod.reset();
+			}
+
+			factory.getCurrentSceneStack()->schedulePopScreen(1);
 			return ui::ViewRequest::Exit;
 		});
 	}
@@ -141,19 +146,30 @@ public:
 };
 
 void ButtonHandleEvent(UiButtonHandleEvent& ev) {
-	if (ev.mScreenEvent.type != ScreenEventType::ButtonEvent) return;
-	ButtonScreenEventData& button = ev.mScreenEvent.data.button;
-
-	if (button.id != StringToNameId("button.amethyst:mods") || button.state != ButtonState::Down) return;
-
-	Amethyst::GetContext().mModLoader->LoadModIcons();
-
-	ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
-	SceneFactory& factory = *ci.mSceneFactory;
-	auto controller = std::make_shared<ModMenuScreenController>(true);
-	auto scene = factory.createUIScene(*ci.mMinecraftGame, ci, "mod_menu.root_panel", controller);
-	auto screen = factory._createScreen(scene);
-	factory.getCurrentSceneStack()->pushScreen(screen, false);
+	Log::Info("Button event");
+	if (ev.mScreenEvent.type == ScreenEventType::ButtonEvent) {
+		ButtonScreenEventData& button = ev.mScreenEvent.data.button;
+		if (button.state == ButtonState::Down) {
+			Log::Info("BUtton event");
+			if (button.id == StringToNameId("button.amethyst:mods")) {
+				Amethyst::GetContext().mModLoader->LoadModIcons();
+				ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
+				SceneFactory& factory = *ci.mSceneFactory;
+				auto controller = std::make_shared<ModMenuScreenController>(true);
+				auto scene = factory.createUIScene(*ci.mMinecraftGame, ci, "mod_menu.root_panel", controller);
+				auto screen = factory._createScreen(scene);
+				factory.getCurrentSceneStack()->pushScreen(screen, false);
+			}
+		}
+	} else if (ev.mScreenEvent.type == ScreenEventType::ToggleChangeEvent) {
+		if (ev.mScreenEvent.data.toggle.id == StringToNameId("button.amethyst:settings_toggle")) {
+			Log::Info("Toggle");
+		} else {
+			Log::Info("Unknown toggle: {}", ev.mScreenEvent.data.toggle.id);
+		}
+	} else {
+		Log::Info("Unknown Button event: {}", (int)ev.mScreenEvent.type);
+	}
 }
 
 void InitModMenuScreen() {
