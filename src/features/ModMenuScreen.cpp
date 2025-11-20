@@ -113,6 +113,7 @@ public:
 		}
 		auto& settings = mod->mSettings;
 
+
 		for (const auto& [key, value] : settings->values) {
 			if (settings->HasHint(key)) {
 				auto& hint = settings->GetHintFor(key);

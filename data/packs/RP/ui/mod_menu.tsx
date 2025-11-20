@@ -4,7 +4,6 @@ const modMenu = new UiFile("mod_menu");
 
 const BaseScreen = GetRef("common", "base_screen");
 
-const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
 const OptionToggle = GetRef("settings_common", "option_toggle");
 const TextEditBox = GetRef<PanelProps>("common", "text_edit_box");
 const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
@@ -23,15 +22,19 @@ const LightTextButtton = GetRef<LightTextButttonProps>("common_buttons", "light_
 modMenu.addControl("mod_info_panel",
     <StackPanel orientation="vertical">
         {/* Header */}
-        <StackPanel orientation="horizontal" size={["100%", "100%c"]}>
-            <Image texture="$mod_icon" size={["64px", "64px"]} />
+        <StackPanel orientation="horizontal" size={["100%", "48px"]}>
+            <Image texture="$mod_icon" size={["48px", "48px"]} />
+            <Panel size={[10, 0]} />
             <StackPanel orientation="vertical">
-                <Label text="$mod_name" />
-                <Label text="$mod_version" />
-                <Label text="$mod_author" />
+                <Label size={["100%", "default"]} text="$mod_name" font_size="medium" font_scale_factor={1.5} />
+                <Label size={["100%", "default"]} text="$mod_version" color={[0.55, 0.55, 0.55]} />
+                <Panel size={[0, 4]} />
+                <Label size={["100%", "default"]} text="$mod_author" color={[0.55, 0.55, 0.55]} />
             </StackPanel>
         </StackPanel>
-
+        <Panel size={["100%", 20]}>
+            <Image texture="textures/ui/list_item_divider_line_light" anchors="center" size={["100% - 30px", 1]} />
+        </Panel>
         {/* Body */}
         <Label text="Settings" />
     </StackPanel>
@@ -53,40 +56,62 @@ modMenu.addControl("mod_info",
 )
 
 modMenu.addControl("mod_settings_item_bool",
-    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+        <Panel size={["fill", "30px"]}>
+            <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
+        </Panel>
         <OptionToggle $option_label="Enabled" size={["fill", "30px"]} />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_int",
-    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
-        <TextEditBox size={["fill", "30px"]}/>
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+        <Panel size={["fill", "30px"]}>
+            <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
+        </Panel>
+        <TextEditBox size={["fill", "30px"]} />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_string",
-    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+        <Panel size={["fill", "30px"]}>
+            <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
+        </Panel>
         <TextEditBox size={["fill", "30px"]} />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_slider",
-    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+        <Panel size={["fill", "30px"]}>
+            <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
+        </Panel>
         <Slider size={["fill", "30px"]} />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_options",
-    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
-        <Dropdown size={["fill", "30px"]} />
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+        <Panel size={["fill", "30px"]}>
+            <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
+        </Panel>
+        <Dropdown size={["fill", "30px"]}
+            $dropdown_content="controls_section.sneak_dropdown_content"
+            $dropdown_area="content_area"
+            $dropdown_name="sneak_dropdown"
+            $option_enabled_binding_name="#sneak_dropdown_enabled"
+            $options_dropdown_toggle_label_binding="Test"
+            $dropdown_scroll_content_size={["100%", "145%"]} />
     </StackPanel>
 )
 
 modMenu.addControl("mod_list_item",
     <Panel anchors="top_left" size={["100%", "30px"]}>
-        <LightTextButtton $button_text="$mod_name" $pressed_button_name="$mod_name" />
-        <Image texture="$mod_icon" size={["30px", "30px"]} />
+        <LightTextButtton $button_text="" $pressed_button_name="$mod_name" layer={2} size={["100%", "100%"]} />
+        <StackPanel orientation="horizontal" size={["100% - 6px", "100% - 6px"]}>
+            <Image texture="$mod_icon" size={["24px", "24px"]} layer={12} />
+
+            <Panel size={["fill", "24px"]}>
+                <Label anchors="left_middle" text="$mod_name" layer={12} color={[0.0, 0.0, 0.0]} offset={[10, 0]} />
+            </Panel>
+        </StackPanel>
     </Panel>
 )
 
@@ -110,11 +135,11 @@ modMenu.addControl("root_panel",
             <Label text="amethyst:menu.mods" anchors="center" color="$title_text_color" />
         </Common.CommonPanel>
         <Panel size={["30%", "100% - 20px"]} anchors="top_left" offset={[0, "20px"]}>
-            <BgBase />
+            <Image texture="textures/ui/background_with_border" size={["100%", "100%"]} layer={-1} alpha={0.8} />
             <Common.ScrollingPanel $show_background={false} $scrolling_content="mod_menu.mods_list" size={["100% - 16px", "100% - 16px"]} />
         </Panel>
         <Panel size={["70%", "100% - 20px"]} anchors="top_right" offset={[0, "20px"]}>
-            <BgBase />
+            <Image texture="textures/ui/background_with_border" size={["100%", "100%"]} layer={-1} alpha={0.8} />
             <Common.ScrollingPanel $show_background={false} $scrolling_content="mod_menu.mod_info" size={["100% - 16px", "100% - 16px"]} />
         </Panel>
     </BaseScreen>
