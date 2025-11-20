@@ -1,0 +1,57 @@
+{
+    "namespace": "pause",
+    "mods_button@pause.pause_button_template": {
+        "$pressed_button_name": "button.amethyst:mods",
+        "$button_text": "amethyst:menu.mods",
+        "anchor_to": "top_middle",
+        "anchor_from": "top_middle"
+    },
+    "menu_background/button_panel": {
+        "modifications": [
+            {
+                "array_name": "controls",
+                "operation": "replace",
+                "control_name": "settings_button",
+                "value": [
+                    {
+                        "a": {
+                            "type": "stack_panel",
+                            "orientation": "horizontal",
+                            "size": [
+                                "100%",
+                                "28px"
+                            ],
+                            "controls": [
+                                {
+                                    "settings_button@pause.settings_button": {
+                                        "size": [
+                                            "fill",
+                                            "100%"
+                                        ]
+                                    }
+                                },
+                                {
+                                    "spacer": {
+                                        "type": "panel",
+                                        "size": [
+                                            2,
+                                            0
+                                        ]
+                                    }
+                                },
+                                {
+                                    "mods_button@pause.mods_button": {
+                                        "size": [
+                                            "fill",
+                                            "100%"
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
