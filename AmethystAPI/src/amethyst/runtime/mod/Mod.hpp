@@ -30,6 +30,7 @@ class AmethystContext;
 namespace Amethyst {
 	class Mod {
 		using InitializeFunction = void(*)(AmethystContext&, const Mod&);
+		using InitializeDefaultSettingsFunction = void(*)(AmethystContext&, const Mod&);
 
 		ModuleHandle mHandle;
 		std::unique_ptr<Importing::Importer> mImporter;
@@ -37,10 +38,11 @@ namespace Amethyst {
 		bool mIsInitialized = false;
 
 		InitializeFunction mInitializeFunction = nullptr;
+		InitializeDefaultSettingsFunction mInitializeDefaultSettingsFunction = nullptr;
 	public:
 		// Metadata and stuff
 		std::shared_ptr<const ModInfo> mInfo;
-		std::shared_ptr<const ModSettings> mSettings;
+		std::shared_ptr<ModSettings> mSettings;
 
 		Mod() = delete;
 		Mod(const Mod&) = delete;
@@ -53,6 +55,8 @@ namespace Amethyst {
 
 		std::optional<ModError> Load();
 		void Unload();
+		void LoadSettings();
+		void SaveSettings();
 
 		const ModuleHandle& GetHandle() const;
 		Importing::Importer* GetImporter() const;
@@ -63,7 +67,9 @@ namespace Amethyst {
 		}
 
 		InitializeFunction GetInitializeFunction();
+		InitializeDefaultSettingsFunction GetInitializeSettingsFunction();
 		std::optional<ModError> CallInitialize(AmethystContext& ctx);
+		std::optional<ModError> CallInitializeSettings(AmethystContext& ctx);
 
 		bool IsLoaded() const;
 

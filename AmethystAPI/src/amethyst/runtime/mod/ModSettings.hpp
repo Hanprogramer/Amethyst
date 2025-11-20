@@ -4,17 +4,32 @@
 #include <string>
 
 namespace Amethyst {
-	using ModSettingsValue = std::variant<int, bool, std::string>;
+	using ModSettingsValue = std::variant<bool, int, std::string>;
 	class ModSettings {
-	private:
-		std::vector<std::pair<std::string, ModSettingsValue>> values;
 	public:
+		std::vector<std::pair<std::string, ModSettingsValue>> values;
 		ModSettings() {
 		}
 		~ModSettings() {
 		}
 
-		std::vector<std::string> GetKeys() {
+		std::string GetValueType(std::string key) {
+			for (const auto& pair : values) {
+				if (pair.first == key) {
+					Log::Info("This value of: {}:{}", key, pair.second.index());
+					if (pair.second.index() == 1) {
+						return "int";
+					} else if (pair.second.index() == 0) {
+						return "bool";
+					} else if (pair.second.index() == 2) {
+						return "string";
+					}
+				}
+			}
+			return "none";
+		}
+
+		std::vector<std::string> GetSettingsKeys() {
 			std::vector<std::string> keys;
 			for (auto& pair : values) {
 				keys.push_back(pair.first);
@@ -69,29 +84,29 @@ namespace Amethyst {
 		void PutInt(std::string key, int value) {
 			for (auto& pair : values) {
 				if (pair.first == key) {
-					pair.second = value;
+					pair.second = ModSettingsValue{ value };
 					return;
 				}
 			}
-			values.push_back({ key, value });
+			values.push_back({ key, ModSettingsValue{value} });
 		}
 		void PutBool(std::string key, bool value) {
 			for (auto& pair : values) {
 				if (pair.first == key) {
-					pair.second = value;
+					pair.second = ModSettingsValue{ value };
 					return;
 				}
 			}
-			values.push_back({ key, value });
+			values.push_back({ key, ModSettingsValue{value} });
 		}
 		void PutString(std::string key, std::string value) {
 			for (auto& pair : values) {
 				if (pair.first == key) {
-					pair.second = value;
+					pair.second = ModSettingsValue{ value };
 					return;
 				}
 			}
-			values.push_back({ key, value });
+			values.push_back({ key, ModSettingsValue{value} });
 		}
 	};
 }
