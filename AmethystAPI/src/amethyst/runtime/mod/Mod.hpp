@@ -20,6 +20,7 @@
 #define NOMINMAX
 #endif
 #include <Windows.h>
+#include <amethyst/runtime/mod/ModSettings.hpp>
 
 using json = nlohmann::json;
 
@@ -27,47 +28,47 @@ namespace fs = std::filesystem;
 
 class AmethystContext;
 namespace Amethyst {
-class Mod {
-    using InitializeFunction = void(*)(AmethystContext&, const Mod&);
+	class Mod {
+		using InitializeFunction = void(*)(AmethystContext&, const Mod&);
 
-    ModuleHandle mHandle;
-    std::unique_ptr<Importing::Importer> mImporter;
-    bool mIsLoaded = false;
-    bool mIsInitialized = false;
+		ModuleHandle mHandle;
+		std::unique_ptr<Importing::Importer> mImporter;
+		bool mIsLoaded = false;
+		bool mIsInitialized = false;
 
-    InitializeFunction mInitializeFunction = nullptr;
-public:
-    // Metadata and stuff
-    std::shared_ptr<const ModInfo> mInfo;
+		InitializeFunction mInitializeFunction = nullptr;
+	public:
+		// Metadata and stuff
+		std::shared_ptr<const ModInfo> mInfo;
+		std::shared_ptr<const ModSettings> mSettings;
 
-    Mod() = delete;
-    Mod(const Mod&) = delete;
-    Mod& operator=(const Mod&) = delete;
-    Mod& operator=(Mod&&) noexcept = delete;
+		Mod() = delete;
+		Mod(const Mod&) = delete;
+		Mod& operator=(const Mod&) = delete;
+		Mod& operator=(Mod&&) noexcept = delete;
 
-    explicit Mod(const std::shared_ptr<const ModInfo>& info);
-    Mod(Mod&& other) noexcept;
-    ~Mod();
+		explicit Mod(const std::shared_ptr<const ModInfo>& info);
+		Mod(Mod&& other) noexcept;
+		~Mod();
 
-    std::optional<ModError> Load();
-    void Unload();
+		std::optional<ModError> Load();
+		void Unload();
 
-    const ModuleHandle& GetHandle() const;
-    Importing::Importer* GetImporter() const;
+		const ModuleHandle& GetHandle() const;
+		Importing::Importer* GetImporter() const;
 
-    template <typename T = FARPROC>
-    T GetFunction(const char* functionName) const
-    {
-        return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
-    }
+		template <typename T = FARPROC>
+		T GetFunction(const char* functionName) const {
+			return reinterpret_cast<T>(GetProcAddress(mHandle, functionName));
+		}
 
-    InitializeFunction GetInitializeFunction();
-    std::optional<ModError> CallInitialize(AmethystContext& ctx);
+		InitializeFunction GetInitializeFunction();
+		std::optional<ModError> CallInitialize(AmethystContext& ctx);
 
-    bool IsLoaded() const;
+		bool IsLoaded() const;
 
-    bool operator==(const Mod& other) const;
-    static std::shared_ptr<const ModInfo> GetInfo(const std::string& modName);
-    static fs::path GetTemporaryLibrary(const std::string& modName);
-};
+		bool operator==(const Mod& other) const;
+		static std::shared_ptr<const ModInfo> GetInfo(const std::string& modName);
+		static fs::path GetTemporaryLibrary(const std::string& modName);
+	};
 } // namespace Amethyst

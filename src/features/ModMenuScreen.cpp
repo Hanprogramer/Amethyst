@@ -71,7 +71,8 @@ public:
             UIPropertyBag props = UIPropertyBag();
             props.set<std::string>("control_id", "mod_list_item");
             props.set<std::string>("name", "mod_list_item");
-            props.set<std::string>("$mod_name", mod->FriendlyName);
+			props.set<std::string>("$mod_name", mod->FriendlyName);
+			props.set<std::string>("$mod_icon", mod->GetVersionedName());
 
             this->mControlCreateCallback("mods_list_factory", props);
         }

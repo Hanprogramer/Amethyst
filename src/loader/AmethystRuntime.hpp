@@ -51,6 +51,7 @@ public:
 private:
     void ReadLauncherConfig();
     void LoadModDlls();
+	void LoadModIcon(const std::filesystem::path& path, const std::shared_ptr<const Amethyst::ModInfo>& info);
     void RunMods();
 
 public:

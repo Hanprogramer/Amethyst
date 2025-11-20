@@ -31,6 +31,7 @@ const LightTextButtton = GetRef<LightTextButttonProps>("common_buttons", "light_
 modMenu.addControl("mod_list_item", 
     <Panel anchors="top_left" size={["100%", "30px"]}>
         <LightTextButtton $button_text="$mod_name" $pressed_button_name="$mod_name" />
+        <Image texture="$mod_icon" size={["30px","30px"]}/>
     </Panel>
 )
 
@@ -44,11 +45,7 @@ modMenu.addControl("mods_list",
 )
 
 modMenu.addControl("root_panel",
-    <BaseScreen 
-        is_modal={true}
-        force_render_below={true}
-        absorbs_input={true}
-        is_showing_menu={true}>
+    <BaseScreen >
         <Common.CommonPanel size={["100%", "20px"]} anchors="top_left" $show_close_button>
             <TopBar />
             <Common.Button size={[16, 16]} anchors="left_middle" hover_control="hover" offset={[2, 0]} $pressed_button_name="button.amethyst:close_mods_list" >

@@ -12,7 +12,8 @@ Mod::Mod(Mod&& other) noexcept :
     mInfo(std::move(other.mInfo)),
     mImporter(std::move(other.mImporter)),
     mHandle(std::move(other.mHandle)),
-    mIsLoaded(std::move(other.mIsLoaded))
+    mIsLoaded(std::move(other.mIsLoaded)),
+	mSettings(std::move(other.mSettings))
 {
 }
 
