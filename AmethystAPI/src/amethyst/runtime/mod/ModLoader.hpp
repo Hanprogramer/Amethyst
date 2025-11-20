@@ -8,6 +8,8 @@ class ModLoader {
     std::vector<std::shared_ptr<Mod>> mMods;
     std::vector<ModError> mErrors;
 
+	bool isIconLoaded = false;
+
 public:
     ModLoader(AmethystContext* ctx);
     ~ModLoader();
@@ -18,6 +20,8 @@ public:
     ModLoader& operator=(ModLoader&&) = delete;
 
     void LoadGraph(const ModGraph& graph);
+	void LoadModIcons();
+	void LoadModIcon(const std::filesystem::path& path, const std::shared_ptr<const Amethyst::ModInfo>& info);
     std::weak_ptr<const Mod> LoadSingle(const std::shared_ptr<const ModInfo>& info);
     void UnloadAll();
     void Unload(const std::shared_ptr<const ModInfo>& info);

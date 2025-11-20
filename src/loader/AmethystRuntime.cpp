@@ -94,17 +94,6 @@ void AmethystRuntime::LoadModDlls() {
 		if (modInfo->UUID == "00000000-0000-0000-0000-000000000000") {
 			Log::Warning("Mod '{}' has the default UUID of '00000000-0000-0000-0000-000000000000' in its mod.json! It is recommended to generate a new one", modInfo->GetVersionedName());
 		}
-
-		// Load the mod icon
-//#ifdef CLIENT
-		if (Amethyst::GetClientCtx().mClientInstance != nullptr) {
-			Log::Info("Is client side");
-			LoadModIcon(modInfo->Directory, modInfo);
-		} else {
-
-			Log::Info("Is not client side");
-		}
-//#endif
 	}
 
 	for (const auto& error : modGraph.GetErrors()) {
@@ -120,27 +109,6 @@ void AmethystRuntime::LoadModDlls() {
 	// Allow mods to add listeners to eachothers events
 	AddModEventListenersEvent event;
 	Amethyst::GetEventBus().Invoke<AddModEventListenersEvent>(event);
-}
-
-void AmethystRuntime::LoadModIcon(const std::filesystem::path& path, const std::shared_ptr<const Amethyst::ModInfo>& info) {
-	auto& platform = Amethyst::GetPlatform();
-	fs::path iconPath = path / "icon.png";
-	if (fs::exists(iconPath)) {
-		Log::Info("Trying to load icon for {}", info->GetVersionedName());
-		std::ifstream iconFile(iconPath, std::ios::binary);
-		if (iconFile.is_open()) {
-			std::vector<uint8_t> iconData((std::istreambuf_iterator<char>(iconFile)), std::istreambuf_iterator<char>());
-			ResourceLocation loc = ResourceLocation(info->GetVersionedName());
-
-			cg::ImageDescription description = cg::ImageDescription((uint32_t)32, (uint32_t)32, mce::TextureFormat::R8g8b8a8Unorm, cg::ColorSpace::sRGB, cg::ImageType::Texture2D, (uint32_t)iconData.size());
-			cg::ImageBuffer iconImage = cg::ImageBuffer::ImageBuffer(mce::Blob(iconData.data(), iconData.size()), description);
-
-			auto& clientCtx = Amethyst::GetClientCtx();
-			clientCtx.mClientInstance->mMinecraftGame->mTextures->uploadTexture(loc, iconImage);
-			iconFile.close();
-			Log::Info("Loaded icon for mod '{}'", info->GetVersionedName());
-		}
-	}
 }
 void AmethystRuntime::RunMods() {
 	auto& platform = Amethyst::GetPlatform();

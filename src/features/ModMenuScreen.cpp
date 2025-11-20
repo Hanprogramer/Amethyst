@@ -146,6 +146,8 @@ void ButtonHandleEvent(UiButtonHandleEvent& ev) {
 
 	if (button.id != StringToNameId("button.amethyst:mods") || button.state != ButtonState::Down) return;
 
+	Amethyst::GetContext().mModLoader->LoadModIcons();
+
 	ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
 	SceneFactory& factory = *ci.mSceneFactory;
 	auto controller = std::make_shared<ModMenuScreenController>(true);
