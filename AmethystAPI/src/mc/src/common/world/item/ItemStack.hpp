@@ -37,6 +37,25 @@ public:
     /** @sig {48 89 5C 24 ? 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ? ? ? ? 45 0F B6 E1} */
 	MC static void loadItemStacksFromDescriptor(std::vector<ItemStack>& stacks, const std::vector<NetworkItemStackDescriptor>& descriptors, BlockPalette& blockPalette, bool idk);
     int getMaxUseDuration() const;
+
+	ItemStack copyWithCount(uint8_t count) const {
+		ItemStack newStack = *this;
+		newStack.mCount = count;
+		return newStack;
+	}
+
+	ItemStack copy() const {
+		return ItemStack(*this);
+	}
+
+	ItemStack split(uint8_t amount) {
+		if (amount >= mCount) {
+			return *this;
+		}
+		ItemStack newStack = copyWithCount(amount);
+		mCount -= amount;
+		return newStack;
+	}
 };
 
 static_assert(sizeof(ItemStack) == 0xA0);

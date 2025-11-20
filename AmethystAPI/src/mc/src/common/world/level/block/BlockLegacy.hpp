@@ -28,7 +28,7 @@ enum Flip {};
 // Auto-generated: Forward declarations
 class BlockPos;
 class BlockSource;
-class IConstBlockSource;
+class BlockSource;
 class CopperBehavior;
 class Actor;
 class Container;
@@ -195,12 +195,12 @@ public:
  	/** @vidx {002} */ MC virtual const Block* getNextBlockPermutation(const Block& unk0) const;
 	/** @vidx {003} */ MC virtual bool hasTag(BlockSource& unk0, const BlockPos& unk1, const Block& unk2, const std::string& unk3) const;
  	/** @vidx {004} */ MC virtual HitResult clip(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, const Vec3& unk3, const Vec3& unk4, ShapeType unk5, optional_ref<const GetCollisionShapeInterface> unk6) const;
- 	/** @vidx {005} */ MC virtual AABB getCollisionShape(const Block& unk0, const IConstBlockSource& unk1, const BlockPos& unk2, optional_ref<const GetCollisionShapeInterface> unk3) const;
- 	/** @vidx {006} */ MC virtual bool getCollisionShapeForCamera(AABB& unk0, const Block& unk1, const IConstBlockSource& unk2, const BlockPos& unk3) const;
- 	/** @vidx {007} */ MC virtual bool addCollisionShapes(const Block& unk0, const IConstBlockSource& unk1, const BlockPos& unk2, const AABB* unk3, std::vector<AABB>& unk4, optional_ref<const GetCollisionShapeInterface> unk5) const;
- 	/** @vidx {008} */ MC virtual void addAABBs(const Block& unk0, const IConstBlockSource& unk1, const BlockPos& unk2, const AABB* unk3, std::vector<AABB>& unk4) const;
- 	/** @vidx {009} */ MC virtual const AABB& getOutline(const Block& unk0, const IConstBlockSource& unk1, const BlockPos& unk2, AABB& unk3) const;
- 	/** @vidx {010} */ MC virtual const AABB& getVisualShapeInWorld(const Block& unk0, const IConstBlockSource& unk1, const BlockPos& unk2, AABB& unk3) const;
+ 	/** @vidx {005} */ MC virtual AABB getCollisionShape(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, optional_ref<const GetCollisionShapeInterface> unk3) const;
+ 	/** @vidx {006} */ MC virtual bool getCollisionShapeForCamera(AABB& unk0, const Block& unk1, const BlockSource& unk2, const BlockPos& unk3) const;
+ 	/** @vidx {007} */ MC virtual bool addCollisionShapes(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, const AABB* unk3, std::vector<AABB>& unk4, optional_ref<const GetCollisionShapeInterface> unk5) const;
+ 	/** @vidx {008} */ MC virtual void addAABBs(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, const AABB* unk3, std::vector<AABB>& unk4) const;
+ 	/** @vidx {009} */ MC virtual const AABB& getOutline(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, AABB& unk3) const;
+ 	/** @vidx {010} */ MC virtual const AABB& getVisualShapeInWorld(const Block& unk0, const BlockSource& unk1, const BlockPos& unk2, AABB& unk3) const;
 	/** @vidx {011} */ MC virtual const AABB& getVisualShape(const Block& unk0, AABB& unk1) const;
 	/** @vidx {012} */ MC virtual const AABB& getUIShape(const Block& unk0, AABB& unk1) const;
 	/** @vidx {013} */ MC virtual bool getLiquidClipVolume(const Block& unk0, BlockSource& unk1, const BlockPos& unk2, AABB& unk3) const;
@@ -284,7 +284,7 @@ public:
 	/** @vidx {091} */ MC virtual void destroy(BlockSource& unk0, const BlockPos& unk1, const Block& unk2, Actor* unk3) const;
 	/** @vidx {092} */ MC virtual bool getIgnoresDestroyPermissions(Actor& unk0, const BlockPos& unk1) const;
 	/** @vidx {093} */ MC virtual void neighborChanged(BlockSource& region, const BlockPos& pos, const BlockPos& neighborPos) const;
-	/** @vidx {094} */ MC virtual bool getSecondPart(const IConstBlockSource& unk0, const BlockPos& unk1, BlockPos& unk2) const;
+	/** @vidx {094} */ MC virtual bool getSecondPart(const BlockSource& unk0, const BlockPos& unk1, BlockPos& unk2) const;
 	/** @vidx {095} */ MC virtual const Block* playerWillDestroy(Player& unk0, const BlockPos& unk1, const Block& unk2) const;
 	/** @vidx {096} */ MC virtual ItemInstance asItemInstance(const Block& block, const BlockActor* actor) const;
 	/** @vidx {097} */ MC virtual void spawnAfterBreak(BlockSource& unk0, const Block& unk1, const BlockPos& unk2, const ResourceDropsContext& unk3) const;

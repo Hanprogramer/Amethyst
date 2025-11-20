@@ -34,9 +34,19 @@ public:
         return {this->x, this->y - 1, this->z};
     }
 
+	BlockPos below(int n) const
+    {
+        return {this->x, this->y - n, this->z};
+    }
+
     BlockPos above() const
     {
         return {this->x, this->y + 1, this->z};
+    }
+
+	BlockPos above(int n) const
+    {
+        return {this->x, this->y + n, this->z};
     }
 
     BlockPos north() const
@@ -44,20 +54,40 @@ public:
         return {this->x, this->y, this->z - 1};
     }
 
+	BlockPos north(int n) const
+	{
+		return {this->x, this->y, this->z - n};
+	}
+
     BlockPos east() const
     {
         return {this->x + 1, this->y, this->z};
     }
+
+	BlockPos east(int n) const
+	{
+		return {this->x + n, this->y, this->z};
+	}
 
     BlockPos south() const
     {
         return {this->x, this->y, this->z + 1};
     }
 
+	BlockPos south(int n) const
+	{
+		return {this->x, this->y, this->z + n};
+	}
+
     BlockPos west() const
     {
         return {this->x - 1, this->y, this->z};
     }
+
+	BlockPos west(int n) const
+	{
+		return {this->x - n, this->y, this->z};
+	}
 
     BlockPos neighbor(FacingID dir) const
     {
@@ -85,6 +115,30 @@ public:
         }
     }
 
+	BlockPos neighbor(FacingID dir, int n) const
+    {
+        switch (dir) {
+            case FacingID::NORTH:
+                return north(n);
+            case FacingID::SOUTH:
+                return south(n);
+            case FacingID::WEST:
+                return west(n);
+            case FacingID::EAST:
+                return east(n);
+            case FacingID::UP:
+                return above(n);
+            case FacingID::DOWN:
+                return below(n);
+            default:
+                std::unreachable();
+        }
+    }
+
+	BlockPos offset(int x, int y, int z) const {
+		return BlockPos(this->x + x, this->y + y, this->z + z);
+	}
+
 	int distSqr(const BlockPos& other) const {
         int dx = x - other.x;
         int dy = y - other.y;
@@ -92,8 +146,29 @@ public:
         return dx * dx + dy * dy + dz * dz;
     }
 
+	bool closerThan(const BlockPos& other, int distance) const {
+		int distSq = distance * distance;
+		return distSqr(other) < distSq;
+	}
+
 	int distManhattan(const BlockPos& other) const {
 		return std::abs(x - other.x) + std::abs(y - other.y) + std::abs(z - other.z);
+	}
+
+	static BlockPos containing(Vec3 vec) {
+		return BlockPos(
+			static_cast<int>(std::floor(vec.x)),
+			static_cast<int>(std::floor(vec.y)),
+			static_cast<int>(std::floor(vec.z))
+		);
+	}
+
+	static BlockPos containing(float x, float y, float z) {
+		return BlockPos(
+			static_cast<int>(std::floor(x)),
+			static_cast<int>(std::floor(y)),
+			static_cast<int>(std::floor(z))
+		);
 	}
 
     constexpr size_t hashCode() const
@@ -125,6 +200,14 @@ public:
 		if (z >= 0x2000000) z -= 0x4000000;
 
 		return BlockPos(x, y, z);
+	}
+
+	Vec3 center() const {
+		return Vec3(
+			static_cast<double>(x) + 0.5,
+			static_cast<double>(y) + 0.5,
+			static_cast<double>(z) + 0.5
+		);
 	}
 
 	BlockPos operator+(const BlockPos& other) const {

@@ -30,6 +30,9 @@ namespace mce {
         LineList = 4,
         LineStrip = 5,
     };
+
+	class MaterialPtr;
+	class TexturePtr;
 }
 
 //is_virtual = False
@@ -70,7 +73,8 @@ public:
     /* this + 417 */ std::byte padding417[67];
     /* this + 484 */ bool mNoColor;
     /* this + 485 */ bool mVoidBeginEnd;
-    /* this + 486 */ std::byte padding486[46];
+	/* this + 486 */ bool mForceTessellateIntercept;
+	/* this + 487 */ std::byte padding487[45];
     /* this + 532 */ bool mTessellating;
     /* this + 533 */ std::byte padding533[19];
     /* this + 552 */ unsigned int mCount;
@@ -106,7 +110,11 @@ public:
     mce::Mesh end( uint64_t a3, std::string_view debugName, int a5);
     void clear();
     mce::Mesh endOverride(uint64_t a3, std::string_view debugName, int a5);
+
+	/// @sig {40 53 48 83 EC ? 80 B9 ? ? ? ? ? 48 8B D9 74 ? 48 8B 89 ? ? ? ? 48 85 C9 74 ? 48 8B 01 4D 8B C8}
+	MC void triggerIntercept(const mce::MaterialPtr& material, const mce::TexturePtr& texture);
 };
 
 static_assert(offsetof(Tessellator, mBuildFaceData) == 561);
 static_assert(sizeof(Tessellator) == 592);
+static_assert(offsetof(Tessellator, mForceTessellateIntercept) == 486);
