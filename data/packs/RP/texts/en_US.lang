@@ -9,3 +9,6 @@ action.amethyst.show_advanced_item_info=§8Hold §u{}§r§8 to see details§r
 
 ## Mods List
 amethyst:menu.mods=Mods
+
+## Settings
+settings.amethyst.disable_f3_colors.label=Disable F3 Colors

@@ -56,3 +56,8 @@ ModFunction void Initialize(AmethystContext& ctx, const Amethyst::Mod& mod)
 	Amethyst::SharedHooks::Initialize();
     InitModMenuScreen();
 }
+
+
+ModFunction void InitializeDefaultSettings(AmethystContext& ctx, const Amethyst::Mod& mod) {
+	mod.mSettings->PutBool("disable_f3_colors", false);
+}

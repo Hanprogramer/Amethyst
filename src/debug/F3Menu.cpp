@@ -16,6 +16,7 @@
 #include <mc/src/common/world/level/BlockSource.hpp>
 #include <mc/src/common/locale/I18n.hpp>
 #include <amethyst/runtime/events/UiEvents.hpp>
+#include <regex>
 
 namespace F3Menu {
 	static bool renderMenu = false;
@@ -102,6 +103,12 @@ namespace F3Menu {
 
 		// Draw the text
 		RectangleArea rect{ 2.0f, 100.0f, 2.0f, 700.0f };
+
+		if (Amethyst::GetOwnMod()->mSettings->GetBool("disable_f3_colors", false)) {
+			// Use std::regex_replace to find all matches and replace them with an empty string ("")
+			std::regex pattern("\\§[[:alnum:]]");
+			std::string result = std::regex_replace(text, pattern, "");
+		}
 
 		event.ctx.drawDebugText(rect, text, mce::Color::WHITE, 1.0f, ui::TextAlignment::Left, textData, caretData);
 		event.ctx.flushText(0.0);
