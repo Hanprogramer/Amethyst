@@ -8,6 +8,7 @@ const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
 const OptionToggle = GetRef("settings_common", "option_toggle");
 const TextEditBox = GetRef<PanelProps>("common", "text_edit_box");
 const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
+const Slider = GetRef<PanelProps>("settings_common", "option_slider");
 
 const TopBar = GetRef("common_store", "store_top_bar");
 
@@ -43,6 +44,9 @@ modMenu.addControl("mod_info",
             mod_settings_item_bool: "@mod_menu.mod_settings_item_bool",
             mod_settings_item_int: "@mod_menu.mod_settings_item_int",
             mod_settings_item_string: "@mod_menu.mod_settings_item_string",
+
+            mod_settings_item_options: "@mod_menu.mod_settings_item_options",
+            mod_settings_item_slider: "@mod_menu.mod_settings_item_slider",
         },
         name: "mod_info_factory",
     }} />
@@ -50,20 +54,32 @@ modMenu.addControl("mod_info",
 
 modMenu.addControl("mod_settings_item_bool",
     <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
         <OptionToggle $option_label="Enabled" size={["fill", "30px"]} />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_int",
     <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
         <TextEditBox size={["fill", "30px"]}/>
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_string",
     <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
-        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
         <TextEditBox size={["fill", "30px"]} />
+    </StackPanel>
+)
+modMenu.addControl("mod_settings_item_slider",
+    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
+        <Slider size={["fill", "30px"]} />
+    </StackPanel>
+)
+modMenu.addControl("mod_settings_item_options",
+    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "default"]} />
+        <Dropdown size={["fill", "30px"]} />
     </StackPanel>
 )
 

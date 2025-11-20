@@ -2,32 +2,97 @@
 #include <variant>
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
 
 namespace Amethyst {
-	using ModSettingsValue = std::variant<bool, int, std::string>;
+	using ModSettingsValue = std::variant<bool, int, float, std::string>;
+
+	class ModSettingsHint {
+	public:
+		// Base class for settings hints
+		virtual std::string GetControlId() const = 0;
+		virtual void PopulateProps(UIPropertyBag& props) const = 0;
+	};
+
+	class SliderSettingsHint : public ModSettingsHint {
+	public:
+		float minValue;
+		float maxValue;
+		float step;
+
+		SliderSettingsHint(float min, float max, float step)
+			: minValue(min), maxValue(max), step(step) {
+		}
+
+		std::string GetControlId() const override {
+			return "mod_settings_item_slider";
+		}
+
+		void PopulateProps(UIPropertyBag& props) const override {
+			props.set<float>("$min_value", minValue);
+			props.set<float>("$max_value", maxValue);
+			props.set<float>("$step", step);
+		}
+	};
+
+	class EnumOptionsSettingsHint : public ModSettingsHint {
+	public:
+		std::vector<std::string> possibleValues;
+
+		EnumOptionsSettingsHint(std::vector<std::string> possibleValues) :
+			possibleValues(possibleValues) {
+		}
+
+		std::string GetControlId() const override {
+			return "mod_settings_item_options";
+		}
+
+		void PopulateProps(UIPropertyBag& props) const override {
+
+		}
+	};
+
 	class ModSettings {
 	public:
 		std::vector<std::pair<std::string, ModSettingsValue>> values;
+		std::map<std::string, std::shared_ptr<ModSettingsHint>> hints;
+
 		ModSettings() {
 		}
 		~ModSettings() {
 		}
 
+		void SetHintFor(const std::string& key, const std::shared_ptr<ModSettingsHint>& hint) {
+			hints[key] = hint;
+		}
+
+		std::shared_ptr<ModSettingsHint>& GetHintFor(std::string key) {
+			return hints[key];
+		}
+
+		bool HasHint(std::string key) const {
+			return hints.contains(key);
+		}
+
 		std::string GetValueType(std::string key) {
 			for (const auto& pair : values) {
 				if (pair.first == key) {
-					Log::Info("This value of: {}:{}", key, pair.second.index());
-					if (pair.second.index() == 1) {
-						return "int";
-					} else if (pair.second.index() == 0) {
+					if (pair.second.index() == 0) {
 						return "bool";
+					} else if (pair.second.index() == 1) {
+						return "int";
 					} else if (pair.second.index() == 2) {
+						return "float";
+					} else if (pair.second.index() == 3) {
 						return "string";
 					}
 				}
 			}
 			return "none";
 		}
+
+
 
 		std::vector<std::string> GetSettingsKeys() {
 			std::vector<std::string> keys;
@@ -80,6 +145,17 @@ namespace Amethyst {
 			}
 			return defaultVal;
 		}
+		float GetFloat(std::string key, float defaultVal) {
+			for (auto& pair : values) {
+				if (pair.first == key) {
+					if (std::holds_alternative<float>(pair.second)) {
+						return std::get<float>(pair.second);
+					}
+					break;
+				}
+			}
+			return defaultVal;
+		}
 
 		void PutInt(std::string key, int value) {
 			for (auto& pair : values) {
@@ -100,6 +176,15 @@ namespace Amethyst {
 			values.push_back({ key, ModSettingsValue{value} });
 		}
 		void PutString(std::string key, std::string value) {
+			for (auto& pair : values) {
+				if (pair.first == key) {
+					pair.second = ModSettingsValue{ value };
+					return;
+				}
+			}
+			values.push_back({ key, ModSettingsValue{value} });
+		}
+		void PutFloat(std::string key, float value) {
 			for (auto& pair : values) {
 				if (pair.first == key) {
 					pair.second = ModSettingsValue{ value };
