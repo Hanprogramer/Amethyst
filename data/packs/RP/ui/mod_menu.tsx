@@ -1,25 +1,16 @@
-import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement } from "Regolith-Generators";
+import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement, InputPanel } from "Regolith-Generators";
 
 const modMenu = new UiFile("mod_menu");
 
 const BaseScreen = GetRef("common", "base_screen");
 
 const BgBase = GetRef<ImageProps>("common", "dialog_background_hollow_common");
+const OptionToggle = GetRef("settings_common", "option_toggle");
+const TextEditBox = GetRef<PanelProps>("common", "text_edit_box");
+const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
 
 const TopBar = GetRef("common_store", "store_top_bar");
 
-modMenu.addControl("test",
-    <Label text="$mod_name" />
-)
-
-modMenu.addControl("mod_info",
-    <StackPanel size={["100%", "100%c"]} factory={{
-        control_ids: {
-            test: "@mod_menu.test",
-        },
-        name: "mod_info_factory",
-    }} />
-)
 
 interface LightTextButttonProps extends ButtonProps {
     $button_text: string;
@@ -28,14 +19,62 @@ interface LightTextButttonProps extends ButtonProps {
 
 const LightTextButtton = GetRef<LightTextButttonProps>("common_buttons", "light_text_button");
 
-modMenu.addControl("mod_list_item", 
+modMenu.addControl("mod_info_panel",
+    <StackPanel orientation="vertical">
+        {/* Header */}
+        <StackPanel orientation="horizontal" size={["100%", "100%c"]}>
+            <Image texture="$mod_icon" size={["64px", "64px"]} />
+            <StackPanel orientation="vertical">
+                <Label text="$mod_name" />
+                <Label text="$mod_version" />
+                <Label text="$mod_author" />
+            </StackPanel>
+        </StackPanel>
+
+        {/* Body */}
+        <Label text="Settings" />
+    </StackPanel>
+)
+
+modMenu.addControl("mod_info",
+    <StackPanel size={["100%", "100%c"]} factory={{
+        control_ids: {
+            mod_info_panel: "@mod_menu.mod_info_panel",
+            mod_settings_item_bool: "@mod_menu.mod_settings_item_bool",
+            mod_settings_item_int: "@mod_menu.mod_settings_item_int",
+            mod_settings_item_string: "@mod_menu.mod_settings_item_string",
+        },
+        name: "mod_info_factory",
+    }} />
+)
+
+modMenu.addControl("mod_settings_item_bool",
+    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <OptionToggle $option_label="Enabled" size={["fill", "30px"]} />
+    </StackPanel>
+)
+modMenu.addControl("mod_settings_item_int",
+    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <TextEditBox size={["fill", "30px"]}/>
+    </StackPanel>
+)
+modMenu.addControl("mod_settings_item_string",
+    <StackPanel anchors="top_left" size={["100%", "30px"]} orientation="horizontal">
+        <Label anchors="left_middle" text="$settings_label" size={["fill", "30px"]} />
+        <TextEditBox size={["fill", "30px"]} />
+    </StackPanel>
+)
+
+modMenu.addControl("mod_list_item",
     <Panel anchors="top_left" size={["100%", "30px"]}>
         <LightTextButtton $button_text="$mod_name" $pressed_button_name="$mod_name" />
-        <Image texture="$mod_icon" size={["30px","30px"]}/>
+        <Image texture="$mod_icon" size={["30px", "30px"]} />
     </Panel>
 )
 
-modMenu.addControl("mods_list", 
+modMenu.addControl("mods_list",
     <StackPanel size={["100%", "100%c"]} factory={{
         name: "mods_list_factory",
         control_ids: {

@@ -6,6 +6,7 @@
 #include <mc/src-client/common/client/gui/screens/ScreenController.hpp>
 #include <mc/src-client/common/client/gui/screens/UIScene.hpp>
 #include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
+#include <amethyst/runtime/mod/ModSettings.hpp>
 
 class ModMenuScreenController : public ScreenController {
 public:
@@ -69,6 +70,7 @@ public:
         // Populate left side mod list
         for (auto& mod : mods) {
             UIPropertyBag props = UIPropertyBag();
+
             props.set<std::string>("control_id", "mod_list_item");
             props.set<std::string>("name", "mod_list_item");
 			props.set<std::string>("$mod_name", mod->FriendlyName);
@@ -91,10 +93,36 @@ public:
         const Amethyst::ModInfo& modInfo = *it->get();
 
         // Populate mod info
+		std::string authorsString = "";
+		for (auto& author : modInfo.Authors) {
+			authorsString += author + " ";
+		}
         UIPropertyBag props = UIPropertyBag();
-        props.set<std::string>("control_id", "test");
+        props.set<std::string>("control_id", "mod_info_panel");
         props.set<std::string>("$mod_name", modInfo.FriendlyName);
-        this->mControlCreateCallback("mod_info_factory", props);
+		props.set<std::string>("$mod_version", modInfo.Version.to_string());
+		props.set<std::string>("$mod_author", authorsString);
+		props.set<std::string>("$mod_icon", modInfo.GetVersionedName());
+		this->mControlCreateCallback("mod_info_factory", props);
+
+		// Populate the settings panel (if any)
+		auto modPtr = Amethyst::GetContext().mModLoader->GetModByUUID(modInfo.UUID);
+		auto mod = modPtr.lock();
+		if(mod == nullptr) {
+			Log::Info("Failed to lock mod for settings panel");
+			return;
+		}
+		auto& settings = mod->mSettings;
+
+		for (const auto& [key, value] : settings->values) {
+			UIPropertyBag props = UIPropertyBag();
+			auto controlid = std::format("mod_settings_item_{}", settings->GetValueType(key));
+			props.set<std::string>("control_id", controlid);
+			props.set<std::string>("name", controlid);
+			props.set<std::string>("$settings_label", std::format("settings.{}.{}.label", mod->mInfo->Namespace, key));
+			this->mControlCreateCallback("mod_info_factory", props);
+		}
+		mod.reset();
     }
 };
 
