@@ -36,7 +36,6 @@ class BlockSelectionBoxComponent;
 class BlockGeometryComponent;
 class BlockBakedMaterialDataComponent;
 class AABB;
-class IConstBlockSource;
 class GetCollisionShapeInterface;
 class Material;
 class Player;
