@@ -1,6 +1,7 @@
 #include "Mod.hpp"
 #include <fstream>
 #include <amethyst/runtime/ModContext.hpp>
+#include <amethyst/runtime/mod/ModSettings.hpp>
 
 namespace Amethyst {
 	Mod::Mod(const std::shared_ptr<const ModInfo>& info) :

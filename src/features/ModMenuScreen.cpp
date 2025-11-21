@@ -120,24 +120,26 @@ public:
 
 
 		for (const auto& [key, value] : settings->values) {
+			UIPropertyBag props = UIPropertyBag();
+			auto controlid = std::format("mod_settings_item_{}", settings->GetValueType(key));
 			if (settings->HasHint(key)) {
 				auto& hint = settings->GetHintFor(key);
 				// Specialized UI based on the custom hint
-				UIPropertyBag props = UIPropertyBag();
-				auto controlid = hint->GetControlId();
-				props.set<std::string>("control_id", controlid);
-				props.set<std::string>("name", controlid);
-				props.set<std::string>("$settings_label", std::format("settings.{}.{}.label", mod->mInfo->Namespace, key));
-				hint->PopulateProps(props);
-				this->mControlCreateCallback("mod_info_factory", props);
-				continue;
+				controlid = hint->GetControlId();
+				hint->PopulateProps(settings, key, props);
 			}
 			// Primitive default settings UI
-			UIPropertyBag props = UIPropertyBag();
-			auto controlid = std::format("mod_settings_item_{}", settings->GetValueType(key));
 			props.set<std::string>("control_id", controlid);
 			props.set<std::string>("name", controlid);
 			props.set<std::string>("$settings_label", std::format("settings.{}.{}.label", mod->mInfo->Namespace, key));
+			props.set<std::string>("$settings_namespace", mod->mInfo->Namespace);
+			props.set<std::string>("$settings_id", key);
+
+			auto type = settings->GetValueType(key);
+			if (type == "bool") {
+				props.set<bool>("$is_enabled", settings->GetBool(key, false));
+			}
+
 			this->mControlCreateCallback("mod_info_factory", props);
 
 		}
@@ -145,12 +147,10 @@ public:
 	}
 };
 
-void ButtonHandleEvent(UiButtonHandleEvent& ev) {
-	Log::Info("Button event");
+static void ButtonHandleEvent(UiButtonHandleEvent& ev) {
 	if (ev.mScreenEvent.type == ScreenEventType::ButtonEvent) {
 		ButtonScreenEventData& button = ev.mScreenEvent.data.button;
 		if (button.state == ButtonState::Down) {
-			Log::Info("BUtton event");
 			if (button.id == StringToNameId("button.amethyst:mods")) {
 				Amethyst::GetContext().mModLoader->LoadModIcons();
 				ClientInstance& ci = *Amethyst::GetClientCtx().mClientInstance;
@@ -160,15 +160,30 @@ void ButtonHandleEvent(UiButtonHandleEvent& ev) {
 				auto screen = factory._createScreen(scene);
 				factory.getCurrentSceneStack()->pushScreen(screen, false);
 			}
+			else if (button.id == StringToNameId("button.menu_select")) {
+				// Handle toggle buttons for mod settings
+				if (button.properties->mJsonValue["$settings_namespace"].asString().empty()) return;
+
+				bool toggle_state = button.properties->mJsonValue["#toggle_state"].asBool();
+				std::string settings_namespace = button.properties->mJsonValue["$settings_namespace"].asString();
+				std::string settings_id = button.properties->mJsonValue["$settings_id"].asString();
+
+				auto modPtr = Amethyst::GetContext().mModLoader->GetModByNamespace(settings_namespace);
+				auto mod = modPtr.lock();
+
+				if (mod == nullptr) {
+					Log::Info("Failed to lock mod for toggle button: {}", settings_namespace);
+					return;
+				}
+
+				auto& settings = mod->mSettings;
+				settings->PutBool(settings_id, toggle_state);
+				mod->SaveSettings();
+				mod.reset();
+
+				Log::Info("Successfully changed settings of {}: {} = {}", settings_namespace, settings_id, toggle_state);
+			}
 		}
-	} else if (ev.mScreenEvent.type == ScreenEventType::ToggleChangeEvent) {
-		if (ev.mScreenEvent.data.toggle.id == StringToNameId("button.amethyst:settings_toggle")) {
-			Log::Info("Toggle");
-		} else {
-			Log::Info("Unknown toggle: {}", ev.mScreenEvent.data.toggle.id);
-		}
-	} else {
-		Log::Info("Unknown Button event: {}", (int)ev.mScreenEvent.type);
 	}
 }
 

@@ -1,10 +1,10 @@
-import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement, InputPanel } from "Regolith-Generators";
+import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement, InputPanel, CustomProps, ToggleProps } from "Regolith-Generators";
 
 const modMenu = new UiFile("mod_menu");
 
 const BaseScreen = GetRef("common", "base_screen");
 
-const OptionToggle = GetRef("settings_common", "option_toggle");
+const OptionToggle = GetRef<ToggleProps>("settings_common", "option_toggle");
 const TextEditBox = GetRef<PanelProps>("common", "text_edit_box");
 const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
 const Slider = GetRef<PanelProps>("settings_common", "option_slider");
@@ -56,11 +56,18 @@ modMenu.addControl("mod_info",
 )
 
 modMenu.addControl("mod_settings_item_bool",
-    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal"
+        defaults={{
+            $is_enabled: false
+        }}>
         <Panel size={["fill", "30px"]}>
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
-        <OptionToggle $option_label="Enabled" size={["fill", "30px"]} />
+        <OptionToggle
+            size={["fill", "30px"]}
+            $toggle_default_state="$is_enabled"
+            $option_label="Enabled"
+        />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_int",

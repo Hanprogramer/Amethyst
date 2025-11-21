@@ -4,6 +4,7 @@
 #ifdef CLIENT
 #include <amethyst/runtime/AmethystContext.hpp>
 #include <amethyst/runtime/ModContext.hpp>
+#include <amethyst/runtime/mod/ModSettings.hpp>
 #include <amethyst/runtime/events/RenderingEvents.hpp>
 #include <amethyst/runtime/HookManager.hpp>
 #include <amethyst/runtime/events/InputEvents.hpp>

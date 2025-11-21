@@ -2,11 +2,13 @@
 #include "amethyst/runtime/ModContext.hpp"
 #include "amethyst/runtime/events/ModEvents.hpp"
 #include "amethyst/runtime/events/InputEvents.hpp"
+#include "amethyst/runtime/mod/ModSettings.hpp"
 
 #include "hooks/client/UI.hpp"
 #include "features/ModMenuScreen.hpp"
 #include <hooks/client/Client.hpp>
 #include <hooks/shared/Shared.hpp>
+
 
 extern const Amethyst::Mod* _OwnMod;
 extern bool ShowAdvancedItemInfo;

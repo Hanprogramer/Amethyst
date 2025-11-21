@@ -20,7 +20,6 @@
 #define NOMINMAX
 #endif
 #include <Windows.h>
-#include <amethyst/runtime/mod/ModSettings.hpp>
 
 using json = nlohmann::json;
 
@@ -28,6 +27,7 @@ namespace fs = std::filesystem;
 
 class AmethystContext;
 namespace Amethyst {
+	class ModSettings;
 	class Mod {
 		using InitializeFunction = void(*)(AmethystContext&, const Mod&);
 		using InitializeDefaultSettingsFunction = void(*)(AmethystContext&, const Mod&);
