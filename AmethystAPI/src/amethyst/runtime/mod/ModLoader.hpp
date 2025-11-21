@@ -8,8 +8,6 @@ class ModLoader {
     std::vector<std::shared_ptr<Mod>> mMods;
     std::vector<ModError> mErrors;
 
-	bool isIconLoaded = false;
-
 public:
     ModLoader(AmethystContext* ctx);
     ~ModLoader();

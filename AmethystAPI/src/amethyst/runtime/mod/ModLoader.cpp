@@ -4,6 +4,9 @@
 #include <mc/src-deps/coregraphics/ImageDescription.hpp>
 #include <mc/src-deps/coregraphics/ImageBuffer.hpp>
 #include <mc/src-client/common/client/game/MinecraftGame.hpp>
+#include <mc/src-client/common/client/renderer/TextureGroup.hpp>
+#include <mc/src-deps/minecraftrenderer/renderer/BedrockTexture.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
 
@@ -52,13 +55,11 @@ namespace Amethyst {
 			Log::Error("Can't load mod icons: No client instance found");
 			return;
 		}
-		if (isIconLoaded) return;
+
 		for (const auto& mod : mMods) {
 			// Load the mod icon
-			Log::Info("Loading mod icon for: {}", mod->mInfo->GetVersionedName());
 			LoadModIcon(mod->mInfo->Directory, mod->mInfo);
 		}
-		isIconLoaded = true;
 #endif
 	}
 
@@ -66,9 +67,11 @@ namespace Amethyst {
 	void ModLoader::LoadModIcon(const std::filesystem::path& path, const std::shared_ptr<const Amethyst::ModInfo>& info) {
 		auto& platform = Amethyst::GetPlatform();
 		fs::path iconPath = path / "icon.png";
-		if (fs::exists(iconPath)) {
-			Log::Info("Trying to load icon for {}", info->GetVersionedName());
 
+		auto& clientCtx = Amethyst::GetClientCtx();
+		ResourceLocation loc = ResourceLocation(info->GetVersionedName());
+		auto& loadedTextures = clientCtx.mClientInstance->mMinecraftGame->mTextures->mLoadedTextures;
+		if (fs::exists(iconPath) && !loadedTextures.contains(loc)) {
 			int width, height, channels;
 			unsigned char* data = stbi_load(iconPath.generic_string().c_str(), &width, &height, &channels, 0);
 
@@ -92,15 +95,9 @@ namespace Amethyst {
 			// 5. Free the memory allocated by stbi_load
 			stbi_image_free(data);
 
-			// You now have the image data in the 'image_data' vector
-			std::cout << "Image data copied into vector. Total bytes: " << image_data.size() << std::endl;
-
-			ResourceLocation loc = ResourceLocation(info->GetVersionedName());
-			
 			cg::ImageDescription description = cg::ImageDescription((uint32_t)width, (uint32_t)height, mce::TextureFormat::R8g8b8a8Unorm, cg::ColorSpace::sRGB, cg::ImageType::Texture2D, 1);
 			cg::ImageBuffer iconImage = cg::ImageBuffer::ImageBuffer(mce::Blob(image_data.data(), image_data.size()), description);
 
-			auto& clientCtx = Amethyst::GetClientCtx();
 			clientCtx.mClientInstance->mMinecraftGame->mTextures->uploadTexture(loc, iconImage);
 			Log::Info("Loaded icon for mod '{}'", info->GetVersionedName());
 		}

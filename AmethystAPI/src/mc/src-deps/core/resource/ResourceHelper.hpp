@@ -63,6 +63,9 @@ public:
 	inline bool operator==(const ResourceLocation& rhs) const {
 		return mFullHash == rhs.mFullHash;
 	}
+	inline bool operator<(const ResourceLocation& rhs) const {
+		return mFullHash < rhs.mFullHash;
+	}
 
 private:
     void _computeHashes();
