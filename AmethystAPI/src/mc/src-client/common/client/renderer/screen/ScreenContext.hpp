@@ -7,7 +7,9 @@ class Tessellator;
 #pragma pack(push, 1)
 class ScreenContext : public UIScreenContext, public mce::MeshContext {
 public:
-    std::byte padding0[160];
+    std::byte padding40[192 - 40];
     Tessellator& tessellator; // this + 192
-};
+};  
 #pragma pack(pop)
+
+//static_assert(offsetof(ScreenContext, tessellator) == 192);

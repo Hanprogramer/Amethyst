@@ -14,6 +14,7 @@
 #include "mc/src/common/world/level/levelgen/v1/FeatureTerrainAdjustments.hpp"
 #include "mc/src/common/world/level/levelgen/structure/StructureSetRegistry.hpp"
 #include <mc/src-deps/core/threading/TaskGroup.hpp>
+#include <amethyst/game/capabilities/Capabilities.hpp>
 
 enum class LimboEntitiesVersion : char {
     v0,
@@ -272,7 +273,15 @@ public:
     /// @signature {48 89 5C 24 ? 48 89 74 24 ? 48 89 7C 24 ? 55 41 54 41 55 41 56 41 57 48 8D 6C 24 ? 48 81 EC ? ? ? ? 48 8B 05 ? ? ? ? 48 33 C4 48 89 45 ? 41 8B F9 41 8B D8}
     MC Dimension* $ctor(ILevel& level, DimensionType dimId, DimensionHeightRange heightRange, Scheduler& callbackContext, std::string dimensionName);
 
-    BlockSource& getBlockSourceFromMainChunkSource() const;
+	/**
+	 * Returns the BlockSource used by the main ChunkSource of this Dimension.
+	 */
+    BlockSource& getBlockSource();
+
+	/**
+	 * Returns the BlockSource used by the main ChunkSource of this Dimension.
+	 */
+	const BlockSource& getBlockSource() const;
 
     const Level& getLevelConst() const;
     Level& getLevel() const;
@@ -283,6 +292,12 @@ public:
 
 	bool destroyBlock(const BlockPos& pos, bool dropResources) {
 		return mLevel->destroyBlock(*mBlockSource, pos, dropResources);
+	}
+
+	// Amethyst utils
+	template<typename T, typename C>
+	T* getCapability(BlockCapability<T, C>& capability, const BlockPos& pos, const Block& state, BlockActor* be, const C& side) {
+		return capability.getCapability((Level&)*mLevel, pos, state, be, side);
 	}
 };
 

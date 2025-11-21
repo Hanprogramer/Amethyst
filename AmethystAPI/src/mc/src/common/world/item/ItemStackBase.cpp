@@ -5,6 +5,7 @@
 #include "registry/ItemRegistry.hpp"
 #include "mc/src-deps/core/string/StringHash.hpp"
 #include "mc/src/common/world/level/block/Block.hpp"
+#include "ItemStackBase.hpp"
 
 ItemStackBase::ItemStackBase() :
     mUserData(nullptr),
@@ -64,6 +65,10 @@ bool ItemStackBase::isNull() const {
     }
 
     return true;
+}
+
+bool ItemStackBase::isEmpty() const {
+    return isNull() || mCount == 0;
 }
 
 bool ItemStackBase::isLiquidClipItem() const
@@ -150,4 +155,8 @@ bool ItemStackBase::canDestroyOptimally(const Block& block) const {
 		return true;
 	}
 	return canDestroySpecial(block);
+}
+
+uint8_t ItemStackBase::getMaxStackSize() const {
+    return mItem ? mItem->mMaxStackSize : 0;
 }

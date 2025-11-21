@@ -86,7 +86,21 @@ namespace Facing {
         }
     }
 
+	inline int getStep(Facing::AxisDirection direction) {
+		return direction == Facing::AxisDirection::POSITIVE ? 1 : -1;
+	}
+
 	Name getNearest(const Vec3& vec);
+
+	inline float horizontalAngle(Name face) {
+        switch (face) {
+            case Name::SOUTH: return 0.0f;
+            case Name::WEST:  return 270.0f;
+            case Name::NORTH: return 180.0f;
+            case Name::EAST:  return 90.0f;
+            default:          return 0.0f; // UP or DOWN shouldn't be used here
+        }
+    }
 
 	inline Name fromDirectionAndAxis(AxisDirection direction, Axis axis) {
 		switch (axis) {

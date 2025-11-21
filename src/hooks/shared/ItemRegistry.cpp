@@ -5,6 +5,7 @@
 #include <amethyst/runtime/ModContext.hpp>
 #include <amethyst/runtime/events/GameEvents.hpp>
 #include <amethyst/runtime/events/RegisterEvents.hpp>
+#include <amethyst/runtime/events/RegisterCapabilitiesEvent.hpp>
 
 #include <mc/src/common/world/item/VanillaItems.hpp>
 #include <mc/src/common/world/item/registry/ItemRegistryRef.hpp>
@@ -34,6 +35,14 @@ namespace Amethyst::SharedHooks::ItemRegistryHooks {
 		auto& shared = Amethyst::GetCurrentThreadCtx();
 		RegisterItemsEvent event(*registry, shared.mCreativeRegistry);
 		Amethyst::GetEventBus().Invoke(event);
+
+		// Register capabilities after registering all items
+		// IsOnMainServerThread currently doesnt work so jank fix
+		if (!Amethyst::IsOnMainClientThread()) {
+			auto& server = Amethyst::GetServerCtx();
+			RegisterCapabilitiesEvent capEvent = RegisterCapabilitiesEvent(server.mCapabilities);
+			Amethyst::GetEventBus().Invoke(capEvent);
+		}
 	}
 
 	Amethyst::InlineHook<decltype(&VanillaItems::_addItemsCategory)> _VanillaItems__addItemsCategory;

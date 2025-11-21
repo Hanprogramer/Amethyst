@@ -2,7 +2,12 @@
 #include <mc/src/common/world/level/dimension/DimensionHeightRange.hpp>
 #include <amethyst/Memory.hpp>
 
-BlockSource& Dimension::getBlockSourceFromMainChunkSource() const
+BlockSource& Dimension::getBlockSource()
+{
+    return *mBlockSource;
+}
+
+const BlockSource& Dimension::getBlockSource() const
 {
     return *mBlockSource;
 }

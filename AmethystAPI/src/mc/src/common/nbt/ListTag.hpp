@@ -24,4 +24,5 @@ public:
     virtual std::unique_ptr<Tag> copy() const override;
     virtual void print(const std::string& prefix_, PrintStream& out) const override;
     virtual size_t hash() const;
+	void add(std::unique_ptr<Tag> tag);
 };

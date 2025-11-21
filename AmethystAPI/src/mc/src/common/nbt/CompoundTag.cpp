@@ -77,6 +77,15 @@ bool CompoundTag::contains(std::string_view name, Tag::Type type) const
     return false;
 }
 
+bool CompoundTag::remove(std::string_view name) {
+    auto it = mTags.find(name);
+    if (it != mTags.end()) {
+        mTags.erase(it);
+        return true;
+    }
+    return false;
+}
+
 void CompoundTag::clear()
 {
     mTags.clear();

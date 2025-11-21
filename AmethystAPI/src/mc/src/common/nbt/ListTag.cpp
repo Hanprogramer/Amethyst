@@ -3,6 +3,7 @@
 #include "mc/src/common/util/DataIO.hpp"
 #include "amethyst/Log.hpp"
 #include "mc/src-deps/core/math/Math.hpp"
+#include "ListTag.hpp"
 
 int ListTag::size() const {
     return (int)mList.size();
@@ -114,4 +115,9 @@ size_t ListTag::hash() const
     }
 
     return hash;
+}
+
+void ListTag::add(std::unique_ptr<Tag> tag) {
+	mType = tag->getId();
+	mList.emplace_back(std::move(tag));
 }

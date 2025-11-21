@@ -21,7 +21,6 @@ class Level;
 class CompoundTag;
 class DataLoadHelper;
 class BlockSource;
-class IConstBlockSource;
 class PistonBlockActor;
 class Container;
 class LevelChunk;
@@ -131,7 +130,7 @@ public:
     MC virtual BlockActor* getCrackEntity(BlockSource& unk0, const BlockPos& unk1);
 
     /// @vidx {22}
-    MC virtual AABB getCollisionShape(const IConstBlockSource& unk0) const;
+    MC virtual AABB getCollisionShape(const BlockSource& unk0) const;
 
     /// @vidx {23}
     MC virtual void getDebugText(std::vector<std::string>& unk0, const BlockPos& unk1);

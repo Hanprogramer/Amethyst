@@ -32,7 +32,7 @@ public:
     /** @vidx {i} */ MC virtual bool detachesOnPistonMove(BlockSource&, BlockPos const&) const override;
     /** @vidx {i} */ MC virtual void setupRedstoneComponent(BlockSource& region, const BlockPos& pos) const override;
     /** @vidx {i} */ MC virtual bool breaksFallingBlocks(const Block& block, BaseGameVersion version) const override;
-    /** @vidx {i} */ MC virtual bool getSecondPart(const IConstBlockSource&, const BlockPos&, BlockPos&) const override;
+    /** @vidx {i} */ MC virtual bool getSecondPart(const BlockSource&, const BlockPos&, BlockPos&) const override;
     /** @vidx {i} */ MC virtual bool hasComparatorSignal() const override;
     /** @vidx {i} */ MC virtual int getComparatorSignal(BlockSource& region, const BlockPos& pos, const Block& block, FacingID dir) const override;
     /** @vidx {i} */ MC virtual FacingID getMappedFace(FacingID face, const Block& block) const override;
