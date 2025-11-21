@@ -46,7 +46,7 @@ namespace Amethyst {
 		~ModSettings();
 
 		void SetHintFor(const std::string& key, const std::shared_ptr<ModSettingsHint>& hint);
-		std::shared_ptr<ModSettingsHint>& GetHintFor(std::string key);
+		std::shared_ptr<ModSettingsHint> GetHintFor(const std::string& key);
 		bool HasHint(std::string key) const;
 		std::string GetValueType(std::string key);
 		std::vector<std::string> GetSettingsKeys();

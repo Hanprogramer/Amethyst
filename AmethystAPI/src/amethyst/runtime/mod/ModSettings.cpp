@@ -37,9 +37,14 @@ namespace Amethyst {
 		hints[key] = hint;
 	}
 
-	std::shared_ptr<ModSettingsHint>& ModSettings::GetHintFor(std::string key) {
-		return hints[key];
+	std::shared_ptr<ModSettingsHint> ModSettings::GetHintFor(const std::string& key) {
+		auto it = hints.find(key);
+		if (it != hints.end()) {
+			return it->second; // may still be nullptr, so caller must check
+		}
+		return nullptr;
 	}
+
 
 	bool ModSettings::HasHint(std::string key) const {
 		return hints.contains(key);

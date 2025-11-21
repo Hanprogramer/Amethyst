@@ -123,7 +123,8 @@ public:
 			UIPropertyBag props = UIPropertyBag();
 			auto controlid = std::format("mod_settings_item_{}", settings->GetValueType(key));
 			if (settings->HasHint(key)) {
-				auto& hint = settings->GetHintFor(key);
+				auto hint = settings->GetHintFor(key);
+				if (hint == nullptr) return;
 				// Specialized UI based on the custom hint
 				controlid = hint->GetControlId();
 				hint->PopulateProps(settings, key, props);
