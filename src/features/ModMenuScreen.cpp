@@ -80,6 +80,31 @@ public:
 				settings->PutString(settings_id, newText);
 				mod.reset();
 			}
+			else if (data.id == StringToNameId("textedit.amethyst:mod_setting_int")) {
+				std::string newText = data.properties->mJsonValue["#item_name"].asString();
+				if (newText.empty())
+					newText = "-1";
+				try {
+					int v = std::stoi(newText); // throws std::invalid_argument or std::out_of_range
+					std::string settings_namespace = data.properties->mJsonValue["$settings_namespace"].asString();
+					std::string settings_id = data.properties->mJsonValue["$settings_id"].asString();
+					auto modPtr = Amethyst::GetContext().mModLoader->GetModByNamespace(settings_namespace);
+					auto mod = modPtr.lock();
+					if (mod == nullptr) {
+						Log::Info("Failed to lock mod for text edit: {}", settings_namespace);
+						return ScreenController::handleEvent(ev);
+					}
+					auto& settings = mod->mSettings;
+					settings->PutInt(settings_id, v);
+					mod.reset();
+				} catch (const std::invalid_argument&) {
+					// not a number
+					Log::Error("Value inserted not a number: {}", newText);
+				} catch (const std::out_of_range&) {
+					// number too large
+					Log::Error("Value inserted out of range: {}", newText);
+				}
+			}
 		}
 
 		return ScreenController::handleEvent(ev);
