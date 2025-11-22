@@ -1,11 +1,11 @@
-import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement, InputPanel, CustomProps, ToggleProps } from "Regolith-Generators";
+import { Button, ButtonProps, Common, GetRef, Image, ImageProps, Label, Panel, PanelProps, StackPanel, UiFile, createFile, createMinecraftElement, InputPanel, CustomProps, ToggleProps, InputPanelProps } from "Regolith-Generators";
 
 const modMenu = new UiFile("mod_menu");
 
 const BaseScreen = GetRef("common", "base_screen");
 
 const OptionToggle = GetRef<ToggleProps>("settings_common", "option_toggle");
-const TextEditBox = GetRef<PanelProps>("common", "text_edit_box");
+const TextEditBox = GetRef<InputPanelProps>("common", "text_edit_box");
 const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
 const Slider = GetRef<PanelProps>("settings_common", "option_slider");
 
@@ -75,7 +75,11 @@ modMenu.addControl("mod_settings_item_int",
         <Panel size={["fill", "30px"]}>
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
-        <TextEditBox size={["fill", "30px"]} />
+        <TextEditBox size={["fill", "30px"]}
+            $place_holder_text="0"
+            text_type="NumberChars"
+            max_length={256}
+            text_box_name="textedit.amethyst:mod_setting_int"/>
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_string",
@@ -83,7 +87,9 @@ modMenu.addControl("mod_settings_item_string",
         <Panel size={["fill", "30px"]}>
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
-        <TextEditBox size={["fill", "30px"]} />
+        <TextEditBox size={["fill", "30px"]}
+            max_length={256}
+            text_box_name="textedit.amethyst:mod_setting_string" />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_slider",
@@ -100,7 +106,7 @@ modMenu.addControl("mod_settings_item_options",
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
         <Dropdown size={["fill", "30px"]}
-            $dropdown_content="controls_section.sneak_dropdown_content"
+            // $dropdown_content="controls_section.sneak_dropdown_content"
             $dropdown_area="content_area"
             $dropdown_name="sneak_dropdown"
             $option_enabled_binding_name="#sneak_dropdown_enabled"

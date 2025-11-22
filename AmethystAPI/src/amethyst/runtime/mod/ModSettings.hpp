@@ -13,6 +13,7 @@ namespace Amethyst {
 	class ModSettingsHint {
 	public:
 		// Base class for settings hints
+		virtual ~ModSettingsHint() = default;
 		virtual std::string GetControlId() const = 0;
 		virtual void PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const = 0;
 	};
@@ -47,7 +48,7 @@ namespace Amethyst {
 
 		void SetHintFor(const std::string& key, const std::shared_ptr<ModSettingsHint>& hint);
 		std::shared_ptr<ModSettingsHint> GetHintFor(const std::string& key);
-		bool HasHint(std::string key) const;
+		bool HasHint(const std::string& key) const;
 		std::string GetValueType(std::string key);
 		std::vector<std::string> GetSettingsKeys();
 

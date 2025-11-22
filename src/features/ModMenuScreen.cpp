@@ -48,23 +48,41 @@ public:
 	}
 
 	virtual ui::ViewRequest handleEvent(ScreenEvent& ev) {
-		if (ev.type != ScreenEventType::ButtonEvent) return ScreenController::handleEvent(ev);
+		if (ev.type == ScreenEventType::ButtonEvent) {
+			ButtonScreenEventData data = ev.data.button;
+			if (data.state != ButtonState::Down) return ScreenController::handleEvent(ev);
 
-		ButtonScreenEventData data = ev.data.button;
-		if (data.state != ButtonState::Down) return ScreenController::handleEvent(ev);
+			auto& mods = Amethyst::GetContext().mModGraph->GetMods();
 
-		auto& mods = Amethyst::GetContext().mModGraph->GetMods();
+			auto it = std::find_if(mods.begin(), mods.end(), [&data](const auto& mod) {
+				return StringToNameId(mod->FriendlyName) == data.id;
+			});
 
-		auto it = std::find_if(mods.begin(), mods.end(), [&data](const auto& mod) {
-			return StringToNameId(mod->FriendlyName) == data.id;
-		});
+			if (it == mods.end()) return ScreenController::handleEvent(ev);
 
-		if (it == mods.end()) return ScreenController::handleEvent(ev);
+			mSelectedMod = data.id;
+			_updateContent();
+			return ui::ViewRequest::ConsumeEvent;
+		}
+		else if (ev.type == ScreenEventType::TextEditChange) {
+			auto& data = ev.data.textEdit;
+			if (data.id == StringToNameId("textedit.amethyst:mod_setting_string")) {
+				std::string newText = data.properties->mJsonValue["#item_name"].asString();
+				std::string settings_namespace = data.properties->mJsonValue["$settings_namespace"].asString();
+				std::string settings_id = data.properties->mJsonValue["$settings_id"].asString();
+				auto modPtr = Amethyst::GetContext().mModLoader->GetModByNamespace(settings_namespace);
+				auto mod = modPtr.lock();
+				if (mod == nullptr) {
+					Log::Info("Failed to lock mod for text edit: {}", settings_namespace);
+					return ScreenController::handleEvent(ev);
+				}
+				auto& settings = mod->mSettings;
+				settings->PutString(settings_id, newText);
+				mod.reset();
+			}
+		}
 
-		mSelectedMod = data.id;
-		_updateContent();
-
-		return ui::ViewRequest::ConsumeEvent;
+		return ScreenController::handleEvent(ev);
 	}
 
 	void _updateContent() {
@@ -124,7 +142,7 @@ public:
 			auto controlid = std::format("mod_settings_item_{}", settings->GetValueType(key));
 			if (settings->HasHint(key)) {
 				auto hint = settings->GetHintFor(key);
-				if (hint == nullptr) return;
+				if (!hint) continue;
 				// Specialized UI based on the custom hint
 				controlid = hint->GetControlId();
 				hint->PopulateProps(settings, key, props);
@@ -135,10 +153,17 @@ public:
 			props.set<std::string>("$settings_label", std::format("settings.{}.{}.label", mod->mInfo->Namespace, key));
 			props.set<std::string>("$settings_namespace", mod->mInfo->Namespace);
 			props.set<std::string>("$settings_id", key);
+			props.set<std::string>("$settings_namespaced_id", std::format("{}:{}", mod->mInfo->Namespace, key));
 
 			auto type = settings->GetValueType(key);
 			if (type == "bool") {
 				props.set<bool>("$is_enabled", settings->GetBool(key, false));
+			}
+			else if (type == "string") {
+				props.set<std::string>("#item_name", settings->GetString(key, ""));
+			}
+			else if (type == "int") {
+				props.set<std::string>("#item_name", std::to_string(settings->GetInt(key, -1)));
 			}
 
 			this->mControlCreateCallback("mod_info_factory", props);
@@ -160,8 +185,7 @@ static void ButtonHandleEvent(UiButtonHandleEvent& ev) {
 				auto scene = factory.createUIScene(*ci.mMinecraftGame, ci, "mod_menu.root_panel", controller);
 				auto screen = factory._createScreen(scene);
 				factory.getCurrentSceneStack()->pushScreen(screen, false);
-			}
-			else if (button.id == StringToNameId("button.menu_select")) {
+			} else if (button.id == StringToNameId("button.menu_select")) {
 				// Handle toggle buttons for mod settings
 				if (button.properties->mJsonValue["$settings_namespace"].asString().empty()) return;
 
@@ -179,10 +203,7 @@ static void ButtonHandleEvent(UiButtonHandleEvent& ev) {
 
 				auto& settings = mod->mSettings;
 				settings->PutBool(settings_id, toggle_state);
-				mod->SaveSettings();
 				mod.reset();
-
-				Log::Info("Successfully changed settings of {}: {} = {}", settings_namespace, settings_id, toggle_state);
 			}
 		}
 	}

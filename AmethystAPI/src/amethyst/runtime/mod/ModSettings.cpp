@@ -34,19 +34,21 @@ namespace Amethyst {
 	}
 
 	void ModSettings::SetHintFor(const std::string& key, const std::shared_ptr<ModSettingsHint>& hint) {
+		if (!hint) {
+			Log::Error("Attempted to set null hint for key '{}'", key);
+			return;
+		}
 		hints[key] = hint;
 	}
 
 	std::shared_ptr<ModSettingsHint> ModSettings::GetHintFor(const std::string& key) {
 		auto it = hints.find(key);
-		if (it != hints.end()) {
-			return it->second; // may still be nullptr, so caller must check
-		}
+		return it != hints.end() ? it->second : nullptr;
 		return nullptr;
 	}
 
 
-	bool ModSettings::HasHint(std::string key) const {
+	bool ModSettings::HasHint(const std::string& key) const {
 		return hints.contains(key);
 	}
 
