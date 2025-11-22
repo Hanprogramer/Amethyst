@@ -79,7 +79,7 @@ modMenu.addControl("mod_settings_item_int",
             $place_holder_text="0"
             text_type="NumberChars"
             max_length={256}
-            text_box_name="textedit.amethyst:mod_setting_int"/>
+            text_box_name="textedit.amethyst:mod_setting_int" />
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_string",
@@ -106,11 +106,12 @@ modMenu.addControl("mod_settings_item_options",
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
         <Dropdown size={["fill", "30px"]}
-            // $dropdown_content="controls_section.sneak_dropdown_content"
+            $option_label="options.sneakOption"
+            $dropdown_content="controls_section.sneak_dropdown_content"
             $dropdown_area="content_area"
             $dropdown_name="sneak_dropdown"
             $option_enabled_binding_name="#sneak_dropdown_enabled"
-            $options_dropdown_toggle_label_binding="Test"
+            $options_dropdown_toggle_label_binding="#sneak_dropdown_toggle_label"
             $dropdown_scroll_content_size={["100%", "145%"]} />
     </StackPanel>
 )
@@ -138,7 +139,13 @@ modMenu.addControl("mods_list",
 )
 
 modMenu.addControl("root_panel",
-    <BaseScreen >
+    <BaseScreen button_mappings={[
+        {
+            "from_button_id": "button.menu_cancel",
+            "to_button_id": "button.amethyst:close_mods_list",
+            "mapping_type": "global"
+        }
+    ]}>
         <Common.CommonPanel size={["100%", "20px"]} anchors="top_left" $show_close_button>
             <TopBar />
             <Common.Button size={[16, 16]} anchors="left_middle" hover_control="hover" offset={[2, 0]} $pressed_button_name="button.amethyst:close_mods_list" >
