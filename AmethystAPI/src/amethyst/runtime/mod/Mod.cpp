@@ -146,7 +146,6 @@ namespace Amethyst {
 				Log::Error("Unknown type for settings {} : {}", type, key);
 				continue;
 			}
-			Log::Info("Writing as {}: {}", type, jsonRoot[key].dump());
 		}
 
 		std::ofstream settingsFile(settingsPath);

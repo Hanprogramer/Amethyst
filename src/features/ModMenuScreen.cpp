@@ -16,7 +16,6 @@ public:
 	ModMenuScreenController(bool useTaskGroup)
 		: ScreenController(useTaskGroup), mSelectedMod(0) {
 		mSelectedMod = StringToNameId(Amethyst::GetOwnMod()->mInfo->FriendlyName);
-		Log::Info("Registering event handlers");
 		_registerEventHandlers();
 	}
 
@@ -43,7 +42,6 @@ public:
 	}
 
 	virtual void onEntered() override {
-		Log::Info("onEntered");
 		_updateContent();
 	}
 
