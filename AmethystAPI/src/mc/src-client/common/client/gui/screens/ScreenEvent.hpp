@@ -11,6 +11,7 @@ enum class ScreenEventType : int32_t {
     TextEditChange = 12,
     ToggleChangeEvent = 13,
     SliderChangeEvent = 16,
+    ScreenViewRefresh = 9,
 
     //ButtonMoveEvent = 0x0002,
     //PointerMoveInEvent = 0x0003,
@@ -22,7 +23,6 @@ enum class ScreenEventType : int32_t {
     //PreCollectionRefresh = 0x0009,
     //InputModeChangeEvent = 0x000a,
     //HoloInputModeChangeEvent = 0x000b,
-    //ScreenViewRefresh = 0x000c,
     //ScrollDirectionEvent = 0x000d,
     //ScrollRequestEvent = 0x000e,
     //ToggleChangeEvent = 0x0010,
