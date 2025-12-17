@@ -8,7 +8,7 @@ const OptionToggle = GetRef<ToggleProps>("settings_common", "option_toggle");
 const TextEditBox = GetRef<InputPanelProps>("common", "text_edit_box");
 const Dropdown = GetRef<PanelProps>("settings_common", "option_dropdown");
 const Slider = GetRef<PanelProps>("settings_common", "option_slider");
-
+const OptionRadioDropdownGroup = GetRef<PanelProps>("settings_common", "option_radio_dropdown_group");
 const TopBar = GetRef("common_store", "store_top_bar");
 
 
@@ -66,6 +66,8 @@ modMenu.addControl("mod_settings_item_bool",
         <OptionToggle
             size={["fill", "30px"]}
             $toggle_default_state="$is_enabled"
+            $option_binding_name="#settings_label"
+            $toggle_name="$settings_label"
             $option_label="Enabled"
         />
     </StackPanel>
@@ -93,11 +95,14 @@ modMenu.addControl("mod_settings_item_string",
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_slider",
-    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal">
+    <StackPanel anchors="left_middle" size={["100%", "30px"]} orientation="horizontal"
+    >
         <Panel size={["fill", "30px"]}>
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
-        <Slider size={["fill", "30px"]} />
+        {/* <Slider size={["fill", "30px"]} 
+            $slider_name="$settings_label"
+            $slider_value_binding_name="#chat_line_spacing"/> */}
     </StackPanel>
 )
 modMenu.addControl("mod_settings_item_options",
@@ -106,13 +111,14 @@ modMenu.addControl("mod_settings_item_options",
             <Label anchors="left_middle" text="$settings_label" layer={5} offset={[10, 0]} />
         </Panel>
         <Dropdown size={["fill", "30px"]}
-            $option_label="options.sneakOption"
-            $dropdown_content="controls_section.sneak_dropdown_content"
+            $dropdown_content="mod_menu.custom_dropdown_content"
             $dropdown_area="content_area"
-            $dropdown_name="sneak_dropdown"
-            $option_enabled_binding_name="#sneak_dropdown_enabled"
-            $options_dropdown_toggle_label_binding="#sneak_dropdown_toggle_label"
-            $dropdown_scroll_content_size={["100%", "145%"]} />
+            $dropdown_name="$settings_control_name"
+ 
+            // $option_enabled_binding_name="#tmi_bool_1"
+            $options_dropdown_toggle_label_binding="#item_name"
+            $dropdown_scroll_content_size={["100%", "300%"]}
+        />
     </StackPanel>
 )
 

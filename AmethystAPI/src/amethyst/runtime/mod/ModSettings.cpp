@@ -5,11 +5,11 @@ namespace Amethyst {
 		: minValue(min), maxValue(max), step(step) {
 	}
 
-	std::string SliderSettingsHint::GetControlId() const {
+	std::string SliderSettingsHint::GetControlId(std::string modNamespace, std::string key) const {
 		return "mod_settings_item_slider";
 	}
 
-	void SliderSettingsHint::PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const {
+	void SliderSettingsHint::PopulateProps(ScreenController* controller, std::string controlId, std::string controlName, const std::shared_ptr<ModSettings>& settings, std::string modNamespace, std::string key, UIPropertyBag& props) const {
 		props.set<float>("$min_value", minValue);
 		props.set<float>("$max_value", maxValue);
 		props.set<float>("$step", step);
@@ -19,11 +19,68 @@ namespace Amethyst {
 		possibleValues(possibleValues) {
 	}
 
-	std::string EnumOptionsSettingsHint::GetControlId() const {
+	std::string EnumOptionsSettingsHint::GetControlId(std::string modNamespace, std::string key) const {
 		return "mod_settings_item_options";
 	}
 
-	void EnumOptionsSettingsHint::PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const {
+	void EnumOptionsSettingsHint::PopulateProps(ScreenController* controller, std::string controlId, std::string controlName, const std::shared_ptr<ModSettings>& settings, std::string modNamespace, std::string key, UIPropertyBag& props) const {
+		// Bind for the visibility of the content popup
+		controller->bindBool(std::format("#{}", controlName),
+			[this]() { return this->opened; },
+			[&]() { return true; });
+		controller->bindStringForAnyCollection("mycollection", 
+			[](std::string coll, int ind) { return "HELLOWW!";  }, 
+			[](std::string coll, int ind) { return true; });
+
+		auto typeName = [](Json::ValueType t) {
+			switch (t) {
+			case Json::nullValue: return "null";
+			case Json::intValue: return "int";
+			case Json::uintValue: return "uint";
+			case Json::realValue: return "real";
+			case Json::stringValue: return "string";
+			case Json::booleanValue: return "bool";
+			case Json::arrayValue: return "array";
+			case Json::objectValue: return "object";
+			default: return "unknown";
+			}
+		};
+
+
+
+		//Json::Reader reader;
+
+		//reader.parse(R"([
+		//	  {
+		//		"storage_location_option_external@settings_common.radio_with_label": {
+		//		  "$toggle_state_binding_name": "#storage_location_radio_external",
+		//		  "$radio_label_text": "HELLOOO"
+		//		}
+		//	  },
+		//	  {
+		//		"storage_location_option_appdata@settings_common.radio_with_label": {
+		//		  "$toggle_state_binding_name": "#storage_location_radio_package",
+		//		  "$radio_label_text": "ME OPTION 2"
+		//		}
+		//	  }
+		//	])", root, false);
+
+		//Log::Info("JSON root: {}", root.toStyledString());
+
+		Json::Value root = Json::Value(Json::objectValue);
+		root["A"] = Json::Value("A string");
+		root["B"] = Json::Value("me a string");
+		root["C"] = Json::Value(3.14);
+		Log::Info("Value of root: {}", root.toStyledString());
+		Log::Info("Value of root[\"B\"]: {}", root["B"].asString());
+
+		Log::Info("option_radio_buttons before assignment: {}", typeName(props.mJsonValue["$option_radio_buttons"].type()));
+		props.mJsonValue["$option_radio_buttons"] = root;
+		Log::Info("option_radio_buttons after assignment: {}", typeName(props.mJsonValue["$option_radio_buttons"].type()));
+
+		Log::Info("Value of root after assign: {}", root.toStyledString());
+
+		Log::Info("props.mJsonValue: {}, is of value: {}", props.mJsonValue.toStyledString(), typeName(props.mJsonValue["$option_radio_buttons"].type()));
 	}
 
 

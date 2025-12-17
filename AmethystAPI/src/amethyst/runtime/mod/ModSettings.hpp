@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <mc/src-client/common/client/gui/controls/UIPropertyBag.hpp>
 #include <amethyst/runtime/mod/Mod.hpp>
+#include <mc/src-client/common/client/gui/screens/ScreenController.hpp>
 
 namespace Amethyst {
 	using ModSettingsValue = std::variant<bool, int, float, std::string>;
@@ -14,8 +15,8 @@ namespace Amethyst {
 	public:
 		// Base class for settings hints
 		virtual ~ModSettingsHint() = default;
-		virtual std::string GetControlId() const = 0;
-		virtual void PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const = 0;
+		virtual std::string GetControlId(std::string modNamespace, std::string key) const = 0;
+		virtual void PopulateProps(ScreenController* controller, std::string controlId, std::string controlName, const std::shared_ptr<ModSettings>& settings, std::string modNamespace, std::string key, UIPropertyBag& props) const = 0;
 	};
 
 	class SliderSettingsHint : public ModSettingsHint {
@@ -25,17 +26,18 @@ namespace Amethyst {
 		float step;
 
 		SliderSettingsHint(float min, float max, float step);
-		std::string GetControlId() const override;
-		void PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const override;
+		std::string GetControlId(std::string modNamespace, std::string key) const override;
+		void PopulateProps(ScreenController* controller, std::string controlId, std::string controlName, const std::shared_ptr<ModSettings>& settings, std::string modNamespace, std::string key, UIPropertyBag& props) const override;
 	};
 
 	class EnumOptionsSettingsHint : public ModSettingsHint {
 	public:
 		std::vector<std::string> possibleValues;
+		bool opened = false;
 
 		EnumOptionsSettingsHint(std::vector<std::string> possibleValues);
-		std::string GetControlId() const override;
-		void PopulateProps(const std::shared_ptr<ModSettings>& settings, std::string key, UIPropertyBag& props) const override;
+		std::string GetControlId(std::string modNamespace, std::string key) const override;
+		void PopulateProps(ScreenController* controller, std::string controlId, std::string controlName, const std::shared_ptr<ModSettings>& settings, std::string modNamespace, std::string key, UIPropertyBag& props) const override;
 	};
 
 	class ModSettings {

@@ -158,6 +158,7 @@ Value::CZString::c_str() const
 Value::Value(ValueType type)
     : type_(type)
 {
+	memset(&value_, 0, sizeof(value_));
     switch (type_) {
     case nullValue:
         break;
@@ -259,6 +260,7 @@ Value::Value( bool value )
 Value::Value( const Value &other )
    : type_( other.type_ )
 {
+   memset(&value_, 0, sizeof(value_));
    switch ( type_ )
    {
       case nullValue:
